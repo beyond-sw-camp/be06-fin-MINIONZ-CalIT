@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.Date;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class Alarm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alarmId;
 
+
     private String alarmTitle;
     private String craeteAt;
     private Integer alarmStatus;
@@ -26,4 +28,5 @@ public class Alarm {
     private String alarmContents;
 
     private Integer senderId;
+
 }
