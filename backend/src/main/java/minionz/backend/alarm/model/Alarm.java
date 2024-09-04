@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,4 +18,12 @@ public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alarmId;
+
+    private String alarmTitle;
+    private String craeteAt;
+    private Integer alarmStatus;
+    private String category;
+    private String alarmContents;
+
+    private Integer senderId;
 }
