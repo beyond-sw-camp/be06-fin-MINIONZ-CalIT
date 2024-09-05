@@ -1,39 +1,34 @@
-package minionz.backend.error_comment.model;
+package minionz.backend.error_board.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.error_board.model.ErrorBoard;
-import minionz.backend.user.model.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
-public class ErrorComment {
+@EntityListeners(AuditingEntityListener.class)
+public class ErrorBoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long errorCommentId;
-
-    private String errCommentContent;
-    private String errComment;
+    private Long errorBoardImageId;
+    private String imageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "errorBoardId")
+    @JoinColumn(name="errorBoardId")
     private ErrorBoard errorBoard;
+
 
 }

@@ -2,6 +2,7 @@ package minionz.backend.scrum.workspace.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import minionz.backend.error_board.model.ErrorBoard;
 import minionz.backend.scrum.issue_label.model.IssueLabel;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint_label.model.SprintLabel;
@@ -38,4 +39,9 @@ public class Workspace {
     // Workspace : IssueLabel = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<IssueLabel> issueLabels = new ArrayList<>();
+
+    // Workspace : errorBoard = 1 : 1
+    @OneToOne
+    @JoinColumn(name = "workspace")
+    private ErrorBoard errorBoard;
 }
