@@ -3,10 +3,10 @@ package minionz.backend.user.model;
 import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.chat_participation.model.ChatParticipation;
-import minionz.backend.issue_participation.model.IssueParticipation;
-import minionz.backend.meeting_participation.model.MeetingParticipation;
-import minionz.backend.sprint_participation.model.SprintParticipation;
-import minionz.backend.workspace_participation.model.WorkspaceParticipation;
+import minionz.backend.scrum.issue_participation.model.IssueParticipation;
+import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
+import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
+import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 
 import java.util.ArrayList;
 import java.util.List;
