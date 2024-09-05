@@ -28,15 +28,15 @@ public class Meeting extends BaseEntity {
     private String meetingContents;
 
     // Meeting : MeetingParticipation = 1 : N
-    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<MeetingParticipation> meetingParticipations = new ArrayList<>();
 
     // Meeting : Issue = 1 : N
-    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<Issue> issues = new ArrayList<>();
 
     // Meeting : Sprint = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
 }

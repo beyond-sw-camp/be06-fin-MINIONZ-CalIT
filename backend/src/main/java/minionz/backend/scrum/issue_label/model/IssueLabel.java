@@ -24,11 +24,11 @@ public class IssueLabel {
     private String color;
 
     // IssueLabel : IssueLabelSelect = 1 : N
-    @OneToMany(mappedBy = "issueLabel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "issueLabel", fetch = FetchType.LAZY)
     private List<IssueLabelSelect> issueLabelSelects = new ArrayList<>();
 
     // IssueLabel : Workspace = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 }

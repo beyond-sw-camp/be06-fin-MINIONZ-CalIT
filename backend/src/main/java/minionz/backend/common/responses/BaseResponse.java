@@ -10,16 +10,16 @@ public class BaseResponse<T> {
     private T result;
 
 
-    public BaseResponse(BaseResponseMessage baseResponseMessage) {
-        this.success = baseResponseMessage.getSuccess();
-        this.code = baseResponseMessage.getCode();
-        this.message = baseResponseMessage.getMessage();
+    public BaseResponse(BaseResponseStatus baseResponseStatus) {
+        this.success = baseResponseStatus.isSuccess();
+        this.code = baseResponseStatus.getCode();
+        this.message = baseResponseStatus.getMessage();
     }
 
-    public BaseResponse( BaseResponseMessage baseResponseMessage, T result) {
-        this.success = baseResponseMessage.getSuccess();
-        this.code = baseResponseMessage.getCode();
-        this.message = baseResponseMessage.getMessage();
+    public BaseResponse( BaseResponseStatus baseResponseStatus, T result) {
+        this.success = baseResponseStatus.isSuccess();
+        this.code = baseResponseStatus.getCode();
+        this.message = baseResponseStatus.getMessage();
         this.result = result;
     }
 }

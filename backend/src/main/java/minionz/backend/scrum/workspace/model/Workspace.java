@@ -24,18 +24,18 @@ public class Workspace {
     private String workspaceName;
 
     // Workspace : Sprint = 1 : N
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Sprint> sprints = new ArrayList<>();
 
     // Workspace : WorkspaceParticipation = 1 : N
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<WorkspaceParticipation> workspaceParticipations = new ArrayList<>();
 
     // Workspace : SprintLabel = 1 : N
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<SprintLabel> sprintLabels = new ArrayList<>();
 
     // Workspace : IssueLabel = 1 : N
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<IssueLabel> issueLabels = new ArrayList<>();
 }

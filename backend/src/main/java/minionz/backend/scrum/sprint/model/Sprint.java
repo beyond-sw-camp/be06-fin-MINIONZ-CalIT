@@ -33,23 +33,23 @@ public class Sprint extends BaseEntity {
     private SprintStatus status;
 
     // Sprint : SprintParticipation = 1 : N
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY)
     private List<SprintParticipation> sprintParticipations = new ArrayList<>();
 
     // Sprint : SprintLabelSelect = 1 : N
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY)
     private List<SprintLabelSelect> sprintLabelSelects = new ArrayList<>();
 
     // Sprint : Meeting = 1 : N
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY)
     private List<Meeting> meetings = new ArrayList<>();
 
     // Sprint : Issue = 1 : N
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY)
     private List<Issue> issues = new ArrayList<>();
 
     // Sprint : Workspace = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 }
