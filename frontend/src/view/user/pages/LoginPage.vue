@@ -22,14 +22,14 @@ const login = () => {
       </div>
     </div>
     <form @submit.prevent="login">
-      <UserInput input-placeholder="아이디를 입력하세요" label="아이디"/>
-      <UserInput input-placeholder="비밀번호를 입력하세요" label="비밀번호"/>
+      <UserInput input-placeholder="아이디를 입력하세요" label="아이디" type="email"/>
+      <UserInput input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
       <router-link to="/dashboard">
         <UserButton type="submit" button-ment="Login"></UserButton>
       </router-link>
     </form>
     <div>
-      <router-link to="/find-password">비밀번호 찾기</router-link>
+      <router-link to="/user/password">비밀번호 찾기</router-link>
     </div>
     <div class="social-login">
       <SocialLogin></SocialLogin>

@@ -40,28 +40,31 @@ const passwordsMatch = computed(() => {
   <div class="signup-page">
     <div class="signup-header">
       <h1>회원가입</h1>
-      <div>
+      <div class="text-wrap">
         <span>계정이 있으신가요?</span>
         <router-link to="/user/login">로그인 하기</router-link>
       </div>
     </div>
     <div class="signup-body">
       <form @submit.prevent="signup">
-        <UserInput v-model="username" input-placeholder="이름을 입력하세요" label="이름"/>
+        <UserInput v-model="username" input-placeholder="이름을 입력하세요" label="이름" type="text"/>
         <div class="verify">
-          <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일"/>
+          <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일" type="email"/>
           <button type="button" @click="showVerificationInput" class="btn-verify" :disabled="!isEmailEntered">인증 하기</button>
         </div>
         <div v-if="showVerificationCode" class="verify">
-          <UserInput v-model="verificationCode" input-placeholder="인증 번호를 입력하세요" label="인증 번호"/>
+          <UserInput v-model="verificationCode" input-placeholder="인증 번호를 입력하세요" label="인증 번호" type="text"/>
           <button type="button" :disabled="!isVerificationCodeEntered" class="btn-verify">코드 입력</button>
         </div>
-        <UserInput v-model="password" input-placeholder="비밀번호를 입력하세요" label="비밀번호"/>
-        <UserInput v-model="confirmPassword" input-placeholder="비밀번호를 다시 입력하세요" label="비밀번호 확인"/>
+        <UserInput v-model="password" input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
+        <UserInput v-model="confirmPassword" input-placeholder="비밀번호를 다시 입력하세요" label="비밀번호 확인" type="password"/>
         <p v-if="!passwordsMatch" class="error-message">비밀번호가 일치하지 않습니다.</p>
-        <UserButton type="submit" button-ment="Sign up"></UserButton>
+        <router-link to="/user/complete" style="margin: 0">
+          <UserButton type="submit" button-ment="Sign up"></UserButton>
+        </router-link>
       </form>
-      <div>
+      <div class="text-wrap">
+        <span>비밀번호가 기억나지 않으시나요?</span>
         <router-link to="/user/password">비밀번호 찾기</router-link>
       </div>
       <div class="social-login">
@@ -86,8 +89,6 @@ h1 {
 a {
   color: #1E5EFF;
   margin-left: 10px;
-  text-align: center;
-  width: 100%;
   display: block;
 }
 
@@ -145,7 +146,21 @@ form {
 }
 
 .error-message {
+  background-color: #fff1f1;
+  padding: 10px;
+  border-radius: 5px;
   color: red;
   font-size: 0.9em;
+  margin: 0;
+}
+
+.text-wrap{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  span{
+    text-align: end;
+  }
 }
 </style>

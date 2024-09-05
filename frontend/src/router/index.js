@@ -32,9 +32,30 @@ const routes = [
                 component: PasswordPage
             },
             {
+                path: 'password-reset',
+                name: 'PasswordReset',
+                component: () => import('@/view/user/pages/PasswordResetPage.vue')
+            },
+            {
                 path: 'complete',
                 name: 'Complete',
                 component: CompletePage
+            }
+        ]
+    },
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        children: [
+            {
+                path: 'personal',
+                name: 'PersonalDashboard',
+                component: () => import('@/view/dashboard/PersonalDashBoard.vue')
+            },
+            {
+                path: 'workspace',
+                name: 'WorkspaceDashboard',
+                component: () => import('@/view/dashboard/WorkspaceDashBoard.vue')
             }
         ]
     },

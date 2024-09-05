@@ -1,6 +1,17 @@
 <script setup>
+import { ref } from 'vue';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
+
+const email = ref('');
+
+const sendPasswordResetLink = () => {
+  if (email.value.trim() === '') {
+    console.log('Email is required');
+    return;
+  }
+  console.log('Sending password reset link to', email.value);
+};
 </script>
 
 <template>
@@ -11,14 +22,16 @@ import UserInput from "@/view/user/component/UserInput.vue";
         <span>비밀번호를 초기화 할 수 있도록 이메일을 입력해주세요</span>
       </div>
     </div>
-    <form @submit.prevent="password">
-      <UserInput input-placeholder="이메일을 입력하세요" label="이메일"/>
-      <router-link to="/dashboard">
-        <UserButton type="submit" button-ment="비밀번호 초기화 링크 전송"></UserButton>
-      </router-link>
+    <form @submit.prevent="sendPasswordResetLink">
+      <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일"/>
+      <UserButton type="submit" button-ment="비밀번호 초기화 링크 전송"></UserButton>
     </form>
-    <div>
-      <router-link to="/find-password">비밀번호 찾기</router-link>
+    <hr>
+    <p>비밀번호가 생각나셨나요?</p>
+    <div style="width: 100%">
+      <router-link to="/user/login">
+        <UserButton button-ment="로그인으로 돌아가기" class="btn-ver2"></UserButton>
+      </router-link>
     </div>
   </div>
 </template>
@@ -50,5 +63,20 @@ form {
   flex-direction: column;
   gap: 15px;
   width: 100%;
+}
+p{
+  margin: 0;
+  color: #5a607f;
+}
+hr{
+  border: 1px solid #D7DBEC;
+  width: 100%;
+}
+.btn-ver2{
+  width: 100%;
+  color: #1E5EFF;
+  background-color: #fff;
+  border: 1px solid #d9e1ec;
+  text-decoration: none;
 }
 </style>

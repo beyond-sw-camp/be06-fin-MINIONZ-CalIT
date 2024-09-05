@@ -1354,6 +1354,13 @@
   dependencies:
     "@types/node" "*"
 
+"@vee-validate/rules@^4.13.2":
+  version "4.13.2"
+  resolved "https://registry.npmjs.org/@vee-validate/rules/-/rules-4.13.2.tgz"
+  integrity sha512-NrmjxXw/gZQVhjgwIdEOeRYxn74I/3BYXTuExdwbpCPVgFh0pjTQx9aPGkVBnueeszVqO2LfWyKUpvwSWLPXRA==
+  dependencies:
+    vee-validate "4.13.2"
+
 "@vue/babel-helper-vue-jsx-merge-props@^1.4.0":
   version "1.4.0"
   resolved "https://registry.npmjs.org/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.4.0.tgz"
@@ -6045,7 +6052,7 @@ vary@~1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vee-validate@^4.13.2:
+vee-validate@4.13.2, vee-validate@^4.13.2:
   version "4.13.2"
   resolved "https://registry.npmjs.org/vee-validate/-/vee-validate-4.13.2.tgz"
   integrity sha512-HlpR/6MJ92TW9f135umMZKUqdd/tFQTxLNSf2ImbU4Y/MlLVAUpF1l64VdjTOhbClAqPjCb5p/SqHDxLpUHXrw==

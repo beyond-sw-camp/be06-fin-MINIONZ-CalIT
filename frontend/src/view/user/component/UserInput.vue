@@ -4,7 +4,8 @@ import { defineProps, defineEmits } from 'vue';
 defineProps({
   modelValue: String,
   inputPlaceholder: String,
-  label: String
+  label: String,
+  type: String
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -17,7 +18,7 @@ const updateValue = (event) => {
 <template>
   <div class="user-input">
     <label>{{ label }}</label>
-    <input :placeholder="inputPlaceholder" :value="modelValue" @input="updateValue" />
+    <input :placeholder="inputPlaceholder" :value="modelValue" @input="updateValue" :type="type"/>
   </div>
 </template>
 
