@@ -2,6 +2,10 @@ package minionz.backend.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import minionz.backend.chat_participation.model.ChatParticipation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +26,10 @@ public class User {
     private String email;
     private String createdAt;
     private String userRole;
+
+    // ChatParticipation 1 : N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatParticipation> chatParticipations = new ArrayList<>();
 
 
 }

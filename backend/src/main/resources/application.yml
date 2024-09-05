@@ -1,5 +1,7 @@
 server:
   port: ${PORT}
+address:
+  domain: ${DOMAIN_ADDRESS}
 spring:
   datasource:
     url: ${DB_URL}
