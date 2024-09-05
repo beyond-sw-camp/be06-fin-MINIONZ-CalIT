@@ -25,8 +25,11 @@
   background-color: #fff;
   width: 540px;
   border-radius: 20px;
+  margin: 30px 0;
+  box-sizing: border-box;
+  overflow: scroll;
   padding: 30px;
-  //height: 450px;
+  max-height: 90%;
 }
 .user-content{
   width: 100%;
