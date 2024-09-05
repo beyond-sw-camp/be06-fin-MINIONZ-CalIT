@@ -1,8 +1,8 @@
-package minionz.backend.scrum.issue_label.model;
+package minionz.backend.scrum.task_label.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.scrum.issue_label_select.model.IssueLabelSelect;
+import minionz.backend.scrum.task_label_select.model.TaskLabelSelect;
 import minionz.backend.scrum.workspace.model.Workspace;
 
 import java.util.ArrayList;
@@ -14,20 +14,20 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class IssueLabel {
+public class TaskLabel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long issueLabelId;
+    private Long taskLabelId;
 
-    private String labelName;
+    private String taskName;
     private String description;
     private String color;
 
-    // IssueLabel : IssueLabelSelect = 1 : N
-    @OneToMany(mappedBy = "issueLabel", fetch = FetchType.LAZY)
-    private List<IssueLabelSelect> issueLabelSelects = new ArrayList<>();
+    // TaskLabel : TaskLabelSelect = 1 : N
+    @OneToMany(mappedBy = "taskLabel", fetch = FetchType.LAZY)
+    private List<TaskLabelSelect> taskLabelSelects = new ArrayList<>();
 
-    // IssueLabel : Workspace = N : 1
+    // TaskLabel : Workspace = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;

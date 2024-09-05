@@ -2,8 +2,10 @@ package minionz.backend.scrum.workspace.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import minionz.backend.scrum.task_label.model.TaskLabel;
 import minionz.backend.error_board.model.ErrorBoard;
-import minionz.backend.scrum.issue_label.model.IssueLabel;
+
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint_label.model.SprintLabel;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
@@ -36,9 +38,9 @@ public class Workspace {
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<SprintLabel> sprintLabels = new ArrayList<>();
 
-    // Workspace : IssueLabel = 1 : N
+    // Workspace : TaskLabel = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
-    private List<IssueLabel> issueLabels = new ArrayList<>();
+    private List<TaskLabel> taskLabels = new ArrayList<>();
 
     // Workspace : errorBoard = 1 : 1
     @OneToOne
