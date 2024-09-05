@@ -3,6 +3,8 @@ package minionz.backend.user.model;
 import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
+import minionz.backend.error_board.model.ErrorBoard;
+import minionz.backend.error_comment.model.ErrorComment;
 import minionz.backend.scrum.issue_participation.model.IssueParticipation;
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
@@ -50,4 +52,12 @@ public class User {
     // User : MeetingParticipation = 1 : N
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MeetingParticipation> meetingParticipations = new ArrayList<>();
+
+    // User : errorBoardList = 1 : N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ErrorBoard> errorBoardList = new ArrayList<>();
+
+    // User : errorCommentList = 1 : N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ErrorComment> errorCommentList = new ArrayList<>();
 }

@@ -8,6 +8,7 @@ public enum BaseResponseStatus {
     /**
      * 1000 : 공통 에러
      */
+    FILE_UPLOAD_FAIL(false, 1001, "파입 업로드에 실패했습니다."),
 
 
 
@@ -31,12 +32,13 @@ public enum BaseResponseStatus {
     WORKSPACE_CREATE_SUCCESS(false, 4001, "워크스페이스 생성을 성공했습니다."),
 
 
-    WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다.");
+    WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
 
 
     /**
      * 5000: 게시판
      */
+    ERRORBOARD_CREATE_SUCCESS(true,5001,"게시판 등록에 성공했습니다.");
 
 
 
