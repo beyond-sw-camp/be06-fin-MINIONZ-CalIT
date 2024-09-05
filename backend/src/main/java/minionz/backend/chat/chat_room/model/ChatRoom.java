@@ -1,8 +1,8 @@
-package minionz.backend.chat_room.model;
+package minionz.backend.chat.chat_room.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.chat_participation.model.ChatParticipation;
+import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.common.BaseEntity;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package minionz.backend.config;
+package minionz.backend.config.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

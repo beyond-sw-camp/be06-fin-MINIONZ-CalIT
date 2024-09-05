@@ -1,9 +1,9 @@
-package minionz.backend.chat_participation.model;
+package minionz.backend.chat.chat_participation.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.chat_room.model.ChatRoom;
-import minionz.backend.message.model.Message;
+import minionz.backend.chat.message.model.Message;
+import minionz.backend.chat.chat_room.model.ChatRoom;
 import minionz.backend.user.model.User;
 
 import java.util.ArrayList;

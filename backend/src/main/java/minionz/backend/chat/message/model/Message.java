@@ -1,8 +1,8 @@
-package minionz.backend.message.model;
+package minionz.backend.chat.message.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.chat_participation.model.ChatParticipation;
+import minionz.backend.chat.chat_participation.model.ChatParticipation;
 
 import java.time.LocalDateTime;
 

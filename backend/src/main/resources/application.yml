@@ -34,6 +34,13 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    consumer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    bootstrap-servers: ${KAFKA_SERVER}
+
 logging:
   level:
     org.hibernate.SQL: debug
