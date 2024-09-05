@@ -1,10 +1,10 @@
-package minionz.backend.scrum.issue.model;
+package minionz.backend.scrum.task.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.common.BaseEntity;
-import minionz.backend.scrum.issue_label_select.model.IssueLabelSelect;
-import minionz.backend.scrum.issue_participation.model.IssueParticipation;
+import minionz.backend.scrum.task_label_select.model.TaskLabelSelect;
+import minionz.backend.scrum.task_participation.model.TaskParticipation;
 import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.scrum.sprint.model.Sprint;
 
@@ -18,13 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Issue extends BaseEntity {
+public class Task extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long issueId;
+    private Long taskId;
 
-    public String issueTitle;
-    public String issueContents;
+    public String taskTitle;
+    public String taskContents;
     public LocalDateTime startDate;
     public LocalDateTime endDate;
     public LocalDateTime doneDate;
@@ -32,24 +32,24 @@ public class Issue extends BaseEntity {
     public int priority;
 
     @Enumerated(EnumType.STRING)
-    private IssueStatus status;
+    private TaskStatus status;
 
-    private String issueNumber;
+    private String taskNumber;
 
-    // Issue : IssueParticipation = 1 : N
-    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
-    private List<IssueParticipation> issueParticipations = new ArrayList<>();
+    // Task : TaskParticipation = 1 : N
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    private List<TaskParticipation> taskParticipations = new ArrayList<>();
 
-    // Issue : IssueLabelSelect = 1 : N
-    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
-    private List<IssueLabelSelect> issueLabelSelects = new ArrayList<>();
+    // Task : TaskParticipation = 1 : N
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    private List<TaskLabelSelect> taskLabelSelects = new ArrayList<>();
 
-    // Issue : Sprint = N : 1
+    // Task : Sprint = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
 
-    // Issue : Meeting = N : 1
+    // Task : Meeting = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;

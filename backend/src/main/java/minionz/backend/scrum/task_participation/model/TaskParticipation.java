@@ -1,8 +1,8 @@
-package minionz.backend.scrum.issue_participation.model;
+package minionz.backend.scrum.task_participation.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.scrum.issue.model.Issue;
+import minionz.backend.scrum.task.model.Task;
 import minionz.backend.user.model.User;
 
 @Getter
@@ -11,18 +11,18 @@ import minionz.backend.user.model.User;
 @AllArgsConstructor
 @Builder
 @Entity
-public class IssueParticipation {
+public class TaskParticipation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long issueParticipationId;
+    private Long taskParticipationId;
 
-    // IssueParticipation : User = N : 1
+    // TaskParticipation : User = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    // IssueParticipation : Issue = N : 1
+    // TaskParticipation : Task = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "issue_id")
-    private Issue issue;
+    @JoinColumn(name = "task_id")
+    private Task task;
 }
