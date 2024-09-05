@@ -37,20 +37,20 @@ public class Issue extends BaseEntity {
     private String issueNumber;
 
     // Issue : IssueParticipation = 1 : N
-    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
     private List<IssueParticipation> issueParticipations = new ArrayList<>();
 
     // Issue : IssueLabelSelect = 1 : N
-    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "issue", fetch = FetchType.LAZY)
     private List<IssueLabelSelect> issueLabelSelects = new ArrayList<>();
 
     // Issue : Sprint = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
 
     // Issue : Meeting = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 }

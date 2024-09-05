@@ -17,12 +17,12 @@ public class SprintLabelSelect {
     private Long sprintLabelSelectId;
 
     // SprintLabelSelect : SprintLabel = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_label_id")
     private SprintLabel sprintLabel;
 
     // SprintLabelSelect : Sprint = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
 }

@@ -17,14 +17,15 @@ public class WorkspaceParticipation {
     private Long workspaceParticipationId;
 
     private Boolean isManager;
+    private Boolean isValid;
 
     // WorkspaceParticipation : User = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     // WorkspaceParticipation : Workspace = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 }

@@ -17,12 +17,12 @@ public class IssueLabelSelect {
     private Long issueLabelSelectId;
 
     // IssueLabelSelect : IssueLabel = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issue_label_id")
     private IssueLabel issueLabel;
 
     // IssueLabelSelect : Issue = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issue_id")
     private Issue issue;
 }

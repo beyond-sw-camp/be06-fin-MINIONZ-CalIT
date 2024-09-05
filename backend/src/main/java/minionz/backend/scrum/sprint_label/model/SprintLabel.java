@@ -24,11 +24,11 @@ public class SprintLabel {
     private String color;
 
     // SprintLabel : SprintLabelSelect = 1 : N
-    @OneToMany(mappedBy = "sprintLabel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sprintLabel", fetch = FetchType.LAZY)
     private List<SprintLabelSelect> sprintLabelSelects = new ArrayList<>();
 
     // SprintLabel : Workspace = N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 }
