@@ -7,7 +7,7 @@ import { computed } from "vue";
 const route = useRoute();
 
 const showBasicLayout = computed(() => {
-  return !['/', '/user'].includes(route.path);
+  return !(route.path.startsWith('/user') || route.path === '/');
 });
 
 const showThumbnail = computed(() => {

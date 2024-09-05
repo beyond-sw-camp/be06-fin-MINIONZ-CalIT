@@ -1,4 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
+import UserTemplate from "@/view/user/UserTemplate.vue";
+import LoginPage from "@/view/user/pages/LoginPage.vue";
+import SignupPage from "@/view/user/pages/SignupPage.vue";
+import PasswordPage from "@/view/user/pages/PasswordPage.vue";
+import CompletePage from "@/view/user/pages/CompletePage.vue";
 
 const routes = [
     {
@@ -8,28 +13,49 @@ const routes = [
     },
     {
         path: '/user',
-        name: 'User',
-        component: () => import('@/view/user/UserTemplate.vue'),
+        name: 'UserTemplate',
+        component: UserTemplate,
         children: [
             {
                 path: 'login',
                 name: 'Login',
-                component: () => import('@/view/user/pages/LoginPage.vue')
+                component: LoginPage
             },
             {
                 path: 'signup',
                 name: 'Signup',
-                component: () => import('@/view/user/pages/SignupPage.vue')
+                component: SignupPage
             },
             {
                 path: 'password',
                 name: 'Password',
-                component: () => import('@/view/user/pages/PasswordPage.vue')
+                component: PasswordPage
+            },
+            {
+                path: 'password-reset',
+                name: 'PasswordReset',
+                component: () => import('@/view/user/pages/PasswordResetPage.vue')
             },
             {
                 path: 'complete',
                 name: 'Complete',
-                component: () => import('@/view/user/pages/CompletePage.vue')
+                component: CompletePage
+            }
+        ]
+    },
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        children: [
+            {
+                path: 'personal',
+                name: 'PersonalDashboard',
+                component: () => import('@/view/dashboard/PersonalDashBoard.vue')
+            },
+            {
+                path: 'workspace',
+                name: 'WorkspaceDashboard',
+                component: () => import('@/view/dashboard/WorkspaceDashBoard.vue')
             }
         ]
     },
