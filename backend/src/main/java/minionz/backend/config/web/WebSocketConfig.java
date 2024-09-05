@@ -1,4 +1,4 @@
-package minionz.backend.config;
+package minionz.backend.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
