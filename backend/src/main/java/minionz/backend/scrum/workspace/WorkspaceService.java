@@ -3,11 +3,14 @@ package minionz.backend.scrum.workspace;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.scrum.workspace.model.request.CreateWorkspaceRequest;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            import minionz.backend.scrum.workspace.model.response.ReadWorkspaceResponse;
 import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -28,5 +31,18 @@ public class WorkspaceService {
 //        TODO: request.getParticipants() 에 요청 보내야 함. -> 얘네가 수락하면 workspaceParticipation에 user 추가.
 
 
+    }
+
+    public List<ReadWorkspaceResponse> readAll(User user) {
+        List<Workspace> workspaces = workspaceRepository.findWorkspaceByUserId(user.getUserId());
+
+        List<ReadWorkspaceResponse> response = workspaces.stream().map(workspace ->
+                        ReadWorkspaceResponse.builder()
+                                .workspaceId(workspace.getWorkspaceId())
+                                .workspaceName(workspace.getWorkspaceName())
+                                .build())
+                .toList();
+
+        return response;
     }
 }
