@@ -5,11 +5,12 @@ import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.request.CreateLabelRequest;
+import minionz.backend.scrum.label.model.response.ReadLabelResponse;
 import minionz.backend.user.model.User;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,6 +31,20 @@ public class LabelController {
         return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_CREATE_SUCCESS);
     }
 
+    @GetMapping("/sprint")
+    public BaseResponse<List<ReadLabelResponse>> readSprintLabel(@RequestParam Long id) {
+        User user = User.builder().userId(1L).build();
+        List<ReadLabelResponse> response = new ArrayList<>();
+
+        try {
+            response = labelService.readSprintLabel(user,id);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
+    }
+
     @PostMapping("/task")
     public BaseResponse<BaseResponseStatus> createTaskLabel(@RequestBody CreateLabelRequest request) {
         User user = User.builder().userId(1L).build();
@@ -41,6 +56,20 @@ public class LabelController {
         }
 
         return new BaseResponse<>(BaseResponseStatus.TASK_LABEL_CREATE_SUCCESS);
+    }
+
+    @GetMapping("/task")
+    public BaseResponse<List<ReadLabelResponse>> readTaskLabel(@RequestParam Long id) {
+        User user = User.builder().userId(1L).build();
+        List<ReadLabelResponse> response = new ArrayList<>();
+
+        try {
+            response = labelService.readTaskLabel(user,id);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
     }
 
 }
