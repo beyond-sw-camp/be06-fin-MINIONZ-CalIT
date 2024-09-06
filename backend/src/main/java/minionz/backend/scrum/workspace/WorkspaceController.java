@@ -34,6 +34,6 @@ public class WorkspaceController {
 
         List<ReadWorkspaceResponse> readWorkspaceResponses = workspaceService.readAll(user);
 
-        return new BaseResponse<>(BaseResponseStatus.MY_WORKSPACE_READ_SUCCESS , readWorkspaceResponses);
+        return new BaseResponse<>(BaseResponseStatus.MY_WORKSPACE_READ_SUCCESS, readWorkspaceResponses);
     }
 }
