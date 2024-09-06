@@ -28,7 +28,7 @@ public class ErrorCommentImage {
     private LocalDateTime modifiedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="errorCommentId")
+    @JoinColumn(name="error_comment_id")
     private ErrorComment errorComment;
 
 }

@@ -27,7 +27,7 @@ public class ErrorBoardImage {
     private LocalDateTime modifiedAt;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name="errorBoardId")
+    @JoinColumn(name="error_board_id")
     private ErrorBoard errorBoard;
 
 
