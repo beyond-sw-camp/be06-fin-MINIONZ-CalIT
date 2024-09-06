@@ -2,7 +2,7 @@ package minionz.backend.scrum.label.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.scrum.sprint_label_select.model.SprintLabelSelect;
+import minionz.backend.scrum.label_select.model.SprintLabelSelect;
 import minionz.backend.scrum.workspace.model.Workspace;
 
 import java.util.ArrayList;
