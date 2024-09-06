@@ -15,4 +15,5 @@ public interface ErrorBoardRepository extends JpaRepository<ErrorBoard, Long> {
 
     // 전체 조회
    Page<ErrorBoard> findAll(Pageable pageable);
+
 }

@@ -42,6 +42,16 @@ public class ErrorBoardController {
         Page<GetErrorBoardResponse> response = errorBoardService.readAll(page, size);
         return ResponseEntity.ok(new BaseResponse(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response));
     }
+    //게시글 카테고리 별 조회
+    @GetMapping("/search-category")
+    public ResponseEntity<BaseResponse<List<GetErrorBoardResponse>>> searchCategory(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String category) throws BaseException {
+        Page<GetErrorBoardResponse> response = errorBoardService.searchKeyword(category, page, size);
+        return ResponseEntity.ok(new BaseResponse(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response));
+    }
+
 
 }
 
