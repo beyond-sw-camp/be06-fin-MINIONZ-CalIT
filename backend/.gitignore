@@ -1,10 +1,11 @@
 HELP.md
+.idea/**
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+*.xml
 ### STS ###
 .apt_generated
 .classpath
