@@ -1,6 +1,9 @@
 <script setup>
 
 import PersonalMenu from "@/layouts/component/PersonalMenu.vue";
+import WorkSpaceMenu from "@/layouts/component/WorkSpaceMenu.vue";
+
+// if
 </script>
 
 <template>
@@ -12,6 +15,7 @@ import PersonalMenu from "@/layouts/component/PersonalMenu.vue";
       </div>
     </div>
     <PersonalMenu></PersonalMenu>
+    <WorkSpaceMenu></WorkSpaceMenu>
   </div>
 </template>
 
