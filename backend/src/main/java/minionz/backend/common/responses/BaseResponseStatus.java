@@ -32,6 +32,8 @@ public enum BaseResponseStatus {
     WORKSPACE_CREATE_SUCCESS(true, 4001, "워크스페이스 생성을 성공했습니다."),
     SPRINT_LABEL_CREATE_SUCCESS(true, 4002, "스프린트 라벨 생성을 성공했습니다."),
     TASK_LABEL_CREATE_SUCCESS(true, 4003, "태스크 라벨 생성을 성공했습니다."),
+    SPRINT_LABEL_READ_SUCCESS(true, 4004, "스프린트 라벨 조회를 성공했습니다."),
+    TASK_LABEL_READ_SUCCESS(true, 4005, "태스크 라벨 조회를 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),

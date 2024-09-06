@@ -1,9 +1,9 @@
-package minionz.backend.scrum.task_label_select.model;
+package minionz.backend.scrum.label_select.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.label.model.TaskLabel;
+import minionz.backend.scrum.task.model.Task;
 
 @Getter
 @Setter

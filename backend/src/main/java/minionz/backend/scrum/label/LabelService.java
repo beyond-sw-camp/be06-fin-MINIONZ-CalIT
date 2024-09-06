@@ -7,11 +7,14 @@ import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.SprintLabel;
 import minionz.backend.scrum.label.model.TaskLabel;
 import minionz.backend.scrum.label.model.request.CreateLabelRequest;
+import minionz.backend.scrum.label.model.response.ReadLabelResponse;
 import minionz.backend.scrum.workspace.WorkspaceRepository;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
 import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -22,14 +25,15 @@ public class LabelService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceParticipationRepository workspaceParticipationRepository;
 
-    public void createSprintLabel(User user,CreateLabelRequest request) throws BaseException {
+    public void createSprintLabel(User user, CreateLabelRequest request) throws BaseException {
         workspaceRepository.findById(request.getWorkspaceId()).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.WORKSPACE_NOT_EXISTS)
         );
 
-      if( workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(request.getWorkspaceId(), user.getUserId()) == null){
-          throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
-      };
+        if (workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(request.getWorkspaceId(), user.getUserId()) == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
+        }
+        ;
 
         if (sprintLabelRepository.findByLabelName(request.getLabelName()) != null) {
             throw new BaseException(BaseResponseStatus.LABEL_ALREADY_EXISTS);
@@ -38,21 +42,60 @@ public class LabelService {
         sprintLabelRepository.save(SprintLabel.builder().workspace(Workspace.builder().workspaceId(request.getWorkspaceId()).build()).labelName(request.getLabelName()).description(request.getDescription()).color(request.getColor()).build());
     }
 
+    public List<ReadLabelResponse> readSprintLabel(User user, Long id) throws BaseException {
+        if (workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(id, user.getUserId()) == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
+        }
+
+        List<SprintLabel> labels = sprintLabelRepository.findByWorkspaceWorkspaceId(id);
+
+        List<ReadLabelResponse> response = labels.stream().map(
+                label -> ReadLabelResponse
+                        .builder()
+                        .labelId(label.getSprintLabelId())
+                        .labelName(label.getLabelName())
+                        .description(label.getDescription())
+                        .color(label.getColor())
+                        .build()).toList();
+
+        return response;
+    }
+
     public void createTaskLabel(User user, CreateLabelRequest request) throws BaseException {
         workspaceRepository.findById(request.getWorkspaceId()).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.WORKSPACE_NOT_EXISTS)
         );
 
-        if( workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(request.getWorkspaceId(), user.getUserId()) == null){
+        if (workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(request.getWorkspaceId(), user.getUserId()) == null) {
             throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
-        };
+        }
+        ;
 
         if (taskLabelRepository.findByLabelName(request.getLabelName()) != null) {
             throw new BaseException(BaseResponseStatus.LABEL_ALREADY_EXISTS);
         }
 
-
-
         taskLabelRepository.save(TaskLabel.builder().workspace(Workspace.builder().workspaceId(request.getWorkspaceId()).build()).labelName(request.getLabelName()).description(request.getDescription()).color(request.getColor()).build());
     }
+
+    public List<ReadLabelResponse> readTaskLabel(User user, Long id) throws BaseException {
+        if (workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(id, user.getUserId()) == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
+        }
+
+        List<TaskLabel> labels = taskLabelRepository.findByWorkspaceWorkspaceId(id);
+
+        List<ReadLabelResponse> response = labels.stream().map(
+                label -> ReadLabelResponse
+                        .builder()
+                        .labelId(label.getTaskLabelId())
+                        .labelName(label.getLabelName())
+                        .description(label.getDescription())
+                        .color(label.getColor())
+                        .build()).toList();
+
+        return response;
+    }
+
+
 }
