@@ -29,11 +29,11 @@ public class ErrorComment {
     private LocalDateTime updatedAt;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "errorBoardId")
+    @JoinColumn(name = "errorBoard_id")
     private ErrorBoard errorBoard;
 
 }

@@ -4,4 +4,5 @@ import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipatio
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkspaceParticipationRepository extends JpaRepository<WorkspaceParticipation,Long> {
+    WorkspaceParticipation findByWorkspaceWorkspaceIdAndUserUserId (Long workspaceId, Long userId);
 }

@@ -3,11 +3,10 @@ package minionz.backend.scrum.workspace.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import minionz.backend.scrum.task_label.model.TaskLabel;
-import minionz.backend.error_board.model.ErrorBoard;
+import minionz.backend.scrum.label.model.TaskLabel;
 
 import minionz.backend.scrum.sprint.model.Sprint;
-import minionz.backend.scrum.sprint_label.model.SprintLabel;
+import minionz.backend.scrum.label.model.SprintLabel;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 
 import java.util.ArrayList;
@@ -42,8 +41,4 @@ public class Workspace {
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<TaskLabel> taskLabels = new ArrayList<>();
 
-    // Workspace : errorBoard = 1 : 1
-    @OneToOne
-    @JoinColumn(name = "workspace")
-    private ErrorBoard errorBoard;
 }
