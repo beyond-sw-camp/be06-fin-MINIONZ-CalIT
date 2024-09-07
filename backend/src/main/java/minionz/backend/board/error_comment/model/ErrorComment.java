@@ -1,8 +1,8 @@
-package minionz.backend.error_comment.model;
+package minionz.backend.board.error_comment.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.error_board.model.ErrorBoard;
+import minionz.backend.board.error_board.model.ErrorBoard;
 import minionz.backend.user.model.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -21,7 +21,6 @@ public class ErrorComment {
     private Long errorCommentId;
 
     private String errCommentContent;
-    private String errComment;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -33,7 +32,7 @@ public class ErrorComment {
     private User user;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "errorBoard_id")
+    @JoinColumn(name = "error_board_id")
     private ErrorBoard errorBoard;
 
 }

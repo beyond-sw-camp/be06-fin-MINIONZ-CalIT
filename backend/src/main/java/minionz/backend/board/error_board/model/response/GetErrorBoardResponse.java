@@ -1,4 +1,4 @@
-package minionz.backend.error_board.model.response;
+package minionz.backend.board.error_board.model.response;
 
 import lombok.*;
 
@@ -10,8 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateErrorBoardResponse {
-
+public class GetErrorBoardResponse {
     private Long errorBoardId;
     private String errboardTitle;
     private String errboardContent;
@@ -19,5 +18,4 @@ public class CreateErrorBoardResponse {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<GetErrorBoardImageResponse> getErrorBoardImageResponsesList;
-
 }
