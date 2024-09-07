@@ -1,4 +1,5 @@
-package minionz.backend.error_board.model;
+package minionz.backend.board.error_comment.model;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,10 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class ErrorBoardImage {
+public class ErrorCommentImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long errorBoardImageId;
+    private Long ErrorCommentImageId;
     private String imageUrl;
 
     @CreatedDate
@@ -26,9 +27,8 @@ public class ErrorBoardImage {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name="errorBoardId")
-    private ErrorBoard errorBoard;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="error_comment_id")
+    private ErrorComment errorComment;
 
 }

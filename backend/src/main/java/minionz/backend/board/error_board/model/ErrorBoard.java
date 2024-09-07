@@ -1,8 +1,8 @@
-package minionz.backend.error_board.model;
+package minionz.backend.board.error_board.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.error_comment.model.ErrorComment;
+import minionz.backend.board.error_comment.model.ErrorComment;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.user.model.User;

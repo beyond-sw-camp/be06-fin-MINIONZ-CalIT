@@ -1,6 +1,6 @@
-package minionz.backend.error_board;
+package minionz.backend.board.error_board;
 
-import minionz.backend.error_board.model.ErrorBoardImage;
+import minionz.backend.board.error_board.model.ErrorBoardImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

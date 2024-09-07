@@ -1,4 +1,4 @@
-package minionz.backend.error_board.model.request;
+package minionz.backend.board.error_board.model.request;
 
 import lombok.*;
 

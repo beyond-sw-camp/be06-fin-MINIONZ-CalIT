@@ -1,4 +1,4 @@
-package minionz.backend.error_board.model;
+package minionz.backend.board.error_board.model;
 
 public enum ErrorBoardCategory {
     JAVA,
