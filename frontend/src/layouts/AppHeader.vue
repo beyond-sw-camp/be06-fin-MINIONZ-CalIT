@@ -19,14 +19,14 @@ const closeModal = () => {
 
 <template>
   <div class="header">
-    <div>
+    <div class="user-name">
       <p class="outfit">Seung Eun</p>
     </div>
     <div class="right-side">
       <div class="notice-bundle">
-        <div class="message">
+        <router-link to="/workspace/chat" class="message">
           <img :src="message" alt="message">
-        </div>
+        </router-link>
         <div class="alarm">
           <img :src="alarm" alt="alarm">
         </div>
@@ -58,6 +58,13 @@ const closeModal = () => {
   width: calc(100% - 16.25rem);
   z-index: 100;
 }
+
+.user-name{
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
 .right-side {
   display: flex;
   gap: 10px;

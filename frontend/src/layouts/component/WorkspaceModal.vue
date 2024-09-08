@@ -34,13 +34,13 @@ const handleLinkClick = (path) => {
           <p>My Space</p>
         </router-link>
       </li>
-      <li @click="handleLinkClick('/dashboard/dashboard')">
+      <li @click="handleLinkClick('/workspace/dashboard')">
         <router-link to="/workspace/dashboard">
           <img :src="user2" alt="workspace1">
           <p>MINIONZ</p>
         </router-link>
       </li>
-      <li @click="handleLinkClick('/dashboard/dashboard')">
+      <li @click="handleLinkClick('/workspace/dashboard')">
         <router-link to="/workspace/dashboard">
           <img :src="user3" alt="workspace2">
           <p>SIMKIDS</p>
@@ -48,7 +48,7 @@ const handleLinkClick = (path) => {
       </li>
     </ul>
     <hr>
-    <div @click="handleLinkClick('/dashboard/scrum/dashboard')">
+    <div @click="handleLinkClick('/workspace/scrum/dashboard')">
       <router-link to="/workspace/scrum/workspace">
         <img :src="plus" class="plus" alt="plus-btn">
         <p>Add Workspace</p>

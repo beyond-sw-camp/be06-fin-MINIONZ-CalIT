@@ -87,10 +87,11 @@ const meetingBackgroundColors = computed(() => {
   padding: 15px;
   margin-bottom: 15px;
   width: 236px;
-  height: 148px;
+  //height: 148px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 20px;
 }
 
 h4 {

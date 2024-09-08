@@ -14,7 +14,6 @@ provide('contentsDescription', contentsDescription);
       <h1>{{ contentsTitle }}</h1>
       <p>{{ contentsDescription }}</p>
     </div>
-
     <router-view />
   </div>
 </template>

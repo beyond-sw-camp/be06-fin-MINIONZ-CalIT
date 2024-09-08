@@ -94,19 +94,19 @@ const routes = [
 
     // dashboard
     {
-        path: '/dashboard',
+        path: '/workspace',
         name: 'Workspace',
         component: () => import('@/layouts/ContentsArea.vue'),
         children: [
             // dashboard
             {
-                path: '/dashboard',
+                path: 'dashboard',
                 name: 'WorkspaceDashboard',
                 component: () => import('@/view/dashboard/WorkspaceDashBoard.vue')
             },
             // schedule
             {
-                path: '/schedule',
+                path: 'schedule',
                 name: 'WorkspaceSchedule',
                 children: [
                     {
@@ -154,7 +154,7 @@ const routes = [
                         ]
                     },
                     {
-                        path: '/task',
+                        path: 'task',
                         name: 'WorkspaceScrumTask',
                         children: [
                             {
@@ -201,7 +201,7 @@ const routes = [
                         ]
                     },
                     {
-                        path: '/board',
+                        path: 'board',
                         name: 'Board',
                         children: [
                             {
@@ -247,13 +247,13 @@ const routes = [
                                 ]
                             }
                         ]
-                    },
-                    {
-                        path: '/chat',
-                        name: 'Chat',
-                        component: () => import('@/view/chat/ChatRoom.vue')
                     }
                 ]
+            },
+            {
+                path: 'chat',
+                name: 'Chat',
+                component: () => import('@/view/chat/ChatRoom.vue')
             }
         ]
     },
