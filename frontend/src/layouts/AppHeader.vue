@@ -56,6 +56,7 @@ const closeModal = () => {
   position: fixed;
   top: 0;
   width: calc(100% - 16.25rem);
+  z-index: 100;
 }
 .right-side {
   display: flex;

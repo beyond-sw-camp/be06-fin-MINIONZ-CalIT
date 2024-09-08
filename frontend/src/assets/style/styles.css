@@ -61,3 +61,7 @@ body{
     font-weight: 700;
     font-style: italic;
 }
+
+h1, h2, h3, h4, h5, h6, p, a, span, div, li, ul, ol, input, textarea, button, label, select, option, table, th, td, tr, form, img, section, article, header, footer, nav, aside, main, figure, figcaption, blockquote, cite, pre, code, small, strong, em, i, b, u, s, strike, hr, dl, dt, dd, address, time, sub, sup, samp, kbd, var, abbr, q, ins, del, dfn, caption, summary, details, fieldset, legend, mark, meter, progress, output, video, audio, canvas, embed, object, param, source, track, iframe, picture, svg, area, map, time, button, input, select, textarea, optgroup, fieldset, legend, datalist, keygen, output, progress, meter, details, summary, menu, dialog, summary, template, slot{
+    margin: 0;
+}
