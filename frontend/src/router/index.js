@@ -11,6 +11,8 @@ const routes = [
         name: 'Thumbnail',
         component: () => import('@/view/thumbnail/ThumbnailPage.vue')
     },
+
+    // user
     {
         path: '/user',
         name: 'UserTemplate',
@@ -43,170 +45,216 @@ const routes = [
             }
         ]
     },
+
+    // my
     {
-        path: '/dashboard',
-        name: 'Dashboard',
+        path: '/my',
+        name: 'My',
         children: [
             {
-                path: 'personal',
-                name: 'PersonalDashboard',
-                component: () => import('@/view/dashboard/PersonalDashBoard.vue')
+                path: '/dashboard',
+                name: 'MyDashboard',
+                component: () => import('@/view/dashboard/MyDashBoard.vue')
             },
             {
-                path: 'workspace',
+                path: '/schedule',
+                name: 'MySchedule',
+                children: [
+                    {
+                        path: 'monthly',
+                        name: 'MyMonthly',
+                        component: () => import('@/view/schedule/monthly/MyMonthly.vue')
+                    },
+                    {
+                        path: 'weekly',
+                        name: 'myWeekly',
+                        component: () => import('@/view/schedule/weekly/MyWeekly.vue')
+                    }
+                ]
+            },
+            {
+                path: '/task',
+                name: 'MyTask',
+                children: [
+                    {
+                        path: 'kanban',
+                        name: 'MyTaskKanban',
+                        component: () => import('@/view/scrum/Task/kanban/MyTaskKanban.vue')
+                    },
+                    {
+                        path: 'list',
+                        name: 'MyTaskList',
+                        component: () => import('@/view/scrum/Task/list/MyTaskList.vue')
+                    },
+                ]
+            }
+        ]
+    },
+
+    // workspace
+    {
+        path: '/workspace',
+        name: 'Workspace',
+        children: [
+            // dashboard
+            {
+                path: '/dashboard',
                 name: 'WorkspaceDashboard',
                 component: () => import('@/view/dashboard/WorkspaceDashBoard.vue')
-            }
-        ]
-    },
-    {
-        path: '/schedule',
-        name: 'WorkspaceSchedule',
-        children: [
-            {
-                path: 'workspace-monthly',
-                name: 'WorkspaceMonthly',
-                component: () => import('@/view/schedule/monthly/WorkSpaceMonthly.vue')
             },
+            // schedule
             {
-                path: 'workspace-weekly',
-                name: 'WorkspaceWeekly',
-                component: () => import('@/view/schedule/weekly/WorkSpaceWeekly.vue')
-            }
-        ]
-    },
-    {
-        path: '/backlog',
-        name: 'WorkspaceBacklog',
-        children: [
-            {
-                path: 'kanban',
-                name: 'WorkspaceBacklogKanban',
-                component: () => import('@/view/backlog/kanban/WorkSpaceKanban.vue')
+                path: '/schedule',
+                name: 'WorkspaceSchedule',
+                children: [
+                    {
+                        path: 'monthly',
+                        name: 'WorkspaceMonthly',
+                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthly.vue')
+                    },
+                    {
+                        path: 'weekly',
+                        name: 'WorkspaceWeekly',
+                        component: () => import('@/view/schedule/weekly/WorkSpaceWeekly.vue')
+                    }
+                ]
             },
+
+            // scrum
             {
-                path: 'list',
-                name: 'WorkspaceBacklogList',
-                component: () => import('@/view/backlog/list/WorkSpaceList.vue')
-            },
-            {
-                path: 'timeline',
-                name: 'WorkspaceBacklogTimeline',
-                component: () => import('@/view/backlog/timeline/TimeLine.vue')
-            }
-        ]
-    },
-    {
-        path: '/scrum',
-        name: 'WorkspaceScrum',
-        children: [
-            {
-                path: 'create',
-                name: 'WorkspaceScrumCreate',
+                path: 'scrum',
+                name: 'WorkspaceScrum',
                 children: [
                     {
                         path: 'workspace',
-                        name: 'WorkspaceScrumCreateWorkspace',
+                        name: 'WorkspaceScrumWorkspaceCreate',
                         component: () => import('@/view/scrum/create/WorkSpaceCreate.vue')
                     },
                     {
-                        path: 'sprint',
-                        name: 'WorkspaceScrumCreateSprint',
-                        component: () => import('@/view/scrum/create/SprintCreate.vue')
-                    },
-                    {
-                        path: 'issue',
-                        name: 'WorkspaceScrumCreateIssue',
-                        component: () => import('@/view/scrum/create/IssueCreate.vue')
-                    },
-                    {
                         path: 'label',
-                        name: 'WorkspaceScrumCreateLabel',
+                        name: 'WorkspaceScrumLabel',
                         component: () => import('@/view/scrum/list/LabelList.vue')
-                    }
-                ]
-            },
-            {
-                path: 'sprint',
-                name: 'WorkspaceScrumSprintList',
-                component: () => import('@/view/scrum/list/SprintList.vue')
-            },
-            {
-                path: 'meeting',
-                name: 'BoardMeeting',
-                children: [
-                    {
-                        path: 'list',
-                        name: 'BoardMeetingList',
-                        component: () => import('@/view/scrum/meeting/MeetingList.vue')
                     },
                     {
-                        path: 'detail',
-                        name: 'BoardMeetingDetail',
-                        component: () => import('@/view/scrum/meeting/MeetingDetail.vue')
+                        path: 'sprint',
+                        name: 'WorkspaceScrumSprint',
+                        children: [
+                            {
+                                path: 'list',
+                                name: 'WorkspaceScrumSprintList',
+                                component: () => import('@/view/scrum/list/SprintList.vue')
+                            },
+                            {
+                                path: 'create',
+                                name: 'WorkspaceScrumSprintCreate',
+                                component: () => import('@/view/scrum/create/SprintCreate.vue')
+                            }
+                        ]
                     },
                     {
-                        path: 'create',
-                        name: 'BoardMeetingCreate',
-                        component: () => import('@/view/scrum/meeting/MeetingEdit.vue')
+                        path: '/task',
+                        name: 'WorkspaceScrumTask',
+                        children: [
+                            {
+                                path: 'kanban',
+                                name: 'WorkspaceTaskKanban',
+                                component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanban.vue')
+                            },
+                            {
+                                path: 'list',
+                                name: 'WorkspaceTaskList',
+                                component: () => import('@/view/scrum/Task/list/WorkSpaceTaskList.vue')
+                            },
+                            {
+                                path: 'timeline',
+                                name: 'WorkspaceTaskTimeline',
+                                component: () => import('@/view/scrum/Task/timeline/TimeLine.vue')
+                            },
+                            {
+                                path: 'create',
+                                name: 'WorkspaceScrumCreateIssue',
+                                component: () => import('@/view/scrum/create/TaskCreate.vue')
+                            },
+                        ]
+                    },
+                    {
+                        path: 'meeting',
+                        name: 'BoardMeeting',
+                        children: [
+                            {
+                                path: 'list',
+                                name: 'BoardMeetingList',
+                                component: () => import('@/view/scrum/meeting/MeetingList.vue')
+                            },
+                            {
+                                path: 'detail',
+                                name: 'BoardMeetingDetail',
+                                component: () => import('@/view/scrum/meeting/MeetingDetail.vue')
+                            },
+                            {
+                                path: 'create',
+                                name: 'BoardMeetingCreate',
+                                component: () => import('@/view/scrum/meeting/MeetingEdit.vue')
+                            }
+                        ]
+                    },
+                    {
+                        path: '/board',
+                        name: 'Board',
+                        children: [
+                            {
+                                path: 'error',
+                                name: 'Error',
+                                children: [
+                                    {
+                                        path: 'list',
+                                        name: 'ErrorList',
+                                        component: () => import('@/view/board/list/ErrorList.vue')
+                                    },
+                                    {
+                                        path: 'detail',
+                                        name: 'ErrorDetail',
+                                        component: () => import('@/view/board/detail/ErrorDetail.vue')
+                                    },
+                                    {
+                                        path: 'create',
+                                        name: 'ErrorCreate',
+                                        component: () => import('@/view/board/create/ErrorCreate.vue')
+                                    }
+                                ]
+                            },
+                            {
+                                path: 'qa',
+                                name: 'QA',
+                                children: [
+                                    {
+                                        path: 'list',
+                                        name: 'QAList',
+                                        component: () => import('@/view/board/list/QAList.vue')
+                                    },
+                                    {
+                                        path: 'detail',
+                                        name: 'QADetail',
+                                        component: () => import('@/view/board/detail/QADetail.vue')
+                                    },
+                                    {
+                                        path: 'create',
+                                        name: 'QACreate',
+                                        component: () => import('@/view/board/create/QACreate.vue')
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        path: '/chat',
+                        name: 'Chat',
+                        component: () => import('@/view/chat/ChatRoom.vue')
                     }
                 ]
             }
         ]
     },
-    {
-        path: '/board',
-        name: 'Board',
-        children: [
-            {
-                path: 'error',
-                name: 'Error',
-                children: [
-                    {
-                        path: 'list',
-                        name: 'ErrorList',
-                        component: () => import('@/view/board/list/ErrorList.vue')
-                    },
-                    {
-                        path: 'detail',
-                        name: 'ErrorDetail',
-                        component: () => import('@/view/board/detail/ErrorDetail.vue')
-                    },
-                    {
-                        path: 'create',
-                        name: 'ErrorCreate',
-                        component: () => import('@/view/board/create/ErrorCreate.vue')
-                    }
-                ]
-            },
-            {
-                path: 'qa',
-                name: 'QA',
-                children: [
-                    {
-                        path: 'list',
-                        name: 'QAList',
-                        component: () => import('@/view/board/list/QAList.vue')
-                    },
-                    {
-                        path: 'detail',
-                        name: 'QADetail',
-                        component: () => import('@/view/board/detail/QADetail.vue')
-                    },
-                    {
-                        path: 'create',
-                        name: 'QACreate',
-                        component: () => import('@/view/board/create/QACreate.vue')
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        path: '/chat',
-        name: 'Chat',
-        component: () => import('@/view/chat/ChatRoom.vue')
-    }
 ];
 
 const router = createRouter({

@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <h1>PersonalMonthly</h1>
-  </div>
+<h1>
+    Thumbnail
+</h1>
 </template>
 
 <style scoped>

@@ -24,7 +24,7 @@ const login = () => {
     <form @submit.prevent="login">
       <UserInput input-placeholder="아이디를 입력하세요" label="아이디" type="email"/>
       <UserInput input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
-      <router-link to="/dashboard">
+      <router-link to="/my/dashboard">
         <UserButton type="submit" button-ment="Login"></UserButton>
       </router-link>
     </form>
