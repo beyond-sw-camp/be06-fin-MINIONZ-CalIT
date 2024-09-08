@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  workspace dashboard
+  <div>
+    <h1>Sprint Create</h1>
+  </div>
 </template>
 
 <style scoped>

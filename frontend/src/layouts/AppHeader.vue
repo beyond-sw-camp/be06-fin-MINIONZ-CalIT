@@ -48,11 +48,14 @@ const closeModal = () => {
 .header {
   background-color: #fff;
   height: 60px;
-  width: 100%;
   padding: 0 20px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
+  box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.15);
+  position: fixed;
+  top: 0;
+  width: calc(100% - 16.25rem);
 }
 .right-side {
   display: flex;

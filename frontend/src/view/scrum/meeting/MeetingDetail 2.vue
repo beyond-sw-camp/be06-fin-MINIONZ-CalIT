@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  personal-dash-board
+<div>
+  <h1>MeetingDetail</h1>
+</div>
 </template>
 
 <style scoped>

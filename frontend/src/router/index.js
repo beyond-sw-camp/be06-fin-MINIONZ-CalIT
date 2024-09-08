@@ -50,14 +50,15 @@ const routes = [
     {
         path: '/my',
         name: 'My',
+        component: () => import('@/layouts/ContentsArea.vue'),
         children: [
             {
-                path: '/dashboard',
+                path: 'dashboard',
                 name: 'MyDashboard',
                 component: () => import('@/view/dashboard/MyDashBoard.vue')
             },
             {
-                path: '/schedule',
+                path: 'schedule',
                 name: 'MySchedule',
                 children: [
                     {
@@ -91,10 +92,11 @@ const routes = [
         ]
     },
 
-    // workspace
+    // dashboard
     {
-        path: '/workspace',
+        path: '/dashboard',
         name: 'Workspace',
+        component: () => import('@/layouts/ContentsArea.vue'),
         children: [
             // dashboard
             {
@@ -126,7 +128,7 @@ const routes = [
                 name: 'WorkspaceScrum',
                 children: [
                     {
-                        path: 'workspace',
+                        path: 'dashboard',
                         name: 'WorkspaceScrumWorkspaceCreate',
                         component: () => import('@/view/scrum/create/WorkSpaceCreate.vue')
                     },

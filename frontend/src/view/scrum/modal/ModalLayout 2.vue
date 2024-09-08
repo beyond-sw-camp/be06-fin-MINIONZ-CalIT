@@ -4,8 +4,7 @@
 
 <template>
   <div>
-    <h2>Workspace Dashboard</h2>
-    <p>This is the workspace dashboard view.</p>
+    <h1>Modal Layout</h1>
   </div>
 </template>
 

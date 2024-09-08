@@ -10,7 +10,7 @@ import {useRoute} from "vue-router";
 const route = useRoute();
 
 const showPersonalMenu = computed(() => {
-  return !(route.path.includes('/workspace'));
+  return !(route.path.includes('/dashboard'));
 });
 </script>
 
@@ -50,8 +50,10 @@ const showPersonalMenu = computed(() => {
     gap: 0.625rem;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh;
     box-sizing: border-box;
+    position: fixed;
+    z-index: 100;
   }
   .logo_area{
     display: flex;

@@ -1,4 +1,5 @@
 <script setup>
+import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
 import user3 from '@/assets/icon/persona/user3.svg';
 import plus from '@/assets/icon/menu/plus.svg';
@@ -27,13 +28,19 @@ const handleLinkClick = (path) => {
     </div>
     <hr>
     <ul>
-      <li @click="handleLinkClick('/workspace/dashboard')">
+      <li @click="handleLinkClick('/my/dashboard')">
+        <router-link to="/workspace/dashboard">
+          <img :src="user1" alt="user">
+          <p>My Space</p>
+        </router-link>
+      </li>
+      <li @click="handleLinkClick('/dashboard/dashboard')">
         <router-link to="/workspace/dashboard">
           <img :src="user2" alt="workspace1">
           <p>MINIONZ</p>
         </router-link>
       </li>
-      <li @click="handleLinkClick('/workspace/dashboard')">
+      <li @click="handleLinkClick('/dashboard/dashboard')">
         <router-link to="/workspace/dashboard">
           <img :src="user3" alt="workspace2">
           <p>SIMKIDS</p>
@@ -41,8 +48,8 @@ const handleLinkClick = (path) => {
       </li>
     </ul>
     <hr>
-    <div @click="handleLinkClick('/scrum/workspace')">
-      <router-link to="/scrum/workspace">
+    <div @click="handleLinkClick('/dashboard/scrum/dashboard')">
+      <router-link to="/workspace/scrum/workspace">
         <img :src="plus" class="plus" alt="plus-btn">
         <p>Add Workspace</p>
       </router-link>

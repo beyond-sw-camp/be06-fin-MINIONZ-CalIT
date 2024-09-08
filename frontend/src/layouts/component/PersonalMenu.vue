@@ -32,9 +32,6 @@ import task from '@/assets/icon/menu/task.svg';
 </template>
 
 <style scoped>
-img{
-  box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.15);
-}
 ul{
   list-style: none;
   padding: 0;
@@ -50,8 +47,20 @@ ul{
     align-items: center;
     &:hover {
       background-color: #C6D2FD;
+      color: white;
       border-radius: 10px;
+      p{
+        font-weight: 500;
+      }
     }
   }
+}
+p{
+  margin: 0;
+  font-size: 1rem;
+}
+hr{
+  border: 1px solid #dfe5f1;
+  width: 100%;
 }
 </style>
