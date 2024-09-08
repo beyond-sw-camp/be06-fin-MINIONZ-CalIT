@@ -12,6 +12,7 @@
     "axios": "^1.7.7",
     "core-js": "^3.8.3",
     "dayjs": "^1.11.13",
+    "echarts": "^5.5.1",
     "pinia": "^2.2.2",
     "pinia-plugin-persistedstate": "^3.2.3",
     "quill": "^2.0.2",
