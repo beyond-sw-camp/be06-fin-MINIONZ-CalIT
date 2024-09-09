@@ -3,10 +3,8 @@ package minionz.backend.scrum.task;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
-import minionz.backend.scrum.label.model.SprintLabel;
 import minionz.backend.scrum.label.model.TaskLabel;
 import minionz.backend.scrum.label_select.TaskLabelSelectRepository;
-import minionz.backend.scrum.label_select.model.SprintLabelSelect;
 import minionz.backend.scrum.label_select.model.TaskLabelSelect;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint.model.response.Label;
@@ -16,10 +14,10 @@ import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.task.model.TaskStatus;
 import minionz.backend.scrum.task.model.request.CreateTaskRequest;
+import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
 import minionz.backend.scrum.task_participation.TaskParticipationRepository;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
-import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
 import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +73,7 @@ public class TaskService {
     }
 
     public String makeTaskNumber(Long sprintId) {
-        int num = taskRepository.findTaskCount(sprintId);
+        int num = taskRepository.findTaskCount(sprintId) + 1;
         return String.format("%03d", num);
     }
 
@@ -107,6 +105,35 @@ public class TaskService {
     }
 
 
+    public List<Participant> findParticipants(Task task) {
+        return task.getTaskParticipations().stream().map(
+                participant -> Participant.builder()
+                        .id(participant.getUser().getUserId())
+                        .userName(participant.getUser().getUserName())
+                        .isManager(true)
+                        .build()
+        ).toList();
+    }
+
+    public List<ReadAllTaskResponse> readAllTask(Long sprintId) {
+        List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
+
+        List<ReadAllTaskResponse> response = result.stream().map(
+                task -> ReadAllTaskResponse
+                        .builder()
+                        .id(task.getTaskId())
+                        .status(task.getStatus())
+                        .title(task.getTaskTitle())
+                        .labels(findLabels(task))
+                        .startDate(task.getStartDate())
+                        .endDate(task.getEndDate())
+                        .taskNumber(task.getTaskNumber())
+                        .build()
+        ).toList();
+
+        return response;
+    }
+
     public List<Label> findLabels(Task task) {
         return task.getTaskLabelSelects().stream().map(
                 label -> Label
@@ -114,16 +141,6 @@ public class TaskService {
                         .id(label.getTaskLabel().getTaskLabelId())
                         .labelName(label.getTaskLabel().getLabelName())
                         .color(label.getTaskLabel().getColor())
-                        .build()
-        ).toList();
-    }
-
-    public List<Participant> findParticipants(Task task) {
-        return task.getTaskParticipations().stream().map(
-                participant -> Participant.builder()
-                        .id(participant.getUser().getUserId())
-                        .userName(participant.getUser().getUserName())
-                        .isManager(true)
                         .build()
         ).toList();
     }
