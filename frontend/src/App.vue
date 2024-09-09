@@ -38,5 +38,7 @@ const showThumbnail = computed(() => {
   align-items: center;
   //height: 100vh;
   background-color: #f0f0f0;
+  height: 100vh;
+  width: 100vw;
 }
 </style>

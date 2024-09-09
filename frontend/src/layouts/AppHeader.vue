@@ -52,14 +52,14 @@ const closeModal = () => {
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   position: fixed;
   top: 0;
   width: calc(100% - 16.25rem);
   z-index: 100;
 }
 
-.user-name{
+.user-name {
   display: flex;
   align-content: center;
   flex-wrap: wrap;
@@ -70,30 +70,60 @@ const closeModal = () => {
   gap: 10px;
   align-items: center;
 }
+
 img {
   width: 30px;
   height: 30px;
 }
+
 .notice-bundle {
   display: flex;
   gap: 5px;
+  position: relative;
 }
+
 .workspace-persona {
   width: 40px;
   height: 40px;
 }
+
 .workspace-bundle {
   display: flex;
   align-items: center;
   cursor: pointer;
-  .arrow {
-    width: 30px;
-    height: 30px;
-  }
+}
+
+.arrow {
+  width: 30px;
+  height: 30px;
 }
 
 .arrow-rotated {
   transform: rotate(180deg);
   transition: transform 0.3s ease;
+}
+
+.message::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  background-color: #FF6B6B;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.alarm::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: #FF6B6B;
+  border-radius: 50%;
+  border: 2px solid white;
 }
 </style>
