@@ -21,17 +21,17 @@ public class ChatParticipation {
     private Long chatParticipationId;
 
     // Message 1 : N
-    @OneToMany(mappedBy = "chatParticipation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "chatParticipation", fetch = FetchType.LAZY)
     private List<Message> messages = new ArrayList<>();
 
     // User N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     // ChatRoom N : 1
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatRoom_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
 }
