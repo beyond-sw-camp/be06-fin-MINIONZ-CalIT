@@ -21,18 +21,23 @@ import java.util.List;
 @Builder
 @Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private String Id;
+    @Column(unique = true)
+    private String loginId;
     private String password;
+    @Column(unique = true)
+    private String email;
     private String userName;
     private Integer loginType;
-    private boolean isVeryfied;
-    private String email;
+    private boolean isEnabled = false;
     private String createdAt;
-    private String userRole;
+    private String role = "USER";
+    private String provider; // google
+    private String providerId; // google 유저 고유 ID
+    private Integer persona;
+}
 
     // ChatParticipation 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
