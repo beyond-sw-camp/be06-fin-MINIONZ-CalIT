@@ -1,26 +1,42 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<script setup>
+import { useRoute } from 'vue-router';
+import BasicLayout from "@/layouts/BasicLayout.vue";
+import Thumbnail from "@/view/thumbnail/ThumbnailPage.vue";
+import { computed } from "vue";
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+const route = useRoute();
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+const showBasicLayout = computed(() => {
+  return !(route.path.startsWith('/user') || route.path === '/');
+});
+
+const showThumbnail = computed(() => {
+  return route.path === '/';
+});
 </script>
 
+<template>
+  <div id="AppVue">
+    <template v-if="showBasicLayout">
+      <BasicLayout>
+        <router-view />
+      </BasicLayout>
+    </template>
+    <template v-else-if="showThumbnail">
+      <Thumbnail />
+    </template>
+    <template v-else>
+      <router-view />
+    </template>
+  </div>
+</template>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#AppVue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //height: 100vh;
+  background-color: #f0f0f0;
 }
 </style>

@@ -1,15 +1,27 @@
 {
-  "name": "frontend",
+  "name": "CailIT",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vee-validate/rules": "^4.13.2",
+    "axios": "^1.7.7",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "dayjs": "^1.11.13",
+    "echarts": "^5.5.1",
+    "pinia": "^2.2.2",
+    "pinia-plugin-persistedstate": "^3.2.3",
+    "quill": "^2.0.2",
+    "vee-validate": "^4.13.2",
+    "vue": "^3.2.13",
+    "vue-draggable-next": "^2.2.1",
+    "vue-router": "^4.4.3",
+    "vue3-styled-component": "^2.0.3",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
