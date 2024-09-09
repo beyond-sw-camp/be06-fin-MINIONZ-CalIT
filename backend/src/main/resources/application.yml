@@ -1,11 +1,11 @@
-spring:
-  profiles:
-    include: oauth
 server:
   port: ${PORT}
 address:
   domain: ${DOMAIN_ADDRESS}
+
 spring:
+  profiles:
+    include: oauth
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

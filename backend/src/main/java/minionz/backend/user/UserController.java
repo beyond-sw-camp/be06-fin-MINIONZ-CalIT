@@ -1,6 +1,6 @@
 package minionz.backend.user;
 
-import minionz.backend.Utils.JwtUtil;
+import minionz.backend.utils.JwtUtil;
 import minionz.backend.user.model.JwtResponse;
 import minionz.backend.user.model.User;
 import minionz.backend.user.model.request.*;
