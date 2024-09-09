@@ -5,6 +5,19 @@ import user3 from '@/assets/icon/persona/user3.svg';
 import user4 from '@/assets/icon/persona/user4.svg';
 import user5 from '@/assets/icon/persona/user5.svg';
 
+import { ref } from 'vue';
+import FriendsModal from './FriendsModal.vue';
+
+const showModal = ref(false);
+
+const openModal = () => {
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+
 const messages = [
   { name: '최승은', text: '빠샤샤 🔥', time: '12m', unreadCount: 4, profilePic: user1},
   { name: '박성준', text: '메롱롱', time: '24m', profilePic: user2 },
@@ -19,7 +32,7 @@ const totalMessages = 12;
   <div class="message-list-container">
     <div class="message-header">
       <p>Messages <span class="badge">{{ totalMessages }}</span></p>
-      <button class="new-message-button">+</button>
+      <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">
       <div class="message-item" v-for="(message, index) in messages" :key="index">
@@ -36,7 +49,7 @@ const totalMessages = 12;
         </div>
       </div>
     </div>
-
+    <FriendsModal v-if="showModal" @close="closeModal" />
   </div>
 </template>
 
@@ -51,7 +64,7 @@ const totalMessages = 12;
   padding: 0 20px;
   height: 100%;
   overflow: auto;
-  margin-top: 70px;
+  //margin-top: 70px;
   background-color: #fff;
 }
 
@@ -59,14 +72,14 @@ const totalMessages = 12;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  //margin-bottom: 10px;
   background-color: #FFF;
-  position: fixed;
-  top: 60px;
-  height: 70px;
+  position: sticky;
+  top: 0;
+  height: 60px;
   //box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   width: 100%;
-  padding: 10px;
+  padding: 20px;
   box-sizing: border-box;
   /* font-size: 20px; */
   font-weight: 500;
@@ -76,6 +89,7 @@ const totalMessages = 12;
     font-size: 12px;
     padding: 8px 12px ;
     border-radius: 24px;
+    margin-left: 10px;
   }
 }
 
@@ -83,7 +97,7 @@ const totalMessages = 12;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  //margin-bottom: 10px;
 }
 
 .new-message-button {
@@ -92,8 +106,8 @@ const totalMessages = 12;
   font-size: 24px;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,8 +116,9 @@ const totalMessages = 12;
 .message-item {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  /* padding: 10px 0; */
   border-bottom: 1px solid #f0f0f0;
+  height: 72px;
 }
 
 .profile-pic {
@@ -118,7 +133,8 @@ const totalMessages = 12;
 }
 
 .user-name {
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .message-item-right{
@@ -133,14 +149,17 @@ const totalMessages = 12;
 }
 
 .message-text {
-  margin: 5px 0 0;
+  //margin: 5px 0 0;
+  font-size: 12px;
+  color: #595959;
 }
 
 .unread-count {
   background-color: #e74c3c;
   color: white;
   font-size: 12px;
-  border-radius: 50%;
-  padding: 5px 10px;
+  border-radius: 10px;
+  padding: 3px;
+  text-align: center;
 }
 </style>

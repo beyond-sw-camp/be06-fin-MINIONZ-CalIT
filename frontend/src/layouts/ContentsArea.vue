@@ -35,7 +35,7 @@ watch(
   height: calc(100vh - 60px);
   width: 100%;
   margin-top: 60px;
-  overflow: hidden;
+  overflow: scroll;
 }
 h1 {
   font-size: 24px;

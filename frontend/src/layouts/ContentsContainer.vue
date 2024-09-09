@@ -18,5 +18,6 @@
   height: 100vh;
   background-color: #FFFFFF;
   margin-left: 16.25rem;
+  overflow: hidden;
 }
 </style>
