@@ -59,7 +59,7 @@ public class SprintService {
                         .build())
         );
 
-//        스프린트 라벨이 존재하는지 검증하는 유효성 테스트 필요
+//      TODO: 스프린트 라벨이 존재하는지 검증하는 유효성 테스트 필요
         request.getLabels().forEach(labelId ->
                 sprintLabelSelectRepository.save(SprintLabelSelect
                         .builder()
