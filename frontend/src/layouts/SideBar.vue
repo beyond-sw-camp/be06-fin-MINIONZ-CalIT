@@ -10,7 +10,7 @@ import {useRoute} from "vue-router";
 const route = useRoute();
 
 const showPersonalMenu = computed(() => {
-  return !(route.path.includes('/dashboard'));
+  return route.path.startsWith('/my');
 });
 </script>
 

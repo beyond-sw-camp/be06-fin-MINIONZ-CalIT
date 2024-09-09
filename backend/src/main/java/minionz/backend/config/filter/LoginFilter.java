@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import minionz.backend.utils.JwtUtil;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.request.LoginUserRequest;
 import minionz.backend.utils.JwtUtil;
