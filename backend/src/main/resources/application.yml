@@ -1,7 +1,7 @@
 server:
-  port: ${PORT}
-address:
-  domain: ${DOMAIN_ADDRESS}
+  port: 8080
+#address:
+#  domain: ${DOMAIN_ADDRESS}
 
 spring:
   profiles:
@@ -91,6 +91,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
+    org.springframework.security: debug
 
 cloud:
   aws:

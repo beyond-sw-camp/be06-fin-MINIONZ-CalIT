@@ -33,7 +33,7 @@ public class User {
     private Integer loginType;
     private boolean isEnabled = false;
     private String createdAt;
-    private String role = "USER";
+    private String role = "ROLE_ADMIN";
     private String provider; // google
     private String providerId; // google 유저 고유 ID
     private Integer persona;

@@ -28,6 +28,7 @@ public class UserService {
                     .loginId(createUserRequest.getLoginId())
                     .password(bCryptPasswordEncoder.encode(createUserRequest.getPassword()))
                     .email(createUserRequest.getEmail())
+                    .role("ROLE_ADMIN")
                     .isEnabled(true)
                     .userName(createUserRequest.getUserName())
                     .build();           //유저 객체 값 설정
