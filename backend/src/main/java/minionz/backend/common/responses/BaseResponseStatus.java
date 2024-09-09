@@ -36,6 +36,7 @@ public enum BaseResponseStatus {
     TASK_LABEL_READ_SUCCESS(true, 4005, "태스크 라벨 조회를 성공했습니다."),
     SPRINT_CREATE_SUCCESS(true, 4006, "스프린트 생성에 성공했습니다."),
     SPRINT_READ_SUCCESS(true, 4007, "스프린트 조회에 성공했습니다."),
+    SPRINT_READ_ALL_SUCCESS(true, 4007, "해당 워크스페이스의 스프린트 목록 조회에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),

@@ -1,7 +1,7 @@
 package minionz.backend.config;
 
 import lombok.RequiredArgsConstructor;
-import minionz.backend.Utils.JwtUtil;
+import minionz.backend.utils.JwtUtil;
 import minionz.backend.config.filter.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,9 +39,10 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/", "/user/signup", "/user/send-verificationcode", "/user/confirm-verificationcode", "/user/login")
-                                .permitAll()
-                                .anyRequest().authenticated())
+                                .anyRequest().permitAll())
+//                                .requestMatchers("/", "/user/signup", "/user/send-verificationcode", "/user/confirm-verificationcode", "/user/login")
+//                                .permitAll()
+//                                .anyRequest().authenticated())
 //                .oauth2Login((oauth2Login) -> oauth2Login
 //                        .loginPage("/login/oauth2/code/{registrationId}")
 //                        .defaultSuccessUrl("/oauth-login/success")

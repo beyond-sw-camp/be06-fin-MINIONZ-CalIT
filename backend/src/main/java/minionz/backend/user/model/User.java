@@ -37,7 +37,6 @@ public class User {
     private String provider; // google
     private String providerId; // google 유저 고유 ID
     private Integer persona;
-}
 
     // ChatParticipation 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
