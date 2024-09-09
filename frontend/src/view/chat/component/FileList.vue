@@ -49,7 +49,7 @@ const totalFiles = 125;
   padding: 0 20px;
   height: 100%;
   overflow: auto;
-  margin-top: 70px;
+  //margin-top: 70px;
   background-color: #fff;
 }
 
@@ -59,12 +59,12 @@ const totalFiles = 125;
   align-items: center;
   margin-bottom: 10px;
   background-color: #FFF;
-  position: fixed;
-  top: 57%;
-  height: 70px;
+  position:  sticky;
+  top: 0;
+  height: 60px;
   //box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   width: 100%;
-  padding: 10px;
+  padding: 20px;
   box-sizing: border-box;
   /* font-size: 20px; */
   font-weight: 500;
@@ -75,6 +75,7 @@ const totalFiles = 125;
     font-size: 12px;
     padding: 8px 12px ;
     border-radius: 24px;
+    margin-left: 10px;
   }
 }
 

@@ -2,16 +2,16 @@
 import { ref } from 'vue';
 import Message from './ChatMessage.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
-import space5 from '@/assets/icon/persona/space5.svg';
+import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
 
 const chatPartner = "연희";
 
 const messages = ref([
-  { text: "연희의 채팅 기능", time: "10:07 AM", profilePic: space5, isOwn: false },
-  { text: "응원해용 ✅", time: "10:08 AM", profilePic: space5, isOwn: false },
-  { text: "예시 데이터", time: "10:08 AM", profilePic: space5, isOwn: false },
+  { text: "연희의 채팅 기능", time: "10:07 AM", profilePic: space3, isOwn: false },
+  { text: "응원해용 ✅", time: "10:08 AM", profilePic: space3, isOwn: false },
+  { text: "예시 데이터", time: "10:08 AM", profilePic: space3, isOwn: false },
   { text: "연희야 화이팅", time: "10:08 AM", profilePic: user1, isOwn: true },
   { text: "슬이 화이팅", time: "10:08 AM", profilePic: user1, isOwn: true },
   { text: "성준 오빠 아쟈쟈", time: "10:08 AM", profilePic: user1, isOwn: true },
@@ -42,7 +42,7 @@ const triggerFileInput = () => {
 <template>
   <div class="chat-container">
     <div class="chat-header">
-      <img :src="space5">
+      <img :src="space3" alt="img">
       <p>{{ chatPartner }}</p>
     </div>
 
@@ -75,7 +75,7 @@ const triggerFileInput = () => {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 60px);
   width: 100%;
   position: relative;
 }
@@ -106,7 +106,7 @@ const triggerFileInput = () => {
   overflow-y: auto;
   padding: 10px;
   height: 100%;
-  margin-bottom: 50px;
+  //margin-top: 60px;
   flex-direction: column-reverse;
   display: flex;
 }
