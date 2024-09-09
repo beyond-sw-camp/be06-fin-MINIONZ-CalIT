@@ -2,13 +2,13 @@ package minionz.backend.chat.message.model.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import minionz.backend.common.BaseEntity;
+import minionz.backend.chat.message.model.MessageType;
 
 import java.util.List;
 
 @Builder
 @Getter
-public class MessageResponse extends BaseEntity {
+public class MessageResponse {
     private String chatRoomName;
     private List<Long> participants;
     private String topicName;
@@ -16,5 +16,6 @@ public class MessageResponse extends BaseEntity {
     private String fileSize;
     private String fileName;
     private String fileUrl;
-
+    private String messageContents;
+    private MessageType messageType;
 }

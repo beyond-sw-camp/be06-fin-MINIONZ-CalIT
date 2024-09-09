@@ -1,20 +1,14 @@
 package minionz.backend.chat.message.model.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder(toBuilder = true)
 public class MessageRequest {
 
-    private Long senderId;
-    private Long chatroomId;
     private String messageContents;
-    private MultipartFile file;
-
+//    private MultipartFile file;
+    private String  file;
+    private Long chatRoomId;
+    private Long senderId;
 }
