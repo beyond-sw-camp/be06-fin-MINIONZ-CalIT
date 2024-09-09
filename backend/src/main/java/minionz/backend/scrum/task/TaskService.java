@@ -6,6 +6,7 @@ import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.TaskLabel;
 import minionz.backend.scrum.label_select.TaskLabelSelectRepository;
 import minionz.backend.scrum.label_select.model.TaskLabelSelect;
+import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint.model.response.Label;
 import minionz.backend.scrum.sprint.model.response.Participant;
@@ -35,6 +36,9 @@ public class TaskService {
 
     @Transactional
     public void createTask(User user, CreateTaskRequest request) {
+
+        Meeting meeting = request.getMeetingId() != null ? Meeting.builder().meetingId(request.getMeetingId()).build() : null;
+
         Task task = taskRepository.save(Task
                 .builder()
                 .sprint(Sprint.builder().sprintId(request.getSprintId()).build())
@@ -46,6 +50,7 @@ public class TaskService {
                 .priority(request.getPriority())
                 .status(TaskStatus.NO_STATUS)
                 .taskNumber(makeTaskNumber(request.getSprintId()))
+                .meeting(meeting)
                 .build());
 
 //        TODO: spint에 참여 중인 유저인지에 대한 검증이 필요함.
@@ -144,4 +149,6 @@ public class TaskService {
                         .build()
         ).toList();
     }
+
+
 }
