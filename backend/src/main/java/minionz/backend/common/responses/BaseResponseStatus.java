@@ -37,6 +37,7 @@ public enum BaseResponseStatus {
     TASK_CREATE_SUCCESS(true, 4009, "태스크 생성에 성공했습니다."),
     TASK_READ_SUCCESS(true, 4010, "태스크 상세 조회에 성공했습니다."),
     TASK_READ_ALL_SUCCESS(true, 4011, "해당 스프린트의 태스크 목록 조회를 성공했습니다."),
+    MEETING_CREATE_SUCCESS(true, 4012, "회의 생성에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
