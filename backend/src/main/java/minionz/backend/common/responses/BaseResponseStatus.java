@@ -32,15 +32,18 @@ public enum BaseResponseStatus {
     SPRINT_LABEL_READ_SUCCESS(true, 4004, "스프린트 라벨 조회를 성공했습니다."),
     TASK_LABEL_READ_SUCCESS(true, 4005, "태스크 라벨 조회를 성공했습니다."),
     SPRINT_CREATE_SUCCESS(true, 4006, "스프린트 생성에 성공했습니다."),
-    SPRINT_READ_SUCCESS(true, 4007, "스프린트 조회에 성공했습니다."),
+    SPRINT_READ_SUCCESS(true, 4007, "스프린트 상세 조회에 성공했습니다."),
     SPRINT_READ_ALL_SUCCESS(true, 4008, "해당 워크스페이스의 스프린트 목록 조회에 성공했습니다."),
     TASK_CREATE_SUCCESS(true, 4009, "태스크 생성에 성공했습니다."),
+    TASK_READ_SUCCESS(true, 4010, "태스크 상세 조회에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
     WORKSPACE_NOT_EXISTS(false, 4102, "존재하지 않는 워크스페이스입니다."),
     LABEL_ALREADY_EXISTS(false, 4103, "동일한 라벨 이름이 존재합니다."),
     TASK_LABEL_SELECT_FAIL(false, 4104, "담당자를 지정할 권한이 존재하지 않습니다."),
+    TASK_NOT_EXISTS(false, 4105, "존재하지 않는 태스크입니다."),
+
 
 
     /**
