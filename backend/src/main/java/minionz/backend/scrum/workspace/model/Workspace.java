@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import minionz.backend.board.error_board.model.ErrorBoard;
+import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.label.model.TaskLabel;
 
 import minionz.backend.scrum.sprint.model.Sprint;
@@ -37,6 +38,10 @@ public class Workspace {
     // Workspace : SprintLabel = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<SprintLabel> sprintLabels = new ArrayList<>();
+
+    // Workspace : Issue = 1 : N
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    private List<Issue> issues = new ArrayList<>();
 
     // Workspace : TaskLabel = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
