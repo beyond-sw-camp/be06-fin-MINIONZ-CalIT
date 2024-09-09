@@ -5,7 +5,18 @@ import user3 from '@/assets/icon/persona/user3.svg';
 import user4 from '@/assets/icon/persona/user4.svg';
 import user5 from '@/assets/icon/persona/user5.svg';
 
+import { ref } from 'vue';
+import FriendsModal from './FriendsModal.vue';
 
+const showModal = ref(false);
+
+const openModal = () => {
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
 
 const messages = [
   { name: '최승은', text: '빠샤샤 🔥', time: '12m', unreadCount: 4, profilePic: user1},
@@ -21,7 +32,7 @@ const totalMessages = 12;
   <div class="message-list-container">
     <div class="message-header">
       <p>Messages <span class="badge">{{ totalMessages }}</span></p>
-      <button class="new-message-button">+</button>
+      <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">
       <div class="message-item" v-for="(message, index) in messages" :key="index">
@@ -38,7 +49,7 @@ const totalMessages = 12;
         </div>
       </div>
     </div>
-
+    <FriendsModal v-if="showModal" @close="closeModal" />
   </div>
 </template>
 
@@ -122,7 +133,7 @@ const totalMessages = 12;
 }
 
 .user-name {
-  font-weight: bold;
+  font-weight: 500;
   font-size: 14px;
 }
 
@@ -140,14 +151,15 @@ const totalMessages = 12;
 .message-text {
   //margin: 5px 0 0;
   font-size: 12px;
+  color: #595959;
 }
 
 .unread-count {
   background-color: #e74c3c;
   color: white;
   font-size: 12px;
-  border-radius: 50%;
-  padding: 5px 5px;
+  border-radius: 10px;
+  padding: 3px;
   text-align: center;
 }
 </style>

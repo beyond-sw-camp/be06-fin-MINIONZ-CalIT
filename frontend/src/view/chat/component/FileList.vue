@@ -104,7 +104,8 @@ const totalFiles = 125;
 }
 
 .file-name {
-  font-weight: bold;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 .file-type {
