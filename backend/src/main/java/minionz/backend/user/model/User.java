@@ -5,6 +5,7 @@ import lombok.*;
 import minionz.backend.board.error_board.model.ErrorBoard;
 import minionz.backend.board.error_comment.model.ErrorComment;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
+import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
 
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
@@ -65,4 +66,8 @@ public class User {
     // User : errorCommentList = 1 : N
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ErrorComment> errorCommentList = new ArrayList<>();
+
+    // User : Issue = 1 : N
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Issue> issues = new ArrayList<>();
 }
