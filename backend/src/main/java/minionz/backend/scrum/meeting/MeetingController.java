@@ -5,6 +5,7 @@ import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.meeting.model.request.CreateMeetingRequest;
+import minionz.backend.scrum.meeting.model.response.ReadMeetingResponse;
 import minionz.backend.user.model.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +17,29 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @PostMapping("/{sprintId}")
-    public BaseResponse<BaseResponseStatus> createMeeting(@PathVariable Long sprintId, @RequestBody CreateMeetingRequest request){
+    public BaseResponse<BaseResponseStatus> createMeeting(@PathVariable Long sprintId, @RequestBody CreateMeetingRequest request) {
         User user = User.builder().userId(1L).build();
 
-        try{
-            meetingService.createMeeting(user,request,sprintId);
-        }catch(BaseException e){
+        try {
+            meetingService.createMeeting(user, request, sprintId);
+        } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
 
         return new BaseResponse<>(BaseResponseStatus.MEETING_CREATE_SUCCESS);
     }
+
+    @GetMapping("/{workspaceId}/{meetingId}")
+    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long meetingId) {
+        ReadMeetingResponse response;
+        try {
+            response = meetingService.readMeeting(meetingId);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.MEETING_READ_SUCCESS, response);
+    }
+
+
 }

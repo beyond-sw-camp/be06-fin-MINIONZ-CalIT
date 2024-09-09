@@ -38,6 +38,7 @@ public enum BaseResponseStatus {
     TASK_READ_SUCCESS(true, 4010, "태스크 상세 조회에 성공했습니다."),
     TASK_READ_ALL_SUCCESS(true, 4011, "해당 스프린트의 태스크 목록 조회를 성공했습니다."),
     MEETING_CREATE_SUCCESS(true, 4012, "회의 생성에 성공했습니다."),
+    MEETING_READ_SUCCESS(true, 4013, "회의 상세 조회에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
@@ -45,6 +46,7 @@ public enum BaseResponseStatus {
     LABEL_ALREADY_EXISTS(false, 4103, "동일한 라벨 이름이 존재합니다."),
     TASK_LABEL_SELECT_FAIL(false, 4104, "담당자를 지정할 권한이 존재하지 않습니다."),
     TASK_NOT_EXISTS(false, 4105, "존재하지 않는 태스크입니다."),
+    MEETING_NOT_EXISTS(false, 4106, "존재하지 않는 회의 일정입니다."),
 
 
 
