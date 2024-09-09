@@ -11,10 +11,10 @@ import minionz.backend.scrum.sprint.model.SprintStatus;
 import minionz.backend.scrum.sprint.model.request.CreateSprintRequest;
 import minionz.backend.scrum.sprint.model.response.Label;
 import minionz.backend.scrum.sprint.model.response.Participant;
+import minionz.backend.scrum.sprint.model.response.ReadAllSprintResponse;
 import minionz.backend.scrum.sprint.model.response.ReadSprintResponse;
 import minionz.backend.scrum.sprint_participation.SprintParticipationRepository;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
-import minionz.backend.scrum.workspace.WorkspaceRepository;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
 import minionz.backend.user.model.User;
@@ -29,7 +29,6 @@ public class SprintService {
     private final SprintRepository sprintRepository;
     private final SprintParticipationRepository sprintParticipationRepository;
     private final SprintLabelSelectRepository sprintLabelSelectRepository;
-    private final WorkspaceRepository workspaceRepository;
     private final WorkspaceParticipationRepository workspaceParticipationRepository;  // final이 없으면 초기화 안됨. RequiredArgsConstructor로 의존성 주입 안됨. like const
 
     public void createSprint(User user, CreateSprintRequest request) throws BaseException {
@@ -82,19 +81,7 @@ public class SprintService {
         workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(sprint.getWorkspace().getWorkspaceId(), user.getUserId()).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_ACCESS)
         );
-
-        List<Participant> participants = sprint.getSprintParticipations().stream().map(
-                participant -> Participant.builder().id(participant.getUser().getUserId()).userName(participant.getUser().getUserName()).isManager(participant.getIsManager()).build()
-        ).toList();
-
-        List<Label> labels = sprint.getSprintLabelSelects().stream().map(
-                label -> Label
-                        .builder()
-                        .id(label.getSprintLabel().getSprintLabelId())
-                        .labelName(label.getSprintLabel().getLabelName())
-                        .color(label.getSprintLabel().getColor())
-                        .build()
-        ).toList();
+        List<Participant> participants = findParticipants(sprint);
 
 //        내가 isManager 이니?
         Boolean isManager = participants.stream()
@@ -103,12 +90,66 @@ public class SprintService {
         return ReadSprintResponse
                 .builder()
                 .sprintId(sprint.getSprintId())
+                .title(sprint.getSprintTitle())
                 .contents(sprint.getSprintContents())
-                .labels(labels)
+                .labels(findLabels(sprint))
+                .status(sprint.getStatus())
                 .startDate(sprint.getStartDate())
                 .endDate(sprint.getEndDate())
                 .participants(participants)
                 .isManager(isManager)
                 .build();
     }
+
+    public List<ReadAllSprintResponse> readAllSprint(User user, Long id) throws BaseException {
+        List<Sprint> result = sprintRepository.findAllByWorkspaceWorkspaceId(id);
+
+        //        user가 워크스페이스 내에 포함됐는지? 확인.
+        workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(id, user.getUserId()).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_ACCESS)
+        );
+
+        List<ReadAllSprintResponse> response = result.stream().map(
+                sprint -> ReadAllSprintResponse
+                        .builder()
+                        .sprintId(sprint.getSprintId())
+                        .title(sprint.getSprintTitle())
+                        .labels(findLabels(sprint))
+                        .status(sprint.getStatus())
+                        .startDate(sprint.getStartDate())
+                        .endDate(sprint.getEndDate())
+                        .manager(Participant
+                                .builder()
+                                .id(sprintParticipationRepository.findBySprintAndIsManager(sprint, true).getUser().getUserId())
+                                .userName(sprintParticipationRepository.findBySprintAndIsManager(sprint, true).getUser().getUserName())
+                                .isManager(true)
+                                .build())
+
+                        .build()
+        ).toList();
+
+        return response;
+    }
+
+    public List<Label> findLabels(Sprint sprint) {
+        return sprint.getSprintLabelSelects().stream().map(
+                label -> Label
+                        .builder()
+                        .id(label.getSprintLabel().getSprintLabelId())
+                        .labelName(label.getSprintLabel().getLabelName())
+                        .color(label.getSprintLabel().getColor())
+                        .build()
+        ).toList();
+    }
+
+    public List<Participant> findParticipants(Sprint sprint) {
+        return sprint.getSprintParticipations().stream().map(
+                participant -> Participant.builder()
+                        .id(participant.getUser().getUserId())
+                        .userName(participant.getUser().getUserName())
+                        .isManager(participant.getIsManager())
+                        .build()
+        ).toList();
+    }
+
 }
