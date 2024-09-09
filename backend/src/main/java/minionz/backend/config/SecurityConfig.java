@@ -1,6 +1,7 @@
 package minionz.backend.config;
 
 import lombok.RequiredArgsConstructor;
+import minionz.backend.config.filter.JwtFilter;
 import minionz.backend.utils.JwtUtil;
 import minionz.backend.config.filter.LoginFilter;
 import org.springframework.context.annotation.Bean;
@@ -39,16 +40,12 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .anyRequest().permitAll())
-//                                .requestMatchers("/", "/user/signup", "/user/send-verificationcode", "/user/confirm-verificationcode", "/user/login")
-//                                .permitAll()
-//                                .anyRequest().authenticated())
-//                .oauth2Login((oauth2Login) -> oauth2Login
-//                        .loginPage("/login/oauth2/code/{registrationId}")
-//                        .defaultSuccessUrl("/oauth-login/success")
-//                        .failureUrl("/oauth-login/failure")
-//                        .permitAll())
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                                .requestMatchers("/test/**").authenticated()
+                                .anyRequest().permitAll());
+                http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
+        loginFilter.setFilterProcessesUrl("/user/login");
+        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -57,6 +54,7 @@ public class SecurityConfig {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
         DefaultHttpFirewall firewall = new DefaultHttpFirewall();
