@@ -41,6 +41,7 @@ public enum BaseResponseStatus {
     MEETING_READ_SUCCESS(true, 4013, "회의 상세 조회에 성공했습니다."),
     ISSUE_CREATE_SUCCESS(true, 4014, "이슈 생성에 성공했습니다."),
     TASK_STATUS_UPDATE_SUCCESS(true, 4015, "태스크 상태 변경에 성공했습니다."),
+    SPRINT_STATUS_UPDATE_SUCCESS(true, 4016, "스프린트 상태 변경에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
