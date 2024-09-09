@@ -14,14 +14,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private String Id;
+    private String loginId;
     private String password;
     private String userName;
     private Integer loginType;
     private boolean isVeryfied;
     private String email;
     private String createdAt;
-    private String userRole;
+    private String userRole = "ROLE_ADMIN";
 
 
 }
