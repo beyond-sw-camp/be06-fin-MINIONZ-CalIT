@@ -19,7 +19,6 @@ public class ChatRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatRoomId;
-
     private String chatRoomName;
     private LocalDateTime deletedAt;
     private String fileType;
@@ -28,7 +27,7 @@ public class ChatRoom extends BaseEntity {
     private String fileName;
 
     // ChatParticipation 1 : N
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
     private List<ChatParticipation> chatParticipations = new ArrayList<>();
 
 }

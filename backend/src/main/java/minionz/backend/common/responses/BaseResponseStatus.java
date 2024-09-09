@@ -53,12 +53,19 @@ public enum BaseResponseStatus {
     ERRORBOARD_CREATE_SUCCESS(true, 5001, "게시판 등록에 성공했습니다."),
     ERRORBOARD_SEARCH_SUCCESS(true, 5101, "게시판 검색에 성공했습니다."),
     ERRORBOARD_SERACH_FAIL(true, 5102, "게시판 검색에 성공했습니다."),
-    ERRORCOMMENT_CREATE_SUCCESS(true, 5201, "댓글 등록에 성공했습니다.");
+    ERRORCOMMENT_CREATE_SUCCESS(true, 5201, "댓글 등록에 성공했습니다."),
 
 
     /**
      * 6000: 채팅
      */
+
+    CHATROOM_CREATE_SUCCESS(true, 6001, "채팅방 생성에 성공했습니다."),
+    CHATROOM_CREATE_FAIL(false, 6002, "채팅방 생성에 실패했습니다."),
+    CHATROOM_LIST_SUCCESS(true, 6101, "채팅방 조회에 성공했습니다."),
+    CHATROOM_LIST_FAIL(false, 6102, "채팅방 조회에 실패했습니다."),
+    MESSAGE_SEND_SUCCESS(true, 6201, "메세지가 성공적으로 전송되었습니다."),
+    MESSAGE_SEND_FAIL(false, 6202, "메세지가 전송되지 않았습니다.");
 
 
     /**

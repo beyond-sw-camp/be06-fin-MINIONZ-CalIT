@@ -8,7 +8,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class MessageResponse {
+public class PrivateMessageResponse {
     private String chatRoomName;
     private List<Long> participants;
     private String topicName;

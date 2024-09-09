@@ -3,16 +3,12 @@ package minionz.backend.chat.chat_room.model.response;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Builder
 @Getter
-public class CreateChatRoomResponse {
-
+public class CreatePersonalChatRoomResponse {
     private Long chatRoomId;
     private String chatRoomName;
-    private List<Long> participants;
+    private Long senderId;
+    private Long receiverId;
     private String topic;
-    private String creationMessage;
-
 }
