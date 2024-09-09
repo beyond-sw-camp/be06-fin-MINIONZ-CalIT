@@ -16,6 +16,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  background-color: #F5F6F9;
+  background-color: #FFFFFF;
+  margin-left: 16.25rem;
 }
 </style>

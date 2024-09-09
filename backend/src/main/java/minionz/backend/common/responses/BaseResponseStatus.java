@@ -47,8 +47,10 @@ public enum BaseResponseStatus {
     /**
      * 5000: 게시판
      */
-    ERRORBOARD_CREATE_SUCCESS(true,5001,"게시판 등록에 성공했습니다.");
-
+    ERRORBOARD_CREATE_SUCCESS(true,5001,"게시판 등록에 성공했습니다."),
+    ERRORBOARD_SEARCH_SUCCESS(true,5101,"게시판 검색에 성공했습니다."),
+    ERRORBOARD_SERACH_FAIL(true,5102,"게시판 검색에 성공했습니다."),
+    ERRORCOMMENT_CREATE_SUCCESS(true,5201,"댓글 등록에 성공했습니다.");
 
 
     /**

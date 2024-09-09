@@ -5,6 +5,7 @@ import UserInput from "@/view/user/component/UserInput.vue";
 import SocialLogin from "@/view/user/component/SocialLogin.vue";
 
 const username = ref('');
+const id = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const email = ref('');
@@ -48,6 +49,7 @@ const passwordsMatch = computed(() => {
     <div class="signup-body">
       <form @submit.prevent="signup">
         <UserInput v-model="username" input-placeholder="이름을 입력하세요" label="이름" type="text"/>
+        <UserInput v-model="id" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
         <div class="verify">
           <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일" type="email"/>
           <button type="button" @click="showVerificationInput" class="btn-verify" :disabled="!isEmailEntered">인증 하기</button>
@@ -83,12 +85,12 @@ const passwordsMatch = computed(() => {
 }
 
 h1 {
-  margin: 10px 0;
+  margin: 0.625rem 0;
 }
 
 a {
   color: #1E5EFF;
-  margin-left: 10px;
+  margin-left: 0.625rem;
   display: block;
 }
 
@@ -98,7 +100,7 @@ a {
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .signup-body {
@@ -109,7 +111,7 @@ a {
 form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0.9375rem;
   width: 100%;
 }
 
@@ -124,8 +126,8 @@ form {
 }
 
 .btn-verify {
-  width: 100px;
-  height: 40px;
+  width: 6.25rem;
+  height: 2.5rem;
   background-color: #1E5EFF;
   color: white;
   border: none;
@@ -137,7 +139,7 @@ form {
 }
 
 .verification-code {
-  margin-top: 10px;
+  margin-top: 0.625rem;
 }
 
 .verification-code button:disabled {
@@ -147,7 +149,7 @@ form {
 
 .error-message {
   background-color: #fff1f1;
-  padding: 10px;
+  padding: 0.625rem;
   border-radius: 5px;
   color: red;
   font-size: 0.9em;

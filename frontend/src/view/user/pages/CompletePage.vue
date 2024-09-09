@@ -13,7 +13,7 @@ import userComplete from "@/assets/img/userComplete.svg";
       </div>
     </div>
     <div style="width: 100%">
-      <router-link to="/dashboard/personal" style="text-decoration: none;">
+      <router-link to="/my/dashboard" style="text-decoration: none;">
         <UserButton button-ment="대시보드로 돌아가기" class="btn-ver2"></UserButton>
       </router-link>
     </div>

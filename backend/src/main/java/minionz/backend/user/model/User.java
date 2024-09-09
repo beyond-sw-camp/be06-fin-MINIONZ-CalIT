@@ -2,11 +2,10 @@ package minionz.backend.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import minionz.backend.board.error_board.model.ErrorBoard;
+import minionz.backend.board.error_comment.model.ErrorComment;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
-
-import minionz.backend.error_board.model.ErrorBoard;
-import minionz.backend.error_comment.model.ErrorComment;
 
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
@@ -22,18 +21,23 @@ import java.util.List;
 @Builder
 @Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private String Id;
+    @Column(unique = true)
+    private String loginId;
     private String password;
+    @Column(unique = true)
+    private String email;
     private String userName;
     private Integer loginType;
-    private boolean isVeryfied;
-    private String email;
+    private boolean isEnabled = false;
     private String createdAt;
-    private String userRole;
+    private String role = "USER";
+    private String provider; // google
+    private String providerId; // google 유저 고유 ID
+    private Integer persona;
+}
 
     // ChatParticipation 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
