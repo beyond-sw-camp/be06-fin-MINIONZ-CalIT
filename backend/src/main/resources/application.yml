@@ -85,6 +85,7 @@ spring:
       bootstrap-servers: ${KAFKA_SERVER}
     consumer:
       bootstrap-servers: ${KAFKA_SERVER}
+      group-id: ${KAFKA_CONSUMER_GROUP_ID}
     bootstrap-servers: ${KAFKA_SERVER}
 
 logging:
