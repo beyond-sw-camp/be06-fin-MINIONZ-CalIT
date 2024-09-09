@@ -15,6 +15,7 @@ import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.task.model.TaskStatus;
 import minionz.backend.scrum.task.model.request.CreateTaskRequest;
+import minionz.backend.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
 import minionz.backend.scrum.task_participation.TaskParticipationRepository;
@@ -23,6 +24,7 @@ import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,6 +139,39 @@ public class TaskService {
         ).toList();
 
         return response;
+    }
+
+    public void updateTaskStatus(Long taskId, UpdateTaskStatusRequest request) throws BaseException {
+        Optional<Task> result = taskRepository.findById(taskId);
+
+        if(result.isEmpty()){
+            throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
+        }
+
+        Task task = result.get();
+
+        if(task.getStatus() == request.getStatus()){
+            throw new BaseException(BaseResponseStatus.UNCHANGED);
+        }
+
+
+        taskRepository.save(
+                Task
+                        .builder()
+                        .taskId(task.getTaskId())
+                        .taskTitle(task.taskTitle)
+                        .taskContents(task.getTaskContents())
+                        .startDate(task.getStartDate())
+                        .endDate(task.getEndDate())
+                        .doneDate(request.getStatus() == TaskStatus.DONE ? LocalDateTime.now() : null)
+                        .difficultly(task.getDifficultly())
+                        .priority(task.getPriority())
+                        .status(request.getStatus())
+                        .taskNumber(task.getTaskNumber())
+                        .sprint(task.getSprint())
+                        .meeting(task.getMeeting())
+                        .build()
+        );
     }
 
     public List<Label> findLabels(Task task) {

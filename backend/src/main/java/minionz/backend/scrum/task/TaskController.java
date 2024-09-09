@@ -5,6 +5,7 @@ import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.task.model.request.CreateTaskRequest;
+import minionz.backend.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
 import minionz.backend.user.model.User;
@@ -58,6 +59,19 @@ public class TaskController {
         }
 
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+    }
+
+    @PatchMapping("/{taskId}")
+    public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @RequestBody UpdateTaskStatusRequest request) {
+        User user = User.builder().userId(1L).build();
+
+        try {
+            taskService.updateTaskStatus(taskId, request);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.TASK_STATUS_UPDATE_SUCCESS);
     }
 
 
