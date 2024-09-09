@@ -67,16 +67,16 @@ public class UserController {
 //        // 로그인 성공 시 JWT 토큰을 반환
 //        return ResponseEntity.ok(token);
 //    }
-
-    @GetMapping("/success")
-    public ResponseEntity<?> oauth2LoginSuccess(Authentication authentication) {
-        // 소셜 로그인 성공 후 사용자 정보로 JWT 발급
-        String token = jwtUtil.createToken(authentication.getName(),authentication.getCredentials().toString());
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    @GetMapping("/failure")
-    public ResponseEntity<?> oauth2LoginFailure() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("소셜 로그인 실패");
-    }
+//
+//    @GetMapping("/success")
+//    public ResponseEntity<?> oauth2LoginSuccess(Authentication authentication) {
+//        // 소셜 로그인 성공 후 사용자 정보로 JWT 발급
+//        String token = jwtUtil.createJwt(authentication.getName(), authentication.getAuthorities().toString());
+//        return ResponseEntity.ok(new JwtResponse(token));
+//    }
+//
+//    @GetMapping("/failure")
+//    public ResponseEntity<?> oauth2LoginFailure() {
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("소셜 로그인 실패");
+//    }
 }

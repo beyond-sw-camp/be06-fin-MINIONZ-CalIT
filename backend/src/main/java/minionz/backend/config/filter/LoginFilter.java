@@ -2,7 +2,6 @@ package minionz.backend.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,25 +11,31 @@ import lombok.extern.slf4j.Slf4j;
 import minionz.backend.utils.JwtUtil;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.request.LoginUserRequest;
+import minionz.backend.utils.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 @Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        LoginUserRequest loginUserRequest;
+        LoginUserRequest loginUserRequest = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             ServletInputStream inputStream = request.getInputStream();
@@ -42,35 +47,29 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+        CustomSecurityUserDetails customUserDetails = (CustomSecurityUserDetails) authentication.getPrincipal();
+        String username = customUserDetails.getUsername();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+        String role = auth.getAuthority();
+        String token = jwtUtil.createToken(username, role);
+        Cookie aToken = new Cookie("ATOKEN", token);
+        aToken.setHttpOnly(true);
+        aToken.setSecure(true);
+        aToken.setPath("/");
+        aToken.setMaxAge(60 * 60 * 100);
+        response.addCookie(aToken);
 
+        response.addHeader("Authorization", "Bearer " + token);
     }
 
     //로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-
+        response.setStatus(401);
     }
-//    @Override
-//    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-//        CustomSecurityUserDetails user = (CustomSecurityUserDetails) authResult.getPrincipal();
-//        String loginId = user.getLoginId();
-//        String name = user.getUserName();
-//        String aTokenString = jwtUtil.createToken(loginId, name);
-//        Cookie aToken = new Cookie("ATOKEN", aTokenString);
-//        aToken.setHttpOnly(true);
-//        aToken.setSecure(true);
-//        aToken.setPath("/");
-//        aToken.setMaxAge(60 * 60 * 100000);ㅁ
-//        response.addCookie(aToken);
-//        String combinedValue = name;
-//        log.info(combinedValue);
-//        Cookie uToken = new Cookie("UTOKEN", combinedValue);
-//        uToken.setHttpOnly(false);
-//        uToken.setSecure(false);
-//        uToken.setPath("/");
-//        uToken.setMaxAge(60 * 60 * 100000); // 여기도 1시간으로 설정
-//        response.addCookie(uToken);
-//    }
 }
