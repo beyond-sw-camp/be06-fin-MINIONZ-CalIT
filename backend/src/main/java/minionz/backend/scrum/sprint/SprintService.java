@@ -9,17 +9,22 @@ import minionz.backend.scrum.label_select.model.SprintLabelSelect;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint.model.SprintStatus;
 import minionz.backend.scrum.sprint.model.request.CreateSprintRequest;
+import minionz.backend.scrum.sprint.model.request.UpdateSprintStatusRequest;
 import minionz.backend.scrum.sprint.model.response.Label;
 import minionz.backend.scrum.sprint.model.response.Participant;
 import minionz.backend.scrum.sprint.model.response.ReadAllSprintResponse;
 import minionz.backend.scrum.sprint.model.response.ReadSprintResponse;
 import minionz.backend.scrum.sprint_participation.SprintParticipationRepository;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
+import minionz.backend.scrum.task.TaskRepository;
+import minionz.backend.scrum.task.model.Task;
+import minionz.backend.scrum.task.model.TaskStatus;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
 import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +35,7 @@ public class SprintService {
     private final SprintParticipationRepository sprintParticipationRepository;
     private final SprintLabelSelectRepository sprintLabelSelectRepository;
     private final WorkspaceParticipationRepository workspaceParticipationRepository;  // final이 없으면 초기화 안됨. RequiredArgsConstructor로 의존성 주입 안됨. like const
+    private final TaskRepository taskRepository;
 
     public void createSprint(User user, CreateSprintRequest request) throws BaseException {
 //        user가 워크스페이스 내에 포함됐는지? 확인.
@@ -129,6 +135,57 @@ public class SprintService {
         ).toList();
 
         return response;
+    }
+
+    public void updateSprintStatus(Long sprintId, UpdateSprintStatusRequest request) throws BaseException {
+        Optional<Sprint> result = sprintRepository.findById(sprintId);
+
+        if (result.isEmpty()) {
+            throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
+        }
+
+        Sprint sprint = result.get();
+
+        if (sprint.getStatus() == request.getStatus()) {
+            throw new BaseException(BaseResponseStatus.UNCHANGED);
+        }
+
+        if (request.getStatus() == SprintStatus.DONE) {
+            sprint.getTasks().forEach(
+                    task ->
+                            taskRepository.save(
+                                    Task
+                                            .builder()
+                                            .taskId(task.getTaskId())
+                                            .taskTitle(task.getTaskTitle())
+                                            .taskContents(task.getTaskContents())
+                                            .startDate(task.getStartDate())
+                                            .endDate(task.getEndDate())
+                                            .doneDate(task.getStatus() == TaskStatus.DONE ? task.getDoneDate() : LocalDateTime.now())
+                                            .difficultly(task.getDifficultly())
+                                            .priority(task.getPriority())
+                                            .status(TaskStatus.DONE)
+                                            .taskNumber(task.getTaskNumber())
+                                            .sprint(task.getSprint())
+                                            .meeting(task.getMeeting())
+                                            .build()
+                            )
+            );
+        }
+
+        sprintRepository.save(
+                Sprint
+                        .builder()
+                        .sprintId(sprint.getSprintId())
+                        .sprintTitle(sprint.getSprintTitle())
+                        .sprintContents(sprint.getSprintContents())
+                        .startDate(sprint.getStartDate())
+                        .endDate(sprint.getEndDate())
+                        .status(request.getStatus())
+                        .workspace(sprint.getWorkspace())
+                        .build()
+        );
+
     }
 
     public List<Label> findLabels(Sprint sprint) {
