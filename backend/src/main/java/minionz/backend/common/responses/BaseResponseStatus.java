@@ -40,6 +40,7 @@ public enum BaseResponseStatus {
     MEETING_CREATE_SUCCESS(true, 4012, "회의 생성에 성공했습니다."),
     MEETING_READ_SUCCESS(true, 4013, "회의 상세 조회에 성공했습니다."),
     ISSUE_CREATE_SUCCESS(true, 4014, "이슈 생성에 성공했습니다."),
+    TASK_STATUS_UPDATE_SUCCESS(true, 4015, "태스크 상태 변경에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
@@ -48,6 +49,7 @@ public enum BaseResponseStatus {
     TASK_LABEL_SELECT_FAIL(false, 4104, "담당자를 지정할 권한이 존재하지 않습니다."),
     TASK_NOT_EXISTS(false, 4105, "존재하지 않는 태스크입니다."),
     MEETING_NOT_EXISTS(false, 4106, "존재하지 않는 회의 일정입니다."),
+    UNCHANGED(false, 4107, "이전과 동일한 상태입니다."),
 
 
 
