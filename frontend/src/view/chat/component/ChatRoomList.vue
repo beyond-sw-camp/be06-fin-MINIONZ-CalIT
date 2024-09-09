@@ -5,6 +5,8 @@ import user3 from '@/assets/icon/persona/user3.svg';
 import user4 from '@/assets/icon/persona/user4.svg';
 import user5 from '@/assets/icon/persona/user5.svg';
 
+
+
 const messages = [
   { name: '최승은', text: '빠샤샤 🔥', time: '12m', unreadCount: 4, profilePic: user1},
   { name: '박성준', text: '메롱롱', time: '24m', profilePic: user2 },

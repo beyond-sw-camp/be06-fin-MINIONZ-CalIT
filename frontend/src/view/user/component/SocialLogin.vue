@@ -45,6 +45,9 @@ import kakao from '@/assets/icon/social/kakao.png';
 <style scoped>
 hr{
   border: 1px solid #D7DBEC;
+  width: 100%;
+  margin: 10px 0;
+  box-sizing: border-box;
 }
 .row{
   display: flex;
@@ -65,6 +68,8 @@ hr{
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .social-login_content_item {
   display: flex;

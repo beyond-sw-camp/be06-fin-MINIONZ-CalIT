@@ -41,10 +41,6 @@ const passwordsMatch = computed(() => {
   <div class="signup-page">
     <div class="signup-header">
       <h1>회원가입</h1>
-      <div class="text-wrap">
-        <span>계정이 있으신가요?</span>
-        <router-link to="/user/login">로그인 하기</router-link>
-      </div>
     </div>
     <div class="signup-body">
       <form @submit.prevent="signup">
@@ -66,7 +62,7 @@ const passwordsMatch = computed(() => {
         </router-link>
       </form>
       <div class="text-wrap">
-        <span>비밀번호가 기억나지 않으시나요?</span>
+          <router-link to="/user/login">로그인 하기</router-link>
         <router-link to="/user/password">비밀번호 찾기</router-link>
       </div>
       <div class="social-login">
@@ -92,6 +88,7 @@ a {
   color: #1E5EFF;
   margin-left: 0.625rem;
   display: block;
+  text-decoration: none;
 }
 
 .signup-header {
@@ -99,13 +96,19 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 540px;
   margin-bottom: 0.625rem;
+  position: fixed;
+  top: 5%;
+  border-radius: 20px;
+  background-color: #fff;
+padding-top: 20px;
 }
 
 .signup-body {
   width: 100%;
   overflow: scroll;
+  margin-top: 80px;
 }
 
 form {

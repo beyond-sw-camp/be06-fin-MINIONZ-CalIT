@@ -28,6 +28,7 @@
   margin: 30px 0;
   box-sizing: border-box;
   overflow: scroll;
+  scrollbar-width: none;
   padding: 30px;
   max-height: 90%;
 }

@@ -16,10 +16,6 @@ const login = () => {
   <div class="login-page">
     <div class="login-header">
       <h1>로그인</h1>
-      <div>
-        <span>처음이신가요?</span>
-        <router-link to="/user/signup">회원가입 하기</router-link>
-      </div>
     </div>
     <form @submit.prevent="login">
       <UserInput input-placeholder="아이디를 입력하세요" label="아이디" type="email"/>
@@ -28,8 +24,9 @@ const login = () => {
         <UserButton type="submit" button-ment="Login"></UserButton>
       </router-link>
     </form>
-    <div>
-      <router-link to="/user/password">비밀번호 찾기</router-link>
+    <div class="link-wrap">
+      <router-link to="/user/password" >비밀번호 찾기</router-link>
+      <router-link to="/user/signup">회원가입 하기</router-link>
     </div>
     <div class="social-login">
       <SocialLogin></SocialLogin>
@@ -45,11 +42,12 @@ const login = () => {
   width: 100%;
 }
 h1{
-  margin: 0;
+  margin: 10px;
 }
 a{
   color: #1E5EFF;
-  margin-left: 10px;
+  //margin-left: 10px;
+  text-decoration: none;
 }
 .login-header{
   display: flex;
@@ -67,5 +65,9 @@ form {
 }
 .social-login{
   width: 100%;
+}
+.link-wrap{
+  display: flex;
+  gap: 1rem;
 }
 </style>
