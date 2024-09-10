@@ -34,9 +34,14 @@ public class ChatRoomService {
     private final UserRepository userRepository;
 
     public BaseResponse<CreateChatRoomResponse> create(User user, CreateChatRoomRequest request) {
-        String chatRoomName;
+        // 로그인한 사용자가 채팅 참여에 포함되지 않았을시에 추가
+        if (!request.getParticipants().contains(user.getUserId())) {
+            request.getParticipants().add(user.getUserId());
+        }
 
-        if (request.getParticipants().size() == 1) {
+        String chatRoomName;
+        // 본인을 추가해서 총 2명일 경우
+        if (request.getParticipants().size() == 2) {
             // 개인 채팅의 경우 상대방의 이름으로 설정
             User participant = userRepository.findById(request.getParticipants().get(0))
                     .orElse(null);
@@ -60,7 +65,7 @@ public class ChatRoomService {
 
         // Kafka 토픽과 메시지 전송
         createKafkaTopic(chatRoomIdStr);
-        sendCreationMessage(chatRoomIdStr, "채팅방이 생성되었습니다.");
+//        sendCreationMessage(chatRoomIdStr, "채팅방이 생성되었습니다.");
 
         CreateChatRoomResponse chatRoomResponse = buildCreateChatRoomResponse(chatRoom, request.getParticipants(), chatRoomIdStr);
         return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_SUCCESS, chatRoomResponse);

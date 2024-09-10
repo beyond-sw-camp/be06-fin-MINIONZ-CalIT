@@ -71,7 +71,7 @@ public class MessageService {
         }
 
         // 참가자들 목록
-        List<Long> participantIds = chatParticipationRepository.findById(chatRoomId).stream()
+        List<Long> participantIds = chatParticipationRepository.findByChatRoom_ChatRoomId(chatRoomId).stream()
                 .map(chatParticipation -> chatParticipation.getUser().getUserId())
                 .collect(Collectors.toList());
 
