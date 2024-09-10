@@ -3,6 +3,8 @@ package minionz.backend.scrum.task.model.response;
 import lombok.Builder;
 import lombok.Getter;
 import minionz.backend.scrum.sprint.model.response.Label;
+import minionz.backend.scrum.sprint.model.response.Participant;
+import minionz.backend.scrum.task.model.TaskLevel;
 import minionz.backend.scrum.task.model.TaskStatus;
 
 import java.time.LocalDateTime;
@@ -15,7 +17,9 @@ public class ReadAllTaskResponse {
     private String title;
     private TaskStatus status;
     private List<Label> labels;
+    private String taskNumber;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String taskNumber;
+    private List<Participant> participants;
+    private TaskLevel priority;
 }

@@ -112,15 +112,6 @@ public class TaskService {
     }
 
 
-    public List<Participant> findParticipants(Task task) {
-        return task.getTaskParticipations().stream().map(
-                participant -> Participant.builder()
-                        .id(participant.getUser().getUserId())
-                        .userName(participant.getUser().getUserName())
-                        .isManager(true)
-                        .build()
-        ).toList();
-    }
 
     public List<ReadAllTaskResponse> readAllTask(Long sprintId) {
         List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
@@ -135,6 +126,8 @@ public class TaskService {
                         .startDate(task.getStartDate())
                         .endDate(task.getEndDate())
                         .taskNumber(task.getTaskNumber())
+                        .participants(findParticipants(task))
+                        .priority(task.getPriority())
                         .build()
         ).toList();
 
@@ -184,6 +177,17 @@ public class TaskService {
                         .build()
         ).toList();
     }
+
+    public List<Participant> findParticipants(Task task) {
+        return task.getTaskParticipations().stream().map(
+                participant -> Participant.builder()
+                        .id(participant.getUser().getUserId())
+                        .userName(participant.getUser().getUserName())
+                        .isManager(true)
+                        .build()
+        ).toList();
+    }
+
 
 
 }
