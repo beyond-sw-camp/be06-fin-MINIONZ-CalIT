@@ -29,7 +29,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "WHERE w.workspaceId = :workspaceId " +
             "AND t.startDate <= :endDate " +
             "AND t.endDate >= :startDate ORDER BY t.endDate ASC ")
-    List<Task> findUpcomingTasks(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    List<Task> findUpcomingWorkspaceTasks(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+
+    @Query("SELECT t FROM Task t " +
+            "JOIN FETCH TaskParticipation tp ON t = tp.task " +
+            "JOIN FETCH t.sprint s " +
+            "WHERE tp.user.userId = :userId " +
+            "AND t.startDate <= :endDate " +
+            "AND t.endDate >= :startDate ORDER BY t.endDate ASC ")
+    List<Task> findUpcomingMyTasks(Long userId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }
 
 
