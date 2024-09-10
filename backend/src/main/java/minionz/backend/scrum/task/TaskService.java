@@ -7,6 +7,7 @@ import minionz.backend.scrum.label.model.TaskLabel;
 import minionz.backend.scrum.label_select.TaskLabelSelectRepository;
 import minionz.backend.scrum.label_select.model.TaskLabelSelect;
 import minionz.backend.scrum.meeting.model.Meeting;
+import minionz.backend.scrum.sprint.SprintRepository;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint.model.response.Label;
 import minionz.backend.scrum.sprint.model.response.Participant;
@@ -20,6 +21,8 @@ import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
 import minionz.backend.scrum.task_participation.TaskParticipationRepository;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
+import minionz.backend.scrum.workspace.WorkspaceRepository;
+import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +38,7 @@ public class TaskService {
     private final TaskLabelSelectRepository taskLabelSelectRepository;
     private final SprintParticipationRepository sprintParticipationRepository;
     private final TaskParticipationRepository taskParticipationRepository;
+    private final SprintRepository sprintRepository;
 
     @Transactional
     public void createTask(User user, CreateTaskRequest request) {
@@ -112,9 +116,11 @@ public class TaskService {
     }
 
 
-
     public List<ReadAllTaskResponse> readAllTask(Long sprintId) {
         List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
+
+        Optional<Sprint> sprint = sprintRepository.findById(sprintId);
+        String workspaceName = sprint.get().getWorkspace().getWorkspaceName();
 
         List<ReadAllTaskResponse> response = result.stream().map(
                 task -> ReadAllTaskResponse
@@ -128,22 +134,47 @@ public class TaskService {
                         .taskNumber(task.getTaskNumber())
                         .participants(findParticipants(task))
                         .priority(task.getPriority())
+                        .workspaceName(workspaceName)
                         .build()
         ).toList();
 
         return response;
     }
 
+    public List<ReadAllTaskResponse> readAllMyTask(User user) {
+
+        List<Task> result = taskRepository.findMyTask(user.getUserId());
+
+        List<ReadAllTaskResponse> response = result.stream().map(
+                task -> ReadAllTaskResponse
+                        .builder()
+                        .id(task.getTaskId())
+                        .status(task.getStatus())
+                        .title(task.getTaskTitle())
+                        .labels(findLabels(task))
+                        .startDate(task.getStartDate())
+                        .endDate(task.getEndDate())
+                        .taskNumber(task.getTaskNumber())
+                        .participants(findParticipants(task))
+                        .priority(task.getPriority())
+                        .workspaceName(task.getSprint().getWorkspace().getWorkspaceName())
+                        .build()
+        ).toList();
+
+        return response;
+    }
+
+
     public void updateTaskStatus(Long taskId, UpdateTaskStatusRequest request) throws BaseException {
         Optional<Task> result = taskRepository.findById(taskId);
 
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             throw new BaseException(BaseResponseStatus.INVALID_ACCESS);
         }
 
         Task task = result.get();
 
-        if(task.getStatus() == request.getStatus()){
+        if (task.getStatus() == request.getStatus()) {
             throw new BaseException(BaseResponseStatus.UNCHANGED);
         }
 
@@ -187,7 +218,6 @@ public class TaskService {
                         .build()
         ).toList();
     }
-
 
 
 }
