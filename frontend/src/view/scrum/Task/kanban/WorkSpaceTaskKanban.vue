@@ -30,22 +30,37 @@ const columns = [
     id: 2,
     status: 'To Do',
     tasks: [
-      { id: 3, title: 'Model Answer', labels: ['Backend'], avatars: [user3], taskNumber: "003", dueDate: '2024-10-01' },
-      { id: 4, title: 'Add authentication pages', labels: ['Frontend', 'To Do'], avatars: [user2], taskNumber: "004", dueDate: '2024-10-01'}
+      {id: 3, title: 'Model Answer', labels: ['Backend'], avatars: [user3], taskNumber: "003", dueDate: '2024-10-01'},
+      {
+        id: 4,
+        title: 'Add authentication pages',
+        labels: ['Frontend', 'To Do'],
+        avatars: [user2],
+        taskNumber: "004",
+        dueDate: '2024-10-01'
+      }
     ]
   },
   {
     id: 3,
     status: 'In Progress',
     tasks: [
-      { id: 5, title: 'Model Answer', labels: ['DB'], avatars: [user1, space1],taskNumber: "005", morePeople: 5, dueDate: '2024-10-01'}
+      {
+        id: 5,
+        title: 'Model Answer',
+        labels: ['DB'],
+        avatars: [user1, space1],
+        taskNumber: "005",
+        morePeople: 5,
+        dueDate: '2024-10-01'
+      }
     ]
   },
   {
     id: 4,
     status: 'Done',
     tasks: [
-      { id: 6, title: 'Model Answer', labels: ['User'], avatars: [space2], taskNumber: "002", dueDate: '2024-10-01'}
+      {id: 6, title: 'Model Answer', labels: ['User'], avatars: [space2], taskNumber: "002", dueDate: '2024-10-01'}
     ]
   }
 ];
@@ -53,7 +68,7 @@ const columns = [
 
 <template>
   <div class="kanban-board">
-    <TaskColumn v-for="column in columns" :key="column.id" :column="column" />
+    <TaskColumn v-for="column in columns" :key="column.id" :column="column"/>
   </div>
 </template>
 
