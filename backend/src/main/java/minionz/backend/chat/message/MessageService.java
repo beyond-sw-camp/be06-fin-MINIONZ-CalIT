@@ -10,12 +10,14 @@ import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageType;
 import minionz.backend.chat.message.model.request.MessageRequest;
 import minionz.backend.chat.message.model.response.MessageResponse;
+import minionz.backend.utils.CloudFileUpload;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,27 +33,36 @@ public class MessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatParticipationRepository chatParticipationRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final CloudFileUpload cloudFileUpload;
 
-    public MessageResponse sendMessage(Long chatRoomId, MessageRequest request, Long senderId) {
+    public MessageResponse sendMessage(Long chatRoomId, MessageRequest request, MultipartFile[] files, Long senderId) {
 
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
+
+        // 파일 업로드 처리
+        List<String> fileUrls = null;
+        if (files != null) {
+            fileUrls = cloudFileUpload.multipleUpload(files);
+        }
 
         Message message = Message.builder()
                 .userId(senderId)
                 .chatRoomId(chatRoomId)
                 .chatParticipation(participation)
                 .messageContents(request.getMessageContents())
-                .messageType(request.getFile() != null ? MessageType.FILE : MessageType.TEXT)
-//                .fileName(request.getFile() != null ? request.getFile().getOriginalFilename() : null)
-//                .fileSize(request.getFile() != null ? String.valueOf(request.getFile().getSize()) : null)
-//                .fileType(request.getFile() != null ? request.getFile().getContentType() : null)
-//                .fileUrl(request.getFile() != null ? "/files/" + request.getFile().getOriginalFilename() : null)
+                .messageType(fileUrls != null ? MessageType.FILE : MessageType.TEXT)
+                .fileName(files != null ? files[0].getOriginalFilename() : null)
+                .fileSize(files != null ? String.valueOf(files[0].getSize()) : null)
+                .fileType(files != null ? files[0].getContentType() : null)
+                .fileUrl(fileUrls != null && !fileUrls.isEmpty() ? fileUrls.get(0) : null)
                 .build();
 
         Message savedMessage = messageRepository.save(message);
 
         // Kafka 로 메시지 전송
         String topic = "chat-room-" + chatRoomId.toString();
+
+        request.setFiles(fileUrls);
         try {
             String messageStr = objectMapper.writeValueAsString(request);
             kafkaTemplate.send(topic, senderId.toString(), messageStr);
