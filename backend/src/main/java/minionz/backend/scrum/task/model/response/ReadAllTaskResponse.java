@@ -22,4 +22,5 @@ public class ReadAllTaskResponse {
     private LocalDateTime endDate;
     private List<Participant> participants;
     private TaskLevel priority;
+    private String workspaceName;
 }
