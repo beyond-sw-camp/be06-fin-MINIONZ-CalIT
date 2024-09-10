@@ -1,7 +1,4 @@
 <script setup>
-import dashboard from '@/assets/icon/menu/dashboard.svg';
-import schedule from '@/assets/icon/menu/schedule.svg';
-import task from '@/assets/icon/menu/task.svg';
 </script>
 
 <template>
@@ -9,21 +6,21 @@ import task from '@/assets/icon/menu/task.svg';
     <li>
       <router-link to="/my/dashboard">
         <div class="menu-icon">
-          <img :src="dashboard" alt="dashboard">
+          <i class="icon-dashboard"/>
         </div>
         <p class="outfit">Dashboard</p>
       </router-link>
     </li>
     <li>
       <router-link to="/my/schedule/monthly">
-        <img :src="schedule" alt="schedule">
+        <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
     </li>
     <hr>
     <li>
       <router-link to="/my/task/kanban">
-        <img :src="task" alt="task">
+        <i class="icon-task"/>
         <p class="outfit">Task</p>
       </router-link>
     </li>
@@ -32,6 +29,11 @@ import task from '@/assets/icon/menu/task.svg';
 </template>
 
 <style scoped>
+i{
+  width: 24px;
+  display: block;
+  height: 24px;
+}
 ul{
   list-style: none;
   padding: 0;
@@ -62,5 +64,14 @@ p{
 hr{
   border: 1px solid #dfe5f1;
   width: 100%;
+}
+.icon-dashboard{
+  background-image: url("@/assets/icon/menu/dashboard.svg");
+}
+.icon-schedule{
+  background-image: url("@/assets/icon/menu/schedule.svg");
+}
+.icon-task{
+  background-image: url("@/assets/icon/menu/task.svg");
 }
 </style>
