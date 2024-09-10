@@ -1,4 +1,4 @@
-package minionz.backend.Utils;
+package minionz.backend.utils;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
