@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from 'vue';
-import TaskColumn from './component/TaskColumn.vue';
+import TaskColumn from './component/KanbanColumn.vue';
 
 import user3 from '@/assets/icon/persona/user3.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
@@ -14,7 +14,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Kanban';
 contentsDescription.value = '나의 태스크를 살펴보세요!';
 
-const columns = [
+const tasks = [
   {
     id: 2,
     status: 'To Do',
@@ -50,7 +50,7 @@ const columns = [
 
 <template>
   <div class="kanban-board">
-    <TaskColumn v-for="column in columns" :key="column.id" :column="column"/>
+    <TaskColumn v-for="task in tasks" :key="task.id" :data="task"/>
   </div>
 </template>
 

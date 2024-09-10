@@ -17,7 +17,7 @@ defineProps({
     </div>
     <div class="task-footer">
       <div class="avatars">
-        <img v-for="avatar in task.avatars" :key="avatar" :src="avatar" class="avatar"/>
+        <img v-for="avatar in task.avatars" :key="avatar" :src="avatar" class="avatar" alt="users"/>
       </div>
       <span class="due-date">{{ task.dueDate }}</span>
     </div>
