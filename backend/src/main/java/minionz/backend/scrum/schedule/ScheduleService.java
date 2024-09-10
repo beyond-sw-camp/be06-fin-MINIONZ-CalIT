@@ -10,6 +10,7 @@ import minionz.backend.scrum.schedule.response.SprintResponse;
 import minionz.backend.scrum.sprint.SprintRepository;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.sprint.model.response.Participant;
+import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,36 @@ public class ScheduleService {
         ).toList();
 
         List<Meeting> meetingResult = meetingRepository.findMeetingsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
+        List<MeetingResponse> meetings = meetingResult.stream().map(
+                meeting -> MeetingResponse
+                        .builder()
+                        .id(meeting.getMeetingId())
+                        .title(meeting.getMeetingTitle())
+                        .startDate(meeting.getStartDate())
+                        .participants(findParticipants(meeting))
+                        .build()
+        ).toList();
+
+
+        ReadMonthlyResponse response = ReadMonthlyResponse.builder().sprints(sprints).meetings(meetings).build();
+        return response;
+    }
+
+    public ReadMonthlyResponse readMyspaceMonthly(User user, ReadScheduleRequest request) {
+        List<Sprint> sprintResult = sprintRepository.findMySprintsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<SprintResponse> sprints = sprintResult.stream().map(
+                sprint -> SprintResponse
+                        .builder()
+                        .id(sprint.getSprintId())
+                        .title(sprint.getSprintTitle())
+                        .startDate(sprint.getStartDate())
+                        .endDate(sprint.getEndDate())
+                        .build()
+
+        ).toList();
+
+        List<Meeting> meetingResult = meetingRepository.findMyMeetingsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
+
         List<MeetingResponse> meetings = meetingResult.stream().map(
                 meeting -> MeetingResponse
                         .builder()
