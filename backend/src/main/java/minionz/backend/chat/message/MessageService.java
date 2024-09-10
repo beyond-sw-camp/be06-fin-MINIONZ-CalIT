@@ -15,6 +15,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,12 +32,12 @@ public class MessageService {
     private final ChatParticipationRepository chatParticipationRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-    public MessageResponse sendMessage(Long chatRoomId, MessageRequest request) {
-        ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, request.getSenderId())
-                .orElseThrow(() -> new RuntimeException("ChatParticipation not found"));
+    public MessageResponse sendMessage(Long chatRoomId, MessageRequest request, Long senderId) {
+
+        ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
 
         Message message = Message.builder()
-                .userId(request.getSenderId())
+                .userId(senderId)
                 .chatRoomId(chatRoomId)
                 .chatParticipation(participation)
                 .messageContents(request.getMessageContents())
@@ -47,31 +48,32 @@ public class MessageService {
 //                .fileUrl(request.getFile() != null ? "/files/" + request.getFile().getOriginalFilename() : null)
                 .build();
 
-        messageRepository.save(message);
+        Message savedMessage = messageRepository.save(message);
 
         // Kafka 로 메시지 전송
         String topic = "chat-room-" + chatRoomId.toString();
         try {
             String messageStr = objectMapper.writeValueAsString(request);
-            kafkaTemplate.send(topic, request.getSenderId().toString(), messageStr);
+            kafkaTemplate.send(topic, senderId.toString(), messageStr);
         } catch (JsonProcessingException e) {
             e.printStackTrace(); // 예외 처리
         }
 
+        // 참가자들 목록
         List<Long> participantIds = chatParticipationRepository.findById(chatRoomId).stream()
                 .map(chatParticipation -> chatParticipation.getUser().getUserId())
                 .collect(Collectors.toList());
 
         return MessageResponse.builder()
-                .chatRoomName(message.getChatParticipation().getChatRoom().getChatRoomName())
+                .chatRoomName(savedMessage.getChatParticipation().getChatRoom().getChatRoomName())
                 .participants(participantIds)
                 .topicName(topic)
-                .fileType(message.getFileType())
-                .fileSize(message.getFileSize())
-                .fileName(message.getFileName())
-                .fileUrl(message.getFileUrl())
-                .messageContents(message.getMessageContents())
-                .messageType(message.getMessageType())
+                .fileType(savedMessage.getFileType())
+                .fileSize(savedMessage.getFileSize())
+                .fileName(savedMessage.getFileName())
+                .fileUrl(savedMessage.getFileUrl())
+                .messageContents(savedMessage.getMessageContents())
+                .messageType(savedMessage.getMessageType())
                 .build();
     }
 

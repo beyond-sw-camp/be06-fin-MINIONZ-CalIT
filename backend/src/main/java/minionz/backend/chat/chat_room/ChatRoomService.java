@@ -33,16 +33,37 @@ public class ChatRoomService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
-    public CreateChatRoomResponse create(User user, CreateChatRoomRequest request) {
-        ChatRoom chatRoom = createChatRoom(request);
-        saveChatParticipants(chatRoom, request.getParticipants());
+    public BaseResponse<CreateChatRoomResponse> create(User user, CreateChatRoomRequest request) {
+        String chatRoomName;
+
+        if (request.getParticipants().size() == 1) {
+            // 개인 채팅의 경우 상대방의 이름으로 설정
+            User participant = userRepository.findById(request.getParticipants().get(0))
+                    .orElse(null);
+            if (participant == null) {
+                return new BaseResponse<>(BaseResponseStatus.CHAT_PARTICIPATION_NOT_FOUND);
+            }
+            chatRoomName = participant.getUserName(); // 개인 채팅방의 이름 설정
+        } else {
+            // 그룹 채팅의 경우 요청에서 받은 이름으로 설정
+            chatRoomName = request.getChatRoomName();
+        }
+
+        // 채팅방 생성
+        ChatRoom chatRoom = createChatRoom(chatRoomName);
+        BaseResponse<Void> participantResponse = saveChatParticipants(chatRoom, request.getParticipants());
+        if (!participantResponse.getSuccess()) {
+            return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_FAIL);
+        }
+
         String chatRoomIdStr = chatRoom.getChatRoomId().toString();
 
         // Kafka 토픽과 메시지 전송
         createKafkaTopic(chatRoomIdStr);
         sendCreationMessage(chatRoomIdStr, "채팅방이 생성되었습니다.");
 
-        return buildCreateChatRoomResponse(chatRoom, request.getParticipants(), chatRoomIdStr);
+        CreateChatRoomResponse chatRoomResponse = buildCreateChatRoomResponse(chatRoom, request.getParticipants(), chatRoomIdStr);
+        return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_SUCCESS, chatRoomResponse);
     }
 
     // 채팅룸 리스트 조회
@@ -75,9 +96,9 @@ public class ChatRoomService {
         return responseList;
     }
 
-    private ChatRoom createChatRoom(CreateChatRoomRequest request) {
+    private ChatRoom createChatRoom(String chatRoomName) {
         ChatRoom chatRoom = ChatRoom.builder()
-                .chatRoomName(request.getChatRoomName())
+                .chatRoomName(chatRoomName)
                 .build();
         return chatRoomRepository.save(chatRoom);
     }
