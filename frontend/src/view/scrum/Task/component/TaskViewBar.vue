@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const showAvatarGroup = ref(true);
 
 watch(
@@ -28,6 +29,8 @@ const avatars = ref([
 
 const setView = (view) => {
   currentView.value = view;
+  const basePath = route.path.split('/').slice(0, -1).join('/');
+  router.push(`${basePath}/${view}`);
 };
 
 const to = ref('kanban');
@@ -37,7 +40,7 @@ const to = ref('kanban');
   <div class="view-toggle-bar">
     <div class="view-toggle-buttons">
       <router-link
-          :to="currentView === 'kanban' ? (to.startsWith('my') ? '/my/task/kanban' : to.startsWith('workspace') ? '/workspace/scrum/task/kanban' : to) : to"
+          :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/scrum/task/${currentView}` : to"
           :class="{ active: currentView === 'kanban' }"
           @click="setView('kanban')"
       >
@@ -46,14 +49,14 @@ const to = ref('kanban');
       </router-link>
       <div class="v-line"/>
       <router-link
-          :to="currentView === 'list' ? (to.startsWith('my') ? '/my/task/list' : to.startsWith('workspace') ? '/workspace/task/list' : to) : to"
+          :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/task/${currentView}` : to"
           :class="{ active: currentView === 'list' }" @click="setView('list')">
         <i class="icon-list"></i>
         List
       </router-link>
       <div class="v-line"/>
       <router-link
-          :to="currentView === 'timeline' ? (to.startsWith('my') ? '/my/task/timeline' : to.startsWith('workspace') ? '/workspace/task/timeline' : to) : to"
+          :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/task/${currentView}` : to"
           :class="{ active: currentView === 'timeline' }" @click="setView('timeline')">
         <i class="icon-timeline"></i>
         TimeLine
