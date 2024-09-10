@@ -29,15 +29,15 @@ public class ScheduleService {
     private final IssueRepository issueRepository;
 
     public ReadMonthlyResponse readWorkspaceMonthly(Long workspaceId, ReadScheduleRequest request) {
-        List<Sprint> sprints = sprintRepository.findSprintsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
-        List<Meeting> meetings = meetingRepository.findMeetingsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Sprint> sprints = sprintRepository.findSprintsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMeetingsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
 
         return makeMonthlyResponse(sprints, meetings);
     }
 
     public ReadMonthlyResponse readMyspaceMonthly(User user, ReadScheduleRequest request) {
-        List<Sprint> sprints = sprintRepository.findMySprintsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
-        List<Meeting> meetings = meetingRepository.findMyMeetingsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Sprint> sprints = sprintRepository.findMySprintsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMyMeetingsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
 
         return makeMonthlyResponse(sprints, meetings);
     }
@@ -45,19 +45,24 @@ public class ScheduleService {
 
     public ReadWeeklyResponse readWorkspaceWeekly(Long workspaceId, ReadScheduleRequest request) {
         Pageable pageable = PageRequest.of(0, 3);
-        List<Sprint> sprints = sprintRepository.findSprintsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
-        List<Meeting> meetings = meetingRepository.findMeetingsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
-        List<Task> tasks = taskRepository.findUpcomingTasks(workspaceId, request.getStartDate(), request.getEndDate(), pageable);
-        List<Issue> issues = issueRepository.findUpcomingIssues(workspaceId, pageable);
 
-        return makeWeeklyResponse(sprints, meetings,tasks,issues);
+        List<Sprint> sprints = sprintRepository.findSprintsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMeetingsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Task> tasks = taskRepository.findUpcomingWorkspaceTasks(workspaceId, request.getStartDate(), request.getEndDate(), pageable);
+        List<Issue> issues = issueRepository.findUpcomingWorkspaceIssues(workspaceId, pageable);
+
+        return makeWeeklyResponse(sprints, meetings, tasks, issues);
     }
 
-    public ReadMonthlyResponse readMyspaceWeekly(User user, ReadScheduleRequest request) {
-        List<Sprint> sprintResult = sprintRepository.findMySprintsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
-        List<Meeting> meetingResult = meetingRepository.findMyMeetingsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
+    public ReadWeeklyResponse readMyspaceWeekly(User user, ReadScheduleRequest request) {
+        Pageable pageable = PageRequest.of(0, 3);
 
-        return makeMonthlyResponse(sprintResult, meetingResult);
+        List<Sprint> sprints = sprintRepository.findMySprintsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMyMeetingsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Task> tasks = taskRepository.findUpcomingMyTasks(user.getUserId(), request.getStartDate(), request.getEndDate(), pageable);
+        List<Issue> issues = issueRepository.findUpcomingMyIssues(user.getUserId(), pageable);
+
+        return makeWeeklyResponse(sprints, meetings, tasks, issues);
     }
 
     public ReadMonthlyResponse makeMonthlyResponse(List<Sprint> sprints, List<Meeting> meetings) {
@@ -117,7 +122,7 @@ public class ScheduleService {
                                         .builder()
                                         .title(issue.getIssueTitle())
                                         .description(issue.getIssueContents())
-                                        .managerId(issue.getUser().getLoginId())
+                                        .managerId(issue.getUser().getUserName())
                                         .build()).toList())
                 .build();
     }

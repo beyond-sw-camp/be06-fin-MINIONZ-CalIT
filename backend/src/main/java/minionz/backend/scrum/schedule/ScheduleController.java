@@ -60,4 +60,19 @@ public class ScheduleController {
 
         return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
     }
+
+    @GetMapping("/myspace/weekly")
+    public BaseResponse<ReadWeeklyResponse> readMyspaceWeekly(ReadScheduleRequest request) {
+        User user = User.builder().userId(1L).build();
+
+        ReadWeeklyResponse response;
+
+        try {
+            response = scheduleService.readMyspaceWeekly(user, request);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.MY_WEEKLY_READ_SUCCESS, response);
+    }
 }
