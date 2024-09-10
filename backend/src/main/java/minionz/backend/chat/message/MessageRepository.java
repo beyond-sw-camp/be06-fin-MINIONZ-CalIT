@@ -23,7 +23,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
                                                   Long userId,
                                                   MessageStatus status);
 
-    @Query("SELECT m FROM Message m WHERE m.chatParticipation.chatRoom.chatRoomId = :chatRoomId ORDER BY m.createdAt DESC")
+    @Query("SELECT m FROM Message m " +
+            "JOIN m.chatParticipation cp " +
+            "JOIN cp.chatRoom cr " +
+            "WHERE cr.chatRoomId = :chatRoomId " +
+            "ORDER BY m.createdAt DESC")
     List<Message> findLatestMessagesByChatRoomId(Long chatRoomId);
 
 
