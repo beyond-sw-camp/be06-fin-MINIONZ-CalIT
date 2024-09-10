@@ -17,7 +17,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
    @Query("SELECT t FROM Task t " +
            "JOIN FETCH TaskParticipation tp ON t = tp.task " +
            "JOIN FETCH Sprint s ON t.sprint = s " +
-           "WHERE tp.user.userId = :userId AND s.endDate < CURRENT_TIMESTAMP")
+           "WHERE tp.user.userId = :userId AND s.endDate > CURRENT_TIMESTAMP")
    List<Task> findMyTask(Long userId);
 }
 
