@@ -1,16 +1,21 @@
 package minionz.backend.scrum.schedule;
 
 import lombok.RequiredArgsConstructor;
+import minionz.backend.scrum.issue.IssueRepository;
+import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.meeting.MeetingRepository;
 import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.scrum.schedule.request.ReadScheduleRequest;
-import minionz.backend.scrum.schedule.response.MeetingResponse;
-import minionz.backend.scrum.schedule.response.ReadMonthlyResponse;
-import minionz.backend.scrum.schedule.response.SprintResponse;
+import minionz.backend.scrum.schedule.response.*;
 import minionz.backend.scrum.sprint.SprintRepository;
 import minionz.backend.scrum.sprint.model.Sprint;
+import minionz.backend.scrum.sprint.model.response.Label;
 import minionz.backend.scrum.sprint.model.response.Participant;
+import minionz.backend.scrum.task.TaskRepository;
+import minionz.backend.scrum.task.model.Task;
 import minionz.backend.user.model.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,43 +25,106 @@ import java.util.List;
 public class ScheduleService {
     private final SprintRepository sprintRepository;
     private final MeetingRepository meetingRepository;
+    private final TaskRepository taskRepository;
+    private final IssueRepository issueRepository;
 
     public ReadMonthlyResponse readWorkspaceMonthly(Long workspaceId, ReadScheduleRequest request) {
-        List<Sprint> sprintResult = sprintRepository.findSprintsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
-        List<Meeting> meetingResult = meetingRepository.findMeetingsInMonth(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Sprint> sprints = sprintRepository.findSprintsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMeetingsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
 
-        return makeResponse(sprintResult, meetingResult);
+        return makeMonthlyResponse(sprints, meetings);
     }
 
     public ReadMonthlyResponse readMyspaceMonthly(User user, ReadScheduleRequest request) {
-        List<Sprint> sprintResult = sprintRepository.findMySprintsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
-        List<Meeting> meetingResult = meetingRepository.findMyMeetingsInMonth(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Sprint> sprints = sprintRepository.findMySprintsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMyMeetingsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
 
-        return makeResponse(sprintResult, meetingResult);
+        return makeMonthlyResponse(sprints, meetings);
     }
 
-    public ReadMonthlyResponse makeResponse(List<Sprint> sprintResult,List<Meeting> meetingResult ){
+
+    public ReadWeeklyResponse readWorkspaceWeekly(Long workspaceId, ReadScheduleRequest request) {
+        Pageable pageable = PageRequest.of(0, 3);
+
+        List<Sprint> sprints = sprintRepository.findSprintsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMeetingsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        List<Task> tasks = taskRepository.findUpcomingWorkspaceTasks(workspaceId, request.getStartDate(), request.getEndDate(), pageable);
+        List<Issue> issues = issueRepository.findUpcomingWorkspaceIssues(workspaceId, pageable);
+
+        return makeWeeklyResponse(sprints, meetings, tasks, issues);
+    }
+
+    public ReadWeeklyResponse readMyspaceWeekly(User user, ReadScheduleRequest request) {
+        Pageable pageable = PageRequest.of(0, 3);
+
+        List<Sprint> sprints = sprintRepository.findMySprintsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Meeting> meetings = meetingRepository.findMyMeetingsInPeriod(user.getUserId(), request.getStartDate(), request.getEndDate());
+        List<Task> tasks = taskRepository.findUpcomingMyTasks(user.getUserId(), request.getStartDate(), request.getEndDate(), pageable);
+        List<Issue> issues = issueRepository.findUpcomingMyIssues(user.getUserId(), pageable);
+
+        return makeWeeklyResponse(sprints, meetings, tasks, issues);
+    }
+
+    public ReadMonthlyResponse makeMonthlyResponse(List<Sprint> sprints, List<Meeting> meetings) {
         return ReadMonthlyResponse
                 .builder()
-                .sprints(sprintResult.stream().map(
+                .sprints(sprints.stream().map(
                         sprint -> SprintResponse
                                 .builder()
                                 .id(sprint.getSprintId())
                                 .title(sprint.getSprintTitle())
                                 .startDate(sprint.getStartDate())
                                 .endDate(sprint.getEndDate())
-                                .build()
+                                .build()).toList())
+                .meetings(meetings.stream().map(
+                        meeting -> MeetingResponse
+                                .builder()
+                                .id(meeting.getMeetingId())
+                                .title(meeting.getMeetingTitle())
+                                .startDate(meeting.getStartDate())
+                                .participants(findParticipants(meeting))
+                                .build()).toList())
+                .build();
+    }
 
-                ).toList())
-                .meetings( meetingResult.stream().map(
-                meeting -> MeetingResponse
-                        .builder()
-                        .id(meeting.getMeetingId())
-                        .title(meeting.getMeetingTitle())
-                        .startDate(meeting.getStartDate())
-                        .participants(findParticipants(meeting))
-                        .build()
-        ).toList()).build();
+    public ReadWeeklyResponse makeWeeklyResponse(List<Sprint> sprints, List<Meeting> meetings, List<Task> tasks, List<Issue> issues) {
+        return ReadWeeklyResponse
+                .builder()
+                .sprints(sprints.stream().map(
+                        sprint -> SprintResponse
+                                .builder()
+                                .id(sprint.getSprintId())
+                                .title(sprint.getSprintTitle())
+                                .startDate(sprint.getStartDate())
+                                .endDate(sprint.getEndDate())
+                                .build()).toList())
+                .meetings(meetings.stream().map(
+                        meeting -> MeetingResponse
+                                .builder()
+                                .id(meeting.getMeetingId())
+                                .title(meeting.getMeetingTitle())
+                                .startDate(meeting.getStartDate())
+                                .participants(findParticipants(meeting))
+                                .build()).toList())
+                .tasks(
+                        tasks.stream().map(
+                                task -> TaskResponse
+                                        .builder()
+                                        .id(task.getTaskId())
+                                        .title(task.getTaskTitle())
+                                        .endDate(task.getEndDate())
+                                        .priority(task.getPriority())
+                                        .labels(findLabels(task))
+                                        .build()).toList())
+                .issues(
+                        issues.stream().map(
+                                issue -> IssueResponse
+                                        .builder()
+                                        .title(issue.getIssueTitle())
+                                        .description(issue.getIssueContents())
+                                        .managerId(issue.getUser().getUserName())
+                                        .build()).toList())
+                .build();
     }
 
     public List<Participant> findParticipants(Meeting meeting) {
@@ -65,7 +133,18 @@ public class ScheduleService {
                         .id(participant.getUser().getUserId())
                         .userName(participant.getUser().getUserName())
                         .isManager(true)
-                        .build()
-        ).toList();
+                        .build()).toList();
     }
+
+    public List<Label> findLabels(Task task) {
+        return task.getTaskLabelSelects().stream().map(
+                label -> Label
+                        .builder()
+                        .id(label.getTaskLabel().getTaskLabelId())
+                        .labelName(label.getTaskLabel().getLabelName())
+                        .color(label.getTaskLabel().getColor())
+                        .build()).toList();
+    }
+
+
 }
