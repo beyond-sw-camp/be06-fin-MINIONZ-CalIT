@@ -7,6 +7,7 @@ import minionz.backend.chat.chat_participation.ChatParticipationRepository;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.chat.chat_room.ChatRoomRepository;
 import minionz.backend.chat.message.model.Message;
+import minionz.backend.chat.message.model.MessageStatus;
 import minionz.backend.chat.message.model.MessageType;
 import minionz.backend.chat.message.model.request.MessageRequest;
 import minionz.backend.chat.message.model.response.MessageResponse;
@@ -30,7 +31,6 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
-    private final ChatRoomRepository chatRoomRepository;
     private final ChatParticipationRepository chatParticipationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final CloudFileUpload cloudFileUpload;
@@ -55,6 +55,7 @@ public class MessageService {
                 .fileSize(files != null ? String.valueOf(files[0].getSize()) : null)
                 .fileType(files != null ? files[0].getContentType() : null)
                 .fileUrl(fileUrls != null && !fileUrls.isEmpty() ? fileUrls.get(0) : null)
+                .messageStatus(MessageStatus.UNREAD)
                 .build();
 
         Message savedMessage = messageRepository.save(message);

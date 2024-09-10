@@ -82,7 +82,6 @@ public class ChatRoomService {
 
             // 채팅방에서 가장 최근 메시지를 가져옴
             Message latestMessage = findLatestMessage(chatRoom.getChatRoomId());
-            System.out.println(latestMessage.getMessageContents());
 
             // 읽지 않은 메시지 수 계산
             Long unreadMessagesCount = messageRepository.countUnreadMessagesByChatRoomIdAndUserId(
@@ -91,7 +90,7 @@ public class ChatRoomService {
             ReadChatRoomResponse response = ReadChatRoomResponse.builder()
                     .chatroomId(chatRoom.getChatRoomId())
                     .chatRoomName(chatRoom.getChatRoomName())
-                    .messageContents(latestMessage != null ? latestMessage.getMessageContents() : "No messages")
+                    .messageContents(latestMessage != null ? latestMessage.getMessageContents() : "채팅방에 메세지가 없습니다.")
                     .createdAt(latestMessage != null ? latestMessage.getCreatedAt() : chatRoom.getCreatedAt())
                     .UnreadMessages(unreadMessagesCount != null ? unreadMessagesCount.intValue() : 0)
                     .build();
