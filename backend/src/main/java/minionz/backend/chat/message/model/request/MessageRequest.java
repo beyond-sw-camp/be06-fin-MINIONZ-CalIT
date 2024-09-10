@@ -10,5 +10,4 @@ public class MessageRequest {
 //    private MultipartFile file;
     private String  file;
     private Long chatRoomId;
-    private Long senderId;
 }

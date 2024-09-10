@@ -18,6 +18,7 @@ public class Message extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
+    private Long receiverId;
     private Long chatRoomId;
     private Long userId;
 
