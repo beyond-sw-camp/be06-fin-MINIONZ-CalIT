@@ -25,7 +25,7 @@ public class ChatRoomController {
     @PostMapping(value = "/room")
     public BaseResponse<CreateChatRoomResponse> create(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateChatRoomRequest request) {
         User user = customUserDetails.getUser();
-        CreateChatRoomResponse response = chatRoomService.create(user, request);
+        CreateChatRoomResponse response = chatRoomService.create(user, request).getResult();
         return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_SUCCESS, response);
     }
 

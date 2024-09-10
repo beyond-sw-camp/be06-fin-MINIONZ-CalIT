@@ -72,7 +72,9 @@ public enum BaseResponseStatus {
     CHATROOM_LIST_SUCCESS(true, 6101, "채팅방 조회에 성공했습니다."),
     CHATROOM_LIST_FAIL(false, 6102, "채팅방 조회에 실패했습니다."),
     MESSAGE_SEND_SUCCESS(true, 6201, "메세지가 성공적으로 전송되었습니다."),
-    MESSAGE_SEND_FAIL(false, 6202, "메세지가 전송되지 않았습니다.");
+    MESSAGE_SEND_FAIL(false, 6202, "메세지가 전송되지 않았습니다."),
+    CHAT_PARTICIPATION_NOT_FOUND(false, 6203, "참여자가 존재하지 않습니다.");
+
 
 
     /**
