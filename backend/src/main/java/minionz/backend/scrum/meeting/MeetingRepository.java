@@ -17,4 +17,11 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "AND m.startDate <= :endDate " +
             "AND m.startDate >= :startDate")
     List<Meeting> findMeetingsInMonth(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT m FROM Meeting m " +
+            "JOIN FETCH m.meetingParticipations mp " +
+            "WHERE mp.user.userId = :userId " +
+            "AND m.startDate <= :endDate " +
+            "AND m.startDate >= :startDate")
+    List<Meeting> findMyMeetingsInMonth(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 }

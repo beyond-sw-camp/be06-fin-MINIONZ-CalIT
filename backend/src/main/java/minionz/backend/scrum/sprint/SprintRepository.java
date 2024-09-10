@@ -17,4 +17,11 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
             "AND s.endDate >= :startDate")
     List<Sprint> findSprintsInMonth(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query("SELECT s FROM Sprint s " +
+            "JOIN FETCH s.sprintParticipations sp " +
+            "WHERE sp.user.userId = :userId " +
+            "AND s.startDate <= :endDate " +
+            "AND s.endDate >= :startDate")
+    List<Sprint> findMySprintsInMonth(Long userId, LocalDateTime startDate, LocalDateTime endDate);
+
 }
