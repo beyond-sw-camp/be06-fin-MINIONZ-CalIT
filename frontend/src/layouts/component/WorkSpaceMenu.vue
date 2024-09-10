@@ -1,44 +1,32 @@
-<script setup>
-import dashboard from '@/assets/icon/menu/dashboard.svg';
-import schedule from '@/assets/icon/menu/schedule.svg';
-import board from '@/assets/icon/menu/board.svg';
-import qa from '@/assets/icon/menu/qa.svg';
-import errors from '@/assets/icon/menu/errors.svg';
-import scrum from '@/assets/icon/menu/scrum.svg';
-import sprint from '@/assets/icon/menu/sprint.svg';
-import task from '@/assets/icon/menu/task.svg';
-import meeting from '@/assets/icon/menu/meeting.svg';
-</script>
-
 <template>
   <ul>
     <li>
       <router-link to="/workspace/dashboard">
-        <img :src="dashboard" alt="dashboard">
+        <i class="icon-dashboard"/>
         <p class="outfit">Dashboard</p>
       </router-link>
     </li>
     <li>
       <router-link to="/workspace/schedule/monthly">
-        <img :src="schedule" alt="schedule">
+        <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
     </li>
     <li>
       <router-link to="/workspace/board/qa">
-        <img :src="board" alt="dashboard">
+        <i class="icon-board"/>
         <p class="outfit">Board</p>
       </router-link>
       <ul class="submenu">
         <li>
           <router-link to="/workspace/board/qa">
-            <img :src="qa" alt="qa">
+            <i class="icon-qa"/>
             <p class="outfit">QA Board</p>
           </router-link>
         </li>
         <li>
           <router-link to="/workspace/board/error">
-            <img :src="errors" alt="errors">
+            <i class="icon-errors"/>
             <p class="outfit">Errors</p>
           </router-link>
         </li>
@@ -47,27 +35,27 @@ import meeting from '@/assets/icon/menu/meeting.svg';
     <hr>
     <li>
       <router-link to="/workspace/scrum/task/kanban">
-        <img :src="scrum" alt="dashboard">
+        <i class="icon-scrum"/>
         <p class="outfit">Scrum</p>
       </router-link>
       <ul class="submenu">
         <li>
           <router-link to="/workspace/scrum/sprint">
             <div>
-              <img :src="sprint" alt="sprint">
+              <i class="icon-sprint"/>
             </div>
             <p class="outfit">Sprint</p>
           </router-link>
         </li>
         <li>
-          <router-link to="/workspace/scrum/kanban">
-            <img :src="task" alt="task">
+          <router-link to="/workspace/scrum/task/kanban">
+            <i class="icon-task"/>
             <p class="outfit">Task</p>
           </router-link>
         </li>
         <li>
           <router-link to="/workspace/scrum/meeting">
-            <img :src="meeting" alt="meeting">
+            <i class="icon-meeting"/>
             <p class="outfit">Meeting</p>
           </router-link>
         </li>
@@ -110,5 +98,39 @@ p{
 hr{
   border: 1px solid #dfe5f1;
   width: 100%;
+}
+
+i{
+  width: 24px;
+  display: block;
+  height: 24px;
+}
+
+.icon-dashboard{
+  background-image: url("@/assets/icon/menu/dashboard.svg");
+}
+.icon-schedule{
+  background-image: url("@/assets/icon/menu/schedule.svg");
+}
+.icon-board{
+  background-image: url("@/assets/icon/menu/board.svg");
+}
+.icon-qa{
+  background-image: url("@/assets/icon/menu/qa.svg");
+}
+.icon-errors{
+  background-image: url("@/assets/icon/menu/errors.svg");
+}
+.icon-scrum{
+  background-image: url("@/assets/icon/menu/scrum.svg");
+}
+.icon-sprint{
+  background-image: url("@/assets/icon/menu/sprint.svg");
+}
+.icon-task{
+  background-image: url("@/assets/icon/menu/task.svg");
+}
+.icon-meeting{
+  background-image: url("@/assets/icon/menu/meeting.svg");
 }
 </style>
