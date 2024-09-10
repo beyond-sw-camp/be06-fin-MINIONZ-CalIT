@@ -61,6 +61,20 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
     }
 
+    @GetMapping("/all/my")
+    public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask() {
+        User user = User.builder().userId(1L).build();
+        List<ReadAllTaskResponse> response;
+
+        try {
+            response = taskService.readAllMyTask(user);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+    }
+
     @PatchMapping("/{taskId}")
     public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @RequestBody UpdateTaskStatusRequest request) {
         User user = User.builder().userId(1L).build();
