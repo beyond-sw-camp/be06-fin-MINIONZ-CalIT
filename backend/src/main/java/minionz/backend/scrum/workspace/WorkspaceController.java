@@ -30,7 +30,7 @@ public class WorkspaceController {
     @GetMapping("/all")
     public BaseResponse<List<ReadWorkspaceResponse>> readAllWorkspace() {
 //      TODO: 추 후 AuthenticationPrincipal로 user 찾도록 수정.
-        User user = User.builder().userId(2L).build();
+        User user = User.builder().userId(1L).build();
 
         List<ReadWorkspaceResponse> readWorkspaceResponses = workspaceService.readAll(user);
 
