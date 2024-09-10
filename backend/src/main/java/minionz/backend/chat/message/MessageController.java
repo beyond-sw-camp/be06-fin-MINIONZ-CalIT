@@ -7,10 +7,8 @@ import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/message")
@@ -23,8 +21,21 @@ public class MessageController {
     @PostMapping("/send")
     public BaseResponse<MessageResponse> sendMessage(@RequestBody MessageRequest request, @AuthenticationPrincipal CustomSecurityUserDetails userDetails) {
         Long senderId = userDetails.getUser().getUserId();
-        System.out.println("Sender ID: " + senderId);
-        MessageResponse response = messageService.sendMessage(request.getChatRoomId(), request, senderId);
+        MessageResponse response = messageService.sendMessage(request.getChatRoomId(), request,null, senderId);
+        return new BaseResponse<>(BaseResponseStatus.MESSAGE_SEND_SUCCESS, response);
+    }
+
+    @PostMapping("/sendFile")
+    public BaseResponse<MessageResponse> sendFile(
+            @RequestParam("chatRoomId") Long chatRoomId,
+            @RequestPart(name = "files") MultipartFile[] files,
+            @AuthenticationPrincipal CustomSecurityUserDetails userDetails) {
+
+        Long senderId = userDetails.getUser().getUserId();
+        MessageRequest request = new MessageRequest();
+        request.setChatRoomId(chatRoomId);
+        // files 전달
+        MessageResponse response = messageService.sendMessage(chatRoomId, request, files, senderId);
 
         return new BaseResponse<>(BaseResponseStatus.MESSAGE_SEND_SUCCESS, response);
     }
