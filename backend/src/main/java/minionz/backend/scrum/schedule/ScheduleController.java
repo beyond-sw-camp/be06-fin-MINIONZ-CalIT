@@ -7,6 +7,7 @@ import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.schedule.request.ReadScheduleRequest;
 import minionz.backend.scrum.schedule.response.ReadMonthlyResponse;
+import minionz.backend.scrum.schedule.response.ReadWeeklyResponse;
 import minionz.backend.user.model.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +45,19 @@ public class ScheduleController {
         }
 
         return new BaseResponse<>(BaseResponseStatus.MY_MONTHLY_READ_SUCCESS, response);
+    }
+
+    @GetMapping("/workspace/{workspaceId}/weekly")
+    public BaseResponse<ReadWeeklyResponse> readWorkspaceWeekly(@PathVariable Long workspaceId, ReadScheduleRequest request) {
+
+        ReadWeeklyResponse response;
+
+        try {
+            response = scheduleService.readWorkspaceWeekly(workspaceId, request);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
     }
 }
