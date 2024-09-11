@@ -253,7 +253,7 @@ const routes = [
                 ]
             },
             {
-                path: 'chat',
+                path: `chat/:roomId`,
                 name: 'Chat',
                 component: () => import('@/view/chat/ChatRoom.vue')
             }
