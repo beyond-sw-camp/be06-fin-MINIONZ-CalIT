@@ -19,9 +19,9 @@ const props = defineProps({
     <img v-if="!isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
     <div class="message-content">
       <div class="message-bubble">
-        <p>{{ props.message?.text || 'No message' }}</p>
+        <p>{{ props.message.text || 'No message' }}</p>
       </div>
-      <span class="timestamp">{{ props.message?.time || 'No time' }}</span>
+      <span class="timestamp">{{ props.message.time || 'No time' }}</span>
     </div>
     <img v-if="isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
   </div>

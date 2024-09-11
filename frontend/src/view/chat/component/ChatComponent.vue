@@ -1,33 +1,20 @@
 <script setup>
 import { ref } from 'vue';
+import { useChatMessageStore } from '@/store/socket/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
-import user1 from '@/assets/icon/persona/user1.svg';
+// import user1 from '@/assets/icon/persona/user1.svg';
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
 
 const chatPartner = "연희";
 
-const messages = ref([
-  { text: "연희의 채팅 기능", time: "10:07 AM", profilePic: space3, isOwn: false },
-  { text: "응원해용 ✅", time: "10:08 AM", profilePic: space3, isOwn: false },
-  { text: "예시 데이터", time: "10:08 AM", profilePic: space3, isOwn: false },
-  { text: "연희야 화이팅", time: "10:08 AM", profilePic: user1, isOwn: true },
-  { text: "슬이 화이팅", time: "10:08 AM", profilePic: user1, isOwn: true },
-  { text: "성준 오빠 아쟈쟈", time: "10:08 AM", profilePic: user1, isOwn: true },
-  { text: "내 짝꿍 혜정잉 😂", time: "10:08 AM", profilePic: user1, isOwn: true },
-]);
-
 const newMessage = ref('');
+const chatStore = useChatMessageStore();
 
 const sendMessage = () => {
-  if (newMessage.value.trim() !== '') {
-    messages.value.push({
-      text: newMessage.value,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      profilePic: user1,
-      isOwn: true
-    });
+  if (newMessage.value) {
+    chatStore.sendMessage(chatStore.activeChatRoomId, newMessage.value);
     newMessage.value = '';
   }
 };
@@ -39,6 +26,7 @@ const triggerFileInput = () => {
 };
 </script>
 
+
 <template>
   <div class="chat-container">
     <div class="chat-header">
@@ -49,10 +37,10 @@ const triggerFileInput = () => {
     <div class="chat-messages">
       <div class="chat-msg-container">
         <Message
-            v-for="(msg, index) in messages"
-            :key="index"
-            :message="msg"
-            :isOwnMessage="msg.isOwn"
+            v-for="(message) in chatStore.messages"
+            :key="message.id"
+            :message="message.content"
+            :isOwnMessage="message.isOwn"
         />
       </div>
 

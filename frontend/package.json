@@ -16,6 +16,8 @@
     "pinia": "^2.2.2",
     "pinia-plugin-persistedstate": "^3.2.3",
     "quill": "^2.0.2",
+    "sockjs-client": "^1.6.1",
+    "@stomp/stompjs": "^6.1.2",
     "vee-validate": "^4.13.2",
     "vue": "^3.2.13",
     "vue-draggable-next": "^2.2.1",
