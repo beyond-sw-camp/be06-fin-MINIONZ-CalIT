@@ -13,4 +13,10 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
             "WHERE wp.user.userId = :userId " +
             "AND wp.isValid = true")
     List<Workspace> findWorkspaceByUserId(Long userId);
+
+    @Query("SELECT Count(wp) FROM Workspace w " +
+            "JOIN w.workspaceParticipations wp " +
+            "WHERE wp.user.userId = :userId " +
+            "AND wp.isValid = true")
+    int findWorkspaceCountByUserId(Long userId);
 }
