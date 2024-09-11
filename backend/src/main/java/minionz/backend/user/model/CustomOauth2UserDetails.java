@@ -52,7 +52,7 @@ public class CustomOauth2UserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return user.getLoginId();
+        return user.getUserName();
     }
 
 
