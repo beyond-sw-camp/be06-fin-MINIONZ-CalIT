@@ -22,7 +22,7 @@ public class MessageController {
     }
 
     // 파일 전송
-    @MessageMapping("/room/{chatRoomId}/sendFile")
+    @PostMapping("/message/sendFile")
     public void sendFile(
             @RequestParam("chatRoomId") Long chatRoomId,
             @RequestPart(name = "files") MultipartFile[] files,
