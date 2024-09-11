@@ -2,8 +2,6 @@ package minionz.backend.board.qa_comment.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.board.qa_board.model.QaBoard;
-import minionz.backend.user.model.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,32 +10,24 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class QaComment {
+public class QaCommentImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long qaCommentId;
-
-    private String qaCommentTitle;
-    private String qaCommentContent;
+    private Long qaCommentImageId;
+    private String imageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @Enumerated(EnumType.STRING)
-    private ProgressStatus progressStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="qa_comment_id")
+    private QaComment qaComment;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "qa_board_id")
-    private QaBoard qaBoard;
 }

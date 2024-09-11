@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class ErrorCommentImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ErrorCommentImageId;
+    private Long errorCommentImageId;
     private String imageUrl;
 
     @CreatedDate

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import minionz.backend.board.error_board.model.ErrorBoard;
+import minionz.backend.board.qa_board.model.QaBoard;
 import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.label.model.TaskLabel;
 
@@ -48,7 +49,9 @@ public class Workspace {
     private List<TaskLabel> taskLabels = new ArrayList<>();
 
     // Workspace : errorBoard = 1 : 1
-    @OneToOne
-    @JoinColumn(name = "workspace")
-    private ErrorBoard errorBoard;
+    @OneToMany(mappedBy = "workSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ErrorBoard> errorBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<QaBoard> qaBoards = new ArrayList<>();
 }
