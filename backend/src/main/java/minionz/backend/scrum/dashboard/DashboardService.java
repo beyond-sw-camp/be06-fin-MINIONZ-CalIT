@@ -2,12 +2,11 @@ package minionz.backend.scrum.dashboard;
 
 import lombok.RequiredArgsConstructor;
 import minionz.backend.scrum.dashboard.model.request.ReadMyDashboardRequest;
-import minionz.backend.scrum.dashboard.model.response.PriorityTaskResponse;
-import minionz.backend.scrum.dashboard.model.response.ProgressResponse;
-import minionz.backend.scrum.dashboard.model.response.ReadMyDashboardResponse;
-import minionz.backend.scrum.dashboard.model.response.UpcomingMyMeetingResponse;
+import minionz.backend.scrum.dashboard.model.response.*;
+import minionz.backend.scrum.issue.IssueRepository;
 import minionz.backend.scrum.meeting.MeetingRepository;
 import minionz.backend.scrum.meeting.model.Meeting;
+import minionz.backend.scrum.sprint.SprintRepository;
 import minionz.backend.scrum.task.TaskRepository;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.workspace.WorkspaceRepository;
@@ -24,12 +23,14 @@ public class DashboardService {
     private final WorkspaceRepository workspaceRepository;
     private final TaskRepository taskRepository;
     private final MeetingRepository meetingRepository;
+    private final IssueRepository issueRepository;
+    private final SprintRepository sprintRepository;
 
     public ReadMyDashboardResponse readMyDashboard(User user, ReadMyDashboardRequest request) {
         Long userId = user.getUserId();
         Pageable pageable = PageRequest.of(0, 3);
 
-        ProgressResponse progress = ProgressResponse
+        MyProgressResponse progress = MyProgressResponse
                 .builder()
                 .workspaceCount(workspaceRepository.findWorkspaceCountByUserId(userId))
                 .allTaskCount(taskRepository.findMyAllTask(userId))
@@ -53,22 +54,45 @@ public class DashboardService {
 
         List<Meeting> meetings = meetingRepository.findMyMeetingsInPeriod(userId, request.getStartDate(), request.getEndDate());
 
-        List<UpcomingMyMeetingResponse> upcomingMeetings = meetings.stream().map(
+        return ReadMyDashboardResponse
+                .builder()
+                .progress(progress)
+                .priorityTasks(priorityTasks)
+                .upcomingMeetings(toUpcomingMeetings(meetings))
+                .build();
+    }
+
+    public ReadWorkspaceDashboardResponse readWorkspaceDashboard(Long workspaceId, ReadMyDashboardRequest request) {
+
+        WorkspaceProgressResponse progress = WorkspaceProgressResponse
+                .builder()
+                .allSprintCount(sprintRepository.findAllSprintCount(workspaceId))
+                .sprintCount(sprintRepository.findInprogressSprintCount(workspaceId, request.getStartDate(), request.getEndDate()))
+                .allTaskCount(taskRepository.findAllTaskCount(workspaceId))
+                .successTaskCount(taskRepository.findSuccessTaskCount(workspaceId))
+                .issueCount(issueRepository.findWorkspaceIssuesCount(workspaceId))
+                .build();
+
+        List<Meeting> meetings = meetingRepository.findMeetingsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+
+        return ReadWorkspaceDashboardResponse
+                .builder()
+                .progress(progress)
+                .upcomingMeetings(toUpcomingMeetings(meetings))
+                .build();
+    }
+
+    public List<UpcomingMyMeetingResponse> toUpcomingMeetings(List<Meeting> meetings) {
+        return meetings.stream().map(
                 meeting -> UpcomingMyMeetingResponse
                         .builder()
                         .id(meeting.getMeetingId())
                         .title(meeting.getMeetingTitle())
                         .workspaceName(meeting.getSprint().getWorkspace().getWorkspaceName())
+                        .sprintName(meeting.getSprint().getSprintTitle())
                         .startDate(meeting.getStartDate())
                         .build()
         ).toList();
-
-        return ReadMyDashboardResponse
-                .builder()
-                .progress(progress)
-                .priorityTasks(priorityTasks)
-                .upcomingMeetings(upcomingMeetings)
-                .build();
     }
 
 
