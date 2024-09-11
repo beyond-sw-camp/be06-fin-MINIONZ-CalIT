@@ -63,6 +63,21 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "END ASC")
     List<Task> findPriorityMyTasks(Long userId, Pageable pageable);
 
+
+    @Query("SELECT COUNT(t) FROM Task t " +
+            "JOIN FETCH Sprint s ON t.sprint = s " +
+            "JOIN FETCH Workspace w ON s.workspace = w " +
+            "WHERE w.workspaceId = :workspaceId " +
+            "AND s.endDate > CURRENT_TIMESTAMP ")
+    int findAllTaskCount(Long workspaceId);
+
+    @Query("SELECT COUNT(t) FROM Task t " +
+            "JOIN FETCH Sprint s ON t.sprint = s " +
+            "JOIN FETCH Workspace w ON s.workspace = w " +
+            "WHERE w.workspaceId = :workspaceId " +
+            "AND s.endDate > CURRENT_TIMESTAMP " +
+            "AND t.status = minionz.backend.scrum.task.model.TaskStatus.DONE")
+    int findSuccessTaskCount(Long workspaceId);
 }
 
 
