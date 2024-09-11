@@ -1,9 +1,7 @@
-package minionz.backend.board.error_comment.model;
+package minionz.backend.board.qa_board.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.board.error_board.model.ErrorBoard;
-import minionz.backend.user.model.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,30 +10,26 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class ErrorComment {
+public class QaBoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long errorCommentId;
+    private Long qaBoardImageId;
 
-    private String errCommentContent;
+    private String imageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updatedAt;
-
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private LocalDateTime modifiedAt;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "error_board_id")
-    private ErrorBoard errorBoard;
+    @JoinColumn(name="qa_board_id")
+    private QaBoard qaBoard;
+
 
 }
