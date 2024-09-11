@@ -12,7 +12,6 @@ import java.util.List;
 public class MessageRequest {
 
     private String messageContents;
-//    private MultipartFile file;
     private List<String> files;
     private Long chatRoomId;
 }

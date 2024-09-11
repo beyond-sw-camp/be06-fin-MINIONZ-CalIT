@@ -5,24 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.chat.chat_participation.ChatParticipationRepository;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
-import minionz.backend.chat.chat_room.ChatRoomRepository;
 import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageStatus;
 import minionz.backend.chat.message.model.MessageType;
 import minionz.backend.chat.message.model.request.MessageRequest;
-import minionz.backend.chat.message.model.response.MessageResponse;
 import minionz.backend.utils.CloudFileUpload;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +31,7 @@ public class MessageService {
     private final SimpMessagingTemplate messagingTemplate;
     private final CloudFileUpload cloudFileUpload;
 
-    public MessageResponse sendMessage(Long chatRoomId, MessageRequest request, MultipartFile[] files, Long senderId) {
+    public void sendMessage(Long chatRoomId, MessageRequest request, MultipartFile[] files, Long senderId) {
 
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
 
@@ -58,7 +54,7 @@ public class MessageService {
                 .messageStatus(MessageStatus.UNREAD)
                 .build();
 
-        Message savedMessage = messageRepository.save(message);
+        messageRepository.save(message);
 
         // Kafka 로 메시지 전송
         String topic = "chat-room-" + chatRoomId.toString();
@@ -68,25 +64,8 @@ public class MessageService {
             String messageStr = objectMapper.writeValueAsString(request);
             kafkaTemplate.send(topic, senderId.toString(), messageStr);
         } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
         }
-
-        // 참가자들 목록
-        List<Long> participantIds = chatParticipationRepository.findByChatRoom_ChatRoomId(chatRoomId).stream()
-                .map(chatParticipation -> chatParticipation.getUser().getUserId())
-                .collect(Collectors.toList());
-
-        return MessageResponse.builder()
-                .chatRoomName(savedMessage.getChatParticipation().getChatRoom().getChatRoomName())
-                .participants(participantIds)
-                .topicName(topic)
-                .fileType(savedMessage.getFileType())
-                .fileSize(savedMessage.getFileSize())
-                .fileName(savedMessage.getFileName())
-                .fileUrl(savedMessage.getFileUrl())
-                .messageContents(savedMessage.getMessageContents())
-                .messageType(savedMessage.getMessageType())
-                .build();
     }
 
     @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
@@ -96,7 +75,7 @@ public class MessageService {
             // STOMP 를 통해 웹소켓으로 메시지 전송
             messagingTemplate.convertAndSend("/sub/room/" + request.getChatRoomId().toString(), request);
         } catch (IOException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
         }
     }
 }
