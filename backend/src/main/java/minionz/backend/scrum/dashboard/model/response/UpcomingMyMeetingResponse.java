@@ -11,5 +11,6 @@ public class UpcomingMyMeetingResponse {
     private Long id;
     private String title;
     private String workspaceName;
+    private String sprintName;
     private LocalDateTime startDate;
 }
