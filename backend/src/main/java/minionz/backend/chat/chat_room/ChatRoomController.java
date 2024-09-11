@@ -2,15 +2,12 @@ package minionz.backend.chat.chat_room;
 
 import lombok.RequiredArgsConstructor;
 import minionz.backend.chat.chat_room.model.request.CreateChatRoomRequest;
-import minionz.backend.chat.chat_room.model.request.CreatePersonalChatRoomRequest;
 import minionz.backend.chat.chat_room.model.response.CreateChatRoomResponse;
-import minionz.backend.chat.chat_room.model.response.CreatePersonalChatRoomResponse;
 import minionz.backend.chat.chat_room.model.response.ReadChatRoomResponse;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.User;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
