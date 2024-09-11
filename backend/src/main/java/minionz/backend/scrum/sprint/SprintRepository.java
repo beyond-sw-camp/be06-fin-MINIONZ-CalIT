@@ -24,4 +24,16 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
             "AND s.endDate >= :startDate")
     List<Sprint> findMySprintsInPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query("SELECT COUNT(s) FROM Sprint s " +
+            "JOIN s.workspace w " +
+            "WHERE w.workspaceId = :workspaceId " +
+            "AND s.startDate <= :endDate " +
+            "AND s.endDate >= :startDate")
+    int findInprogressSprintCount(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT COUNT(s) FROM Sprint s " +
+            "JOIN s.workspace w " +
+            "WHERE w.workspaceId = :workspaceId ")
+    int findAllSprintCount(Long workspaceId);
+
 }

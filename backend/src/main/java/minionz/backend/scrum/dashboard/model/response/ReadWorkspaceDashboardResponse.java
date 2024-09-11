@@ -5,11 +5,9 @@ import lombok.Getter;
 
 import java.util.List;
 
-
 @Getter
 @Builder
-public class ReadMyDashboardResponse {
-    private MyProgressResponse progress;
-    private List<PriorityTaskResponse> priorityTasks;
+public class ReadWorkspaceDashboardResponse {
+    private WorkspaceProgressResponse progress;
     private List<UpcomingMyMeetingResponse> upcomingMeetings;
 }
