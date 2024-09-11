@@ -56,27 +56,4 @@ public class UserController {
         }
         return ResponseEntity.ok("이메일 및 인증코드를 확인해주세요!");
     }
-
-//    @PostMapping("/login")
-//    public ResponseEntity<String> loginUser(@RequestBody LoginUserRequest loginUserRequest) {
-//        User user = userService.loginUser(loginUserRequest.getLoginId(), loginUserRequest.getPassword());
-//
-//        // JWT 토큰 생성
-//        String token = jwtUtil.createToken(user.getLoginId(), user.getUserName());
-//
-//        // 로그인 성공 시 JWT 토큰을 반환
-//        return ResponseEntity.ok(token);
-//    }
-//
-//    @GetMapping("/success")
-//    public ResponseEntity<?> oauth2LoginSuccess(Authentication authentication) {
-//        // 소셜 로그인 성공 후 사용자 정보로 JWT 발급
-//        String token = jwtUtil.createJwt(authentication.getName(), authentication.getAuthorities().toString());
-//        return ResponseEntity.ok(new JwtResponse(token));
-//    }
-//
-//    @GetMapping("/failure")
-//    public ResponseEntity<?> oauth2LoginFailure() {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("소셜 로그인 실패");
-//    }
 }

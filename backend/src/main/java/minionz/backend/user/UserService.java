@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import minionz.backend.user.model.EmailVerify;
 import minionz.backend.user.model.User;
 import minionz.backend.user.model.request.CreateUserRequest;
+import minionz.backend.user.model.request.EmailVerifyRequest;
+import minionz.backend.user.model.request.LoginUserRequest;
+import minionz.backend.user.model.request.UuidRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
