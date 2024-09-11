@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class ReadMyDashboardResponse {
-    private ProgressResponse progress;
+    private MyProgressResponse progress;
     private List<PriorityTaskResponse> priorityTasks;
     private List<UpcomingMyMeetingResponse> upcomingMeetings;
 }

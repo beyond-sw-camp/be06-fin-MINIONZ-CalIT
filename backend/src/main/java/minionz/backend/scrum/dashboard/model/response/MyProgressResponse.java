@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProgressResponse {
+public class MyProgressResponse {
     private int workspaceCount;
     private int allTaskCount;
     private int successTaskCount;
