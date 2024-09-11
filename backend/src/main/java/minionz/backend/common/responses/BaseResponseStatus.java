@@ -47,6 +47,7 @@ public enum BaseResponseStatus {
     SPRINT_STATUS_UPDATE_SUCCESS(true, 4016, "스프린트 상태 변경에 성공했습니다."),
     WORKSPACE_MONTHLY_READ_SUCCESS(true, 4017, "워크스페이스 월간 캘린더 조회에 성공했습니다."),
     WORKSPACE_WEEKLY_READ_SUCCESS(true, 4018, "워크스페이스 주간 캘린더 조회에 성공했습니다."),
+    WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
@@ -56,6 +57,7 @@ public enum BaseResponseStatus {
     TASK_NOT_EXISTS(false, 4105, "존재하지 않는 태스크입니다."),
     MEETING_NOT_EXISTS(false, 4106, "존재하지 않는 회의 일정입니다."),
     UNCHANGED(false, 4107, "이전과 동일한 상태입니다."),
+    SPRINT_NOT_EXISTS(false, 4108, "스프린트가 존재하지 않습니다."),
 
 
     /**

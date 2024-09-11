@@ -1,12 +1,15 @@
 package minionz.backend.scrum.dashboard;
 
 import lombok.RequiredArgsConstructor;
+import minionz.backend.common.exception.BaseException;
+import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.dashboard.model.request.ReadMyDashboardRequest;
 import minionz.backend.scrum.dashboard.model.response.*;
 import minionz.backend.scrum.issue.IssueRepository;
 import minionz.backend.scrum.meeting.MeetingRepository;
 import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.scrum.sprint.SprintRepository;
+import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.task.TaskRepository;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.workspace.WorkspaceRepository;
@@ -95,5 +98,26 @@ public class DashboardService {
         ).toList();
     }
 
+    public ReadBurndownResponse readBurndownChart(Long sprintId) throws BaseException {
+        Sprint sprint = sprintRepository.findById(sprintId).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.SPRINT_NOT_EXISTS));
+
+        List<Task> tasks = taskRepository.findAllBySprintSprintId(sprintId);
+
+        return ReadBurndownResponse
+                .builder()
+                .sprintId(sprint.getSprintId())
+                .sprintName(sprint.getSprintTitle())
+                .startDate(sprint.getStartDate())
+                .endDate(sprint.getEndDate())
+                .tasks(tasks.stream().map(
+                        task -> BurnTaskResponse
+                                .builder()
+                                .id(task.getTaskId())
+                                .status(task.getStatus())
+                                .doneDate(task.getDoneDate())
+                                .build()).toList())
+                .build();
+    }
 
 }
