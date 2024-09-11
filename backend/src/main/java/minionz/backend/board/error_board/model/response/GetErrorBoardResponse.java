@@ -1,6 +1,7 @@
 package minionz.backend.board.error_board.model.response;
 
 import lombok.*;
+import minionz.backend.scrum.workspace.model.Workspace;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,5 +18,6 @@ public class GetErrorBoardResponse {
     private String errboardCategory;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private Long workspaceId;
     private List<GetErrorBoardImageResponse> getErrorBoardImageResponsesList;
 }

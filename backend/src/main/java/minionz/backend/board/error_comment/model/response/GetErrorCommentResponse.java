@@ -4,6 +4,7 @@ package minionz.backend.board.error_comment.model.response;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,5 +17,5 @@ public class GetErrorCommentResponse {
     private String ErrorCommentContent;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
+    private List<GetErrorCommentImageResponse> images;
 }

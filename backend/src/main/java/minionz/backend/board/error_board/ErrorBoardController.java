@@ -24,46 +24,51 @@ public class ErrorBoardController {
     // 게시글 생성
     @PostMapping("/write")
     public BaseResponse<CreateErrorBoardResponse> createErrorBoard(
+            @RequestParam Long workspaceId,
             @RequestPart(name = "request") CreateErrorBoardRequest request,
             @RequestPart(name = "files") MultipartFile[] files) throws BaseException {
+
         List<String> fileNames = cloudFileUpload.multipleUpload(files);
-        CreateErrorBoardResponse response = errBoardService.create(fileNames, request);
+        CreateErrorBoardResponse response = errBoardService.create(fileNames, request, workspaceId);
         return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_CREATE_SUCCESS, response);
     }
 
     //게시글 하나 조회
     @GetMapping("/search")
     public BaseResponse<GetErrorBoardResponse>search(
+            @RequestParam Long workspaceId,
             @RequestParam Long boardId) throws BaseException {
-        GetErrorBoardResponse response = errBoardService.read(boardId);
+        GetErrorBoardResponse response = errBoardService.read(boardId,workspaceId);
         return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
     }
-
 
     //게시글 전체 조회
     @GetMapping("/search-all")
     public BaseResponse<Page<GetErrorBoardResponse>> readAllErrorBoard(
+            @RequestParam Long workspaceId,
             @RequestParam int page,
             @RequestParam int size) throws BaseException {
-        Page<GetErrorBoardResponse> response = errBoardService.readAll(page, size);
+        Page<GetErrorBoardResponse> response = errBoardService.readAll(page, size,workspaceId);
         return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
     }
     //단어별 조회
     @GetMapping("/search-keyword")
     public BaseResponse<Page<GetErrorBoardResponse>> readKeyword(
+            @RequestParam Long workspaceId,
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String keyword) throws BaseException {
-        Page<GetErrorBoardResponse> response = errBoardService.readKeyword(keyword, page, size);
+        Page<GetErrorBoardResponse> response = errBoardService.readKeyword(keyword, page, size,workspaceId);
         return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
     }
     //카테고리별 조회
     @GetMapping("/search-category")
     public BaseResponse<Page<GetErrorBoardResponse>> readCategory(
+            @RequestParam Long workspaceId,
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String category) throws BaseException {
-        Page<GetErrorBoardResponse> response = errBoardService.readCategory(category, page, size);
+        Page<GetErrorBoardResponse> response = errBoardService.readCategory(category, page, size,workspaceId);
         return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
     }
 
