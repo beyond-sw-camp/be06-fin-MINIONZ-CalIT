@@ -9,14 +9,12 @@ import minionz.backend.board.qa_comment.model.QaComment;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
-
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.ArrayList;
 @Getter
 @Setter
 @NoArgsConstructor

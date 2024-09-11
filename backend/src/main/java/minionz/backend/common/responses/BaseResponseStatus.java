@@ -56,7 +56,6 @@ public enum BaseResponseStatus {
     UNCHANGED(false, 4107, "이전과 동일한 상태입니다."),
 
 
-
     /**
      * 5000: 게시판
      */
