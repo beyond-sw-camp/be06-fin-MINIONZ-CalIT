@@ -23,6 +23,8 @@ public enum BaseResponseStatus {
     MY_WORKSPACE_READ_SUCCESS(true, 3001, "나의 워크스페이스 목록 조회를 성공했습니다."),
     MY_MONTHLY_READ_SUCCESS(true, 3002, "나의 월간 캘린더 조회에 성공했습니다."),
     MY_WEEKLY_READ_SUCCESS(true, 3003, "나의 주간 캘린더 조회에 성공했습니다."),
+    MY_DASHBOARD_READ_SUCCESS(true, 3004, "나의 대시보드 조회에 성공했습니다."),
+
 
     /**
      * 4000: 워크스페이스
