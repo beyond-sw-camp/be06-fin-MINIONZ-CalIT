@@ -5,15 +5,24 @@ import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
 import arrow from '@/assets/icon/menu/arrow.svg';
 import WorkspaceModal from "@/layouts/component/WorkspaceModal.vue";
+import NotificationModal from "@/layouts/component/NotificationModal.vue";
 
-const showModal = ref(false);
+const showWorkspaceModal = ref(false);
+const showNotificationModal = ref(false);
 
-const toggleModal = () => {
-  showModal.value = !showModal.value;
+const toggleWorkspaceModal = () => {
+  showWorkspaceModal.value = !showWorkspaceModal.value;
 };
 
-const closeModal = () => {
-  showModal.value = false;
+const toggleNotificationModal = () => {
+  showNotificationModal.value = !showNotificationModal.value;
+};
+
+const closeWorkspaceModal = () => {
+  showWorkspaceModal.value = false;
+};
+const closeNotificationModal = () => {
+  showNotificationModal.value = false;
 };
 </script>
 
@@ -27,19 +36,20 @@ const closeModal = () => {
         <router-link to="/workspace/chat" class="message">
           <img :src="message" alt="message">
         </router-link>
-        <div class="alarm">
+        <div class="alarm" @click="toggleNotificationModal">
           <img :src="alarm" alt="alarm">
         </div>
       </div>
-      <div class="workspace-bundle" @click="toggleModal">
+      <div class="workspace-bundle" @click="toggleWorkspaceModal">
         <div>
           <img :src="user1" alt="persona" class="workspace-persona">
         </div>
         <div>
-          <img :src="arrow" alt="arrow" :class="{ 'arrow-rotated': showModal }" class="arrow">
+          <img :src="arrow" alt="arrow" :class="{ 'arrow-rotated': showWorkspaceModal }" class="arrow">
         </div>
       </div>
-      <WorkspaceModal v-if="showModal" :close-modal="closeModal"/>
+      <NotificationModal v-if="showNotificationModal" :close-modal="closeNotificationModal"/>
+      <WorkspaceModal v-if="showWorkspaceModal" :close-modal="closeWorkspaceModal"/>
     </div>
   </div>
 </template>

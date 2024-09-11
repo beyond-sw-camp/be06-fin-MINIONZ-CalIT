@@ -1,12 +1,13 @@
 <script setup>
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
-import user4 from '@/assets/icon/persona/user4.svg';
-import user5 from '@/assets/icon/persona/user5.svg';
-
-import { ref } from 'vue';
 import FriendsModal from './FriendsModal.vue';
+import {ref, onMounted} from 'vue';
+import {useChatRoomStore} from '@/store/socket/chat/useChatRoomStore';
+
+const {chatRoomList, fetchChatRooms} = useChatRoomStore();
+
+onMounted(() => {
+  fetchChatRooms();
+});
 
 const showModal = ref(false);
 
@@ -18,43 +19,67 @@ const closeModal = () => {
   showModal.value = false;
 };
 
-const messages = [
-  { name: '최승은', text: '빠샤샤 🔥', time: '12m', unreadCount: 4, profilePic: user1},
-  { name: '박성준', text: '메롱롱', time: '24m', profilePic: user2 },
-  { name: '차윤슬', text: " 아쟈쟈", time: '1h', profilePic: user3 },
-  { name: '지연희', text: '귀오밍', time: '5h', profilePic: user4 },
-  { name: '강혜정', text: '오구오구', time: '2d', profilePic: user5 },
-];
-const totalMessages = 12;
+// const chatRoomList= [
+//   { name: '최승은', text: '빠샤샤 🔥', time: '12m', unreadCount: 4, profilePic: user1},
+//   { name: '박성준', text: '메롱롱', time: '24m', profilePic: user2 },
+//   { name: '차윤슬', text: " 아쟈쟈", time: '1h', profilePic: user3 },
+//   { name: '지연희', text: '귀오밍', time: '5h', profilePic: user4 },
+//   { name: '강혜정', text: '오구오구', time: '2d', profilePic: user5 },
+// ];
+// const totalMessages = 12;
 </script>
 
 <template>
   <div class="message-list-container">
     <div class="message-header">
-      <p>Messages <span class="badge">{{ totalMessages }}</span></p>
+      <p>Messages <span class="badge">5</span></p>
       <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">
-      <div class="message-item" v-for="(message, index) in messages" :key="index">
-        <img :src="message.profilePic" alt="profile" class="profile-pic"/>
+      <div class="message-item" v-for="(room) in chatRoomList" :key="room.chatroomId">
         <div class="message-info">
           <div class="message-item-top">
-            <span class="user-name">{{ message.name }}</span>
+            <span class="user-name">{{ room.chatRoomName }}</span>
           </div>
-          <p class="message-text">{{ message.text }}</p>
+          <p class="message-text">{{ room.messageContents }}</p>
         </div>
         <div class="message-item-right">
-          <span class="message-time">{{ message.time }}</span>
-          <span v-if="message.unreadCount" class="unread-count">{{ message.unreadCount }}</span>
+          <span class="message-time">{{ new Date(room.createdAt).toLocaleString() }}</span>
+          <span v-if="room.unreadMessages" class="unread-count">{{ room.unreadMessages }}</span>
         </div>
       </div>
     </div>
-    <FriendsModal v-if="showModal" @close="closeModal" />
+    <FriendsModal v-if="showModal" @close="closeModal"/>
   </div>
 </template>
 
+<!--<template>-->
+<!--  <div class="message-list-container">-->
+<!--    <div class="message-header">-->
+<!--      <p>Messages <span class="badge">{{ totalMessages }}</span></p>-->
+<!--      <button class="new-message-button" @click="openModal">+</button>-->
+<!--    </div>-->
+<!--    <div class="message-list">-->
+<!--      <div class="message-item" v-for="(message, index) in chatRoomList" :key="index">-->
+<!--        <img :src="user1" alt="profile" class="profile-pic"/>-->
+<!--        <div class="message-info">-->
+<!--          <div class="message-item-top">-->
+<!--            <span class="user-name">{{ message.name }}</span>-->
+<!--          </div>-->
+<!--          <p class="message-text">{{ message.text }}</p>-->
+<!--        </div>-->
+<!--        <div class="message-item-right">-->
+<!--          <span class="message-time">{{ message.time }}</span>-->
+<!--          <span v-if="message.unreadCount" class="unread-count">{{ message.unreadCount }}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <FriendsModal v-if="showModal" @close="closeModal" />-->
+<!--  </div>-->
+<!--</template>-->
+
 <style scoped>
-.message-list-container{
+.message-list-container {
   position: relative;
   height: 50vh;
   overflow: scroll;
@@ -84,10 +109,11 @@ const totalMessages = 12;
   /* font-size: 20px; */
   font-weight: 500;
   border-bottom: 1px solid #e0e0e0;
-  span{
+
+  span {
     background-color: #EDF2F7;
     font-size: 12px;
-    padding: 8px 12px ;
+    padding: 8px 12px;
     border-radius: 24px;
     margin-left: 10px;
   }
@@ -137,7 +163,7 @@ const totalMessages = 12;
   font-size: 14px;
 }
 
-.message-item-right{
+.message-item-right {
   display: flex;
   flex-direction: column;
   justify-content: space-between;

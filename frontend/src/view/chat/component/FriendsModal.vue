@@ -4,20 +4,20 @@ import user3 from '@/assets/icon/persona/user3.svg';
 import user4 from '@/assets/icon/persona/user4.svg';
 import user5 from '@/assets/icon/persona/user5.svg';
 
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 const isModalOpen = ref(true);
 const chattingRoomName = ref('');
 const participantInput = ref('');
 const participants = ref([
-  { name: '박성준', image: user2 },
-  { name: '최승은', image: user3},
-  { name: '지연희', image: user4 },
+  {name: '박성준', image: user2},
+  {name: '최승은', image: user3},
+  {name: '지연희', image: user4},
 ]);
 
 const addParticipant = () => {
   if (participantInput.value.trim() !== '') {
-    participants.value.push({ name: participantInput.value, image: user5});
+    participants.value.push({name: participantInput.value, image: user5});
     participantInput.value = '';
   }
 };
@@ -66,7 +66,7 @@ const saveRoom = () => {
         <hr>
 
         <div v-for="(participant, index) in participants" :key="index" class="participant-item">
-          <img :src="participant.image" alt="Participant" class="participant-img" />
+          <img :src="participant.image" alt="Participant" class="participant-img"/>
           <span class="participant-name">{{ participant.name }}</span>
           <button @click="removeParticipant(index)" class="remove-btn">✕</button>
         </div>
@@ -139,7 +139,8 @@ const saveRoom = () => {
   align-items: center;
   //margin-bottom: 20px;
   position: relative;
-  input{
+
+  input {
     padding-left: 35px;
   }
 }
@@ -202,7 +203,7 @@ const saveRoom = () => {
   cursor: pointer;
 }
 
-hr{
+hr {
   margin-bottom: 10px;
   background-color: #f1f1f1;
   width: 100%;
