@@ -1,96 +1,63 @@
-// 채팅 보내기(POST) | /message/send | sendMessage
-// 파일 보내기((POST) /message/sendFile | sendFile
-// 채팅 내역 조회(GET) /chatroom/{chatroomId}/message | fetchMessages
-// 채팅 수정(PUT) /chatRoom/{chatroomId}/message/{messageId} | updateMessage
-// 채팅 삭제(DELETE) /chatRoom/{chatroomId}/message/{messageId} | deleteMessage
-
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import axios from 'axios';  // S3 업로드를 위한 HTTP 요청 처리
+import { sendMessageToServer } from '@/services/websocketService';
 
 export const useChatMessageStore = defineStore('chatMessage', {
     state: () => ({
-        messages: [],
+        messages: [],  // 채팅 메시지 목록
     }),
     actions: {
-        // 1. 채팅 메시지 보내기 (텍스트)
-        async sendMessage(chatRoomId, messageContents) {
-            try {
-                const response = await axios.post('/message/send', {
-                    chatRoomId,
-                    messageContents,
-                });
-                if (response.data.success) {
-                    this.messages.push(response.data.result);
-                }
-            } catch (error) {
-                console.error('Error sending message:', error);
-            }
+        // 1. 새로운 메시지를 수신했을 때 메시지 목록에 추가
+        addMessage(newMessage) {
+            this.messages.push(newMessage);
         },
 
-        // 2. 파일 전송
+        // 2. 서버로 메시지 보내기 (텍스트 메시지)
+        sendMessage(chatRoomId, messageContents) {
+            const message = {
+                chatRoomId,
+                messageContents,
+                sender: 'User1',  // 실제 사용자 정보를 넣어야 함
+            };
+            sendMessageToServer('/app/sendMessage', message);  // STOMP 메시지 전송
+        },
+
+        // 3. 서버로 파일 업로드 후 S3 URL을 WebSocket으로 전송
         async sendFile(chatRoomId, file) {
             try {
+                // 1. S3에 파일 업로드
                 const formData = new FormData();
-                formData.append('chatRoomId', chatRoomId);
-                formData.append('files', file);
+                formData.append('file', file);
 
-                const response = await axios.post('/message/sendFile', formData, {
+                const response = await axios.post(`/api/upload`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
+
+                // 2. 업로드된 파일의 S3 URL을 WebSocket으로 전송
                 if (response.data.success) {
-                    this.messages.push(response.data.result);
+                    const fileUrl = response.data.fileUrl;  // S3 URL
+                    const message = {
+                        chatRoomId,
+                        fileUrl,  // S3 파일 URL
+                        fileName: file.name,
+                        fileType: file.type,
+                        messageType: 'FILE',
+                    };
+                    sendMessageToServer('/app/sendFile', message);  // STOMP 파일 메시지 전송
+                } else {
+                    console.error('File upload failed');
                 }
             } catch (error) {
-                console.error('Error sending file:', error);
+                console.error('Error uploading file to S3:', error);
             }
         },
 
-        // 3. 채팅 내역 조회
-        async fetchMessages(chatRoomId) {
-            try {
-                const response = await axios.get(`/chatroom/${chatRoomId}/message`);
-                if (response.data.isSuccess) {
-                    this.messages = response.data.result;
-                }
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-            }
-        },
-
-        // 4. 채팅 메시지 수정
-        async updateMessage(chatRoomId, messageId, messageContents) {
-            try {
-                const response = await axios.put(`/chatRoom/${chatRoomId}/message/${messageId}`, {
-                    messageContents,
-                });
-                if (response.data.isSuccess) {
-                    const updatedMessage = response.data.result;
-                    const index = this.messages.findIndex(message => message.messageId === messageId);
-                    if (index !== -1) {
-                        this.messages[index].messageContents = updatedMessage.messageContents;
-                        this.messages[index].updatedAt = updatedMessage.updatedAt;
-                    }
-                }
-            } catch (error) {
-                console.error('Error updating message:', error);
-            }
-        },
-
-        // 5. 채팅 메시지 삭제
-        async deleteMessage(chatRoomId, messageId) {
-            try {
-                const response = await axios.delete(`/chatRoom/${chatRoomId}/message/${messageId}`);
-                if (response.data.isSuccess) {
-                    const index = this.messages.findIndex(message => message.messageId === messageId);
-                    if (index !== -1) {
-                        this.messages.splice(index, 1);
-                    }
-                }
-            } catch (error) {
-                console.error('Error deleting message:', error);
-            }
+        // 4. 채팅 메시지 목록 조회
+        fetchMessages(chatRoomId) {
+            // 메시지를 WebSocket 구독을 통해 실시간으로 가져오므로, 서버로 구독 요청만 합니다.
+            console.log(`Fetching messages for chatRoomId: ${chatRoomId}`);
         },
     },
 });
