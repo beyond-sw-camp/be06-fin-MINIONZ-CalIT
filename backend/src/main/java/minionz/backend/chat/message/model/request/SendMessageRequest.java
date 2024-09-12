@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequest {
+public class SendMessageRequest {
 
     private String messageContents;
     private List<String> files;
