@@ -9,7 +9,9 @@ import minionz.backend.chat.chat_room.model.response.ReadMessageResponse;
 import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageStatus;
 import minionz.backend.chat.message.model.MessageType;
-import minionz.backend.chat.message.model.request.MessageRequest;
+import minionz.backend.chat.message.model.request.FileInfo;
+import minionz.backend.chat.message.model.request.SendMessageRequest;
+import minionz.backend.chat.message.model.request.UpdateMessageRequest;
 import minionz.backend.utils.CloudFileUpload;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -34,7 +36,7 @@ public class MessageService {
     private final SimpMessagingTemplate messagingTemplate;
     private final CloudFileUpload cloudFileUpload;
 
-    public void sendMessage(Long chatRoomId, MessageRequest request, MultipartFile[] files, Long senderId) {
+    public void sendMessage(Long chatRoomId, SendMessageRequest request, MultipartFile[] files, Long senderId) {
 
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
 
@@ -71,6 +73,25 @@ public class MessageService {
         }
     }
 
+    public void updateMessage(Long chatRoomId, UpdateMessageRequest request, Long senderId) {
+        if (!request.getMessageContents().isEmpty()) {
+            // 받아온 senderId로 채팅방 목록을 조회
+            List<ChatParticipation> chatRoomList = chatParticipationRepository.findAllByUser_UserId(senderId);
+
+            // 채팅방 목록에서 요청된 채팅방이 있는지 확인
+            boolean isAuthorized = chatRoomList.stream()
+                    .anyMatch(participation -> participation.getChatRoom().getChatRoomId().equals(chatRoomId));
+
+            if (isAuthorized) {
+                // JPQL 을 사용하여 메시지를 조회합니다.
+                Message message = messageRepository.findMessageById(request.getMessageId());
+                message.setMessageContents(request.getMessageContents());
+                messageRepository.save(message);
+            }
+        }
+
+    }
+
     public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) {
         List<Message> messages = messageRepository.findByChatParticipation_ChatRoom_ChatRoomIdOrderByCreatedAtAsc(chatRoomId);
         if (messages.isEmpty()) {
@@ -85,23 +106,21 @@ public class MessageService {
                         .createdAt(message.getCreatedAt())
                         .messageType(message.getMessageType())
                         .messageStatus(message.getMessageStatus())
-                        .fileType(message.getFileType())
-                        .fileSize(message.getFileSize())
-                        .fileUrl(message.getFileUrl())
-                        .fileName(message.getFileName())
+                        .file(FileInfo.builder()
+                                .fileType(message.getFileType())
+                                .fileSize(message.getFileSize())
+                                .fileUrl(message.getFileUrl())
+                                .fileName(message.getFileName())
+                                .build())
                         .persona(message.getChatParticipation().getUser().getPersona())
                         .build())
                 .collect(Collectors.toList());
     }
 
-
-
-
-
     @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeMessage(ConsumerRecord<String, String> record) {
         try {
-            MessageRequest request = objectMapper.readValue(record.value(), MessageRequest.class);
+            SendMessageRequest request = objectMapper.readValue(record.value(), SendMessageRequest.class);
             // STOMP 를 통해 웹소켓으로 메시지 전송
             messagingTemplate.convertAndSend("/sub/room/" + request.getChatRoomId().toString(), request);
         } catch (IOException e) {
