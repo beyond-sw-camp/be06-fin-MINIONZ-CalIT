@@ -80,16 +80,21 @@ public enum BaseResponseStatus {
 
     CHATROOM_CREATE_SUCCESS(true, 6001, "채팅방 생성에 성공했습니다."),
     CHATROOM_CREATE_FAIL(false, 6002, "채팅방 생성에 실패했습니다."),
+
     CHATROOM_LIST_SUCCESS(true, 6101, "채팅방 조회에 성공했습니다."),
     CHATROOM_LIST_FAIL(false, 6102, "채팅방 조회에 실패했습니다."),
+
     MESSAGE_SEND_SUCCESS(true, 6201, "메세지가 성공적으로 전송되었습니다."),
     MESSAGE_SEND_FAIL(false, 6202, "메세지가 전송되지 않았습니다."),
+
     CHAT_PARTICIPATION_NOT_FOUND(false, 6203, "참여자가 존재하지 않습니다."),
     CHAT_HISTORY_RETRIEVAL_SUCCESS(true, 6301, "채팅 내역 조회에 성공했습니다."),
     CHAT_ROOM_NOT_FOUND(false, 6302, "해당 채팅방을 찾을 수 없습니다."),
     MESSAGE_HISTORY_NOT_FOUND(false, 6303, "해당 채팅방에 메시지 내역이 없습니다."),
     UNAUTHORIZED_CHAT_ACCESS(false, 6304, "해당 채팅방에 접근할 권한이 없습니다."),
-    FAILED_TO_RETRIEVE_CHAT_HISTORY(false, 6305, "채팅 내역 조회에 실패했습니다.");
+    FAILED_TO_RETRIEVE_CHAT_HISTORY(false, 6305, "채팅 내역 조회에 실패했습니다."),
+
+    MESSAGE_DELETE_SUCCESS(true, 6401, "메세지가 성공적으로 삭제되었습니다.");
 
 
 
