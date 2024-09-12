@@ -43,7 +43,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
-    //amamzon s3
+    //amazon s3
     implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
     //kafka
     implementation 'org.springframework.kafka:spring-kafka'
