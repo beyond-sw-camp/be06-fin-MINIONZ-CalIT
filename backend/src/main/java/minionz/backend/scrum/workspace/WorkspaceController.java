@@ -5,7 +5,9 @@ import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.scrum.workspace.model.request.CreateWorkspaceRequest;
 import minionz.backend.scrum.workspace.model.response.ReadWorkspaceResponse;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,22 +19,17 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
     @PostMapping("")
-    public BaseResponse<BaseResponseStatus> createWorkspace(@RequestBody CreateWorkspaceRequest request) {
+    public BaseResponse<BaseResponseStatus> createWorkspace(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails , @RequestBody CreateWorkspaceRequest request) {
 
-//        TODO: 추 후 AuthenticationPrincipal로 user 찾도록 수정.
-        User user = User.builder().userId(1L).build();
-
-        workspaceService.create(user, request);
+        workspaceService.create(customUserDetails.getUser(), request);
 
         return new BaseResponse<>(BaseResponseStatus.WORKSPACE_CREATE_SUCCESS);
     }
 
     @GetMapping("/all")
-    public BaseResponse<List<ReadWorkspaceResponse>> readAllWorkspace() {
-//      TODO: 추 후 AuthenticationPrincipal로 user 찾도록 수정.
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<List<ReadWorkspaceResponse>> readAllWorkspace(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
-        List<ReadWorkspaceResponse> readWorkspaceResponses = workspaceService.readAll(user);
+        List<ReadWorkspaceResponse> readWorkspaceResponses = workspaceService.readAll(customUserDetails.getUser());
 
         return new BaseResponse<>(BaseResponseStatus.MY_WORKSPACE_READ_SUCCESS, readWorkspaceResponses);
     }

@@ -8,7 +8,9 @@ import minionz.backend.scrum.sprint.model.request.CreateSprintRequest;
 import minionz.backend.scrum.sprint.model.request.UpdateSprintStatusRequest;
 import minionz.backend.scrum.sprint.model.response.ReadAllSprintResponse;
 import minionz.backend.scrum.sprint.model.response.ReadSprintResponse;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,11 +23,10 @@ public class SprintController {
     private final SprintService sprintService;
 
     @PostMapping("")
-    public BaseResponse<BaseResponseStatus> craeteSprint(@RequestBody CreateSprintRequest request) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<BaseResponseStatus> createSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateSprintRequest request) {
 
         try {
-            sprintService.createSprint(user, request);
+            sprintService.createSprint(customUserDetails.getUser(), request);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -34,12 +35,11 @@ public class SprintController {
     }
 
     @GetMapping("/{sprintId}")
-    public BaseResponse<ReadSprintResponse> readSprint(@PathVariable Long sprintId) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<ReadSprintResponse> readSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId) {
         ReadSprintResponse response;
 
         try {
-            response = sprintService.readSprint(user, sprintId);
+            response = sprintService.readSprint(customUserDetails.getUser(), sprintId);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -48,12 +48,12 @@ public class SprintController {
     }
 
     @GetMapping("all/{workspaceId}")
-    public BaseResponse<List<ReadAllSprintResponse>> readAllSprint(@PathVariable Long workspaceId) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<List<ReadAllSprintResponse>> readAllSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails,@PathVariable Long workspaceId) {
+
         List<ReadAllSprintResponse> response;
 
         try {
-            response = sprintService.readAllSprint(user, workspaceId);
+            response = sprintService.readAllSprint(customUserDetails.getUser(), workspaceId);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -63,7 +63,6 @@ public class SprintController {
 
     @PatchMapping("/{sprintId}")
     public BaseResponse<BaseResponseStatus> updateSprintStatus(@PathVariable Long sprintId, @RequestBody UpdateSprintStatusRequest request) {
-        User user = User.builder().userId(1L).build();
 
         try {
             sprintService.updateSprintStatus(sprintId, request);

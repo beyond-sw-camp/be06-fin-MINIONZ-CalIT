@@ -8,7 +8,9 @@ import minionz.backend.scrum.task.model.request.CreateTaskRequest;
 import minionz.backend.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,11 +23,10 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("")
-    public BaseResponse<BaseResponseStatus> craeteTask(@RequestBody CreateTaskRequest request) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<BaseResponseStatus> createTask(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
         try {
-            taskService.createTask(user, request);
+            taskService.createTask(customUserDetails.getUser(), request);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -35,7 +36,6 @@ public class TaskController {
 
     @GetMapping("/{taskId}")
     public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId) {
-        User user = User.builder().userId(1L).build();
         ReadTaskResponse response;
 
         try {
@@ -49,7 +49,7 @@ public class TaskController {
 
     @GetMapping("/all/{sprintId}")
     public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long sprintId) {
-        User user = User.builder().userId(1L).build();
+
         List<ReadAllTaskResponse> response;
 
         try {
@@ -62,12 +62,12 @@ public class TaskController {
     }
 
     @GetMapping("/all/my")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask() {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+
         List<ReadAllTaskResponse> response;
 
         try {
-            response = taskService.readAllMyTask(user);
+            response = taskService.readAllMyTask(customUserDetails.getUser());
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -77,7 +77,6 @@ public class TaskController {
 
     @PatchMapping("/{taskId}")
     public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @RequestBody UpdateTaskStatusRequest request) {
-        User user = User.builder().userId(1L).build();
 
         try {
             taskService.updateTaskStatus(taskId, request);

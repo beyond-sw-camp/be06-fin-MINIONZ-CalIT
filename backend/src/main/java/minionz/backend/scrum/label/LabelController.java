@@ -6,7 +6,9 @@ import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.request.CreateLabelRequest;
 import minionz.backend.scrum.label.model.response.ReadLabelResponse;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,11 +21,10 @@ public class LabelController {
     private final LabelService labelService;
 
     @PostMapping("/sprint")
-    public BaseResponse<BaseResponseStatus> createSprintLabel(@RequestBody CreateLabelRequest request) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<BaseResponseStatus> createSprintLabel(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateLabelRequest request) {
 
         try {
-            labelService.createSprintLabel(user,request);
+            labelService.createSprintLabel(customUserDetails.getUser(), request);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -32,12 +33,11 @@ public class LabelController {
     }
 
     @GetMapping("/sprint")
-    public BaseResponse<List<ReadLabelResponse>> readSprintLabel(@RequestParam Long id) {
-        User user = User.builder().userId(1L).build();
-        List<ReadLabelResponse> response = new ArrayList<>();
+    public BaseResponse<List<ReadLabelResponse>> readSprintLabel(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestParam Long id) {
+        List<ReadLabelResponse> response;
 
         try {
-            response = labelService.readSprintLabel(user,id);
+            response = labelService.readSprintLabel(customUserDetails.getUser(), id);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -46,11 +46,10 @@ public class LabelController {
     }
 
     @PostMapping("/task")
-    public BaseResponse<BaseResponseStatus> createTaskLabel(@RequestBody CreateLabelRequest request) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<BaseResponseStatus> createTaskLabel(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateLabelRequest request) {
 
         try {
-            labelService.createTaskLabel(user, request);
+            labelService.createTaskLabel(customUserDetails.getUser(), request);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -59,12 +58,12 @@ public class LabelController {
     }
 
     @GetMapping("/task")
-    public BaseResponse<List<ReadLabelResponse>> readTaskLabel(@RequestParam Long id) {
-        User user = User.builder().userId(1L).build();
-        List<ReadLabelResponse> response = new ArrayList<>();
+    public BaseResponse<List<ReadLabelResponse>> readTaskLabel(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestParam Long id) {
+
+        List<ReadLabelResponse> response;
 
         try {
-            response = labelService.readTaskLabel(user,id);
+            response = labelService.readTaskLabel(customUserDetails.getUser(), id);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
