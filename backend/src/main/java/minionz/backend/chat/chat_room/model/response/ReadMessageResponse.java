@@ -28,4 +28,6 @@ public class ReadMessageResponse {
     private FileInfo file;
     private Integer persona; // 프로필 이미지
 
+    private boolean isOwn;
+
 }
