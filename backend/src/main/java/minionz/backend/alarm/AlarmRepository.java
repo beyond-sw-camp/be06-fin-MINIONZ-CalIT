@@ -1,4 +1,7 @@
 package minionz.backend.alarm;
 
-public class AlarmRepository {
+import minionz.backend.alarm.model.Alarm;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 }
