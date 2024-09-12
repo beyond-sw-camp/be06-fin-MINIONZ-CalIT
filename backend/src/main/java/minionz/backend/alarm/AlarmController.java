@@ -1,6 +1,5 @@
 package minionz.backend.alarm;
 
-import com.fasterxml.jackson.core.JsonProcessingException;ㄴ
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
