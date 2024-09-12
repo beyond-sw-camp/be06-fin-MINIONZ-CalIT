@@ -18,4 +18,10 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
             "WHERE i.user.userId = :userId " +
             "AND i.status = true ")
     List<Issue> findUpcomingMyIssues(Long userId, Pageable pageable);
+
+    @Query("SELECT COUNT(i) FROM Issue i " +
+            "JOIN i.workspace w " +
+            "WHERE w.workspaceId = :workspaceId " +
+            "AND i.status = true ")
+    int findWorkspaceIssuesCount(Long workspaceId);
 }

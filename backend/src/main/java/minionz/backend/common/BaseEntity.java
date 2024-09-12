@@ -20,5 +20,4 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime modifiedAt;
-
 }

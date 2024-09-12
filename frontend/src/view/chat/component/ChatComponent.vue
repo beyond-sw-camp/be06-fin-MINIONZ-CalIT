@@ -1,33 +1,24 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useChatMessageStore } from '@/store/socket/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
-import user1 from '@/assets/icon/persona/user1.svg';
+// import user1 from '@/assets/icon/persona/user1.svg';
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
 
 const chatPartner = "연희";
-
-const messages = ref([
-  { text: "연희의 채팅 기능", time: "10:07 AM", profilePic: space3, isOwn: false },
-  { text: "응원해용 ✅", time: "10:08 AM", profilePic: space3, isOwn: false },
-  { text: "예시 데이터", time: "10:08 AM", profilePic: space3, isOwn: false },
-  { text: "연희야 화이팅", time: "10:08 AM", profilePic: user1, isOwn: true },
-  { text: "슬이 화이팅", time: "10:08 AM", profilePic: user1, isOwn: true },
-  { text: "성준 오빠 아쟈쟈", time: "10:08 AM", profilePic: user1, isOwn: true },
-  { text: "내 짝꿍 혜정잉 😂", time: "10:08 AM", profilePic: user1, isOwn: true },
-]);
-
 const newMessage = ref('');
+const chatStore = useChatMessageStore();
+
+// 채팅 메시지를 불러오는 메서드
+const loadChatMessages = () => {
+  chatStore.fetchMessages(chatStore.activeChatRoomId); // 현재 활성화된 채팅방 ID로 메시지를 조회
+};
 
 const sendMessage = () => {
-  if (newMessage.value.trim() !== '') {
-    messages.value.push({
-      text: newMessage.value,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      profilePic: user1,
-      isOwn: true
-    });
+  if (newMessage.value) {
+    chatStore.sendMessage(chatStore.activeChatRoomId, newMessage.value);
     newMessage.value = '';
   }
 };
@@ -37,6 +28,11 @@ const fileInput = ref(null);
 const triggerFileInput = () => {
   fileInput.value.click();
 };
+
+// 컴포넌트가 마운트될 때 기존 채팅 메시지를 불러옴
+onMounted(() => {
+  loadChatMessages();  // 메시지 목록 조회
+});
 </script>
 
 <template>
@@ -49,13 +45,12 @@ const triggerFileInput = () => {
     <div class="chat-messages">
       <div class="chat-msg-container">
         <Message
-            v-for="(msg, index) in messages"
-            :key="index"
-            :message="msg"
-            :isOwnMessage="msg.isOwn"
+            v-for="(message) in chatStore.messages"
+            :key="message.id"
+            :message="message.content"
+            :isOwnMessage="message.isOwn"
         />
       </div>
-
     </div>
 
     <div class="chat-input">
@@ -63,7 +58,7 @@ const triggerFileInput = () => {
         <input ref="fileInput" type="file" style="display: none;" />
         <img :src="clip" alt="clip" @click="triggerFileInput">
       </div>
-      <input v-model="newMessage" type="text" placeholder="Type a message" @keyup.enter="sendMessage"/>
+      <input v-model="newMessage" type="text" placeholder="Type a message" @keyup.enter="sendMessage" />
       <button @click="sendMessage">
         <img :src="send" alt="send">
       </button>

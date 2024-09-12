@@ -23,6 +23,8 @@ public enum BaseResponseStatus {
     MY_WORKSPACE_READ_SUCCESS(true, 3001, "나의 워크스페이스 목록 조회를 성공했습니다."),
     MY_MONTHLY_READ_SUCCESS(true, 3002, "나의 월간 캘린더 조회에 성공했습니다."),
     MY_WEEKLY_READ_SUCCESS(true, 3003, "나의 주간 캘린더 조회에 성공했습니다."),
+    MY_DASHBOARD_READ_SUCCESS(true, 3004, "나의 대시보드 조회에 성공했습니다."),
+
 
     /**
      * 4000: 워크스페이스
@@ -45,6 +47,7 @@ public enum BaseResponseStatus {
     SPRINT_STATUS_UPDATE_SUCCESS(true, 4016, "스프린트 상태 변경에 성공했습니다."),
     WORKSPACE_MONTHLY_READ_SUCCESS(true, 4017, "워크스페이스 월간 캘린더 조회에 성공했습니다."),
     WORKSPACE_WEEKLY_READ_SUCCESS(true, 4018, "워크스페이스 주간 캘린더 조회에 성공했습니다."),
+    WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
@@ -54,17 +57,22 @@ public enum BaseResponseStatus {
     TASK_NOT_EXISTS(false, 4105, "존재하지 않는 태스크입니다."),
     MEETING_NOT_EXISTS(false, 4106, "존재하지 않는 회의 일정입니다."),
     UNCHANGED(false, 4107, "이전과 동일한 상태입니다."),
-
+    SPRINT_NOT_EXISTS(false, 4108, "스프린트가 존재하지 않습니다."),
 
 
     /**
      * 5000: 게시판
      */
-    ERRORBOARD_CREATE_SUCCESS(true, 5001, "게시판 등록에 성공했습니다."),
-    ERRORBOARD_SEARCH_SUCCESS(true, 5101, "게시판 검색에 성공했습니다."),
-    ERRORBOARD_SERACH_FAIL(true, 5102, "게시판 검색에 성공했습니다."),
-    ERRORCOMMENT_CREATE_SUCCESS(true, 5201, "댓글 등록에 성공했습니다."),
+    ERRORBOARD_CREATE_SUCCESS(true,5001,"게시판 등록에 성공했습니다."),
+    ERRORBOARD_SEARCH_SUCCESS(true,5101,"게시판 검색에 성공했습니다."),
+    ERRORBOARD_SERACH_FAIL(true,5102,"게시판 검색에 성공했습니다."),
+    ERRORCOMMENT_CREATE_SUCCESS(true,5201,"댓글 등록에 성공했습니다."),
 
+
+    QABOARD_CREATE_SUCCESS(true,5001,"게시판 등록에 성공했습니다."),
+    QABOARD_SEARCH_SUCCESS(true,5101,"게시판 검색에 성공했습니다."),
+    QABOARD_SERACH_FAIL(true,5102,"게시판 검색에 성공했습니다."),
+    QACOMMENT_CREATE_SUCCESS(true,5201,"댓글 등록에 성공했습니다."),
 
     /**
      * 6000: 채팅
@@ -76,7 +84,12 @@ public enum BaseResponseStatus {
     CHATROOM_LIST_FAIL(false, 6102, "채팅방 조회에 실패했습니다."),
     MESSAGE_SEND_SUCCESS(true, 6201, "메세지가 성공적으로 전송되었습니다."),
     MESSAGE_SEND_FAIL(false, 6202, "메세지가 전송되지 않았습니다."),
-    CHAT_PARTICIPATION_NOT_FOUND(false, 6203, "참여자가 존재하지 않습니다.");
+    CHAT_PARTICIPATION_NOT_FOUND(false, 6203, "참여자가 존재하지 않습니다."),
+    CHAT_HISTORY_RETRIEVAL_SUCCESS(true, 6301, "채팅 내역 조회에 성공했습니다."),
+    CHAT_ROOM_NOT_FOUND(false, 6302, "해당 채팅방을 찾을 수 없습니다."),
+    MESSAGE_HISTORY_NOT_FOUND(false, 6303, "해당 채팅방에 메시지 내역이 없습니다."),
+    UNAUTHORIZED_CHAT_ACCESS(false, 6304, "해당 채팅방에 접근할 권한이 없습니다."),
+    FAILED_TO_RETRIEVE_CHAT_HISTORY(false, 6305, "채팅 내역 조회에 실패했습니다.");
 
 
 

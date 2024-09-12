@@ -50,11 +50,9 @@ public class ErrorBoard {
     @JoinColumn(name = "task_id")
     private Task task;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workSpace;
-
-
 
 
 }
