@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.chat.chat_participation.ChatParticipationRepository;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
+import minionz.backend.chat.chat_room.model.response.ReadMessageResponse;
 import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageStatus;
 import minionz.backend.chat.message.model.MessageType;
@@ -18,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +70,33 @@ public class MessageService {
             e.printStackTrace();
         }
     }
+
+    public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) {
+        List<Message> messages = messageRepository.findByChatParticipation_ChatRoom_ChatRoomIdOrderByCreatedAtAsc(chatRoomId);
+        if (messages.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messages.stream()
+                .map(message -> ReadMessageResponse.builder()
+                        .messageId(message.getMessageId())
+                        .senderId(userId)
+                        .userName(message.getChatParticipation().getUser().getUserName())
+                        .messageContents(message.getMessageContents())
+                        .createdAt(message.getCreatedAt())
+                        .messageType(message.getMessageType())
+                        .messageStatus(message.getMessageStatus())
+                        .fileType(message.getFileType())
+                        .fileSize(message.getFileSize())
+                        .fileUrl(message.getFileUrl())
+                        .fileName(message.getFileName())
+                        .persona(message.getChatParticipation().getUser().getPersona())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+
+
+
 
     @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeMessage(ConsumerRecord<String, String> record) {

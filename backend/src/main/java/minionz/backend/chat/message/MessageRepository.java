@@ -30,6 +30,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "ORDER BY m.createdAt DESC")
     List<Message> findLatestMessagesByChatRoomId(Long chatRoomId);
 
+    List<Message> findByChatParticipation_ChatRoom_ChatRoomIdOrderByCreatedAtAsc(Long chatRoomId);
+
 
 
 
