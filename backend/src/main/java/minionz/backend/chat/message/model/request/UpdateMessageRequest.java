@@ -2,16 +2,15 @@ package minionz.backend.chat.message.model.request;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Builder(toBuilder = true)
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequest {
-
-    private String messageContents;
-    private List<String> files;
+public class UpdateMessageRequest {
     private Long chatRoomId;
+    private Long messageId;
+    private String userName;
+    private String messageContents;
+
 }

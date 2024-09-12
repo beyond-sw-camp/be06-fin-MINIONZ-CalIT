@@ -32,7 +32,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     List<Message> findByChatParticipation_ChatRoom_ChatRoomIdOrderByCreatedAtAsc(Long chatRoomId);
 
-
+    @Query("SELECT m FROM Message m WHERE m.messageId = :messageId")
+    Message findMessageById(Long messageId);
 
 
 

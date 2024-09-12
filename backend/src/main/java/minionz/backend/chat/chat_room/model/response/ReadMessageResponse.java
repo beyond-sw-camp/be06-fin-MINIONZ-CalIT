@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import minionz.backend.chat.message.model.MessageStatus;
 import minionz.backend.chat.message.model.MessageType;
+import minionz.backend.chat.message.model.request.FileInfo;
 
 import java.time.LocalDateTime;
 
@@ -24,12 +25,7 @@ public class ReadMessageResponse {
 
     @Enumerated(EnumType.STRING)
     private MessageStatus messageStatus;
-
-    private String fileType;
-    private String fileSize;
-    private String fileUrl;
-    private String fileName;
-
+    private FileInfo file;
     private Integer persona; // 프로필 이미지
 
 }
