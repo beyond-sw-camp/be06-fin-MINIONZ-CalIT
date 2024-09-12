@@ -1,12 +1,11 @@
 package minionz.backend.alarm.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import minionz.backend.user_alarm.model.UserAlarm;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -19,14 +18,9 @@ public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alarmId;
-
-
     private String alarmTitle;
-    private String craeteAt;
-    private Integer alarmStatus;
-    private String category;
     private String alarmContents;
 
-    private Integer senderId;
-
+    @OneToMany(mappedBy = "alarm", fetch = FetchType.LAZY)
+    private List<UserAlarm> userAlarms = new ArrayList<>();
 }
