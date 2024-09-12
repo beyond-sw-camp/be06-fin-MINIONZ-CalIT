@@ -56,7 +56,7 @@ public class ChatRoomService {
 
         // 채팅방 생성
         ChatRoom chatRoom = createChatRoom(chatRoomName);
-        BaseResponse<Void> participantResponse = saveChatParticipants(chatRoom, request.getParticipants());
+        BaseResponse<BaseResponseStatus> participantResponse = saveChatParticipants(chatRoom, request.getParticipants());
         if (!participantResponse.getSuccess()) {
             return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_FAIL);
         }
@@ -72,7 +72,7 @@ public class ChatRoomService {
     }
 
     // 채팅룸 리스트 조회
-    public List<ReadChatRoomResponse> roomList(Long userId) {
+    public List<ReadChatRoomResponse> roomList(Long userId, Long workspaceId) {
         List<ChatParticipation> chatParticipations = chatParticipationRepository.findByUser_UserId(userId);
 
         List<ReadChatRoomResponse> responseList = new ArrayList<>();
@@ -88,6 +88,7 @@ public class ChatRoomService {
                     chatRoom.getChatRoomId(), userId, MessageStatus.UNREAD);
 
             ReadChatRoomResponse response = ReadChatRoomResponse.builder()
+                    .workspaceId(workspaceId)
                     .chatroomId(chatRoom.getChatRoomId())
                     .chatRoomName(chatRoom.getChatRoomName())
                     .messageContents(latestMessage != null ? latestMessage.getMessageContents() : "채팅방에 메세지가 없습니다.")
@@ -107,7 +108,7 @@ public class ChatRoomService {
         return chatRoomRepository.save(chatRoom);
     }
 
-    private BaseResponse<Void> saveChatParticipants(ChatRoom chatRoom, List<Long> participantIds) {
+    private BaseResponse<BaseResponseStatus> saveChatParticipants(ChatRoom chatRoom, List<Long> participantIds) {
         for (Long participantId : participantIds) {
             User participant = userRepository.findById(participantId)
                     .orElse(null); // User가 null인 경우를 처리하기 위해

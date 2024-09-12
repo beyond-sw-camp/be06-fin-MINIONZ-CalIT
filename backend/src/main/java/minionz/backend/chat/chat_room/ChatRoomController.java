@@ -26,11 +26,10 @@ public class ChatRoomController {
         return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_SUCCESS, response);
     }
 
-    @GetMapping(value = "/roomList")
-    public BaseResponse<List<ReadChatRoomResponse>> readRoomList(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+    @GetMapping(value = "/{workspaceId}/roomList")
+    public BaseResponse<List<ReadChatRoomResponse>> readRoomList(@PathVariable Long workspaceId, @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
         User user = customUserDetails.getUser();
-        List<ReadChatRoomResponse> response = chatRoomService.roomList(user.getUserId());
+        List<ReadChatRoomResponse> response = chatRoomService.roomList(user.getUserId(), workspaceId);
         return new BaseResponse<>(BaseResponseStatus.CHATROOM_LIST_SUCCESS, response);
     }
-
 }
