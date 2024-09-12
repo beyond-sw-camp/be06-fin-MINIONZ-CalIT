@@ -51,11 +51,19 @@ public class MessageController {
         return new BaseResponse<>(BaseResponseStatus.CHAT_HISTORY_RETRIEVAL_SUCCESS, response);
     }
 
+    // 메세지 수정
     @MessageMapping("/room/{chatRoomId}/edit")
     public void updateMessage(@Payload UpdateMessageRequest request, @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
         Long senderId = customUserDetails.getUser().getUserId();
         messageService.updateMessage(request.getChatRoomId(), request, senderId);
     }
 
+    // 메세지 삭제
+    @DeleteMapping("/message/{messageId}")
+    public BaseResponse<BaseResponseStatus> deleteMessage(@PathVariable Long messageId, @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+        Long senderId = customUserDetails.getUser().getUserId();
+        messageService.deleteMessage(messageId, senderId);
+        return new BaseResponse<>(BaseResponseStatus.MESSAGE_DELETE_SUCCESS);
+    }
 }
 

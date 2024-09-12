@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,8 +93,18 @@ public class MessageService {
 
     }
 
+    public void deleteMessage(Long messageId, Long senderId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 메시지를 찾을 수 없습니다."));
+        if (!message.getChatParticipation().getUser().getUserId().equals(senderId)) {
+            throw new SecurityException("본인의 메시지만 삭제할 수 있습니다.");
+        }
+        message.setDeletedAt(LocalDateTime.now());
+        messageRepository.save(message);
+    }
+
     public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) {
-        List<Message> messages = messageRepository.findByChatParticipation_ChatRoom_ChatRoomIdOrderByCreatedAtAsc(chatRoomId);
+        List<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(chatRoomId);
         if (messages.isEmpty()) {
             return Collections.emptyList();
         }
