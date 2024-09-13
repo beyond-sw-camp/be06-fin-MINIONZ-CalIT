@@ -253,9 +253,14 @@ const routes = [
                 ]
             },
             {
-                path: `chat/:roomId`,
+                path: 'chat',
                 name: 'Chat',
-                component: () => import('@/view/chat/ChatRoom.vue')
+                component: () => import('@/view/chat/ChatInitialPage.vue'),
+            },
+            {
+                path: 'chat/:id',
+                name: 'ChatRoom',
+                component: () => import('@/view/chat/ChatRoomPage.vue')
             }
         ]
     },

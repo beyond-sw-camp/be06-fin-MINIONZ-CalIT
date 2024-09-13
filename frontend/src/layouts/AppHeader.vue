@@ -4,8 +4,8 @@ import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
 import arrow from '@/assets/icon/menu/arrow.svg';
-import WorkspaceModal from "@/layouts/component/WorkspaceModal.vue";
-import NotificationModal from "@/layouts/component/NotificationModal.vue";
+import WorkspaceModal from "@/layouts/component/Modal/WorkspaceModal.vue";
+import NotificationModal from "@/layouts/component/Modal/NotificationModal.vue";
 
 const showWorkspaceModal = ref(false);
 const showNotificationModal = ref(false);

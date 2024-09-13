@@ -3,13 +3,6 @@ import ChatComponent from "@/view/chat/component/ChatComponent.vue";
 import ChatRoomList from "@/view/chat/component/ChatRoomList.vue";
 import FileList from "@/view/chat/component/FileList.vue";
 
-// import { inject } from "vue";
-//
-// const contentsTitle = inject('contentsTitle');
-// const contentsDescription = inject('contentsDescription');
-//
-// contentsTitle.value = 'Chatting Room';
-// contentsDescription.value = '채팅방을 즐겨보세요!';
 </script>
 
 <template>
