@@ -1,10 +1,9 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { workspaceData } from '@/static/workspaceData';
 import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
-import Quill from 'quill';
-import 'quill/dist/quill.bubble.css';
+import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
 
 import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
@@ -15,62 +14,26 @@ const workspaceId = route.params.workspaceId;
 const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Editor';
-contentsDescription.value = '회의록을 작성해 보세요!';
+contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Create';
+contentsDescription.value = '회의를 만들어 보세요!';
 
-const editor = ref(null);
 const meetingTitle = ref('회의록 제목');
+const meetingDescription = ref('회의록 상세 설명');
+const startTime = ref('');
+const endTime = ref('');
 const rightSideVisible = ref(false);
 const activeComponentId = ref('');
+const editor = ref(null);
+const isQuillVisible = ref(false);
 
-onMounted(() => {
-  if (editor.value) {
-    new Quill(editor.value, {
-      theme: 'bubble',
-      placeholder: '내용을 입력하세요...',
-      modules: {
-        toolbar: {
-          container: [
-            [{ 'header': [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
-            ['image', 'code-block'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'align': [] }],
-            ['clean']
-          ],
-          handlers: {
-            'image': function() {
-              const range = this.quill.getSelection();
-              const value = prompt('Enter image URL');
-              if (value) {
-                this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER);
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-});
-
+const addNote = () => {
+  isQuillVisible.value = true;
+};
 const saveNote = () => {
-  const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
-  console.log('Saved note:', noteContent);
+  // const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
   console.log('Meeting title:', meetingTitle.value);
   // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가
 };
-
-document.addEventListener('click', function(event) {
-  if (event && event.target) {
-    console.log('Clicked element:', event.target);
-  } else {
-    console.error('Event or event.target is undefined');
-  }
-});
 
 const rightSideOn = (id) => {
   const meetingNoteContainer = document.querySelector('.meeting-note-container');
@@ -87,6 +50,7 @@ const rightSideOn = (id) => {
 <template>
   <div class="meeting-wrap">
     <div class="meeting-note-container">
+      <div class="meeting-input-wrap">
       <div class="meeting-title-container">
         <span class="column">
           <i class="meeting-title column-icon"></i>
@@ -94,7 +58,29 @@ const rightSideOn = (id) => {
         </span>
         <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목" />
       </div>
+      <!--      설명 추가하기-->
+      <div class="issue-section">
+        <span class="column">
+          <i class="meeting-description column-icon"></i>
+          설명 추가하기
+        </span>
+        <input v-model="meetingDescription" class="description-editor" placeholder="회의록 상세" />
+      </div>
 
+      <!--     시간 추가하기-->
+      <div class="issue-section">
+        <span class="column">
+          <i class="meeting-time column-icon"></i>
+          회의 시간
+        </span>
+        <div class="meeting-time-input">
+          <span>시작 시간</span>
+          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <span>~ 종료 시간</span>
+          <input v-model="endTime" type="datetime-local" class="time-editor" />
+        </div>
+
+      </div>
       <!-- 작성자 및 회의 참가자 표시 -->
       <div class="author-section">
         <div class="author">
@@ -138,6 +124,16 @@ const rightSideOn = (id) => {
         <button class="label-button">Frontend</button>
       </div>
 
+      <!-- 태스크 추가하기 -->
+      <div class="issue-section">
+        <span class="column">
+          <i class="task-add column-icon"></i>
+          태스크 추가하기
+        </span>
+        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
+        <span class="issue-id">User_001</span>
+      </div>
+
       <!-- 이슈 추가하기 -->
       <div class="issue-section">
         <span class="column">
@@ -147,18 +143,16 @@ const rightSideOn = (id) => {
         <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>
         <span class="issue-id">User_001</span>
       </div>
-
-      <!-- Quill 에디터 섹션 -->
-      <div class="editor-section">
-        <span class="column">
-          <i class="quill-editings column-icon"></i>
-          회의록 작성하기
-        </span>
-        <div ref="editor" class="content-editor"></div>
       </div>
 
-      <!-- 저장 버튼 -->
-      <button class="save-button" @click="saveNote">저장하기</button>
+      <div class="btn-sector">
+        <button class="save-button" @click="addNote">회의 저장하기</button>
+        <button class="save-button" @click="addNote">회의록 추가하기</button>
+      </div>
+      <div v-show="isQuillVisible" class="quill-wrap">
+        <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
+        <button class="save-button" @click="saveNote">저장하기</button>
+      </div>
     </div>
     <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
   </div>
@@ -168,6 +162,7 @@ const rightSideOn = (id) => {
 .meeting-wrap{
   display: flex;
   gap: 1rem;
+  height: 70vh;
 }
 
 .meeting-note-container {
@@ -176,6 +171,18 @@ const rightSideOn = (id) => {
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  //height: 100%;
+  //overflow-y: auto;
+  //display: flex;
+  //flex-direction: column-reverse;
+}
+
+.meeting-input-wrap{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .meeting-title-container{
@@ -209,6 +216,19 @@ const rightSideOn = (id) => {
 
 .meeting-title{
   background-image: url("@/assets/icon/boardIcon/titleEdit.svg");
+}
+
+.meeting-description{
+  background-image: url("@/assets/icon/boardIcon/quillDescription.svg");
+}
+
+.meeting-time{
+  background-image: url("@/assets/icon/boardIcon/calendar.svg");
+}
+
+.meeting-time-input{
+  display: flex;
+  gap: 10px;
 }
 
 .column-icon {
@@ -262,18 +282,23 @@ const rightSideOn = (id) => {
   background-image: url("@/assets/icon/boardIcon/issueAdd.svg");
 }
 
-.editor-section {
-  margin-top: 30px;
-}
-
-.quill-editings {
-  background-image: url("@/assets/icon/boardIcon/quillEditor.svg");
+.task-add{
+  background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
 }
 
 .title-editor {
   font-size: 1.5rem;
   border: 0;
 }
+
+.description-editor {
+  font-size: 1rem;
+  border: 0;
+  font-weight: 400;
+  width: 100%;
+  margin-left: 15px;
+}
+
 
 .content-editor {
   min-height: 200px;
@@ -291,9 +316,9 @@ const rightSideOn = (id) => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
+  //margin-top: 20px;
   width: 150px;
-  margin-left: auto;
+  //margin-left: auto;
 }
 
 .user-profile{
@@ -307,20 +332,11 @@ const rightSideOn = (id) => {
   gap: 10px;
 }
 
-.ql-editor {
-  min-height: 200px;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #28303F;
-}
-
-.ql-tooltip {
-  z-index: 1000;
-}
-
-.ql-container {
-  position: relative;
-  overflow: visible;
+.btn-sector{
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: flex-end;
 }
 
 .fade-enter-active, .fade-leave-active {

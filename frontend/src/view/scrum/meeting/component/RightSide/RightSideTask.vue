@@ -20,7 +20,9 @@ const addTask = () => {
 <template>
   <div class="form-container">
     <h2>Task 추가하기</h2>
-
+    <hr/>
+    <div class="task-wrap">
+      <div class="input-wrap">
     <!-- Task 이름 입력 필드 -->
     <label for="task-name">Name Task</label>
     <input
@@ -56,35 +58,54 @@ const addTask = () => {
       <option>Medium</option>
       <option>High</option>
     </select>
-
+  </div>
     <!-- 추가 버튼 -->
     <button @click="addTask" class="add-task-btn">Add Task</button>
+  </div>
   </div>
 </template>
 
 <style scoped>
 .form-container {
-  width: 300px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
+  height: calc(100vh - 250px);
+  box-sizing: border-box;
+  //width: 300px;
+  //margin: 0 auto;
+  //padding: 20px;
+  //border: 1px solid #ddd;
+  //border-radius: 8px;
+  //background-color: #fff;
 }
 
 h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+hr{
+  border: 1px solid #dfe5f1;
+  width: 100%;
+  margin: 10px 0;
 }
 
 label {
   display: block;
-  font-weight: bold;
+  font-weight: 400;
   margin-top: 15px;
+  font-size: 16px;
+}
+
+.task-wrap{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .input-field {
   width: 100%;
+  box-sizing: border-box;
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 15px;
@@ -94,8 +115,8 @@ label {
 }
 
 .add-task-btn {
-  background-color: #007bff;
-  color: white;
+  background-color: #C6D2FD;
+  color: #28303F;
   padding: 10px;
   width: 100%;
   border: none;
@@ -105,6 +126,6 @@ label {
 }
 
 .add-task-btn:hover {
-  background-color: #0056b3;
+  background-color: #93AAFD;
 }
 </style>

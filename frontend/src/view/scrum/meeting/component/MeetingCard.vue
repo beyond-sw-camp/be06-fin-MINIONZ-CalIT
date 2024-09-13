@@ -20,7 +20,7 @@ const labelClass = computed(() => {
 </script>
 
 <template>
-  <router-link :to="`/workspace/${workspaceData.workspaceId}/meeting/${props.id}`" class="card">
+  <router-link :to="`/workspace/${workspaceData.workspaceId}/scrum/meeting/detail/${props.id}`" class="card">
     <div class="card-header">
       <p class="card-title">{{ title }}</p>
       <span :class="labelClass">{{ label }}</span>

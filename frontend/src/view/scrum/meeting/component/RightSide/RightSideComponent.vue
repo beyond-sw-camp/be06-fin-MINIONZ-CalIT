@@ -41,11 +41,12 @@ const activeComponent = computed(() => {
   justify-content: space-between;
   width: 500px;
   //padding: 0 10px;
-  background-color: #F3F6FF;
+  //background-color: #F3F6FF;
   //width: 100%;
   box-sizing: border-box;
   /* margin: 0 auto; */
   padding: 20px;
+  margin-right: 30px;
   //border: 1px solid #ddd;
   border-radius: 8px;
   //background-color: #fff;

@@ -198,7 +198,7 @@ const routes = [
                             {
                                 path: 'create',
                                 name: 'BoardMeetingCreate',
-                                component: () => import('@/view/scrum/meeting/MeetingEdit.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingCreate.vue')
                             }
                         ]
                     },
