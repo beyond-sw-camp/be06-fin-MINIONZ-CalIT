@@ -1,9 +1,9 @@
 <script setup>
-import {useRoute} from 'vue-router';
-import {computed, inject} from 'vue';
-import {workspaceData} from '@/static/workspaceData';
-// import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
-// import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import { useRoute } from 'vue-router';
+import { computed, inject, ref } from 'vue';
+import { workspaceData } from '@/static/workspaceData';
+import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
 
 import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
@@ -14,41 +14,49 @@ const workspaceId = route.params.workspaceId;
 const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Detail';
-contentsDescription.value = '회의 정보를 확인해보세요!';
+contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Create';
+contentsDescription.value = '회의를 만들어 보세요!';
 
-// const meetingTitle = ref('회의록 제목');
-// const meetingDescription = ref('회의록 상세 설명');
-// const rightSideVisible = ref(false);
-// const activeComponentId = ref('');
+const meetingTitle = ref('회의록 제목');
+const meetingDescription = ref('회의록 상세 설명');
+const startTime = ref('');
+const endTime = ref('');
+const rightSideVisible = ref(false);
+const activeComponentId = ref('');
+const editor = ref(null);
+const isQuillVisible = ref(false);
 
-// const editor = ref(null);
-// const addNote = () => {
-//   // edit 페이지로 이동하는데 현재의 내용을 모두 들고 가게 해야함
-//   // console.log('Meeting title:', meetingTitle.value);
-// };
+const addNote = () => {
+  isQuillVisible.value = true;
+};
+const saveNote = () => {
+  // const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
+  console.log('Meeting title:', meetingTitle.value);
+  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가
+};
 
-// const rightSideOn = (id) => {
-//   const meetingNoteContainer = document.querySelector('.meeting-note-container');
-//   if (meetingNoteContainer) {
-//     meetingNoteContainer.style.transition = 'width 0.5s ease';
-//     meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
-//   }
-//   console.log('Add issue button clicked');
-//   activeComponentId.value = id;
-//   rightSideVisible.value = !rightSideVisible.value;
-// };
+const rightSideOn = (id) => {
+  const meetingNoteContainer = document.querySelector('.meeting-note-container');
+  if (meetingNoteContainer) {
+    meetingNoteContainer.style.transition = 'width 0.5s ease';
+    meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
+  }
+  console.log('Add issue button clicked');
+  activeComponentId.value = id;
+  rightSideVisible.value = !rightSideVisible.value;
+};
 </script>
 
 <template>
   <div class="meeting-wrap">
     <div class="meeting-note-container">
+      <div class="meeting-input-wrap">
       <div class="meeting-title-container">
         <span class="column">
           <i class="meeting-title column-icon"></i>
           회의록 제목
         </span>
-        <p class="title-editor"> 회의록 제목</p>
+        <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목" />
       </div>
       <!--      설명 추가하기-->
       <div class="issue-section">
@@ -56,7 +64,22 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
           <i class="meeting-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor">회의록 상세"</p>
+        <input v-model="meetingDescription" class="description-editor" placeholder="회의록 상세" />
+      </div>
+
+      <!--     시간 추가하기-->
+      <div class="issue-section">
+        <span class="column">
+          <i class="meeting-time column-icon"></i>
+          회의 시간
+        </span>
+        <div class="meeting-time-input">
+          <span>시작 시간</span>
+          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <span>~ 종료 시간</span>
+          <input v-model="endTime" type="datetime-local" class="time-editor" />
+        </div>
+
       </div>
       <!-- 작성자 및 회의 참가자 표시 -->
       <div class="author-section">
@@ -78,7 +101,7 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
             <i class="user-multiple column-icon"></i>
             회의 참여자
           </span>
-<!--          <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>-->
+          <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
           <div class="users-list">
             <div class="user-profile">
               <img :src=user2 alt="참여자">
@@ -97,7 +120,7 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
           <i class="label-add column-icon"></i>
           라벨 추가하기
         </span>
-<!--        <button class="issue-button" @click="rightSideOn('label')">라벨 추가하기</button>-->
+        <button class="issue-button" @click="rightSideOn('label')">라벨 추가하기</button>
         <button class="label-button">Frontend</button>
       </div>
 
@@ -107,7 +130,7 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
           <i class="task-add column-icon"></i>
           태스크 추가하기
         </span>
-<!--        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>-->
+        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
         <span class="issue-id">User_001</span>
       </div>
 
@@ -117,24 +140,29 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
           <i class="issue-add column-icon"></i>
           이슈 추가하기
         </span>
-<!--        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>-->
+        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>
         <span class="issue-id">User_001</span>
       </div>
-      <router-link class="save-button" to="`/workspace/${workspaceData.workspaceId}/scrum/meeting/edit/${props.id}`">회의록 작성하기</router-link>
-<!--      <QuillEditor ref="editor" class="content-editor" v-model="editor"/>-->
+      </div>
+
+      <div class="btn-sector">
+        <button class="save-button" @click="addNote">회의 저장하기</button>
+        <button class="save-button" @click="addNote">회의록 추가하기</button>
+      </div>
+      <div v-show="isQuillVisible" class="quill-wrap">
+        <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
+        <button class="save-button" @click="saveNote">저장하기</button>
+      </div>
     </div>
-<!--    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>-->
+    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
   </div>
 </template>
 
 <style scoped>
-a{
-  text-decoration: none;
-  text-align: center;
-}
-.meeting-wrap {
+.meeting-wrap{
   display: flex;
   gap: 1rem;
+  height: 70vh;
 }
 
 .meeting-note-container {
@@ -143,9 +171,21 @@ a{
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  //height: 100%;
+  //overflow-y: auto;
+  //display: flex;
+  //flex-direction: column-reverse;
 }
 
-.meeting-title-container {
+.meeting-input-wrap{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meeting-title-container{
   display: flex;
 }
 
@@ -153,7 +193,7 @@ a{
   background-image: url("@/assets/icon/boardIcon/userMultiple.svg");
 }
 
-.column {
+.column{
   display: flex;
   align-items: center;
   width: 10rem;
@@ -165,7 +205,7 @@ a{
   flex-direction: column;
 }
 
-.issue-section {
+.issue-section{
   display: flex;
 }
 
@@ -174,12 +214,21 @@ a{
   align-items: center;
 }
 
-.meeting-title {
+.meeting-title{
   background-image: url("@/assets/icon/boardIcon/titleEdit.svg");
 }
 
-.meeting-description {
+.meeting-description{
   background-image: url("@/assets/icon/boardIcon/quillDescription.svg");
+}
+
+.meeting-time{
+  background-image: url("@/assets/icon/boardIcon/calendar.svg");
+}
+
+.meeting-time-input{
+  display: flex;
+  gap: 10px;
 }
 
 .column-icon {
@@ -188,7 +237,6 @@ a{
   height: 24px;
   display: block;
 }
-
 .user-editor {
   background-image: url("@/assets/icon/boardIcon/userEdit.svg");
 }
@@ -199,7 +247,7 @@ a{
   height: 30px;
 }
 
-.label-add {
+.label-add{
   background-image: url("@/assets/icon/boardIcon/labelIcon.svg");
 }
 
@@ -222,7 +270,7 @@ a{
   margin-right: 10px;
 }
 
-.issue-id {
+.issue-id{
   color: #28303F;
   background-color: #F3F6FF;
   padding: 5px 10px;
@@ -230,11 +278,11 @@ a{
   font-size: 12px;
 }
 
-.issue-add {
+.issue-add{
   background-image: url("@/assets/icon/boardIcon/issueAdd.svg");
 }
 
-.task-add {
+.task-add{
   background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
 }
 
@@ -250,6 +298,7 @@ a{
   width: 100%;
   margin-left: 15px;
 }
+
 
 .content-editor {
   min-height: 200px;
@@ -267,20 +316,27 @@ a{
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
+  //margin-top: 20px;
   width: 150px;
-  margin-left: auto;
+  //margin-left: auto;
 }
 
-.user-profile {
+.user-profile{
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.users-list {
+.users-list{
   display: flex;
   gap: 10px;
+}
+
+.btn-sector{
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: flex-end;
 }
 
 .fade-enter-active, .fade-leave-active {
