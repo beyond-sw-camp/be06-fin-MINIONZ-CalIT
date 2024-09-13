@@ -124,6 +124,7 @@ public class MessageService {
                                 .fileName(message.getFileName())
                                 .build())
                         .persona(message.getChatParticipation().getUser().getPersona())
+                        .isOwn(message.getChatParticipation().getUser().getUserId().equals(userId))
                         .build())
                 .collect(Collectors.toList());
     }
