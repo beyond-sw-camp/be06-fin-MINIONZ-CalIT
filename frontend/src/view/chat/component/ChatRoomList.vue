@@ -1,13 +1,14 @@
 <script setup>
 import FriendsModal from './FriendsModal.vue';
-import {ref, onMounted} from 'vue';
-import {useChatRoomStore} from '@/store/socket/chat/useChatRoomStore';
+import {ref} from 'vue';
+import {chatRoomList} from "@/static/chatData";
+// import {useChatRoomStore} from '@/store/socket/chat/useChatRoomStore';
 
-const {chatRoomList, fetchChatRooms} = useChatRoomStore();
+// const {chatRoomList, fetchChatRooms} = useChatRoomStore();
 
-onMounted(() => {
-  fetchChatRooms();
-});
+// onMounted(() => {
+//   fetchChatRooms();
+// });
 
 const showModal = ref(false);
 
@@ -19,13 +20,7 @@ const closeModal = () => {
   showModal.value = false;
 };
 
-// const chatRoomList= [
-//   { name: '최승은', text: '빠샤샤 🔥', time: '12m', unreadCount: 4, profilePic: user1},
-//   { name: '박성준', text: '메롱롱', time: '24m', profilePic: user2 },
-//   { name: '차윤슬', text: " 아쟈쟈", time: '1h', profilePic: user3 },
-//   { name: '지연희', text: '귀오밍', time: '5h', profilePic: user4 },
-//   { name: '강혜정', text: '오구오구', time: '2d', profilePic: user5 },
-// ];
+
 // const totalMessages = 12;
 </script>
 
@@ -36,7 +31,8 @@ const closeModal = () => {
       <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">
-      <div class="message-item" v-for="(room) in chatRoomList" :key="room.chatroomId">
+      <router-link :to="'/workspace/chat/' + room.chatroomId" class="message-item" v-for="(room) in chatRoomList" :key="room.chatroomId">
+        <img :src="room.profilePic" alt="profile" class="profile-pic"/>
         <div class="message-info">
           <div class="message-item-top">
             <span class="user-name">{{ room.chatRoomName }}</span>
@@ -44,10 +40,10 @@ const closeModal = () => {
           <p class="message-text">{{ room.messageContents }}</p>
         </div>
         <div class="message-item-right">
-          <span class="message-time">{{ new Date(room.createdAt).toLocaleString() }}</span>
+          <span class="message-time">{{ new Date(room.createdAt).toLocaleDateString() }}</span>
           <span v-if="room.unreadMessages" class="unread-count">{{ room.unreadMessages }}</span>
         </div>
-      </div>
+      </router-link>
     </div>
     <FriendsModal v-if="showModal" @close="closeModal"/>
   </div>
@@ -79,6 +75,11 @@ const closeModal = () => {
 <!--</template>-->
 
 <style scoped>
+a{
+  text-decoration: none;
+  color: #28303F;
+}
+
 .message-list-container {
   position: relative;
   height: 50vh;
@@ -167,6 +168,7 @@ const closeModal = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .message-time {
@@ -184,8 +186,8 @@ const closeModal = () => {
   background-color: #e74c3c;
   color: white;
   font-size: 12px;
-  border-radius: 10px;
-  padding: 3px;
+  border-radius: 15px;
   text-align: center;
+  padding: 3px 10px;
 }
 </style>

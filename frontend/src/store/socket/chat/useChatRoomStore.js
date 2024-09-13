@@ -13,16 +13,16 @@ export const useChatRoomStore = defineStore('chatRoom', {
     }),
     actions: {
         // 1. 채팅방 목록 조회
-        async fetchChatRooms() {
-            try {
-                const response = await axios.get('/chat/roomList');
-                if (response.data.success) {
-                    this.chatRooms = response.data.result;
-                }
-            } catch (error) {
-                console.error('Error fetching chat rooms:', error);
-            }
-        },
+        // async fetchChatRooms() {
+        //     try {
+        //         const response = await axios.get('/chat/roomList');
+        //         if (response.data.success) {
+        //             this.chatRooms = response.data.result;
+        //         }
+        //     } catch (error) {
+        //         console.error('Error fetching chat rooms:', error);
+        //     }
+        // },
 
         // 2. 채팅방 수정
         async updateChatRoom(chatroomId, chatRoomName) {

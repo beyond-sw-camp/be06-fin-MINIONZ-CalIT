@@ -1,33 +1,47 @@
 <script setup>
-import codeIcon from '@/assets/icon/chatIcon/code.svg';
-import docsIcon from '@/assets/icon/chatIcon/docs.svg';
-import imgIcon from '@/assets/icon/chatIcon/img.svg';
-import pdfIcon from '@/assets/icon/chatIcon/pdf.svg';
+import pdfIcon from "@/assets/icon/chatIcon/pdf.svg";
+import imgIcon from "@/assets/icon/chatIcon/img.svg";
+import docsIcon from "@/assets/icon/chatIcon/docs.svg";
+import codeIcon from "@/assets/icon/chatIcon/code.svg";
 import downloadIcon from '@/assets/icon/chatIcon/download.svg';
+import { chat } from '@/static/chatData';
+// import { ref } from "vue";
 
-const files = [
-  { name: 'i9.pdf', type: 'PDF', size: '9mb', icon: pdfIcon },
-  { name: 'Screenshot-3817.png', type: 'PNG', size: '4mb', icon: imgIcon },
-  { name: 'sharefile.docx', type: 'DOC', size: '555kb', icon: docsIcon },
-  { name: 'Jerry-2020_I-9_Form.xxl', type: 'XXL', size: '24mb', icon: codeIcon},
-];
-const totalFiles = 125;
+const files= chat.filter((item) => item.messageType === 'FILE').map(item => item.file);
+
+const getFileIcon = (fileType) => {
+  switch (fileType) {
+    case 'PDF':
+      return pdfIcon;
+    case 'PNG':
+    case 'JPG':
+      return imgIcon;
+    case 'docx':
+      return docsIcon;
+    case 'code':
+      return codeIcon;
+    default:
+      return pdfIcon;
+  }
+};
+
+// const totalFiles = files.length;
 </script>
 
 <template>
   <div class="file-list-container">
     <div class="file-header">
-      <p>Files <span class="badge">{{ totalFiles }}</span></p>
+      <p>Files <span class="badge">{{ files.length }}</span></p>
     </div>
     <div class="file-list">
       <div class="file-item" v-for="(file, index) in files" :key="index">
         <div class="file-info">
           <div class="file-icon">
-            <img :src="file.icon" alt="file icon"/>
+            <img :src="getFileIcon(file.fileType)" alt="file icon"/>
           </div>
           <div class="file-details">
-            <span class="file-name">{{ file.name }}</span>
-            <span class="file-type">{{ file.type }} · {{ file.size }}</span>
+            <span class="file-name">{{ file.fileName }}</span>
+            <span class="file-type">{{ file.fileType }} · {{ file.fileSize }}</span>
           </div>
         </div>
         <button class="download-button">
@@ -39,7 +53,7 @@ const totalFiles = 125;
 </template>
 
 <style scoped>
-.file-list-container{
+.file-list-container {
   position: relative;
   height: 50vh;
   overflow: scroll;
@@ -49,7 +63,6 @@ const totalFiles = 125;
   padding: 0 20px;
   height: 100%;
   overflow: auto;
-  //margin-top: 70px;
   background-color: #fff;
 }
 
@@ -59,24 +72,23 @@ const totalFiles = 125;
   align-items: center;
   margin-bottom: 10px;
   background-color: #FFF;
-  position:  sticky;
+  position: sticky;
   top: 0;
   height: 60px;
-  //box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  /* font-size: 20px; */
   font-weight: 500;
-  border-top:  1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
   border-bottom: 1px solid #e0e0e0;
-  span{
-    background-color: #EDF2F7;
-    font-size: 12px;
-    padding: 8px 12px ;
-    border-radius: 24px;
-    margin-left: 10px;
-  }
+}
+
+.file-header span {
+  background-color: #EDF2F7;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 24px;
+  margin-left: 10px;
 }
 
 .file-item {
