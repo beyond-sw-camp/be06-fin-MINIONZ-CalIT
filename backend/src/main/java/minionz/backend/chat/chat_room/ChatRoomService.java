@@ -5,6 +5,7 @@ import minionz.backend.chat.chat_participation.ChatParticipationRepository;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.chat.chat_room.model.ChatRoom;
 import minionz.backend.chat.chat_room.model.request.CreateChatRoomRequest;
+import minionz.backend.chat.chat_room.model.request.UpdateChatRoomRequest;
 import minionz.backend.chat.chat_room.model.response.CreateChatRoomResponse;
 import minionz.backend.chat.chat_room.model.response.ReadChatRoomResponse;
 import minionz.backend.chat.message.MessageRepository;
@@ -99,6 +100,25 @@ public class ChatRoomService {
             responseList.add(response);
         }
         return responseList;
+    }
+
+    public BaseResponse<BaseResponseStatus> updateChatRoomName(Long chatRoomId, UpdateChatRoomRequest request, User user) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElse(null);
+
+        // 채팅방이 존재하지 않는 경우
+        if (chatRoom == null) {
+            return new BaseResponse<>(BaseResponseStatus.CHAT_ROOM_NOT_FOUND);
+        }
+
+        boolean isParticipant = chatParticipationRepository.existsByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, user.getUserId());
+        if (!isParticipant) {
+            return new BaseResponse<>(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED);
+        }
+
+        chatRoom.setChatRoomName(request.getNewChatRoomName());
+        chatRoomRepository.save(chatRoom);
+
+        return new BaseResponse<>(BaseResponseStatus.CHATROOM_UPDATE_SUCCESS);
     }
 
     private ChatRoom createChatRoom(String chatRoomName) {

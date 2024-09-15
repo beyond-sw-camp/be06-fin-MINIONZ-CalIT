@@ -2,6 +2,7 @@ package minionz.backend.chat.chat_room;
 
 import lombok.RequiredArgsConstructor;
 import minionz.backend.chat.chat_room.model.request.CreateChatRoomRequest;
+import minionz.backend.chat.chat_room.model.request.UpdateChatRoomRequest;
 import minionz.backend.chat.chat_room.model.response.CreateChatRoomResponse;
 import minionz.backend.chat.chat_room.model.response.ReadChatRoomResponse;
 import minionz.backend.common.responses.BaseResponse;
@@ -31,5 +32,12 @@ public class ChatRoomController {
         User user = customUserDetails.getUser();
         List<ReadChatRoomResponse> response = chatRoomService.roomList(user.getUserId(), workspaceId);
         return new BaseResponse<>(BaseResponseStatus.CHATROOM_LIST_SUCCESS, response);
+    }
+
+    @PatchMapping(value = "/room/{chatRoomId}/edit")
+    public BaseResponse<BaseResponseStatus> updateRoomName(@PathVariable Long chatRoomId, @RequestBody UpdateChatRoomRequest request, @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+        User user = customUserDetails.getUser();
+        BaseResponse<BaseResponseStatus> response = chatRoomService.updateChatRoomName(chatRoomId, request, user);
+        return response;
     }
 }
