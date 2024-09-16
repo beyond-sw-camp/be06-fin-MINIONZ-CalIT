@@ -11,6 +11,7 @@ import minionz.backend.chat.chat_room.model.response.ReadChatRoomResponse;
 import minionz.backend.chat.message.MessageRepository;
 import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageStatus;
+import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.user.UserRepository;
@@ -74,7 +75,7 @@ public class ChatRoomService {
 
     // 채팅룸 리스트 조회
     public List<ReadChatRoomResponse> roomList(Long userId, Long workspaceId) {
-        List<ChatParticipation> chatParticipations = chatParticipationRepository.findByUser_UserId(userId);
+        List<ChatParticipation> chatParticipations = chatParticipationRepository.findByUser_UserIdAndIsActiveTrue(userId);
 
         List<ReadChatRoomResponse> responseList = new ArrayList<>();
 
@@ -121,6 +122,27 @@ public class ChatRoomService {
         return new BaseResponse<>(BaseResponseStatus.CHATROOM_UPDATE_SUCCESS);
     }
 
+    public BaseResponse<BaseResponseStatus> exitChatRoom(Long chatRoomId, User user) {
+        // 채팅방 존재 여부 확인
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHAT_ROOM_NOT_FOUND));
+
+        // 사용자가 해당 채팅방에 참여하고 있는지 확인
+        ChatParticipation chatParticipation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, user.getUserId());
+
+        if (chatParticipation == null) {
+            throw new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED);
+        }
+
+        // 사용자가 나간 것으로 표시
+        chatParticipation.setActive(false);
+        chatParticipationRepository.save(chatParticipation);
+
+        return new BaseResponse<>(BaseResponseStatus.CHATROOM_EXIT_SUCCESS);
+    }
+
+
+
     private ChatRoom createChatRoom(String chatRoomName) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .chatRoomName(chatRoomName)
@@ -138,6 +160,7 @@ public class ChatRoomService {
             ChatParticipation chatParticipation = ChatParticipation.builder()
                     .user(participant)
                     .chatRoom(chatRoom)
+                    .isActive(true)
                     .build();
             chatParticipationRepository.save(chatParticipation);
         }

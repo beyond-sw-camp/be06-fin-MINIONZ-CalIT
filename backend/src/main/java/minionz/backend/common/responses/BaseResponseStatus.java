@@ -97,7 +97,10 @@ public enum BaseResponseStatus {
     CHATROOM_NOT_FOUND(false, 6402, "해당 채팅방이 존재하지 않습니다."),
     CHATROOM_USER_NOT_AUTHORIZED(false, 6403, "해당 참가자는 채팅방에 존재하지 않습니다."),
 
-    MESSAGE_DELETE_SUCCESS(true, 6501, "메세지가 성공적으로 삭제되었습니다.");
+    MESSAGE_DELETE_SUCCESS(true, 6501, "메세지가 성공적으로 삭제되었습니다."),
+
+    CHATROOM_EXIT_SUCCESS(true, 6601, "채팅방에서 성공적으로 나갔습니다."),
+    CHATROOM_EXIT_FAIL(false, 6602, "채팅방 나가기에 실패했습니다.");
 
 
 

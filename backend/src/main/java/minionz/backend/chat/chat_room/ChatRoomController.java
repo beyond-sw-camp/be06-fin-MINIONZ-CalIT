@@ -40,4 +40,12 @@ public class ChatRoomController {
         BaseResponse<BaseResponseStatus> response = chatRoomService.updateChatRoomName(chatRoomId, request, user);
         return response;
     }
+
+    @DeleteMapping("/{chatRoomId}/exit")
+    public BaseResponse<BaseResponseStatus> exitChatRoom(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails,
+                                             @PathVariable Long chatRoomId) {
+        User user = customUserDetails.getUser();
+        BaseResponse<BaseResponseStatus> response = chatRoomService.exitChatRoom(chatRoomId, user);
+        return response;
+    }
 }
