@@ -103,7 +103,9 @@ public enum BaseResponseStatus {
     CHATROOM_EXIT_FAIL(false, 6602, "채팅방 나가기에 실패했습니다."),
 
     MESSAGE_STATUS_UPDATE_SUCCESS(true, 6701, "메세지 상태 변경이 성공적으로 완료되었습니다."),
-    MESSAGE_STATUS_UPDATE_FAIL(false, 6702, "상태 변경에 실패했습니다.");
+    MESSAGE_STATUS_UPDATE_FAIL(false, 6702, "상태 변경에 실패했습니다."),
+
+    CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다.");
 
 
 
