@@ -129,6 +129,14 @@ public class MessageService {
                 .collect(Collectors.toList());
     }
 
+    public void enterChatRoom(Long chatRoomId, Long userId) {
+        List<Message> unreadMessages = messageRepository.findUnreadMessagesByChatRoomId(chatRoomId, MessageStatus.UNREAD);
+        for (Message message : unreadMessages) {
+            message.setMessageStatus(MessageStatus.READ);
+        }
+        messageRepository.saveAll(unreadMessages);
+    }
+
     @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeMessage(ConsumerRecord<String, String> record) {
         try {

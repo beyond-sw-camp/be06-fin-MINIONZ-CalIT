@@ -65,5 +65,13 @@ public class MessageController {
         messageService.deleteMessage(messageId, senderId);
         return new BaseResponse<>(BaseResponseStatus.MESSAGE_DELETE_SUCCESS);
     }
+
+    // 상태 업데이트
+    @GetMapping("/enter/{chatRoomId}")
+    public BaseResponse<BaseResponseStatus> enterChatRoom(@PathVariable Long chatRoomId, @AuthenticationPrincipal CustomSecurityUserDetails userDetails) {
+        Long userId = userDetails.getUser().getUserId();
+        messageService.enterChatRoom(chatRoomId, userId);
+        return new BaseResponse<>(BaseResponseStatus.MESSAGE_STATUS_UPDATE_SUCCESS);
+    }
 }
 
