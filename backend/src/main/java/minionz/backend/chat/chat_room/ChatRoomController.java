@@ -2,9 +2,11 @@ package minionz.backend.chat.chat_room;
 
 import lombok.RequiredArgsConstructor;
 import minionz.backend.chat.chat_room.model.request.CreateChatRoomRequest;
+import minionz.backend.chat.chat_room.model.request.SearchChatRoomRequest;
 import minionz.backend.chat.chat_room.model.request.UpdateChatRoomRequest;
 import minionz.backend.chat.chat_room.model.response.CreateChatRoomResponse;
 import minionz.backend.chat.chat_room.model.response.ReadChatRoomResponse;
+import minionz.backend.chat.chat_room.model.response.SearchChatRoomResponse;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.user.model.CustomSecurityUserDetails;
@@ -48,4 +50,12 @@ public class ChatRoomController {
         BaseResponse<BaseResponseStatus> response = chatRoomService.exitChatRoom(chatRoomId, user);
         return response;
     }
+
+    @GetMapping("/search")
+    public BaseResponse<List<SearchChatRoomResponse>> searchChatRooms(@RequestBody SearchChatRoomRequest request) {
+        List<SearchChatRoomResponse> response = chatRoomService.searchRoomList(request);
+        return new BaseResponse<>(BaseResponseStatus.CHATROOM_SEARCH_SUCCESS, response);
+    }
+
+
 }
