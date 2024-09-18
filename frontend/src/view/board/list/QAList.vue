@@ -3,7 +3,7 @@ import {computed, inject, ref} from 'vue';
 import { qaListData } from "@/static/qaListData";
 import { workspaceData } from "@/static/workspaceData";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import BoardList from "@/common/component/BoardList.vue";
+import BoardList from "@/view/board/component/BoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import {useRoute} from "vue-router";
 
@@ -58,7 +58,7 @@ const deleteItem = (item) => {
     <div class="header">
       <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
     </div>
-    <BoardList :items="qaListData" thcolumn="상태" column="state" @edit-item="editItem" @delete-item="deleteItem" />
+    <BoardList :items="qaListData" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
     <Pagination
         :currentPage="currentPage"
         :totalPages="totalPages"

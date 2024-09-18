@@ -1,9 +1,17 @@
 <script setup>
-import { defineProps } from 'vue';
+import {computed, defineProps} from 'vue';
+import {workspaceData} from "@/static/workspaceData";
+import {useRoute} from "vue-router";
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+
 defineProps({
   items: Array,
   thcolumn: String,
   column: String,
+  boardType: String,
 });
 </script>
 
@@ -28,16 +36,20 @@ defineProps({
 <!--        <input type="checkbox" id="check"/>-->
 <!--        <label for="check" class="check-box"></label>-->
 <!--      </td>-->
-      <td>{{ item.title }}</td>
+      <td class="title">
+        <router-link :to="`/workspace/${workspace}/scrum/board/${boardType}/detail/${index}`">
+        {{ item.title }}
+        </router-link>
+      </td>
       <td>{{ item.author }}</td>
       <td>{{ item[column] }}</td>
       <td>{{ item.date }}</td>
-      <td>
+      <td class="action-bundle">
         <button @click="$emit('edit-item', item)" class="action-btn edit-btn">
-          <i class="fas fa-edit"></i> Edit
+          <i class="edit-icon"></i>
         </button>
         <button @click="$emit('delete-item', item)" class="action-btn delete-btn">
-          <i class="fas fa-trash"></i> Delete
+          <i class="delete-icon"></i>
         </button>
       </td>
     </tr>
@@ -46,6 +58,11 @@ defineProps({
 </template>
 
 <style scoped>
+a{
+  text-decoration: none;
+  color: #28303F;
+}
+
 .board-table {
   width: 100%;
   border-collapse: collapse;
@@ -55,7 +72,7 @@ defineProps({
 .board-table th,
 .board-table td {
   padding: 10px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #E6E9F4;
 }
 
@@ -87,6 +104,15 @@ input[id="check"]:checked + label::after{
   top:0;
 }
 
+.title {
+  text-align: left;
+  padding-left: 20px !important;
+}
+
+.action-bundle {
+  width: 200px;
+}
+
 .action-btn {
   border: none;
   background-color: transparent;
@@ -94,11 +120,16 @@ input[id="check"]:checked + label::after{
   margin-right: 5px;
 }
 
-.edit-btn {
-  color: #007bff;
+.edit-icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  background-image: url("@/assets/icon/boardIcon/boardEdit.svg");
 }
-
-.delete-btn {
-  color: #ff4d4f;
+.delete-icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  background-image: url("@/assets/icon/boardIcon/boardDelete.svg");
 }
 </style>
