@@ -151,7 +151,7 @@ const rightSideOn = (id) => {
       </div>
       <div v-show="isQuillVisible" class="quill-wrap">
         <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
-        <button class="save-button" @click="saveNote">저장하기</button>
+        <button class="save-button btn-v2" @click="saveNote">저장하기</button>
       </div>
     </div>
     <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
@@ -292,12 +292,16 @@ const rightSideOn = (id) => {
   border: 0;
 }
 
+.time-editor{
+  border: none;
+}
+
 .description-editor {
   font-size: 1rem;
   border: 0;
   font-weight: 400;
-  width: 100%;
-  margin-left: 15px;
+  width: 80%;
+  //margin-left: 15px;
 }
 
 
@@ -320,6 +324,11 @@ const rightSideOn = (id) => {
   //margin-top: 20px;
   width: 150px;
   //margin-left: auto;
+}
+
+.btn-ver2{
+  color: #e0e8ff;
+  background-color: #666daf;
 }
 
 .user-profile {

@@ -147,7 +147,7 @@ const rightSideOn = (id) => {
 
       <div class="btn-sector">
         <button class="save-button" @click="addNote">회의 저장하기</button>
-        <button class="save-button" @click="addNote">회의록 추가하기</button>
+        <button class="save-button btn-ver2" @click="addNote">회의록 추가하기</button>
       </div>
       <div v-show="isQuillVisible" class="quill-wrap">
         <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
@@ -295,8 +295,8 @@ const rightSideOn = (id) => {
   font-size: 1rem;
   border: 0;
   font-weight: 400;
-  width: 100%;
-  margin-left: 15px;
+  width: 80%;
+  //margin-left: 15px;
 }
 
 
@@ -321,6 +321,11 @@ const rightSideOn = (id) => {
   //margin-left: auto;
 }
 
+.btn-ver2{
+  color: #e0e8ff;
+  background-color: #666daf;
+}
+
 .user-profile{
   display: flex;
   align-items: center;
@@ -337,6 +342,10 @@ const rightSideOn = (id) => {
   gap: 10px;
   width: 100%;
   justify-content: flex-end;
+}
+
+.time-editor{
+  border: none;
 }
 
 .fade-enter-active, .fade-leave-active {

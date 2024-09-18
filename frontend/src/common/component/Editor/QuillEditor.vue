@@ -68,12 +68,25 @@ onMounted(() => {
   color: #28303F;
 }
 
-.ql-tooltip {
-  z-index: 1000;
+.ql-bubble{
+  //max-width: max-content;
+}
+
+.ql-tooltip{
+  position: static;
+}
+
+.ql-bubble .ql-tooltip-arrow{
+  display: none;
 }
 
 .ql-container {
   position: relative;
   overflow: visible;
+}
+
+.ql-bubble .ql-tooltip{
+  position: static !important;
+  max-width: fit-content !important;
 }
 </style>
