@@ -1,6 +1,6 @@
 import { useChatRoomStore } from '@/store/socket/chat/useChatRoomStore';
 import { useChatMessageStore } from "@/store/socket/chat/useChatMessageStore";
-import { useNotificationStore } from '@/store/socket/useNotifyStore';
+import { useNotificationStore } from '@/store/socket/useAlamStore';
 import { useDocsEditStore } from '@/store/socket/useDocsEditStore';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
