@@ -1,37 +1,34 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import {computed} from "vue";
-import {workspaceData} from "@/static/workspaceData";
 // import { workspaceData } from "@/static/workspaceData";
 // import { computed } from "vue";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
 </script>
 
 <template>
   <ul>
     <li>
-      <router-link :to="`/workspace/${workspace}/dashboard`">
+      <router-link :to="`/workspace/${workspaceId}/dashboard`">
         <i class="icon-dashboard"/>
         <p class="outfit">Dashboard</p>
       </router-link>
     </li>
     <li>
-      <router-link :to="`/workspace/${workspace}/monthly`">
+      <router-link :to="`/workspace/${workspaceId}/monthly`">
         <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
     </li>
     <li>
-      <router-link :to="`/workspace/${workspace}/scrum/board/qa/list`">
+      <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
         <i class="icon-board"/>
         <p class="outfit">Board</p>
       </router-link>
       <ul class="submenu">
         <li>
-          <router-link :to="`/workspace/${workspace}/scrum/board/qa/list`">
+          <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
             <i class="icon-qa"/>
             <p class="outfit">QA Board</p>
           </router-link>
