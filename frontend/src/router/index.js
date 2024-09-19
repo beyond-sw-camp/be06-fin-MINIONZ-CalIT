@@ -216,7 +216,7 @@ const routes = [
                                         component: () => import('@/view/board/list/ErrorList.vue')
                                     },
                                     {
-                                        path: 'detail',
+                                        path: 'detail/:id',
                                         name: 'ErrorDetail',
                                         component: () => import('@/view/board/detail/ErrorDetail.vue')
                                     },
