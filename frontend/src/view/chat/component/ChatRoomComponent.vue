@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue';
-import {useChatMessageStore} from '@/store/socket/chat/useChatMessageStore';
+import {useChatMessageStore} from '@/stores/socket/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';

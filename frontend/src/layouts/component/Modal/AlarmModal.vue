@@ -1,8 +1,10 @@
 <script setup>
-import {alarmData} from "@/static/alarmData";
-// import { useAlarmStore } from '@/store/socket/useAlamStore';
+// import {alarmData} from "@/static/alarmData";
+// import { useAlarmStore } from '@/stores/socket/useAlamStore';
 import  notification from "@/assets/icon/alarm/notification.svg";
 // const alarmStore = useAlarmStore();
+
+
 </script>
 
 <template>
@@ -20,9 +22,12 @@ import  notification from "@/assets/icon/alarm/notification.svg";
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
-        <button>
-          <i class="delete-icon"></i>
-        </button>
+        <div>
+          <button>
+            <i class="delete-icon"></i>
+          </button>
+          <p class="alarm-time">{{ alarm.time}}</p>
+        </div>
       </li>
     </ul>
   </div>
@@ -51,6 +56,13 @@ p {
 
 .alarm-content{
   font-size: 14px;
+  font-weight: 400;
+  margin-top: 5px;
+  color: #7c7c7c;
+}
+
+.alarm-time{
+  font-size: 12px;
   font-weight: 400;
   margin-top: 5px;
   color: #7c7c7c;
