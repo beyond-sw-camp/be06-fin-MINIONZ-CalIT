@@ -31,7 +31,7 @@ const authenticate = async (loginId, password) => {
 
 const login = async () => {
   if (loginId.value === '' || password.value === '') {
-    notyf.error('아이디와 비밀번호를 입력해주세요.');
+    notyf.error('아이디와 비밀번호 모두 입력해주세요.');
     return;
   }
 
