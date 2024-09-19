@@ -16,9 +16,7 @@ import {workspaceData} from "@/static/workspaceData";
     <div>
       <p>Workspace List</p>
     </div>
-
     <hr>
-
     <ul>
       <li>
         <router-link to="/my/dashboard">
@@ -33,9 +31,7 @@ import {workspaceData} from "@/static/workspaceData";
         </router-link>
       </li>
     </ul>
-
     <hr>
-
     <div>
       <router-link to="/workspace/scrum/workspace">
         <img :src="plus" class="plus" alt="plus-btn">
