@@ -237,7 +237,7 @@ const routes = [
                                         component: () => import('@/view/board/list/QAList.vue')
                                     },
                                     {
-                                        path: 'detail',
+                                        path: 'detail/:id',
                                         name: 'QADetail',
                                         component: () => import('@/view/board/detail/QADetail.vue')
                                     },

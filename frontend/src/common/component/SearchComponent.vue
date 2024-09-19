@@ -36,7 +36,7 @@ defineProps({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
   background-color: #fff;
   border-radius: 8px;
   //box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.05);
