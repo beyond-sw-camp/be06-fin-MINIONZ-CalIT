@@ -1,29 +1,61 @@
 <script setup>
 import { ref } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
 import arrow from '@/assets/icon/menu/arrow.svg';
 import WorkspaceModal from "@/layouts/component/Modal/WorkspaceModal.vue";
 import AlarmModal from "@/layouts/component/Modal/AlarmModal.vue";
+import ChatModal from "@/layouts/component/Modal/ChatModal.vue";
 
-const showWorkspaceModal = ref(false);
 const showAlarmModal = ref(false);
+const showWorkspaceModal = ref(false);
+const showChatModal = ref(false);
 
-const toggleWorkspaceModal = () => {
-  showWorkspaceModal.value = !showWorkspaceModal.value;
+const toggleChatModal = () => {
+  showChatModal.value = !showChatModal.value;
 };
 
 const toggleAlarmModal = () => {
   showAlarmModal.value = !showAlarmModal.value;
 };
 
-const closeWorkspaceModal = () => {
-  showWorkspaceModal.value = false;
+const toggleWorkspaceModal = () => {
+  showWorkspaceModal.value = !showWorkspaceModal.value;
 };
+
+const closeChatModal = () => {
+  showChatModal.value = false;
+};
+
 const closeAlarmModal = () => {
   showAlarmModal.value = false;
 };
+const closeWorkspaceModal = () => {
+  showWorkspaceModal.value = false;
+};
+
+const handleClickOutside = (event) => {
+  if (showChatModal.value && !event.target.closest('.chat')) {
+    closeChatModal();
+  }
+  if (showAlarmModal.value && !event.target.closest('.alarm')) {
+  closeAlarmModal();
+}
+  if (showWorkspaceModal.value && !event.target.closest('.workspace-bundle')) {
+    closeWorkspaceModal();
+  }
+
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
@@ -33,9 +65,9 @@ const closeAlarmModal = () => {
     </div>
     <div class="right-side">
       <div class="notice-bundle">
-        <router-link to="/workspace/chat" class="message">
+        <div  class="message" @click="toggleChatModal">
           <img :src="message" alt="message">
-        </router-link>
+        </div>
         <div class="alarm" @click="toggleAlarmModal">
           <img :src="alarm" alt="alarm">
         </div>
@@ -48,6 +80,7 @@ const closeAlarmModal = () => {
           <img :src="arrow" alt="arrow" :class="{ 'arrow-rotated': showWorkspaceModal }" class="arrow">
         </div>
       </div>
+      <ChatModal v-if="showChatModal" :close-modal="closeChatModal"/>
       <AlarmModal v-if="showAlarmModal" :close-modal="closeAlarmModal"/>
       <WorkspaceModal v-if="showWorkspaceModal" :close-modal="closeWorkspaceModal"/>
     </div>
@@ -77,7 +110,7 @@ const closeAlarmModal = () => {
 
 .right-side {
   display: flex;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -88,7 +121,7 @@ img {
 
 .notice-bundle {
   display: flex;
-  gap: 5px;
+  gap: 10px;
   position: relative;
 }
 

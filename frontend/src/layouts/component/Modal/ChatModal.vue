@@ -1,6 +1,5 @@
 <script setup>
-// import {alarmData} from "@/static/alarmData";
-// import { useAlarmStore } from '@/stores/socket/useAlamStore';
+import { chatData } from "@/static/alarmData";
 import  notification from "@/assets/icon/alarm/notification.svg";
 // const alarmStore = useAlarmStore();
 
@@ -10,23 +9,23 @@ import  notification from "@/assets/icon/alarm/notification.svg";
 <template>
   <div class="alarm-list-container">
     <div>
-      <p>Alarm List</p>
+      <p>Chat List</p>
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in alarmData" :key="alarm.id">
+      <li v-for="chat in chatData" :key="chat.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div>
-            <p class="alarm-title">{{ alarm.title }}</p>
-            <p class="alarm-content">{{ alarm.content }}</p>
+            <p class="alarm-title">{{ chat.title }}</p>
+            <p class="alarm-content">{{ chat.content }}</p>
           </div>
         </div>
         <div>
           <button>
             <i class="delete-icon"></i>
           </button>
-          <p class="alarm-time">{{ alarm.time}}</p>
+          <p class="alarm-time">{{ chat.time}}</p>
         </div>
       </li>
     </ul>
@@ -37,7 +36,7 @@ import  notification from "@/assets/icon/alarm/notification.svg";
 .alarm-list-container {
     position: absolute;
     top: 50px;
-    right: 100px;
+    right: 150px;
     background-color: #F3F6FF;
     border-radius: 10px;
     padding: 10px;
