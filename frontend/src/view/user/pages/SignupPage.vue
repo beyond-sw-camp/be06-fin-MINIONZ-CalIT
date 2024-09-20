@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
 import SocialLogin from "@/view/user/component/SocialLogin.vue";
 import axios from "axios";
 
+const router = useRouter();
 const username = ref('');
 const id = ref('');
 const password = ref('');
@@ -21,6 +23,7 @@ const signup = () => {
       password: password.value,
       email: email.value
     });
+    return router.push('/user/login');
   } catch (error) {
     console.error('Signup failed', error);
   }
