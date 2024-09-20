@@ -89,4 +89,8 @@ onMounted(() => {
   position: static !important;
   max-width: fit-content !important;
 }
+
+.ql-bubble .ql-tooltip-arrow{
+  display: none;
+}
 </style>

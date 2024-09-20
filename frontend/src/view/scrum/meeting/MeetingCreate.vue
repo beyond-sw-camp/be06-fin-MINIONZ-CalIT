@@ -17,8 +17,8 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Create';
 contentsDescription.value = '회의를 만들어 보세요!';
 
-const meetingTitle = ref('회의록 제목');
-const meetingDescription = ref('회의록 상세 설명');
+const meetingTitle = ref('회의 제목');
+const meetingDescription = ref('회의 상세 설명');
 const startTime = ref('');
 const endTime = ref('');
 const rightSideVisible = ref(false);
@@ -54,7 +54,7 @@ const rightSideOn = (id) => {
       <div class="meeting-title-container">
         <span class="column">
           <i class="meeting-title column-icon"></i>
-          회의록 제목
+          회의 제목
         </span>
         <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목" />
       </div>
