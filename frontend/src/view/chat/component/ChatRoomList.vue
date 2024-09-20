@@ -2,7 +2,7 @@
 import FriendsModal from './FriendsModal.vue';
 import {ref} from 'vue';
 import {chatRoomList} from "@/static/chatData";
-// import {useChatRoomStore} from '@/stores/socket/chat/useChatRoomStore';
+// import {useChatRoomStore} from '@/store/socket/chat/useChatRoomStore';
 
 // const {chatRoomList, fetchChatRooms} = useChatRoomStore();
 

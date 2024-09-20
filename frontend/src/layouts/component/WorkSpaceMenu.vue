@@ -68,12 +68,6 @@ const workspaceId = route.params.workspaceId;
             <p class="outfit">Meeting</p>
           </router-link>
         </li>
-        <li>
-          <router-link :to="`/workspace/${workspaceId}/chat`">
-            <i class="icon-chat"/>
-            <p class="outfit">Chat</p>
-          </router-link>
-        </li>
       </ul>
     </li>
   </ul>
@@ -145,8 +139,5 @@ i {
 }
 .icon-meeting {
   background-image: url("@/assets/icon/menu/meeting.svg");
-}
-.icon-chat{
-  background-image: url("@/assets/icon/menu/chat.svg");
 }
 </style>

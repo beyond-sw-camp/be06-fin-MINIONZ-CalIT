@@ -1,7 +1,7 @@
-import { useChatRoomStore } from '@/stores/socket/chat/useChatRoomStore';
-import { useChatMessageStore } from "@/stores/socket/chat/useChatMessageStore";
-import { useAlarmStore } from '@/stores/socket/useAlarmStore';
-import { useDocsEditStore } from '@/stores/socket/useDocsEditStore';
+import { useChatRoomStore } from '@/store/socket/chat/useChatRoomStore';
+import { useChatMessageStore } from "@/store/socket/chat/useChatMessageStore";
+import { useNotificationStore } from '@/store/socket/useAlamStore';
+import { useDocsEditStore } from '@/store/socket/useDocsEditStore';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
@@ -24,10 +24,10 @@ export function connectWebSocket(chatRoomId) {
             });
 
             // 알림 구독
-            stompClient.subscribe('/topic/alarms', (message) => {
+            stompClient.subscribe('/topic/notifications', (message) => {
                 const data = JSON.parse(message.body);
-                const alarmStore = useAlarmStore();
-                alarmStore.addAlarm(data.alarm);
+                const notificationStore = useNotificationStore();
+                notificationStore.addNotification(data.notification);
             });
 
             // 문서 수정 구독

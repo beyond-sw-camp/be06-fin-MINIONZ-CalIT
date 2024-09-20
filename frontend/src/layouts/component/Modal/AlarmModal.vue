@@ -1,10 +1,14 @@
 <script setup>
 // import {alarmData} from "@/static/alarmData";
-// import { useAlarmStore } from '@/stores/socket/useAlamStore';
+// import { useAlarmStore } from '@/store/socket/useAlamStore';
 import  notification from "@/assets/icon/alarm/notification.svg";
 // const alarmStore = useAlarmStore();
 
-
+const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');  // 1번 클라이언트
+eventSource.onmessage = function (event) {
+  document.getElementById("message").textContent = 'Received event: ' + event.data;
+  console.log('테스트 클라이언트 이벤트:' + event.data);
+};
 </script>
 
 <template>
@@ -14,7 +18,7 @@ import  notification from "@/assets/icon/alarm/notification.svg";
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in alarmData" :key="alarm.id">
+      <li v-for="alarm in eventSource" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div>
@@ -22,12 +26,9 @@ import  notification from "@/assets/icon/alarm/notification.svg";
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
-        <div>
-          <button>
-            <i class="delete-icon"></i>
-          </button>
-          <p class="alarm-time">{{ alarm.time}}</p>
-        </div>
+        <button>
+          <i class="delete-icon"></i>
+        </button>
       </li>
     </ul>
   </div>
@@ -56,13 +57,6 @@ p {
 
 .alarm-content{
   font-size: 14px;
-  font-weight: 400;
-  margin-top: 5px;
-  color: #7c7c7c;
-}
-
-.alarm-time{
-  font-size: 12px;
   font-weight: 400;
   margin-top: 5px;
   color: #7c7c7c;
