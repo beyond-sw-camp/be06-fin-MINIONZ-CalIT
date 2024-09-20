@@ -1,17 +1,23 @@
 <script setup>
+import {computed} from "vue";
+import {useRoute} from "vue-router";
+import { useUserStore } from "@/stores/user/useUserStore";
+import { workspaceInfo } from "@/stores/workspace/useWorkspaceStore";
 import PersonalMenu from "@/layouts/component/PersonalMenu.vue";
 import WorkSpaceMenu from "@/layouts/component/WorkSpaceMenu.vue";
 import user1 from "@/assets/icon/persona/user1.svg";
-import logout from "@/assets/icon/menu/logout.svg";
-
-import { computed } from "vue";
-import {useRoute} from "vue-router";
+import router from "@/router";
 
 const route = useRoute();
-
+// const workspaceId = route.params.workspaceId;
 const showPersonalMenu = computed(() => {
   return route.path.startsWith('/my');
 });
+
+  const logout = () => {
+  useUserStore.logout();
+  router.push('/user/login');
+};
 </script>
 
 <template>
@@ -21,7 +27,7 @@ const showPersonalMenu = computed(() => {
     </div>
     <div class="user-info">
       <img :src="user1" alt="persona">
-      <p class="ubuntu-medium">My Space</p>
+      <p class="ubuntu-medium">{{ showPersonalMenu ? 'My Space' : workspaceInfo.setWorkspaceInfo }}</p>
     </div>
     <div class="menu-wrap">
       <div>
@@ -33,10 +39,11 @@ const showPersonalMenu = computed(() => {
         </div>
       </div>
       <div>
-        <router-link to="/user/login">
-          <img :src="logout" alt="logout">
-          <p>Logout</p>
-        </router-link>
+        <hr>
+        <button class="logout-wrap" @click="logout">
+          <i class="logout-ico"></i>
+          Logout
+        </button>
       </div>
     </div>
   </div>
@@ -99,5 +106,30 @@ const showPersonalMenu = computed(() => {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+  }
+
+  button{
+    background-color: transparent;
+    border: none;
+  }
+
+  .logout-wrap{
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .logout-ico{
+    background: url(@/assets/icon/menu/logout.svg) no-repeat;
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+    display: block;
+  }
+
+  hr {
+    border: 1px solid #dfe5f1;
+    width: 100%;
+    margin: 10px 0;
   }
 </style>

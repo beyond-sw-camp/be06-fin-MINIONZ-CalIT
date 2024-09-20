@@ -7,14 +7,16 @@ import user5 from "@/assets/icon/persona/user5.svg";
     export const chatRoomList = [
         {
             chatroomId: 1,
+            workspaceId: 1,
             chatRoomName: '최승은',
-            messageContents: '빠샤샤 🔥',
+            messageContents: '빠샤샤 🔥길이 넘칠 때 어떻게 되나 보기 위해 길게 적어 봅시당',
             createdAt: '2024-09-10T16:45:04.930487',
             unreadMessages: 4,
             profilePic: user1
         },
         {
             chatroomId: 2,
+            workspaceId: 2,
             chatRoomName: '박성준',
             messageContents: '메롱롱',
             createdAt: '2024-09-10T16:45:04.930487',
@@ -23,6 +25,7 @@ import user5 from "@/assets/icon/persona/user5.svg";
         },
         {
             chatroomId: 3,
+            workspaceId: 3,
             chatRoomName: '차윤슬',
             messageContents: " 아쟈쟈",
             createdAt: '2024-09-10T16:45:04.930487',
@@ -30,6 +33,7 @@ import user5 from "@/assets/icon/persona/user5.svg";
         },
         {
             chatroomId: 4,
+            workspaceId: 4,
             chatRoomName: '지연희',
             messageContents: '귀오밍',
             createdAt: '2024-09-10T16:45:04.930487',
@@ -37,6 +41,7 @@ import user5 from "@/assets/icon/persona/user5.svg";
         },
         {
             chatroomId: 5,
+            workspaceId: 5,
             chatRoomName: '강혜정',
             messageContents: '오구오구',
             createdAt: '2024-09-10T16:45:04.930487',

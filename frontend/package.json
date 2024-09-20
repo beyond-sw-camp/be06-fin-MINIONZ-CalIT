@@ -14,6 +14,8 @@
     "core-js": "^3.8.3",
     "dayjs": "^1.11.13",
     "echarts": "^5.5.1",
+    "notyf": "^3.10.0",
+    "perfect-scrollbar": "^1.5.5",
     "pinia": "^2.2.2",
     "pinia-plugin-persistedstate": "^3.2.3",
     "quill": "^2.0.2",
@@ -24,7 +26,6 @@
     "vue-draggable-resizable": "^3.0.0",
     "vue-router": "^4.4.3",
     "vue3-styled-component": "^2.0.3",
-    "yarn": "^1.22.22",
     "yup": "^1.4.0"
   },
   "devDependencies": {

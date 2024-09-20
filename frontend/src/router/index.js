@@ -4,6 +4,7 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
+import {workspaceStore} from "@/stores/workspace/useWorkspaceStore";
 
 const routes = [
     {
@@ -269,6 +270,13 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.params.workspaceId) {
+        workspaceStore.setWorkspaceId(to.params.workspaceId);
+    }
+    next();
 });
 
 export default router;

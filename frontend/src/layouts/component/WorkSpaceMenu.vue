@@ -22,6 +22,13 @@ const workspaceId = route.params.workspaceId;
       </router-link>
     </li>
     <li>
+      <router-link :to="`/workspace/${workspaceId}/chat`">
+        <i class="icon-chat"/>
+        <p class="outfit">Chat</p>
+      </router-link>
+    </li>
+    <hr>
+    <li>
       <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
         <i class="icon-board"/>
         <p class="outfit">Board</p>
@@ -107,6 +114,7 @@ p {
 hr {
   border: 1px solid #dfe5f1;
   width: 100%;
+  margin: 10px 0;
 }
 i {
   width: 24px;
