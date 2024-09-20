@@ -148,7 +148,4 @@ i {
 .icon-meeting {
   background-image: url("@/assets/icon/menu/meeting.svg");
 }
-.icon-chat{
-  background-image: url("@/assets/icon/menu/chat.svg");
-}
 </style>

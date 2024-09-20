@@ -2,6 +2,8 @@
 import {alarmData} from "@/static/alarmData";
 import { getTimeDifference } from "@/utils/timeUtils";
 // import { useAlarmStore } from '@/stores/socket/useAlamStore';
+// import {alarmData} from "@/static/alarmData";
+// import { useAlarmStore } from '@/stores/socket/useAlamStore';
 import  notification from "@/assets/icon/alarm/notification.svg";
 // const alarmStore = useAlarmStore();
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
@@ -20,6 +22,11 @@ const deleteAlarm = (alarmId) => {
   }
 };
 
+const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');  // 1번 클라이언트
+eventSource.onmessage = function (event) {
+  document.getElementById("message").textContent = 'Received event: ' + event.data;
+  console.log('테스트 클라이언트 이벤트:' + event.data);
+};
 </script>
 
 <template>
@@ -29,7 +36,7 @@ const deleteAlarm = (alarmId) => {
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in alarmData" :key="alarm.id">
+      <li v-for="alarm in eventSource" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div >

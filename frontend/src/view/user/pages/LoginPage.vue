@@ -17,17 +17,23 @@ const notyf = new Notyf();
 
 const authenticate = async (loginId, password) => {
   try {
-    const response = await axios.post('http://localhost:8080/api/user/login', {
-      // todo: seongxun if you want to change api url, you can change here
-      username: loginId,
+    const response = await axios.post('/api/user/login', {
+      loginId: loginId,
       password: password
     });
-    return response.data.token;
+    console.log("여기다")
+    console.log(response.headers.getAuthorization().split(' ')[1])
+
+    return response.headers.getAuthorization().split(' ')[1];
   } catch (error) {
     console.error('Login failed', error);
-    return null;
-  }
-};
+    if (error.response && error.response.data) {
+      notyf.error(error.response.data.message || '로그인 실패');
+    } else {
+      notyf.error('로그인 실패');
+    }
+  } // 여기서 중괄호를 닫아야 함
+}; // authenticate 함수 종료
 
 const login = async () => {
   if (loginId.value === '' || password.value === '') {

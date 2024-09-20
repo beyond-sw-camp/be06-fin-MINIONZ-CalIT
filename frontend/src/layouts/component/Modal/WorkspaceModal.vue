@@ -5,11 +5,13 @@ import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
 // import { useRouter } from 'vue-router';
 // import { defineProps } from 'vue';
-import { workspaceList } from '@/stores/workspace/useWorkspaceStore';
+// import { workspaceList } from '@/stores/workspace/useWorkspaceStore';
 
 // const router = useRouter();
 
-const workspaceInfo = workspaceList;
+import {workspaceData} from "@/static/workspaceData";
+
+const workspaceInfo = workspaceData;
 </script>
 
 <template>
