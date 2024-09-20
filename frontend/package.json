@@ -24,6 +24,7 @@
     "vue-draggable-resizable": "^3.0.0",
     "vue-router": "^4.4.3",
     "vue3-styled-component": "^2.0.3",
+    "yarn": "^1.22.22",
     "yup": "^1.4.0"
   },
   "devDependencies": {
