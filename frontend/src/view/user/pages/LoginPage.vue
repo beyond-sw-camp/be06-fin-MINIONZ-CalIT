@@ -21,9 +21,6 @@ const authenticate = async (loginId, password) => {
       loginId: loginId,
       password: password
     });
-    console.log("여기다")
-    console.log(response.headers.getAuthorization().split(' ')[1])
-
     return response.headers.getAuthorization().split(' ')[1];
   } catch (error) {
     console.error('Login failed', error);
