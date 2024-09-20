@@ -37,16 +37,15 @@ const closeWorkspaceModal = () => {
 };
 
 const handleClickOutside = (event) => {
-  if (showChatModal.value && !event.target.closest('.chat')) {
+  if (showChatModal.value && !event.target.closest('.chat') && !event.target.closest('.notification-item') && !event.target.closest('.chat-modal')) {
     closeChatModal();
   }
-  if (showAlarmModal.value && !event.target.closest('.alarm')) {
-  closeAlarmModal();
-}
-  if (showWorkspaceModal.value && !event.target.closest('.workspace-bundle')) {
+  if (showAlarmModal.value && !event.target.closest('.alarm') && !event.target.closest('.notification-item') && !event.target.closest('.alarm-modal')) {
+    closeAlarmModal();
+  }
+  if (showWorkspaceModal.value && !event.target.closest('.workspace-bundle') && !event.target.closest('.workspace-list-container')) {
     closeWorkspaceModal();
   }
-
 };
 
 onMounted(() => {
@@ -65,8 +64,8 @@ onBeforeUnmount(() => {
     </div>
     <div class="right-side">
       <div class="notice-bundle">
-        <div  class="message" @click="toggleChatModal">
-          <img :src="message" alt="message">
+        <div  class="chat" @click="toggleChatModal">
+          <img :src="message" alt="chat">
         </div>
         <div class="alarm" @click="toggleAlarmModal">
           <img :src="alarm" alt="alarm">
@@ -146,7 +145,7 @@ img {
   transition: transform 0.3s ease;
 }
 
-.message::after {
+.chat::after {
   content: '';
   position: absolute;
   left: 20px;

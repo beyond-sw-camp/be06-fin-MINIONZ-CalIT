@@ -17,7 +17,7 @@ const notyf = new Notyf();
 
 const authenticate = async (loginId, password) => {
   try {
-    const response = await axios.post('http://localhost:8080/api//user/login', {
+    const response = await axios.post('http://localhost:8080/api/user/login', {
       // todo: seongxun if you want to change api url, you can change here
       username: loginId,
       password: password
