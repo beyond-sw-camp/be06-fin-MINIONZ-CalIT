@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class GetQaCommentResponse {
 
+    private String userName;
     private Long qaCommentId;
     private String qaCommentTitle;
     private String qaCommentContent;

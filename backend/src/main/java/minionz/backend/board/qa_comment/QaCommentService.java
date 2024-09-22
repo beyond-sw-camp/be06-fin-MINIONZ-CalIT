@@ -12,6 +12,8 @@ import minionz.backend.board.qa_comment.model.response.GetQaCommentImageResponse
 import minionz.backend.board.qa_comment.model.response.GetQaCommentResponse;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
+import minionz.backend.user.UserRepository;
+import minionz.backend.user.model.User;
 import minionz.backend.utils.CloudFileUpload;
 import org.springframework.stereotype.Service;
 
@@ -26,16 +28,20 @@ public class QaCommentService {
     private final QaCommentImageRepository qaCommentImageRepository;
     private final QaBoardRepository qaBoardRepository;
     private final CloudFileUpload cloudFileUpload;
-
-    public QaCommentService(QaCommentRepository qaCommentRepository,QaCommentImageRepository qaCommentImageRepository,CloudFileUpload cloudFileUpload, QaBoardRepository qaBoardRepository){
+    private final UserRepository userRepository;
+    public QaCommentService(QaCommentRepository qaCommentRepository,QaCommentImageRepository qaCommentImageRepository,CloudFileUpload cloudFileUpload, QaBoardRepository qaBoardRepository,UserRepository userRepository){
         this.qaCommentRepository = qaCommentRepository;
         this.qaCommentImageRepository = qaCommentImageRepository;
         this.cloudFileUpload = cloudFileUpload;
         this.qaBoardRepository = qaBoardRepository;
-
+        this.userRepository = userRepository;
     }
 
-    public CreateQaCommentResponse create(Long qaBoardId, CreateQaCommentRequest request, List<String> fileNames) throws BaseException {
+    public CreateQaCommentResponse create(Long qaBoardId, CreateQaCommentRequest request, List<String> fileNames,Long userId) throws BaseException {
+
+        // Optional 처리
+        User user1 = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED)); // 예외 처리
 
         ProgressStatus progressStatus = ProgressStatus.valueOf(request.getProgressStatus().toUpperCase());
         QaBoard qaBoard = qaBoardRepository.findById(qaBoardId)
@@ -46,6 +52,7 @@ public class QaCommentService {
                 .qaCommentContent(request.getQaCommentContent())
                 .qaBoard(qaBoard)
                 .progressStatus(progressStatus)
+                .user(user1)
                 .build();
         qaCommentRepository.save(qaComment);
 
@@ -69,6 +76,7 @@ public class QaCommentService {
         }
 
         return CreateQaCommentResponse.builder()
+                .userName(qaComment.getUser().getUserName())
                 .qaCommentId(qaComment.getQaCommentId())
                 .qaCommentTitle(qaComment.getQaCommentTitle())
                 .qaCommentContent(qaComment.getQaCommentContent())
@@ -98,6 +106,7 @@ public class QaCommentService {
                             .collect(Collectors.toList());
 
                     return GetQaCommentResponse.builder()
+                            .userName(comment.getUser().getUserName())
                             .qaCommentId(comment.getQaCommentId())
                             .qaCommentTitle(comment.getQaCommentTitle())
                             .qaCommentContent(comment.getQaCommentContent())

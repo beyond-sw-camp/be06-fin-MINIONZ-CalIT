@@ -31,6 +31,7 @@ public class LabelController {
         return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_CREATE_SUCCESS);
     }
 
+
     @GetMapping("/sprint")
     public BaseResponse<List<ReadLabelResponse>> readSprintLabel(@RequestParam Long id) {
         User user = User.builder().userId(1L).build();
@@ -71,5 +72,30 @@ public class LabelController {
 
         return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
     }
+    @PostMapping("/note")
+    public BaseResponse<BaseResponseStatus> createNoteLabel(@RequestBody CreateLabelRequest request) {
+        User user = User.builder().userId(1L).build();
+        try {
+            labelService.createNoteLabel(user,request);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+        return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_CREATE_SUCCESS);
+
+    }
+
+    @GetMapping("/note")
+    public BaseResponse<List<ReadLabelResponse>> readNoteLabel(@RequestParam Long id) {
+        User user = User.builder().userId(1L).build();
+        List<ReadLabelResponse> response = new ArrayList<>();
+
+        try{
+            response = labelService.readNoteLabel(user,id);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+        return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_SEARCH_SUCCESS, response);
+    }
 
 }
+

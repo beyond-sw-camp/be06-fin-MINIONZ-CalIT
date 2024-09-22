@@ -7,7 +7,9 @@ import minionz.backend.board.error_comment.model.response.GetErrorCommentRespons
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.utils.CloudFileUpload;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,10 +27,12 @@ public class ErrorCommentController {
     public BaseResponse<CreateErrorCommentResponse> createCommentWithImages(
             @RequestParam Long errorBoardId,
             @RequestPart(name = "request") CreateErrorCommentRequest request,
-            @RequestPart(name = "files") MultipartFile[] files
+            @RequestPart(name = "files") MultipartFile[] files,
+            @AuthenticationPrincipal CustomSecurityUserDetails userDetails
         ) throws BaseException {
         List<String> fileNames = cloudFileUpload.multipleUpload(files);
-        CreateErrorCommentResponse response = errorCommentService.create(errorBoardId, request, fileNames);
+        Long userId = userDetails.getUserId();
+        CreateErrorCommentResponse response = errorCommentService.create(errorBoardId, request, fileNames,userId);
         return new BaseResponse<>(BaseResponseStatus.ERRORCOMMENT_CREATE_SUCCESS, response);
     }
     // 게시글별 댓글 조회
