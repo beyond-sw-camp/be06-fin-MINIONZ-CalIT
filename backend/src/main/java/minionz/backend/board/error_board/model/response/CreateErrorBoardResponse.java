@@ -12,6 +12,9 @@ import java.util.List;
 @Builder
 public class CreateErrorBoardResponse {
 
+    private String userName;
+    private String taskName;
+    private Long workspaceId;
     private Long errorBoardId;
     private String errboardTitle;
     private String errboardContent;

@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class CreateErrorCommentResponse {
 
+    private String userName;
     private Long errorCommentId;
     private String errCommentContent;
     private LocalDateTime createdAt;

@@ -10,6 +10,8 @@ import minionz.backend.board.error_comment.model.response.GetErrorCommentImageRe
 import minionz.backend.board.error_comment.model.response.GetErrorCommentResponse;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
+import minionz.backend.user.UserRepository;
+import minionz.backend.user.model.User;
 import minionz.backend.utils.CloudFileUpload;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +26,20 @@ public class ErrorCommentService {
     private final ErrorCommentImageRepository errorCommentImageRepository;
     private final ErrorBoardRepository errorBoardRepository;
     private final CloudFileUpload cloudFileUpload;
+    private final UserRepository userRepository;
 
-    public ErrorCommentService(ErrorCommentRepository errorCommnetRepository, ErrorCommentImageRepository errorCommentImageRepository, ErrorBoardRepository errorBoardRepository, CloudFileUpload cloudFileUpload){
+    public ErrorCommentService(ErrorCommentRepository errorCommnetRepository, ErrorCommentImageRepository errorCommentImageRepository, ErrorBoardRepository errorBoardRepository, CloudFileUpload cloudFileUpload,UserRepository userRepository){
         this.errorBoardRepository = errorBoardRepository;
         this.errorCommentImageRepository = errorCommentImageRepository;
         this.cloudFileUpload = cloudFileUpload;
         this.errorCommentRepository = errorCommnetRepository;
+        this.userRepository = userRepository;
     }
 
-    public CreateErrorCommentResponse create(Long errorBoardId, CreateErrorCommentRequest request, List<String> fileNames) throws BaseException {
+    public CreateErrorCommentResponse create(Long errorBoardId, CreateErrorCommentRequest request, List<String> fileNames,Long userId) throws BaseException {
+
+        User user1 = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED)); // 예외 처리
 
         ErrorBoard errorBoard = errorBoardRepository.findById(errorBoardId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.ERRORBOARD_SERACH_FAIL));
@@ -41,6 +48,7 @@ public class ErrorCommentService {
         ErrorComment errorComment = ErrorComment.builder()
                 .errCommentContent(request.getErrCommentContent())
                 .errorBoard(errorBoard)
+                .user(user1)
                 .build();
         errorCommentRepository.save(errorComment);
 
@@ -68,6 +76,7 @@ public class ErrorCommentService {
                 .createdAt(errorComment.getCreatedAt())
                 .modifiedAt(errorComment.getUpdatedAt())
                 .images(imageResponses)
+                .userName(errorComment.getUser().getUserName())
                 .build();
     }
 
@@ -96,6 +105,7 @@ public class ErrorCommentService {
                             .createdAt(comment.getCreatedAt())
                             .modifiedAt(comment.getUpdatedAt())
                             .images(imageResponses)
+                            .userName(comment.getUser().getUserName())
                             .build();
                 })
                 .collect(Collectors.toList());

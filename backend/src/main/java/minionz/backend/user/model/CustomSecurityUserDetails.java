@@ -40,6 +40,7 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
         });
         return collection;
     }
+    public Long getUserId() {return user.getUserId(); }
 
     public String getLoginId() {
         return user.getLoginId();
