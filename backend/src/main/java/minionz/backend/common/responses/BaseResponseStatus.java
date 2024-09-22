@@ -93,8 +93,19 @@ public enum BaseResponseStatus {
     MESSAGE_HISTORY_NOT_FOUND(false, 6303, "해당 채팅방에 메시지 내역이 없습니다."),
     UNAUTHORIZED_CHAT_ACCESS(false, 6304, "해당 채팅방에 접근할 권한이 없습니다."),
     FAILED_TO_RETRIEVE_CHAT_HISTORY(false, 6305, "채팅 내역 조회에 실패했습니다."),
+    CHATROOM_UPDATE_SUCCESS(true, 6401, "채팅방 수정이 완료 되었습니다."),
+    CHATROOM_NOT_FOUND(false, 6402, "해당 채팅방이 존재하지 않습니다."),
+    CHATROOM_USER_NOT_AUTHORIZED(false, 6403, "해당 참가자는 채팅방에 존재하지 않습니다."),
 
-    MESSAGE_DELETE_SUCCESS(true, 6401, "메세지가 성공적으로 삭제되었습니다.");
+    MESSAGE_DELETE_SUCCESS(true, 6501, "메세지가 성공적으로 삭제되었습니다."),
+
+    CHATROOM_EXIT_SUCCESS(true, 6601, "채팅방에서 성공적으로 나갔습니다."),
+    CHATROOM_EXIT_FAIL(false, 6602, "채팅방 나가기에 실패했습니다."),
+
+    MESSAGE_STATUS_UPDATE_SUCCESS(true, 6701, "메세지 상태 변경이 성공적으로 완료되었습니다."),
+    MESSAGE_STATUS_UPDATE_FAIL(false, 6702, "상태 변경에 실패했습니다."),
+
+    CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다.");
 
 
 

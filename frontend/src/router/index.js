@@ -4,6 +4,7 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
+import {workspaceStore} from "@/stores/workspace/useWorkspaceStore";
 
 const routes = [
     {
@@ -95,7 +96,7 @@ const routes = [
 
     // dashboard
     {
-        path: '/workspace/:id',
+        path: '/workspace/:workspaceId',
         name: 'Workspace',
         component: () => import('@/layouts/ContentsArea.vue'),
         children: [
@@ -216,7 +217,7 @@ const routes = [
                                         component: () => import('@/view/board/list/ErrorList.vue')
                                     },
                                     {
-                                        path: 'detail',
+                                        path: 'detail/:id',
                                         name: 'ErrorDetail',
                                         component: () => import('@/view/board/detail/ErrorDetail.vue')
                                     },
@@ -237,7 +238,7 @@ const routes = [
                                         component: () => import('@/view/board/list/QAList.vue')
                                     },
                                     {
-                                        path: 'detail',
+                                        path: 'detail/:id',
                                         name: 'QADetail',
                                         component: () => import('@/view/board/detail/QADetail.vue')
                                     },
@@ -269,6 +270,13 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.params.workspaceId) {
+        workspaceStore.setWorkspaceId(to.params.workspaceId);
+    }
+    next();
 });
 
 export default router;

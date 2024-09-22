@@ -34,4 +34,8 @@ public class ChatParticipation {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
+    // 사용자가 참여 중인 상태
+    @Column(nullable = false)
+    private boolean isActive = true;
+
 }

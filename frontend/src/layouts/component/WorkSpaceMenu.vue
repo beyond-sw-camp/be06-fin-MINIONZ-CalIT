@@ -22,19 +22,26 @@ const workspaceId = route.params.workspaceId;
       </router-link>
     </li>
     <li>
-      <router-link :to="`/workspace/${workspaceId}/board/qa/list`">
+      <router-link :to="`/workspace/${workspaceId}/chat`">
+        <i class="icon-chat"/>
+        <p class="outfit">Chat</p>
+      </router-link>
+    </li>
+    <hr>
+    <li>
+      <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
         <i class="icon-board"/>
         <p class="outfit">Board</p>
       </router-link>
       <ul class="submenu">
         <li>
-          <router-link :to="`/workspace/${workspaceId}/board/qa/list`">
+          <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
             <i class="icon-qa"/>
             <p class="outfit">QA Board</p>
           </router-link>
         </li>
         <li>
-          <router-link :to="`/workspace/${workspaceId}/board/error/list`">
+          <router-link :to="`/workspace/${workspaceId}/scrum/board/error/list`">
             <i class="icon-errors"/>
             <p class="outfit">Errors</p>
           </router-link>
@@ -107,6 +114,7 @@ p {
 hr {
   border: 1px solid #dfe5f1;
   width: 100%;
+  margin: 10px 0;
 }
 i {
   width: 24px;
@@ -139,5 +147,8 @@ i {
 }
 .icon-meeting {
   background-image: url("@/assets/icon/menu/meeting.svg");
+}
+.icon-chat {
+  background-image: url("@/assets/icon/menu/chat.svg");
 }
 </style>

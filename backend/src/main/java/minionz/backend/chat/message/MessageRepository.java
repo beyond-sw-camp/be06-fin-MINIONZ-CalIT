@@ -36,6 +36,12 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("SELECT m FROM Message m WHERE m.messageId = :messageId")
     Message findMessageById(Long messageId);
 
+    @Query("SELECT m FROM Message m " +
+            "WHERE m.chatRoomId = :chatRoomId " +
+            "AND m.messageStatus = :status")
+    List<Message> findUnreadMessagesByChatRoomId(Long chatRoomId, MessageStatus status);
+
+
 
 
 }
