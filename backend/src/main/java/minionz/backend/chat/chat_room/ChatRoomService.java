@@ -92,11 +92,20 @@ public class ChatRoomService {
             Long unreadMessagesCount = messageRepository.countUnreadMessagesByChatRoomIdAndUserId(
                     chatRoom.getChatRoomId(), userId, MessageStatus.UNREAD);
 
+            String messageContents = "채팅방에 메세지가 없습니다.";
+            if (latestMessage != null) {
+                if (latestMessage.getFileUrl() != null) {
+                    messageContents = "파일이 전송되었습니다.";
+                } else {
+                    messageContents = latestMessage.getMessageContents();
+                }
+            }
+
             ReadChatRoomResponse response = ReadChatRoomResponse.builder()
                     .workspaceId(workspaceId)
                     .chatroomId(chatRoom.getChatRoomId())
                     .chatRoomName(chatRoom.getChatRoomName())
-                    .messageContents(latestMessage != null ? latestMessage.getMessageContents() : "채팅방에 메세지가 없습니다.")
+                    .messageContents(messageContents)
                     .createdAt(latestMessage != null ? latestMessage.getCreatedAt() : chatRoom.getCreatedAt())
                     .UnreadMessages(unreadMessagesCount != null ? unreadMessagesCount.intValue() : 0)
                     .build();
