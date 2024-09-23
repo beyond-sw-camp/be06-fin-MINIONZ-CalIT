@@ -1,8 +1,12 @@
 <script setup>
-import { useParticipants } from '@/stores/user/useParticipantsStore';
-
 import {ref} from 'vue';
+import router from "@/router";
+import {useChatRoomStore} from "@/stores/chat/useChatRoomStore";
+import { useParticipants } from '@/stores/user/useParticipantsStore';
+import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
 
+const chatRoomStore = useChatRoomStore();
+const workspaceId = workspaceStore.workspaceId;
 const isModalOpen = ref(true);
 const chattingRoomName = ref('');
 // const participantInput = ref('');
@@ -12,10 +16,14 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const saveParticipantsToUserList = () => {
+
+
+const saveParticipantsToUserList = async () => {
   if (saveParticipants) {
     saveParticipants(userList);
-    // console.log('Room saved:', chattingRoomName.value, participants.value);
+    const newChatRoomId = chatRoomStore.addChatRoom({name: chattingRoomName.value, participants: participants.value});
+    await router.push(`/workspace/${workspaceId}/chat/${newChatRoomId}`);
+    // await router.push(`/workspace/${workspaceId}/chat/${chatRoomStore.newChatRoomId}`);
     closeModal();
   } else {
     console.warn("saveParticipants is not defined");
