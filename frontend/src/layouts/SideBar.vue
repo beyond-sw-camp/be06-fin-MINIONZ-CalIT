@@ -1,21 +1,22 @@
 <script setup>
-import {computed} from "vue";
-import {useRoute} from "vue-router";
-import { useUserStore } from "@/stores/user/useUserStore";
-import { workspaceInfo } from "@/stores/workspace/useWorkspaceStore";
-import PersonalMenu from "@/layouts/component/PersonalMenu.vue";
-import WorkSpaceMenu from "@/layouts/component/WorkSpaceMenu.vue";
-import user1 from "@/assets/icon/persona/user1.svg";
-import router from "@/router";
+import { computed, defineProps } from 'vue';
+// import { useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/user/useUserStore';
+import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import PersonalMenu from '@/layouts/component/PersonalMenu.vue';
+import WorkSpaceMenu from '@/layouts/component/WorkSpaceMenu.vue';
+import user1 from '@/assets/icon/persona/user1.svg';
+import router from '@/router';
 
-const route = useRoute();
-// const workspaceId = route.params.workspaceId;
-const showPersonalMenu = computed(() => {
-  return route.path.startsWith('/my');
+const props = defineProps({
+  isPersonalMenu: Boolean
 });
 
-  const logout = () => {
-  useUserStore.logout();
+// const route = useRoute();
+const workspaceName = computed(() => props.isPersonalMenu ? 'My Space' : workspaceStore.workspaceName);
+
+const logout = () => {
+  useUserStore().logout();
   router.push('/user/login');
 };
 </script>
@@ -27,11 +28,11 @@ const showPersonalMenu = computed(() => {
     </div>
     <div class="user-info">
       <img :src="user1" alt="persona">
-      <p class="ubuntu-medium">{{ showPersonalMenu ? 'My Space' : workspaceInfo.setWorkspaceInfo }}</p>
+      <p class="ubuntu-medium">{{ workspaceName }}</p>
     </div>
     <div class="menu-wrap">
       <div>
-        <div v-if="showPersonalMenu">
+        <div v-if="props.isPersonalMenu">
           <PersonalMenu></PersonalMenu>
         </div>
         <div v-else>

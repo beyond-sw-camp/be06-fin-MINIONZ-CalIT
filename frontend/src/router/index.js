@@ -96,7 +96,7 @@ const routes = [
 
     // dashboard
     {
-        path: '/workspace/:id',
+        path: '/workspace/:workspaceId',
         name: 'Workspace',
         component: () => import('@/layouts/ContentsArea.vue'),
         children: [

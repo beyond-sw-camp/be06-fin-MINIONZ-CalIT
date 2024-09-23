@@ -10,7 +10,7 @@ import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
 const router = useRouter();
-const loginId= ref('');
+const loginId = ref('');
 const password = ref('');
 const userStore = useUserStore();
 const notyf = new Notyf();
@@ -21,9 +21,6 @@ const authenticate = async (loginId, password) => {
       loginId: loginId,
       password: password
     });
-    console.log("여기다")
-    console.log(response.headers.getAuthorization().split(' ')[1])
-
     return response.headers.getAuthorization().split(' ')[1];
   } catch (error) {
     console.error('Login failed', error);
@@ -32,7 +29,7 @@ const authenticate = async (loginId, password) => {
     } else {
       notyf.error('로그인 실패');
     }
-  } // 여기서 중괄호를 닫아야 함
+  }
 }; // authenticate 함수 종료
 
 const login = async () => {

@@ -2,6 +2,7 @@ package minionz.backend.scrum.meeting_participation.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import minionz.backend.note.model.Note;
 import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.user.model.User;
 
@@ -25,4 +26,8 @@ public class MeetingParticipation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "note_id")
+    private Note note;
 }

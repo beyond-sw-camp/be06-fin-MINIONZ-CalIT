@@ -5,6 +5,7 @@ import { getTimeDifference } from "@/utils/timeUtils";
 // import {alarmData} from "@/static/alarmData";
 // import { useAlarmStore } from '@/stores/socket/useAlamStore';
 import  notification from "@/assets/icon/alarm/notification.svg";
+import info from "@/assets/icon/alarm/info.svg";
 // const alarmStore = useAlarmStore();
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
@@ -49,6 +50,14 @@ eventSource.onmessage = function (event) {
             <i class="delete-icon"></i>
           </button>
           <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
+        </div>
+      </li>
+      <li v-if="alarmData.length === 0">
+        <div class="notification-item">
+          <img :src="info" alt="alam">
+          <div >
+            <p class="alarm-title">알림이 없습니다.</p>
+          </div>
         </div>
       </li>
     </ul>

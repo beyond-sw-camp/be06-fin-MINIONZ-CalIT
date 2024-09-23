@@ -48,7 +48,8 @@ public enum BaseResponseStatus {
     WORKSPACE_MONTHLY_READ_SUCCESS(true, 4017, "워크스페이스 월간 캘린더 조회에 성공했습니다."),
     WORKSPACE_WEEKLY_READ_SUCCESS(true, 4018, "워크스페이스 주간 캘린더 조회에 성공했습니다."),
     WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다."),
-
+    NOTE_REGISTER_SUCCESS(true,4020,"회의록 생성에 성공했습니다."),
+    NOTE_SEARCH_SUCCESS(true,4021,"회의록 조회에 성공했습니다."),
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
     WORKSPACE_NOT_EXISTS(false, 4102, "존재하지 않는 워크스페이스입니다."),
@@ -58,7 +59,8 @@ public enum BaseResponseStatus {
     MEETING_NOT_EXISTS(false, 4106, "존재하지 않는 회의 일정입니다."),
     UNCHANGED(false, 4107, "이전과 동일한 상태입니다."),
     SPRINT_NOT_EXISTS(false, 4108, "스프린트가 존재하지 않습니다."),
-
+    NOTE_LABEL_CREATE_SUCCESS(true,4109,"회의록 라벨 생성에 성공했습니다."),
+    NOTE_LABEL_SEARCH_SUCCESS(true,4120,"회의록 라벨 조회에 성공했습니다."),
 
     /**
      * 5000: 게시판

@@ -5,6 +5,7 @@ import { getTimeDifference} from "@/utils/timeUtils";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
 import {onMounted} from "vue";
+import info from "@/assets/icon/alarm/info.svg";
 
 onMounted(() => {
   const container = document.querySelector('.chat-modal');
@@ -34,6 +35,14 @@ onMounted(() => {
         </div>
         </router-link>
       </li>
+        <li v-if="chatRoomList.length === 0">
+          <div class="notification-item">
+            <img :src="info" alt="alam">
+            <div >
+              <p class="chat-title"> 안읽은 메시지가 없습니다.</p>
+            </div>
+          </div>
+        </li>
     </ul>
   </div>
 </template>
