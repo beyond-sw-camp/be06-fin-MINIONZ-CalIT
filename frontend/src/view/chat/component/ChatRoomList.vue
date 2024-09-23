@@ -1,14 +1,16 @@
 <script setup>
+import {onMounted, ref} from 'vue';
+import {getTimeDifference} from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
-import {ref} from 'vue';
-import {chatRoomList} from "@/static/chatData";
-// import {useChatRoomStore} from '@/stores/socket/chat/useChatRoomStore';
+import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
+import { workspaceStore } from "@/stores/workspace/useWorkspaceStore";
 
-// const {chatRoomList, fetchChatRooms} = useChatRoomStore();
+const { chatRoom, fetchChatRooms } = useChatRoomStore();
+onMounted(() => {
+  fetchChatRooms();
+});
 
-// onMounted(() => {
-//   fetchChatRooms();
-// });
+const workspaceId = workspaceStore.workspaceId;
 
 const showModal = ref(false);
 
@@ -31,7 +33,7 @@ const closeModal = () => {
       <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">
-      <router-link :to="'/workspace/chat/' + room.chatroomId" class="message-item" v-for="(room) in chatRoomList" :key="room.chatroomId">
+      <router-link :to="`/workspace/${workspaceId}/chat/` + room.id" class="message-item" v-for="(room) in chatRoom" :key="room.id">
         <img :src="room.profilePic" alt="profile" class="profile-pic"/>
         <div class="message-info">
           <div class="message-item-top">
@@ -40,7 +42,7 @@ const closeModal = () => {
           <p class="message-text">{{ room.messageContents }}</p>
         </div>
         <div class="message-item-right">
-          <span class="message-time">{{ new Date(room.createdAt).toLocaleDateString() }}</span>
+          <span class="message-time">{{ getTimeDifference(room.createdAt) }}</span>
           <span v-if="room.unreadMessages" class="unread-count">{{ room.unreadMessages }}</span>
         </div>
       </router-link>
