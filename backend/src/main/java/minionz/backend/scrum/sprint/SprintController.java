@@ -9,7 +9,6 @@ import minionz.backend.scrum.sprint.model.request.UpdateSprintStatusRequest;
 import minionz.backend.scrum.sprint.model.response.ReadAllSprintResponse;
 import minionz.backend.scrum.sprint.model.response.ReadSprintResponse;
 import minionz.backend.user.model.CustomSecurityUserDetails;
-import minionz.backend.user.model.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class SprintController {
 
     private final SprintService sprintService;
 
-    @PostMapping("")
+    @PostMapping("/{workspaceId}")
     public BaseResponse<BaseResponseStatus> createSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateSprintRequest request) {
 
         try {
@@ -34,7 +33,7 @@ public class SprintController {
         return new BaseResponse<>(BaseResponseStatus.SPRINT_CREATE_SUCCESS);
     }
 
-    @GetMapping("/{sprintId}")
+    @GetMapping("/{workspaceId}/{sprintId}")
     public BaseResponse<ReadSprintResponse> readSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId) {
         ReadSprintResponse response;
 
@@ -47,7 +46,7 @@ public class SprintController {
         return new BaseResponse<>(BaseResponseStatus.SPRINT_READ_SUCCESS, response);
     }
 
-    @GetMapping("all/{workspaceId}")
+    @GetMapping("/all/{workspaceId}")
     public BaseResponse<List<ReadAllSprintResponse>> readAllSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails,@PathVariable Long workspaceId) {
 
         List<ReadAllSprintResponse> response;
