@@ -9,7 +9,6 @@ import minionz.backend.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
 import minionz.backend.user.model.CustomSecurityUserDetails;
-import minionz.backend.user.model.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @PostMapping("")
+    @PostMapping("/{sprintId}")
     public BaseResponse<BaseResponseStatus> createTask(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
         try {
@@ -34,7 +33,7 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
     }
 
-    @GetMapping("/{taskId}")
+    @GetMapping("/{sprintId}/{taskId}")
     public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId) {
         ReadTaskResponse response;
 
@@ -47,7 +46,7 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_SUCCESS, response);
     }
 
-    @GetMapping("/all/{sprintId}")
+    @GetMapping("/{sprintId}/all")
     public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long sprintId) {
 
         List<ReadAllTaskResponse> response;
@@ -61,7 +60,7 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
     }
 
-    @GetMapping("/all/my")
+    @GetMapping("/my/all")
     public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
         List<ReadAllTaskResponse> response;
@@ -75,7 +74,7 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
     }
 
-    @PatchMapping("/{taskId}")
+    @PatchMapping("/{sprintId}/{taskId}")
     public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @RequestBody UpdateTaskStatusRequest request) {
 
         try {

@@ -10,7 +10,6 @@ import minionz.backend.scrum.dashboard.model.response.ReadBurndownResponse;
 import minionz.backend.scrum.dashboard.model.response.ReadMyDashboardResponse;
 import minionz.backend.scrum.dashboard.model.response.ReadWorkspaceDashboardResponse;
 import minionz.backend.user.model.CustomSecurityUserDetails;
-import minionz.backend.user.model.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +38,7 @@ public class DashboardController {
         return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
     }
 
-    @GetMapping("/workspace/{workspaceId}")
+    @GetMapping("/{workspaceId}")
     public BaseResponse<ReadWorkspaceDashboardResponse> readWorkspaceDashboard(@PathVariable Long workspaceId, ReadMyDashboardRequest request) {
         ReadWorkspaceDashboardResponse response;
 
@@ -52,7 +51,7 @@ public class DashboardController {
         return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
     }
 
-    @GetMapping("/burndown/workspace/{workspaceId}")
+    @GetMapping("/{workspaceId}/burndown/workspace")
     public BaseResponse<ReadBurndownResponse> readBurndownChart(@PathVariable Long workspaceId) {
         ReadBurndownResponse response;
 
