@@ -16,14 +16,10 @@ export const useChatRoomStore = () => {
         const newChatRoomId = ref(0);
         // newChatRoomId.value = chatRoomList.length ? Math.max(0, ...chatRoomList.map(room => room.id || 0)) + 1 : 1;
         newChatRoomId.value = chatRoomList.length + 1;
-        chatRoom.push({
+        chatRoom.value.push({
             chatroomId: newChatRoomId.value,
             chatRoomName: chatroomName,
-            participants: participants,
-            messageContents: '',
-            createdAt: new Date().toISOString(),
-            unreadMessages: 0,
-            profilePic: ''
+            participants: participants
         })
         // const newChatRoom = {
         //     id: newChatRoomId,
