@@ -24,8 +24,8 @@ public class MessageController {
 
     // 메세지 전송
     @MessageMapping("/room/{chatRoomId}/send")
-    public void sendMessage(@Payload SendMessageRequest request, @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
-        Long senderId = customUserDetails.getUser().getUserId();
+    public void sendMessage(@Payload SendMessageRequest request) {
+        Long senderId = request.getUserId();
         messageService.sendMessage(request.getChatRoomId(), request, null, senderId);
     }
 

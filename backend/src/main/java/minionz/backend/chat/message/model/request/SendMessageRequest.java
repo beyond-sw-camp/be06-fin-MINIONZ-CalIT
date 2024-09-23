@@ -14,4 +14,6 @@ public class SendMessageRequest {
     private String messageContents;
     private List<String> files;
     private Long chatRoomId;
+    private Long userId;
+    private String userName;
 }
