@@ -1,46 +1,55 @@
 <script setup>
-import { chatData } from "@/static/alarmData";
-import  notification from "@/assets/icon/alarm/notification.svg";
-// const alarmStore = useAlarmStore();
+import { chatRoomList } from "@/static/chatData";
+import { getTimeDifference} from "@/utils/timeUtils";
+// import  notification from "@/assets/icon/alarm/notification.svg";
+import 'perfect-scrollbar/css/perfect-scrollbar.css';
+import PerfectScrollbar from "perfect-scrollbar";
+import {onMounted} from "vue";
 
-
+onMounted(() => {
+  const container = document.querySelector('.chat-modal');
+  new PerfectScrollbar(container);
+});
 </script>
 
 <template>
-  <div class="alarm-list-container">
+  <div class="chat-modal">
     <div>
       <p>Chat List</p>
     </div>
     <hr>
     <ul>
-      <li v-for="chat in chatData" :key="chat.id">
+      <li v-for="chat in chatRoomList" :key="chat.id">
+        <router-link :to="'/workspace/' + chat.workspaceId + '/dashboard'">
         <div class="notification-item">
-          <img :src="notification" alt="alam">
+          <img :src="chat.profilePic" alt="alam" class="notify-img">
           <div>
-            <p class="alarm-title">{{ chat.title }}</p>
-            <p class="alarm-content">{{ chat.content }}</p>
+            <p class="chat-title">{{ chat.chatRoomName }}</p>
+            <p class="chat-content">{{ chat.messageContents }}</p>
           </div>
         </div>
-        <div>
-          <button>
-            <i class="delete-icon"></i>
-          </button>
-          <p class="alarm-time">{{ chat.time}}</p>
+        <div class="message-item-right">
+          <span class="unread-count">{{ chat.unreadMessages }}</span>
+          <p class="chat-time">{{ getTimeDifference(chat.createdAt) }}</p>
         </div>
+        </router-link>
       </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
-.alarm-list-container {
+.chat-modal {
     position: absolute;
     top: 50px;
     right: 150px;
     background-color: #F3F6FF;
     border-radius: 10px;
-    padding: 10px;
-  width: 200px;
+    padding: 15px;
+   width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
   }
 
 p {
@@ -48,23 +57,27 @@ p {
     margin: 0;
 }
 
-.alarm-title{
+.chat-title{
   font-size: 14px;
   font-weight: 500;
 }
 
-.alarm-content{
+.chat-content{
   font-size: 14px;
   font-weight: 400;
   margin-top: 5px;
-  color: #7c7c7c;
+  color: #6b7280;
+  width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.alarm-time{
+.chat-time{
   font-size: 12px;
   font-weight: 400;
   margin-top: 5px;
-  color: #7c7c7c;
+  color: #6b7280;
 }
 
 hr {
@@ -74,8 +87,10 @@ hr {
 }
 
 ul {
-  text-decoration: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   li {
     list-style: none;
@@ -103,9 +118,14 @@ a {
   gap: 10px;
 
   img {
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
   }
+}
+
+.notify-img{
+  width: 36px;
+  height: 36px;
 }
 
 .notification-item{
@@ -113,16 +133,18 @@ a {
   gap: 10px;
 }
 
-button{
-  background-color: transparent;
-  border: none;
+.message-item-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
 }
-
-  .delete-icon{
-    background-image: url('@/assets/icon/etc/cancel.svg');
-    background-size: cover;
-    width: 24px;
-    height: 24px;
-    display: block;
-  }
+.unread-count {
+  background-color: #e74c3c;
+  color: white;
+  font-size: 12px;
+  border-radius: 15px;
+  text-align: center;
+  padding: 3px 10px;
+}
 </style>

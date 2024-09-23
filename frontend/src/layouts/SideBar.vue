@@ -1,21 +1,21 @@
 <script setup>
 import {computed} from "vue";
 import {useRoute} from "vue-router";
-import {useUserStore} from '@/stores/user/useUserStore';
+import { useUserStore } from "@/stores/user/useUserStore";
+import { workspaceInfo } from "@/stores/workspace/useWorkspaceStore";
 import PersonalMenu from "@/layouts/component/PersonalMenu.vue";
 import WorkSpaceMenu from "@/layouts/component/WorkSpaceMenu.vue";
 import user1 from "@/assets/icon/persona/user1.svg";
 import router from "@/router";
 
-const userStore = useUserStore();
 const route = useRoute();
-
+// const workspaceId = route.params.workspaceId;
 const showPersonalMenu = computed(() => {
   return route.path.startsWith('/my');
 });
 
   const logout = () => {
-  userStore.logout();
+  useUserStore.logout();
   router.push('/user/login');
 };
 </script>
@@ -27,7 +27,7 @@ const showPersonalMenu = computed(() => {
     </div>
     <div class="user-info">
       <img :src="user1" alt="persona">
-      <p class="ubuntu-medium">My Space</p>
+      <p class="ubuntu-medium">{{ showPersonalMenu ? 'My Space' : workspaceInfo.setWorkspaceInfo }}</p>
     </div>
     <div class="menu-wrap">
       <div>
@@ -39,6 +39,7 @@ const showPersonalMenu = computed(() => {
         </div>
       </div>
       <div>
+        <hr>
         <button class="logout-wrap" @click="logout">
           <i class="logout-ico"></i>
           Logout
@@ -124,5 +125,11 @@ const showPersonalMenu = computed(() => {
     height: 24px;
     background-size: cover;
     display: block;
+  }
+
+  hr {
+    border: 1px solid #dfe5f1;
+    width: 100%;
+    margin: 10px 0;
   }
 </style>

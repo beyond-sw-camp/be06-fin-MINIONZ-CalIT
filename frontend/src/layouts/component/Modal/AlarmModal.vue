@@ -1,8 +1,26 @@
 <script setup>
+import {alarmData} from "@/static/alarmData";
+import { getTimeDifference } from "@/utils/timeUtils";
+// import { useAlarmStore } from '@/stores/socket/useAlamStore';
 // import {alarmData} from "@/static/alarmData";
-// import { useAlarmStore } from '@/store/socket/useAlamStore';
+// import { useAlarmStore } from '@/stores/socket/useAlamStore';
 import  notification from "@/assets/icon/alarm/notification.svg";
 // const alarmStore = useAlarmStore();
+import 'perfect-scrollbar/css/perfect-scrollbar.css';
+import PerfectScrollbar from "perfect-scrollbar";
+import {onMounted} from "vue";
+
+onMounted(() => {
+  const container = document.querySelector('.alarm-modal');
+  new PerfectScrollbar(container);
+});
+
+const deleteAlarm = (alarmId) => {
+  const index = alarmData.findIndex(alarm => alarm.id === alarmId);
+  if (index !== -1) {
+    alarmData.splice(index, 1);
+  }
+};
 
 const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');  // 1번 클라이언트
 eventSource.onmessage = function (event) {
@@ -12,7 +30,7 @@ eventSource.onmessage = function (event) {
 </script>
 
 <template>
-  <div class="alarm-list-container">
+  <div class="alarm-modal">
     <div>
       <p>Alarm List</p>
     </div>
@@ -21,27 +39,30 @@ eventSource.onmessage = function (event) {
       <li v-for="alarm in eventSource" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
-          <div>
+          <div >
             <p class="alarm-title">{{ alarm.title }}</p>
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
-        <button>
-          <i class="delete-icon"></i>
-        </button>
+        <div class="right-side">
+          <button @click="deleteAlarm">
+            <i class="delete-icon"></i>
+          </button>
+          <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
+        </div>
       </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
-.alarm-list-container {
+.alarm-modal {
     position: absolute;
     top: 50px;
     right: 100px;
     background-color: #F3F6FF;
     border-radius: 10px;
-    padding: 10px;
+    padding: 15px;
   width: 200px;
   }
 
@@ -59,7 +80,18 @@ p {
   font-size: 14px;
   font-weight: 400;
   margin-top: 5px;
-  color: #7c7c7c;
+  color: #6b7280;
+  width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alarm-time{
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 5px;
+  color: #6b7280;
 }
 
 hr {
@@ -113,11 +145,18 @@ button{
   border: none;
 }
 
+.right-side{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
   .delete-icon{
     background-image: url('@/assets/icon/etc/cancel.svg');
     background-size: cover;
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
     display: block;
+    color: #6b7280;
   }
 </style>

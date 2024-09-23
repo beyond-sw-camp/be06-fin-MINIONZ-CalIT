@@ -1,11 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
 import SocialLogin from "@/view/user/component/SocialLogin.vue";
+import axios from "axios";
 
+const router = useRouter();
 const username = ref('');
-const id = ref('');
+const loginId = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const email = ref('');
@@ -13,15 +16,54 @@ const showVerificationCode = ref(false);
 const verificationCode = ref('');
 
 const signup = () => {
-  if (passwordsMatch.value) {
-    console.log('Signup', username.value, password.value);
-  } else {
-    console.log('Passwords do not match');
+  try {
+    axios.post('/api/user/signup', {
+      username: username.value,
+      loginId: loginId.value,
+      password: password.value,
+      email: email.value
+    });
+    console.log(username.value);
+    console.log(loginId.value);
+    console.log(password.value);
+    console.log(email.value);
+    return router.push('/user/login');
+  } catch (error) {
+    console.error('Signup failed', error);
   }
 };
 
-const showVerificationInput = () => {
+const checkId = (loginId) => {
+  try {
+    axios.post('/api/user/check-id', {
+      loginId: loginId,
+    });
+  } catch (error) {
+    console.error('Check ID failed', error);
+  }
+};
+
+const confirmCode = (verificationCode) => {
+  try {
+    axios.post('/api/user/confirm-verification', {
+      uuid: verificationCode
+    });
+  } catch (error) {
+    console.error('Code confirmation failed', error);
+  }
+};
+
+const showVerificationInput = (email) => {
+  console.log(email);
   showVerificationCode.value = true;
+  try {
+    axios.post('/api/user/send-verification-code', {
+      email: email
+    });
+    console.log(email);
+  } catch (error) {
+    console.error('Verification failed', error);
+  }
 };
 
 const isEmailEntered = computed(() => {
@@ -45,21 +87,23 @@ const passwordsMatch = computed(() => {
     <div class="signup-body">
       <form @submit.prevent="signup">
         <UserInput v-model="username" input-placeholder="이름을 입력하세요" label="이름" type="text"/>
-        <UserInput v-model="id" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
+        <UserInput v-model="loginId" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
+        <button type="button" @click="checkId(loginId)" class="btn-verify" :disabled="!isEmailEntered">중복 확인</button>
         <div class="verify">
           <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일" type="email"/>
-          <button type="button" @click="showVerificationInput" class="btn-verify" :disabled="!isEmailEntered">인증 하기</button>
+          <button type="button" @click="showVerificationInput(email)" class="btn-verify" :disabled="!isEmailEntered">인증 하기</button>
         </div>
         <div v-if="showVerificationCode" class="verify">
           <UserInput v-model="verificationCode" input-placeholder="인증 번호를 입력하세요" label="인증 번호" type="text"/>
-          <button type="button" :disabled="!isVerificationCodeEntered" class="btn-verify">코드 입력</button>
+          <button type="button" :disabled="!isVerificationCodeEntered" @click="confirmCode(verificationCode)" class="btn-verify">코드 입력</button>
         </div>
         <UserInput v-model="password" input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
         <UserInput v-model="confirmPassword" input-placeholder="비밀번호를 다시 입력하세요" label="비밀번호 확인" type="password"/>
         <p v-if="!passwordsMatch" class="error-message">비밀번호가 일치하지 않습니다.</p>
-        <router-link to="/user/complete" style="margin: 0">
+
+        <div @click="signup" style="margin: 0">
           <UserButton type="submit" button-ment="Sign up"></UserButton>
-        </router-link>
+        </div>
       </form>
       <div class="text-wrap">
           <router-link to="/user/login">로그인 하기</router-link>

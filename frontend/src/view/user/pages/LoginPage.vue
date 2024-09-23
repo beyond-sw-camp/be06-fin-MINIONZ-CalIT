@@ -84,8 +84,6 @@ h1{
   margin: 10px;
 }
 .btn{
-  //color: #1E5EFF;
-  //margin-left: 10px;
   text-decoration: none;
 }
 .login-header{
