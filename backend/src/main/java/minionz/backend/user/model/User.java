@@ -12,9 +12,11 @@ import minionz.backend.scrum.task_participation.model.TaskParticipation;
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
+import org.hibernate.annotations.BatchSize;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +24,8 @@ import java.util.ArrayList;
 @Builder
 @Entity
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(unique = true)
@@ -44,19 +47,22 @@ public class User {
     private List<ChatParticipation> chatParticipations = new ArrayList<>();
 
     // User : WorkspaceParticipation = 1 : N
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
     private List<WorkspaceParticipation> workspaceParticipations = new ArrayList<>();
 
     // User : SprintParticipation = 1 : N
-    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
     private List<SprintParticipation> sprintParticipations = new ArrayList<>();
 
     // User : TaskParticipation = 1 : N
-    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<TaskParticipation> taskParticipations = new ArrayList<>();
 
     // User : MeetingParticipation = 1 : N
-    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
     private List<MeetingParticipation> meetingParticipations = new ArrayList<>();
 
     // User : errorBoardList = 1 : N
