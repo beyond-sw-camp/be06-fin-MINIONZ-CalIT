@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CreateQaBoardRequest {
+    private Long taskId;
     private String qaboardTitle;
     private String qaboardContent;
 

@@ -64,6 +64,7 @@ p{
 hr{
   border: 1px solid #dfe5f1;
   width: 100%;
+  margin: 10px 0;
 }
 .icon-dashboard{
   background-image: url("@/assets/icon/menu/dashboard.svg");

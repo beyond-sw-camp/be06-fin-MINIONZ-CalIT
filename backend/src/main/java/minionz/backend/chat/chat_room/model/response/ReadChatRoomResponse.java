@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReadChatRoomResponse {
     private Long chatroomId;
+    private Long workspaceId;
     private String chatRoomName;
     private String messageContents;
     private LocalDateTime createdAt;

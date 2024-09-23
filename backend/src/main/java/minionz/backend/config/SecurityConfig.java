@@ -7,6 +7,7 @@ import minionz.backend.config.filter.JwtAccessDeniedHandler;
 import minionz.backend.config.filter.JwtFilter;
 import minionz.backend.utils.JwtUtil;
 import minionz.backend.config.filter.LoginFilter;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +17,7 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
@@ -42,8 +44,13 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler accessDeniedHandler;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring()
+                .requestMatchers(String.valueOf(PathRequest.toStaticResources().atCommonLocations()));
+    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -52,22 +59,16 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        http
-//                .formLogin((auth) -> auth.loginPage("/oauth-login/login")
-//                        .loginProcessingUrl("/oauth-login/loginProc")
-//                        .usernameParameter("loginId")
-//                        .passwordParameter("password")
-//                        .defaultSuccessUrl("/oauth-login")
-//                        .failureUrl("/oauth-login")
-//                        .permitAll());
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults()); // CORS 설정 추가
 
         http
-                .oauth2Login(oauth -> oauth
-                        .loginPage("/oauth-login/login")  // 로그인 페이지 설정
-                        .defaultSuccessUrl("/oauth-login/success")  // 로그인 성공 시 리디렉션 경로
-                        .failureUrl("/oauth-login/failure")  // 로그인 실패 시 리디렉션 경로
-                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/oauth-login/success")) // 성공 핸들러 추가
+                .formLogin(auth -> auth
+                        .loginPage("/user/login")
+                        .usernameParameter("loginId")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/my/dashboard")
+                        .failureUrl("/user/login")
                         .permitAll());
 
         http

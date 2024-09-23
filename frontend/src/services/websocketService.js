@@ -1,7 +1,7 @@
-import { useChatRoomStore } from '@/store/socket/chat/useChatRoomStore';
-import { useChatMessageStore } from "@/store/socket/chat/useChatMessageStore";
-import { useNotificationStore } from '@/store/socket/useNotifyStore';
-import { useDocsEditStore } from '@/store/socket/useDocsEditStore';
+import { useChatRoomStore } from '@/stores/socket/chat/useChatRoomStore';
+import { useChatMessageStore } from "@/stores/socket/chat/useChatMessageStore";
+import { useNotificationStore } from '@/stores/socket/useAlarmStore';
+import { useDocsEditStore } from '@/stores/socket/useDocsEditStore';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 

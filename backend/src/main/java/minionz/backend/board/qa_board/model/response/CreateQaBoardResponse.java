@@ -2,7 +2,6 @@ package minionz.backend.board.qa_board.model.response;
 
 
 import lombok.*;
-import minionz.backend.board.error_board.model.response.GetErrorBoardImageResponse;
 import minionz.backend.board.qa_board.model.AnswerStatus;
 
 import java.time.LocalDateTime;
@@ -22,4 +21,7 @@ public class CreateQaBoardResponse {
     private LocalDateTime modifiedAt;
     private List<GetQaBoardImageResponse> getQaBoardImageResponseList;
     private Long workspaceId;
+
+    private String userName;
+    private String taskName;
 }

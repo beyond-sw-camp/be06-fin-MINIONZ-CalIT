@@ -12,6 +12,8 @@ import minionz.backend.scrum.task_participation.model.TaskParticipation;
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
+import minionz.backend.user_alarm.model.UserAlarm;
+
 import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
@@ -84,4 +86,10 @@ public class User {
     // User : Issue = 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Issue> issues = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
+    private List<UserAlarm> receiverAlarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    private List<UserAlarm> senderAlarms = new ArrayList<>();
 }

@@ -8,19 +8,22 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@stomp/stompjs": "^6.1.2",
     "@vee-validate/rules": "^4.13.2",
     "axios": "^1.7.7",
     "core-js": "^3.8.3",
     "dayjs": "^1.11.13",
     "echarts": "^5.5.1",
+    "notyf": "^3.10.0",
+    "perfect-scrollbar": "^1.5.5",
     "pinia": "^2.2.2",
     "pinia-plugin-persistedstate": "^3.2.3",
     "quill": "^2.0.2",
     "sockjs-client": "^1.6.1",
-    "@stomp/stompjs": "^6.1.2",
     "vee-validate": "^4.13.2",
     "vue": "^3.2.13",
     "vue-draggable-next": "^2.2.1",
+    "vue-draggable-resizable": "^3.0.0",
     "vue-router": "^4.4.3",
     "vue3-styled-component": "^2.0.3",
     "yup": "^1.4.0"

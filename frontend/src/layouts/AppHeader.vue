@@ -1,29 +1,60 @@
 <script setup>
 import { ref } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
 import arrow from '@/assets/icon/menu/arrow.svg';
-import WorkspaceModal from "@/layouts/component/WorkspaceModal.vue";
-import NotificationModal from "@/layouts/component/NotificationModal.vue";
+import WorkspaceModal from "@/layouts/component/Modal/WorkspaceModal.vue";
+import AlarmModal from "@/layouts/component/Modal/AlarmModal.vue";
+import ChatModal from "@/layouts/component/Modal/ChatModal.vue";
 
+const showAlarmModal = ref(false);
 const showWorkspaceModal = ref(false);
-const showNotificationModal = ref(false);
+const showChatModal = ref(false);
+
+const toggleChatModal = () => {
+  showChatModal.value = !showChatModal.value;
+};
+
+const toggleAlarmModal = () => {
+  showAlarmModal.value = !showAlarmModal.value;
+};
 
 const toggleWorkspaceModal = () => {
   showWorkspaceModal.value = !showWorkspaceModal.value;
 };
 
-const toggleNotificationModal = () => {
-  showNotificationModal.value = !showNotificationModal.value;
+const closeChatModal = () => {
+  showChatModal.value = false;
 };
 
+const closeAlarmModal = () => {
+  showAlarmModal.value = false;
+};
 const closeWorkspaceModal = () => {
   showWorkspaceModal.value = false;
 };
-const closeNotificationModal = () => {
-  showNotificationModal.value = false;
+
+const handleClickOutside = (event) => {
+  if (showChatModal.value && !event.target.closest('.chat') && !event.target.closest('.notification-item') && !event.target.closest('.chat-modal')) {
+    closeChatModal();
+  }
+  if (showAlarmModal.value && !event.target.closest('.alarm') && !event.target.closest('.notification-item') && !event.target.closest('.alarm-modal')) {
+    closeAlarmModal();
+  }
+  if (showWorkspaceModal.value && !event.target.closest('.workspace-bundle') && !event.target.closest('.workspace-list-container')) {
+    closeWorkspaceModal();
+  }
 };
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
@@ -33,10 +64,10 @@ const closeNotificationModal = () => {
     </div>
     <div class="right-side">
       <div class="notice-bundle">
-        <router-link to="/workspace/chat" class="message">
-          <img :src="message" alt="message">
-        </router-link>
-        <div class="alarm" @click="toggleNotificationModal">
+        <div  class="chat" @click="toggleChatModal">
+          <img :src="message" alt="chat">
+        </div>
+        <div class="alarm" @click="toggleAlarmModal">
           <img :src="alarm" alt="alarm">
         </div>
       </div>
@@ -48,7 +79,8 @@ const closeNotificationModal = () => {
           <img :src="arrow" alt="arrow" :class="{ 'arrow-rotated': showWorkspaceModal }" class="arrow">
         </div>
       </div>
-      <NotificationModal v-if="showNotificationModal" :close-modal="closeNotificationModal"/>
+      <ChatModal v-if="showChatModal" :close-modal="closeChatModal"/>
+      <AlarmModal v-if="showAlarmModal" :close-modal="closeAlarmModal"/>
       <WorkspaceModal v-if="showWorkspaceModal" :close-modal="closeWorkspaceModal"/>
     </div>
   </div>
@@ -77,7 +109,7 @@ const closeNotificationModal = () => {
 
 .right-side {
   display: flex;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -88,7 +120,7 @@ img {
 
 .notice-bundle {
   display: flex;
-  gap: 5px;
+  gap: 10px;
   position: relative;
 }
 
@@ -113,7 +145,7 @@ img {
   transition: transform 0.3s ease;
 }
 
-.message::after {
+.chat::after {
   content: '';
   position: absolute;
   left: 20px;
