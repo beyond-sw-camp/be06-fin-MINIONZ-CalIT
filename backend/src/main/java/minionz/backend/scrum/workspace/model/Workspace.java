@@ -6,6 +6,7 @@ import lombok.*;
 import minionz.backend.board.error_board.model.ErrorBoard;
 import minionz.backend.board.qa_board.model.QaBoard;
 import minionz.backend.scrum.issue.model.Issue;
+import minionz.backend.scrum.label.model.NoteLabel;
 import minionz.backend.scrum.label.model.TaskLabel;
 
 import minionz.backend.scrum.sprint.model.Sprint;
@@ -47,6 +48,10 @@ public class Workspace {
     // Workspace : TaskLabel = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<TaskLabel> taskLabels = new ArrayList<>();
+
+    // Workspace : NoteLabel = 1 : N
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    private List<NoteLabel> noteLabels = new ArrayList<>();
 
     // Workspace : errorBoard = 1 : 1
     @OneToMany(mappedBy = "workSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

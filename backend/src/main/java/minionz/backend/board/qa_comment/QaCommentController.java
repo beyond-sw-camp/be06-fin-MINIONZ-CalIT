@@ -7,7 +7,9 @@ import minionz.backend.board.qa_comment.model.response.GetQaCommentResponse;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.utils.CloudFileUpload;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,10 +26,12 @@ public class QaCommentController {
     public BaseResponse<CreateQaCommentResponse> createCommentWithImages(
             @RequestParam Long qaBoardId,
             @RequestPart(name = "request") CreateQaCommentRequest request,
-            @RequestPart(name = "files") MultipartFile[] files
+            @RequestPart(name = "files") MultipartFile[] files,
+            @AuthenticationPrincipal CustomSecurityUserDetails userDetails
     ) throws BaseException {
         List<String> fileNames = cloudFileUpload.multipleUpload(files);
-        CreateQaCommentResponse response = qaCommentService.create(qaBoardId, request, fileNames);
+        Long userId = userDetails.getUserId();
+        CreateQaCommentResponse response = qaCommentService.create(qaBoardId, request, fileNames,userId);
         return new BaseResponse<>(BaseResponseStatus.QACOMMENT_CREATE_SUCCESS, response);
     }
     // 게시글별 댓글 조회

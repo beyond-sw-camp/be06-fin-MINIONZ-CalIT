@@ -25,4 +25,7 @@ public class GetQaBoardResponse {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<GetQaBoardImageResponse> getQaBoardImageResponseList;
+
+    private String userName;
+    private String taskName;
 }
