@@ -1,19 +1,22 @@
 <script setup>
-import { ref } from 'vue';
+import { useParticipants } from "@/stores/user/useParticipantsStore";
 
-const participantsName = ref('');
-const selectedLevel = ref('');
-const selectedPriority = ref('');
+const {
+  participantsName,
+  participants,
+  userList,
+  filteredUsers,
+  addParticipant,
+  removeParticipant,
+  saveParticipants
+} = useParticipants();
 
-const addParticipants = () => {
-  console.log({
-    participantsName: participantsName.value,
-    level: selectedLevel.value,
-    priority: selectedPriority.value
-  });
-  participantsName.value = '';
-  selectedLevel.value = '';
-  selectedPriority.value = '';
+const saveParticipantsToUserList = () => {
+  if (saveParticipants) {
+    saveParticipants(userList);
+  } else {
+    console.warn("saveParticipants is not defined");
+  }
 };
 </script>
 
@@ -22,30 +25,38 @@ const addParticipants = () => {
     <h2>participants 추가하기</h2>
     <hr/>
     <div class="participants-wrap">
-      <div class="input-wrap">
-        <!-- participants 이름 입력 필드 -->
-        <label for="participants-name">Name participants</label>
-        <input
-            type="text"
-            id="participants-name"
-            v-model="participantsName"
-            placeholder="Name participants"
-            class="input-field"
-        />
-
-        <!-- 난이도 선택 드롭다운 -->
-        <label for="level">참여자 검색</label>
-        <input
-            type="text"
-            id="level"
-            v-model="selectedLevel"
-            placeholder="Level"
-            class="input-field"
-        />
-
+      <div>
+        <div class="input-wrap">
+          <label for="participants-name">참여자 검색</label>
+          <div class="input-btn-wrap">
+            <input
+                type="text"
+                id="participants-name"
+                v-model="participantsName"
+                placeholder="참여자 이름을 입력하세요"
+                class="input-field"
+            />
+          </div>
+          <div v-if="participantsName" class="search-results">
+            <div v-for="user in filteredUsers" :key="user.id" @click="() => { addParticipant(user); participantsName = ''; }">
+              <img :src="user.persona" alt="persona">
+              <span>{{ user.username }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="participants-list">
+          <div v-for="participant in participants" :key="participant.id" class="participants-item">
+            <div class="participants-item-info">
+              <img :src="participant.persona" alt="persona" class="persona">
+              <span>{{ participant.username }}</span>
+            </div>
+            <button @click="removeParticipant(participant.id)" class="del-btn participants-btn">삭제</button>
+          </div>
+        </div>
       </div>
-      <!-- 추가 버튼 -->
-      <button @click="addParticipants" class="add-participants-btn">Add participants</button>
+
+      <!-- 저장 버튼 -->
+      <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
     </div>
   </div>
 </template>
@@ -92,14 +103,14 @@ label {
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
+  //margin-top: 5px;
+  //margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
 }
 
-.add-participants-btn {
+.participants-btn {
   background-color: #C6D2FD;
   color: #28303F;
   padding: 10px;
@@ -110,7 +121,62 @@ label {
   cursor: pointer;
 }
 
-.add-participants-btn:hover {
+.participants-btn:hover {
   background-color: #93AAFD;
+}
+
+.del-btn{
+  width: 60px;
+}
+
+.input-btn-wrap{
+  display: flex;
+  gap: 10px;
+}
+
+.participants-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  border:  1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  justify-content: space-between;
+  img{
+    width: 36px;
+  }
+}
+
+.participants-item-info{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-results{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  //position: absolute;
+  //top: 60px;
+  background-color: #fff;
+  div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    img{
+      width: 36px;
+    }
+    &:hover{
+      background-color: #e0e8ff;
+      border: 1px solid #C6D2FD;
+    }
+  }
 }
 </style>
