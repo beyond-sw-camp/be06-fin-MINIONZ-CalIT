@@ -12,6 +12,8 @@ import minionz.backend.chat.message.model.MessageType;
 import minionz.backend.chat.message.model.request.FileInfo;
 import minionz.backend.chat.message.model.request.SendMessageRequest;
 import minionz.backend.chat.message.model.request.UpdateMessageRequest;
+import minionz.backend.common.exception.BaseException;
+import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.utils.CloudFileUpload;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,10 +38,13 @@ public class MessageService {
     private final SimpMessagingTemplate messagingTemplate;
     private final CloudFileUpload cloudFileUpload;
 
-    public void sendMessage(Long chatRoomId, SendMessageRequest request, MultipartFile[] files, Long senderId) {
+    public void sendMessage(Long chatRoomId, SendMessageRequest request, MultipartFile[] files, Long senderId) throws BaseException {
 
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
-
+        // 참여자 정보 확인
+        if (participation == null) {
+            throw new BaseException(BaseResponseStatus.CHAT_PARTICIPATION_NOT_FOUND);
+        }
         // 파일 업로드 처리
         List<String> fileUrls = null;
         if (files != null) {
@@ -64,49 +68,61 @@ public class MessageService {
 
         // Kafka 로 메시지 전송
         String topic = "chat-room-" + chatRoomId.toString();
-
         request.setFiles(fileUrls);
+
         try {
             String messageStr = objectMapper.writeValueAsString(request);
             kafkaTemplate.send(topic, senderId.toString(), messageStr);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new BaseException(BaseResponseStatus.KAFKA_SEND_FAILED);
         }
     }
 
     public void updateMessage(Long chatRoomId, UpdateMessageRequest request, Long senderId) {
-        if (!request.getMessageContents().isEmpty()) {
-            // 받아온 senderId로 채팅방 목록을 조회
-            List<ChatParticipation> chatRoomList = chatParticipationRepository.findAllByUser_UserId(senderId);
-
-            // 채팅방 목록에서 요청된 채팅방이 있는지 확인
-            boolean isAuthorized = chatRoomList.stream()
-                    .anyMatch(participation -> participation.getChatRoom().getChatRoomId().equals(chatRoomId));
-
-            if (isAuthorized) {
-                // JPQL 을 사용하여 메시지를 조회합니다.
-                Message message = messageRepository.findMessageById(request.getMessageId());
-                message.setMessageContents(request.getMessageContents());
-                messageRepository.save(message);
-            }
+        if (request.getMessageContents().isEmpty()) {
+            throw new BaseException(BaseResponseStatus.MESSAGE_CONTENT_EMPTY);
         }
 
+        // 참여 확인
+        List<ChatParticipation> chatRoomList = chatParticipationRepository.findAllByUser_UserId(senderId);
+        boolean isAuthorized = chatRoomList.stream()
+                .anyMatch(participation -> participation.getChatRoom().getChatRoomId().equals(chatRoomId));
+
+        if (!isAuthorized) {
+            throw new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED);
+        }
+
+        // 메시지 조회 및 업데이트
+        Message message = messageRepository.findById(request.getMessageId())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.MESSAGE_NOT_FOUND));
+
+        message.setMessageContents(request.getMessageContents());
+
+        try {
+            messageRepository.save(message);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.MESSAGE_UPDATE_FAILED);
+        }
     }
 
-    public void deleteMessage(Long messageId, Long senderId) {
+    public void deleteMessage(Long messageId, Long senderId) throws BaseException{
         Message message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 메시지를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.MESSAGE_NOT_FOUND));
         if (!message.getChatParticipation().getUser().getUserId().equals(senderId)) {
-            throw new SecurityException("본인의 메시지만 삭제할 수 있습니다.");
+            throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED_TO_DELETE);
         }
         message.setDeletedAt(LocalDateTime.now());
-        messageRepository.save(message);
+        try {
+            messageRepository.save(message);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.MESSAGE_DELETE_FAILED);
+        }
     }
 
-    public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) {
+    public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) throws BaseException {
         List<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(chatRoomId);
         if (messages.isEmpty()) {
-            return Collections.emptyList();
+            throw new BaseException(BaseResponseStatus.MESSAGE_NOT_FOUND);
         }
         return messages.stream()
                 .map(message -> ReadMessageResponse.builder()
@@ -129,13 +145,22 @@ public class MessageService {
                 .collect(Collectors.toList());
     }
 
-    public void enterChatRoom(Long chatRoomId, Long userId) {
+    public void enterChatRoom(Long chatRoomId, Long userId) throws BaseException {
         List<Message> unreadMessages = messageRepository.findUnreadMessagesByChatRoomId(chatRoomId, MessageStatus.UNREAD);
-        for (Message message : unreadMessages) {
-            message.setMessageStatus(MessageStatus.READ);
+        // 안 읽은 메세지가 있을 때만 상태 변경
+        if (!unreadMessages.isEmpty()) {
+            for (Message message : unreadMessages) {
+                message.setMessageStatus(MessageStatus.READ);
+                }
+            }
+
+        try {
+            messageRepository.saveAll(unreadMessages);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.MESSAGE_STATUS_UPDATE_FAIL);
         }
-        messageRepository.saveAll(unreadMessages);
     }
+
 
     @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeMessage(ConsumerRecord<String, String> record) {
