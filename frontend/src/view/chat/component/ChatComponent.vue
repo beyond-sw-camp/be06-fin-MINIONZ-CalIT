@@ -26,7 +26,7 @@ const closeModal = () => {
 
       </div>
     </div>
-    <FriendsModal v-if="showModal" @close="closeModal"/>
+    <FriendsModal v-show="showModal" @close="closeModal"/>
   </div>
 </template>
 

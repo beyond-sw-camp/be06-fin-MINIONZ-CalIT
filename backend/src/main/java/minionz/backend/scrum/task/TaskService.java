@@ -21,8 +21,6 @@ import minionz.backend.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.backend.scrum.task.model.response.ReadTaskResponse;
 import minionz.backend.scrum.task_participation.TaskParticipationRepository;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
-import minionz.backend.scrum.workspace.WorkspaceRepository;
-import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

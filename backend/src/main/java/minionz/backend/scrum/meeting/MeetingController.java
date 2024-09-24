@@ -6,7 +6,9 @@ import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.meeting.model.request.CreateMeetingRequest;
 import minionz.backend.scrum.meeting.model.response.ReadMeetingResponse;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,11 +19,10 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @PostMapping("/{sprintId}")
-    public BaseResponse<BaseResponseStatus> createMeeting(@PathVariable Long sprintId, @RequestBody CreateMeetingRequest request) {
-        User user = User.builder().userId(1L).build();
+    public BaseResponse<BaseResponseStatus> createMeeting(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId, @RequestBody CreateMeetingRequest request) {
 
         try {
-            meetingService.createMeeting(user, request, sprintId);
+            meetingService.createMeeting(customUserDetails.getUser(), request, sprintId);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
