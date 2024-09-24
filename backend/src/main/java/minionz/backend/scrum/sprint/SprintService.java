@@ -38,11 +38,6 @@ public class SprintService {
     private final TaskRepository taskRepository;
 
     public void createSprint(User user, CreateSprintRequest request) throws BaseException {
-//        user가 워크스페이스 내에 포함됐는지? 확인.
-        workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(request.getWorkspaceId(), user.getUserId()).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.INVALID_ACCESS)
-        );
-
         Sprint sprint = sprintRepository.save(Sprint
                 .builder()
                 .sprintTitle(request.getSprintTitle())
@@ -54,8 +49,8 @@ public class SprintService {
                 .build());
 
 //        TODO: 알람 보내야합니다!
-//        참여 테이블에 참가자들 추가
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(true).build());
+        sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(false).build());
         request.getParticipants().forEach(participantId ->
                 sprintParticipationRepository.save(SprintParticipation
                         .builder()
@@ -83,13 +78,8 @@ public class SprintService {
 
         Sprint sprint = result.get();
 
-        //        user가 워크스페이스 내에 포함됐는지? 확인.
-        workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(sprint.getWorkspace().getWorkspaceId(), user.getUserId()).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.INVALID_ACCESS)
-        );
         List<Participant> participants = findParticipants(sprint);
 
-//        내가 isManager 이니?
         Boolean isManager = participants.stream()
                 .anyMatch(participant -> participant.getId().equals(user.getUserId()) && participant.getIsManager());
 
@@ -109,11 +99,6 @@ public class SprintService {
 
     public List<ReadAllSprintResponse> readAllSprint(User user, Long id) throws BaseException {
         List<Sprint> result = sprintRepository.findAllByWorkspaceWorkspaceId(id);
-
-        //        user가 워크스페이스 내에 포함됐는지? 확인.
-        workspaceParticipationRepository.findByWorkspaceWorkspaceIdAndUserUserId(id, user.getUserId()).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.INVALID_ACCESS)
-        );
 
         List<ReadAllSprintResponse> response = result.stream().map(
                 sprint -> ReadAllSprintResponse

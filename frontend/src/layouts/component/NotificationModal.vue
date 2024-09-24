@@ -1,13 +1,13 @@
 <script setup>
-import { useNotificationStore } from '@/store/socket/useNotifyStore';
+import { useAlarmStore } from '@/stores/socket/useAlarmStore';
 
-const notificationStore = useNotificationStore();
+const alarmStore = useAlarmStore();
 </script>
 
 <template>
   <div>
-    <div v-for="notification in notificationStore.notifications" :key="notification.id">
-      {{ notification.message }}
+    <div v-for="alarm in alarmStore.alarms" :key="alarm.id">
+      {{ alarm.message }}
     </div>
   </div>
 </template>

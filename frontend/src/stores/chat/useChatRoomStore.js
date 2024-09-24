@@ -1,10 +1,13 @@
 import {ref} from "vue";
 import {chatRoomList, chatRoomList as initialChatRoomList} from '@/static/chatData';
+import axios from "axios";
 export const useChatRoomStore = () => {
-    const chatRoom = ref(initialChatRoomList);
+    const chatRoom = chatRoomList;
     const newChatRoomId = ref(0);
 
-    const addChatRoom = ({ chatroomName, participants }) => {
+
+    // [POST] 그룹 채팅 방 생성 /chat/room
+    const addChatRoom = async ({chatroomName, participants}) => {
         if (!Array.isArray(participants) || participants.length === 0) {
             throw new Error('Invalid data: participants are required.');
         }
@@ -14,25 +17,34 @@ export const useChatRoomStore = () => {
         }
 
         const newChatRoomId = ref(0);
-        // newChatRoomId.value = chatRoomList.length ? Math.max(0, ...chatRoomList.map(room => room.id || 0)) + 1 : 1;
-        newChatRoomId.value = chatRoomList.length + 1;
-        chatRoom.value.push({
-            chatroomId: newChatRoomId.value,
-            chatRoomName: chatroomName,
-            participants: participants
-        })
-        // const newChatRoom = {
-        //     id: newChatRoomId,
-        //     chatroomName,
-        //     participants
-        // };
-        // chatRoom.value.push(newChatRoom);
-        return newChatRoomId;
+        try {
+            const response = await axios.post('/chat/room', {
+                chatroomName,
+                participants
+            });
+
+            if (response.data.success) {
+                newChatRoomId.value = response.data.chatroomId;
+                chatRoom.value.push({
+                    chatroomId: newChatRoomId.value,
+                    chatRoomName: chatroomName,
+                    participants: participants
+                });
+            } else {
+                throw new Error('Failed to create chat room');
+            }
+        } catch (error) {
+            console.error('Error creating chat room:', error);
+        }
     };
 
+
+    // [GET] 채팅 방 목록 조회
     const fetchChatRooms = () => {
         chatRoom.value = initialChatRoomList;
     };
+
+    // [PATCH] 채팅 방 수정
 
     return {
         chatRoom,

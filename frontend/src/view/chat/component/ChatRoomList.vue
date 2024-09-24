@@ -33,7 +33,7 @@ const closeModal = () => {
       <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">
-      <router-link :to="`/workspace/${workspaceId}/chat/` + room.id" class="message-item" v-for="(room) in chatRoom" :key="room.id">
+      <router-link :to="`/workspace/${workspaceId}/chat/` + room.chatroomId" class="message-item" v-for="(room) in chatRoom" :key="room.id">
         <img :src="room.profilePic" alt="profile" class="profile-pic"/>
         <div class="message-info">
           <div class="message-item-top">
