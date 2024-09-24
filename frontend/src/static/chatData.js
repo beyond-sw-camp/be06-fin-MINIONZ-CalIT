@@ -60,7 +60,7 @@ export const chat = [
             "createdAt": "2024-09-10T16:45:00.406759",
             "messageType": "TEXT",
             "messageStatus": "UNREAD",
-            "persona": null,
+            "persona": user1,
             "file" : {
                 "fileType": "PDF",
                 "fileSize": "2mb",
@@ -76,7 +76,7 @@ export const chat = [
             "createdAt": "2024-09-10T16:45:04.930487",
             "messageType": "TEXT",
             "messageStatus": "UNREAD",
-            "persona": null,
+            "persona": user2,
             "file" : {
                 "fileType": "code",
                 "fileSize": "2mb",

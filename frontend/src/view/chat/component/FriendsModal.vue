@@ -1,8 +1,13 @@
 <script setup>
-import { useParticipants } from '@/stores/user/useParticipantsStore';
-
 import {ref} from 'vue';
+import router from "@/router";
+import {useChatRoomStore} from "@/stores/chat/useChatRoomStore";
+import { useParticipants } from '@/stores/user/useParticipantsStore';
+import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
 
+const chatRoomStore = useChatRoomStore();
+console.log('chatRoomStore:', chatRoomStore);
+const workspaceId = workspaceStore.workspaceId;
 const isModalOpen = ref(true);
 const chattingRoomName = ref('');
 // const participantInput = ref('');
@@ -12,14 +17,21 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const saveParticipantsToUserList = () => {
+const saveParticipantsToUserList = async () => {
+  console.log('Before saving participants:', participants.value);
   if (saveParticipants) {
+    console.log('Before Saving Chat Room Name:', chattingRoomName.value);// 여기 값안옴
+    console.log('After Saving Chat Room Name:', chattingRoomName.value); // 여기 값 안옴
+    console.log('Participants:', participants.value);
+    const newChatRoomId = chatRoomStore.addChatRoom({ chatroomName: chattingRoomName.value, participants: [...participants.value] }).value;
+    console.log('newChatRoomId:', newChatRoomId);
     saveParticipants(userList);
-    // console.log('Room saved:', chattingRoomName.value, participants.value);
+    await router.push(`/workspace/${workspaceId}/chat/${newChatRoomId}`);
     closeModal();
   } else {
     console.warn("saveParticipants is not defined");
   }
+  console.warn("saveParticipants is not working");
 };
 
 </script>
@@ -56,7 +68,10 @@ const saveParticipantsToUserList = () => {
             />
           </div>
           <div v-if="participantsName" class="search-results">
-            <div v-for="user in filteredUsers" :key="user.id" @click="() => { addParticipant(user); participantsName = ''; }">
+            <div v-for="user in filteredUsers"
+                 :key="user.id"
+                 @click="() => { addParticipant(user); participantsName = ''; }"
+            >
               <img :src="user.persona" alt="persona">
               <span class="participant-name">{{ user.username }}</span>
             </div>
