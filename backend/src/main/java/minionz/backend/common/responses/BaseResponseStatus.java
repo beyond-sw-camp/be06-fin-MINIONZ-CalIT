@@ -15,7 +15,16 @@ public enum BaseResponseStatus {
     /**
      * 2000: 유저
      */
-
+    USER_CREATE_SUCCESS(true, 2001, "회원가입에 성공했습니다. "),
+    USER_LOGIN_SUCCESS(true, 2002, "로그인에 성공했습니다. "),
+    USER_ID_NOT_DUPLICATE(true, 2003, "사용 가능한 아이디 입니다. "),
+    USER_ID_DUPLICATE(false, 2004, "중복된 아이디 입니다. "),
+    USER_EMAIL_NOT_DUPLICATE(true, 2005, "사용가능한 이메일 입니다. "),
+    USER_EMAIL_DUPLICATE(false, 2006, "중복된 이메일 입니다. "),
+    USER_UUID_VALID(true, 2007, "유효한 인증 코드입니다. "),
+    USER_UUID_INVALID(false, 2008, "유효하지 않은 인증 코드입니다. "),
+    USER_CREATE_FAIL(false, 2006, "회원가입에 실패했습니다. "),
+    USER_LOGIN_FAIL(false, 2007, "로그인에 실패했습니다. "),
 
     /**
      * 3000: 마이 페이지
@@ -76,14 +85,15 @@ public enum BaseResponseStatus {
     CHATROOM_LIST_FAIL(false, 6102, "채팅방 조회에 실패했습니다."),
     MESSAGE_SEND_SUCCESS(true, 6201, "메세지가 성공적으로 전송되었습니다."),
     MESSAGE_SEND_FAIL(false, 6202, "메세지가 전송되지 않았습니다."),
-    CHAT_PARTICIPATION_NOT_FOUND(false, 6203, "참여자가 존재하지 않습니다.");
+    CHAT_PARTICIPATION_NOT_FOUND(false, 6203, "참여자가 존재하지 않습니다."),
 
 
 
     /**
      * 7000: 알림
      */
-
+    ALARM_CREATE_SUCCESS(true, 7001, "알림 전송에 성공했습니다. "),
+    ALARM_CREATE_FAIL(false, 7002, "알림 전송에 실패했습니다. ");
 
     private final boolean isSuccess;
     private final int code;
