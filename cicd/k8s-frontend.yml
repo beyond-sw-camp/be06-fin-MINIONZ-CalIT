@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calit-frontend-vname
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: calit-frontend-vname
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: calit-frontend-vname
+    spec:
+      containers:
+        - name: calit-frontend-vname
+          image: minionz/calit-frontend:latest
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc-vname
+spec:
+  selector:
+    app: calit-frontend-vname
+  ports:
+    - port: 80
+      name: "svc80"
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress-vname
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "10"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-svc-vname
+                port:
+                  number: 80
+
