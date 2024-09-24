@@ -1,17 +1,9 @@
 <script setup>
 import user1 from '@/assets/icon/persona/user1.svg';
-// import user2 from '@/assets/icon/persona/user2.svg';
-// import user3 from '@/assets/icon/persona/user3.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-// import { useRouter } from 'vue-router';
-// import { defineProps } from 'vue';
-// import { workspaceList } from '@/stores/workspace/useWorkspaceStore';
+import {workspaceStore} from '@/stores/workspace/useWorkspaceStore';
 
-// const router = useRouter();
-
-import {workspaceData} from "@/static/workspaceData";
-
-const workspaceInfo = workspaceData;
+const workspaceList = workspaceStore.getWorkspace;
 </script>
 
 <template>
@@ -34,10 +26,10 @@ const workspaceInfo = workspaceData;
           </div>
           <hr>
         </li>
-        <li v-for="(workspace) in workspaceInfo" :key="workspace.workspaceId">
+        <li v-for="(workspace) in workspaceList" :key="workspace.workspaceId">
           <div class="workspace-item">
           <router-link :to="'/workspace/' + workspace.workspaceId + '/dashboard'">
-            <img :src="workspace.persona" alt="workspace1">
+            <img :src="workspace.persona" alt="workspace">
             <p>{{ workspace.workspaceName }}</p>
           </router-link>
           </div>

@@ -1,7 +1,5 @@
 <script setup>
 import { useRoute } from 'vue-router';
-// import { workspaceData } from "@/static/workspaceData";
-// import { computed } from "vue";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -16,7 +14,7 @@ const workspaceId = route.params.workspaceId;
       </router-link>
     </li>
     <li>
-      <router-link :to="`/workspace/${workspaceId}/monthly`">
+      <router-link :to="`/workspace/${workspaceId}/schedule/monthly`">
         <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
