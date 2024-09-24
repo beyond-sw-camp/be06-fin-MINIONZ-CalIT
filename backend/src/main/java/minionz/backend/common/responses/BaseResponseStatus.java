@@ -25,6 +25,7 @@ public enum BaseResponseStatus {
     USER_UUID_INVALID(false, 2008, "유효하지 않은 인증 코드입니다. "),
     USER_CREATE_FAIL(false, 2006, "회원가입에 실패했습니다. "),
     USER_LOGIN_FAIL(false, 2007, "로그인에 실패했습니다. "),
+    USER_NOT_FOUND(false, 2008, "존재하지 않는 사용자입니다. "),
 
     /**
      * 3000: 마이 페이지
@@ -104,11 +105,21 @@ public enum BaseResponseStatus {
     MESSAGE_HISTORY_NOT_FOUND(false, 6303, "해당 채팅방에 메시지 내역이 없습니다."),
     UNAUTHORIZED_CHAT_ACCESS(false, 6304, "해당 채팅방에 접근할 권한이 없습니다."),
     FAILED_TO_RETRIEVE_CHAT_HISTORY(false, 6305, "채팅 내역 조회에 실패했습니다."),
+    CHAT_ROOM_NAME_REQUIRED(false, 6306, "채팅방 이름을 입력하지 않았습니다."),
+
     CHATROOM_UPDATE_SUCCESS(true, 6401, "채팅방 수정이 완료 되었습니다."),
     CHATROOM_NOT_FOUND(false, 6402, "해당 채팅방이 존재하지 않습니다."),
     CHATROOM_USER_NOT_AUTHORIZED(false, 6403, "해당 참가자는 채팅방에 존재하지 않습니다."),
 
     MESSAGE_DELETE_SUCCESS(true, 6501, "메세지가 성공적으로 삭제되었습니다."),
+
+    KAFKA_SEND_FAILED(false, 6502, "카프카 메시지 전송에 실패했습니다."),
+    KAFKA_RECEIVE_FAILED(false, 6503, "카프카 메시지 수신에 실패했습니다."),
+
+    MESSAGE_CONTENT_EMPTY(false, 6504, "메시지 내용이 비어있습니다."),
+    MESSAGE_NOT_FOUND(false, 6505, "메시지를 찾을 수 없습니다."),
+    NOT_AUTHORIZED_TO_DELETE(false, 6506, "본인의 메세지만 삭제할 수 있습니다."),
+    MESSAGE_DELETE_FAILED(false, 6507, "메세지 삭제를 실패하였습니다."),
 
     CHATROOM_EXIT_SUCCESS(true, 6601, "채팅방에서 성공적으로 나갔습니다."),
     CHATROOM_EXIT_FAIL(false, 6602, "채팅방 나가기에 실패했습니다."),
@@ -116,9 +127,8 @@ public enum BaseResponseStatus {
     MESSAGE_STATUS_UPDATE_SUCCESS(true, 6701, "메세지 상태 변경이 성공적으로 완료되었습니다."),
     MESSAGE_STATUS_UPDATE_FAIL(false, 6702, "상태 변경에 실패했습니다."),
 
-    CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다.");
-
-
+    CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다."),
+    MESSAGE_UPDATE_FAILED(false, 6902, "메시지 업데이트에 실패했습니다."),
 
 
     /**
