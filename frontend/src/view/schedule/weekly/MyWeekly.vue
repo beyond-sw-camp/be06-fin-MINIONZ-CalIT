@@ -5,6 +5,9 @@
 <template>
   <div>
     <h1>Personal Weekly</h1>
+    <span>
+
+    </span>
   </div>
 </template>
 

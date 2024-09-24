@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
+import {alarmData} from "@/static/alarmData";
 
 export const useAlarmStore = defineStore('alarm', {
     state: () => ({
-        alarms: [],
+        alarms: alarmData,
     }),
     actions: {
         addAlarm(alarm) {

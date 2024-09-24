@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRoute } from "vue-router";
 import { getDaysInMonth, startOfMonth, format } from 'date-fns';
 import { meetingData } from '@/static/meetingData';
 import PerfectScrollbar from 'perfect-scrollbar';
-import {useRoute} from "vue-router";
-import { workspaceStore} from "@/stores/workspace/useWorkspaceStore";
+import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
 
 onMounted(() => {
   const container = document.querySelector('.calendar-container');
@@ -15,7 +15,32 @@ onMounted(() => {
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceStore.workspace.find(ws => ws.workspaceId === workspaceId));
+
+const isVisible = ref(false);
+const props = ref({
+  title: '',
+  startDate: '',
+  endDate: '',
+  contents: '',
+  participants: [],
+  top: 0,
+  left: 0
+});
+
+const show = (event) => {
+  props.value = {
+    title: event.title,
+    startDate: event.startDate,
+    endDate: event.endDate,
+    contents: event.contents,
+    participants: event.participants,
+    top: event.clientY,
+    left: event.clientX
+  };
+  isVisible.value = true;
+  console.log(event.clientY, event.clientX);
+  console.log(props.value);
+};
 
 const today = new Date();
 const currentYear = ref(today.getFullYear());
@@ -52,7 +77,11 @@ const prevMonth = () => {
 const events = ref(meetingData.map(meeting => ({
   id: meeting.id,
   date: new Date(meeting.startDate),
-  title: meeting.title
+  title: meeting.title,
+  startDate: meeting.startDate,
+  endDate: meeting.endDate,
+  contents: meeting.contents,
+  participants: meeting.participants
 })));
 
 const eventsForDay = (day) => {
@@ -73,11 +102,10 @@ const eventsForDay = (day) => {
         <button @click="nextMonth">&gt;</button>
       </div>
       <div class="calendar-tab">
-        <router-link :to="`/workspace/${workspace}/schedule/monthly`" class="on">Month</router-link>
-        <router-link :to="`/workspace/${workspace}/schedule/weekly`" class="off">Week</router-link>
+        <router-link :to="`/workspace/${workspaceId}/schedule/monthly`" class="on">Month</router-link>
+        <router-link :to="`/workspace/${workspaceId}/schedule/weekly`" class="off">Week</router-link>
       </div>
     </div>
-
 
     <!-- 달력 헤더: 요일 표시 -->
     <div class="calendar-grid header">
@@ -93,16 +121,27 @@ const eventsForDay = (day) => {
       <div v-for="day in daysInMonth" :key="day" class="day-cell">
         <div class="day-number">{{ day }}</div>
         <div class="events">
-          <div
+          <button
               v-for="event in eventsForDay(day)"
               :key="event.id"
               class="event"
+              @click="show($event, event)"
           >
             {{ event.title }}
-          </div>
+          </button>
         </div>
       </div>
     </div>
+    <ScheduleModal
+        v-if="isVisible"
+        :title="events.title"
+        :contents="events.contents"
+        :start-date="events.startDate"
+        :end-date="events.endDate"
+        :participants="events.participants"
+        :top="props.top"
+        :left="props.left"
+        @close="isVisible = false" />
   </div>
 </template>
 
@@ -112,6 +151,7 @@ const eventsForDay = (day) => {
   //margin: 0 auto;
   text-align: center;
   //padding: 30px;
+  position: relative;
 }
 
 .calendar-header{
@@ -166,20 +206,29 @@ const eventsForDay = (day) => {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  //border-top: 1px solid #;
   //gap: 10px;
 }
 
 .header .day-header {
   font-weight: 400;
   padding: 10px;
-  background-color: #f7f8fa;
+  background-color: rgba(224, 232, 255, 0.3);
   font-size: 16px;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+  color: #28303F;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+}
+.header .day-header:first-child {
+  border-radius: 15px 0 0 0;
+}
+
+.header .day-header:last-child {
+  border-radius: 0 15px 0 0;
 }
 
 .day-cell {
   border: 1px solid #ddd;
-  height: 100px;
+  height: 150px;
   position: relative;
   padding: 10px;
 }
@@ -194,11 +243,17 @@ const eventsForDay = (day) => {
 }
 
 .event {
-  background-color: #2196f3;
-  color: white;
+  border: 2px solid #2196f3;
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #28303F;
   border-radius: 5px;
-  padding: 2px;
-  font-size: 12px;
+  padding: 5px;
+  font-size: 13px;
   margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: left;
 }
 </style>
