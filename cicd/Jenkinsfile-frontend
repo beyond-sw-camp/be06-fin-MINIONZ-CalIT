@@ -26,11 +26,11 @@ pipeline {
 
             steps {
                 echo "Add Permission"
-                sh 'chmod +x /var/lib/jenkins/workspace/frontend/frontend'
+                sh 'chmod +x /var/lib/jenkins/workspace/calit-frontend/frontend'
 
                 echo "Npm Build"
                 sh'''
-                cd /var/lib/jenkins/workspace/frontend/frontend
+                cd /var/lib/jenkins/workspace/calit-frontend/frontend
                 npm install
                 npm run build
                 '''
