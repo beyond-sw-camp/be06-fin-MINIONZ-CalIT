@@ -100,7 +100,7 @@ pipeline {
                                                 kubectl delete service "$PREV_SERVICE"
                                                 kubectl delete ingress "$PREV_INGRESS"
                                             else
-                                                echo "변경 사항 없음"
+                                                echo "변경 사항 없음!"
                                             fi
                                             '''
                                     )
