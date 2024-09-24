@@ -31,8 +31,6 @@ pipeline {
                 echo "Npm Build"
                 sh'''
                 cd /var/lib/jenkins/workspace/calit-frontend/frontend
-                npm install
-                npm run build
                 '''
             }
         }
