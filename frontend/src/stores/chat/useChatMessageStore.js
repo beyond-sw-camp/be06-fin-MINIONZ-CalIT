@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {setPersona} from "@/utils/personaUtils";
 
 export const useChatMessageStore = () => {
     //[MESSAGE] 채팅 보내기 /room/{chatRoomId}/send
@@ -32,8 +33,53 @@ export const useChatMessageStore = () => {
         }
     }
 
+    // [GET] 채팅 내역 조회 /message/{chatroomId}
+    const fetchChatMessages = async (chatroomId) => {
+        try {
+            const response = await axios.get(`/message/${chatroomId}`);
+            const messages = response.data.map(message => {
+                const persona = setPersona(message.personaId);
+                return {...message, persona};
+            });
+            return messages;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
+
+    // [MESSAGE] 채팅 수정 /room/{chatRoomId}/edit
+    const editMessage = async ({ chatroomId, messageId, messageContents }) => {
+        try {
+            const response = await axios.patch(`/room/{chatRoomId}/edit`, {
+                chatroomId,
+                messageId,
+                messageContents
+            });
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
+
+    // [DELETE]  채팅  삭제 /message/{messageId}
+    const deleteMessage = async (messageId) => {
+        try {
+            const response = await axios.delete(`/message/${messageId}`);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
+
+
     return {
         sendMessage,
-        sendFile
+        sendFile,
+        fetchChatMessages,
+        editMessage,
+        deleteMessage
     };
 }

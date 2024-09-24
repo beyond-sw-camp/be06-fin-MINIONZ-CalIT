@@ -45,11 +45,49 @@ export const useChatRoomStore = () => {
     };
 
     // [PATCH] 채팅 방 수정
+    const updateChatRoom = async ({chatroomId, chatroomName, participants}) => {
+        try {
+            const response = await axios.patch(`/chat/room/${chatroomId}`, {
+                chatroomName,
+                participants
+            });
+
+            if (response.data.success) {
+                const index = chatRoom.value.findIndex(room => room.chatroomId === chatroomId);
+                chatRoom.value[index] = {
+                    chatroomId,
+                    chatroomName,
+                    participants
+                };
+            } else {
+                throw new Error('Failed to update chat room');
+            }
+        } catch (error) {
+            console.error('Error updating chat room:', error);
+        }
+    };
+
+    // [DELETE] 채팅 방 나가기  /chat/{chatroomId}/exit
+    const exitChatRoom = async (chatroomId) => {
+        try {
+            const response = await axios.delete(`/chat/${chatroomId}/exit`);
+
+            if (response.data.success) {
+                chatRoom.value = chatRoom.value.filter(room => room.chatroomId !== chatroomId);
+            } else {
+                throw new Error('Failed to exit chat room');
+            }
+        } catch (error) {
+            console.error('Error exiting chat room:', error);
+        }
+    };
 
     return {
         chatRoom,
         newChatRoomId,
         addChatRoom,
         fetchChatRooms,
+        updateChatRoom,
+        exitChatRoom
     };
 };
