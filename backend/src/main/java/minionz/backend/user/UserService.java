@@ -65,8 +65,8 @@ public class UserService {
 
     //ID 중복 여부 확인 메서드
     public boolean checkLoginDuplicate(String loginId) {
-        boolean success = userRepository.existsByLoginId(loginId);
-        return success;
+        boolean isExist = userRepository.existsByLoginId(loginId);
+        return isExist;
     }
 
     public User loginUser(String loginId, String password) {

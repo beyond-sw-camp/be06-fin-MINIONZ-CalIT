@@ -25,43 +25,60 @@ const email = ref('');
 const showVerificationCode = ref(false);
 const verificationCode = ref('');
 
+//checkAll은 값을 통과하지 못하면 signup 버튼이 disabled 되게 하기 위함
+const checkAll = computed(() => {
+  return username.value.trim() !== '' && loginId.value.trim() !== '' && password.value.trim() !== '' && confirmPassword.value.trim() !== '' && email.value.trim() !== '';
+});
+
 const signup = () => {
-  try {
-    axios.post('/api/user/signup', {
-      username: username.value,
-      loginId: loginId.value,
-      password: password.value,
-      email: email.value
-    });
-    notyf.success('회원가입에 성공하였습니다.');
-    return router.push('/user/complete');
-  } catch (error) {
-    console.error('Signup failed', error);
-    notyf.error('회원가입 실패');
+  if (checkAll.value) {
+    try {
+      axios.post('/api/user/signup', {
+        username: username.value,
+        loginId: loginId.value,
+        password: password.value,
+        email: email.value
+      });
+      notyf.success('회원가입에 성공하였습니다.');
+      return router.push('/user/complete');
+    } catch (error) {
+      console.error('Signup failed', error);
+      notyf.error('회원가입 실패');
+    }
+  } else {
+    notyf.error('값을  채우쎄용~')
   }
-};
+}
+const checkId = async (loginId) => {
+    try {
+      const r = await axios.post('/api/user/check-id', {
+        loginId: loginId,
+      });
+      console.log(r.data);
+      if (r.data) {
+        notyf.success('사용 가능한 아이디 입니다.');
+      } else {
+        notyf.error("중복된 아이디 입니다.")
+      }
+    } catch (error) {
+      console.error('Check ID failed', error);
+      notyf.error('이미 사용중인 아이디 입니다.');
+    }
+}
 
-const checkId = (loginId) => {
-  try {
-    axios.post('/api/user/check-id', {
-      loginId: loginId,
-    });
-    console.log(loginId);
-    notyf.success('사용 가능한 아이디 입니다.');
-  } catch (error) {
-    console.error('Check ID failed', error);
-    notyf.error('이미 사용중인 아이디 입니다.');
-  }
-};
 
-const showVerificationInput = (email) => {
-  showVerificationCode.value = true;
+const showVerificationInput = async (email) => {
+
   try {
-    axios.post('/user/send-verification-code', {
+    const r = await axios.post('/api/user/send-verification-code', {
       email: email
     });
-    console.log(email);
-    notyf.success('인증 코드를 전송하였습니다.');
+    if(r.data){ // 등록 가능 이메일 여부 true 면
+      notyf.success('인증 코드를 전송하였습니다.');
+      showVerificationCode.value = true;
+    } else { //등록 가능 이메일 여부 false 면
+      notyf.error("중복된 이메일 입니다.");
+    }
   } catch (error) {
     console.error('Verification failed', error);
     notyf.error('인증 코드 전송에 실패하였습니다.');
@@ -80,6 +97,10 @@ const confirmCode = (uuid) => {
   }
 };
 
+// const isLoginIdEntered = computed(() => {
+//   return email.value.trim() !== '';
+// });
+
 const isEmailEntered = computed(() => {
   return email.value.trim() !== '';
 });
@@ -91,6 +112,7 @@ const isVerificationCodeEntered = computed(() => {
 const passwordsMatch = computed(() => {
   return password.value === confirmPassword.value;
 });
+
 </script>
 
 <template>
@@ -103,7 +125,7 @@ const passwordsMatch = computed(() => {
         <UserInput v-model="username" input-placeholder="이름을 입력하세요" label="이름" type="text"/>
         <div class="verify">
           <UserInput v-model="loginId" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
-          <button type="button" @click="checkId" class="btn-verify" :disabled="!isEmailEntered">중복 확인</button>
+          <button type="button" @click="checkId(loginId)" class="btn-verify" >중복 확인</button>
         </div>
         <div class="verify">
           <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일" type="email"/>
@@ -111,18 +133,18 @@ const passwordsMatch = computed(() => {
         </div>
         <div v-if="showVerificationCode" class="verify">
           <UserInput v-model="verificationCode" input-placeholder="인증 번호를 입력하세요" label="인증 번호" type="text"/>
-          <button type="button" :disabled="!isVerificationCodeEntered" @click="confirmCode" class="btn-verify">코드 입력</button>
+          <button type="button" :disabled="!isVerificationCodeEntered" @click="confirmCode(verificationCode)" class="btn-verify">코드 입력</button>
         </div>
         <UserInput v-model="password" input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
         <UserInput v-model="confirmPassword" input-placeholder="비밀번호를 다시 입력하세요" label="비밀번호 확인" type="password"/>
         <p v-if="!passwordsMatch" class="error-message">비밀번호가 일치하지 않습니다.</p>
 
         <div @click="signup" style="margin: 0">
-          <UserButton type="submit" button-ment="Sign up"></UserButton>
+          <UserButton type="submit" button-ment="Sign up" disabled="!checkAll"></UserButton>
         </div>
       </form>
       <div class="text-wrap">
-          <router-link to="/user/login">로그인 하기</router-link>
+        <router-link to="/user/login">로그인 하기</router-link>
         <router-link to="/user/password">비밀번호 찾기</router-link>
       </div>
       <div class="social-login">
@@ -165,7 +187,6 @@ a {
   top: 0;
   border-radius: 20px;
   background-color: #fff;
-//padding-top: 20px;
 }
 
 .signup-body {

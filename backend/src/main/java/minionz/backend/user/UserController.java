@@ -27,28 +27,29 @@ public class UserController {
         return ResponseEntity.ok("회원 가입이 완료 되었습니다!");
     }
 
-    @GetMapping("/check-id")
-    public ResponseEntity<String> checkUserId(@RequestParam String loginId) {
-        boolean duplicate = userService.checkLoginDuplicate(loginId);
-        if(duplicate) {
-            return ResponseEntity.ok("사용 가능한 아이디 입니다!");
+    @PostMapping("/check-id")
+    public boolean checkUserId(@RequestBody CheckIdRequest checkIdRequest) {
+        boolean duplicate = userService.checkLoginDuplicate(checkIdRequest.getLoginId());
+        if(!duplicate) {
+            return true;
         } else {
-            return ResponseEntity.ok("중복된 아이디 입니다.");
+            return false;
         }
     }
 
-    @PostMapping("/send-verificationcode")
-    public ResponseEntity<String> sendVerificationCode(@RequestBody EmailVerifyRequest emailVerifyRequest) {
+    @PostMapping("/send-verification-code")
+    public boolean sendVerificationCode(@RequestBody EmailVerifyRequest emailVerifyRequest) {
         String email = emailVerifyRequest.getEmail();
-        boolean duplicate = userService.sendVerificationCode(email);
-        if (duplicate) {
-            return ResponseEntity.ok("인증 메일이 발송 되었습니다!");
+        System.out.println(email + "여기까지 옴");
+        boolean duplicate = userService.sendVerificationCode(email); //중복이면 duplicate가 true
+        if (!duplicate) {
+            return false;
         } else {
-            return ResponseEntity.ok("이미 가입된 이메일 입니다!");
+            return true;
         }
     }
 
-    @PostMapping("/confirm-verificationcode")
+    @PostMapping("/confirm-verification-code")
     public ResponseEntity<String> confirmVerificationCode(@RequestBody UuidRequest uuidRequest) {
         boolean verify = userService.verifyUser(uuidRequest.getUuid());
         if (verify) {

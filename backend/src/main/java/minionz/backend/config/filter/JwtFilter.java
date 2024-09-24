@@ -26,6 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("JwtFilter가 호출되었습니다: " + request.getRequestURI()); // 요청 URI 로그
         try{
             String authorization = null;
             if(request.getCookies() != null) {
