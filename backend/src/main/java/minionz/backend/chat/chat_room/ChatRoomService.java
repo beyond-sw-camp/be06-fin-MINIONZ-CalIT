@@ -5,11 +5,15 @@ import minionz.backend.chat.chat_participation.ChatParticipationRepository;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.chat.chat_room.model.ChatRoom;
 import minionz.backend.chat.chat_room.model.request.CreateChatRoomRequest;
+import minionz.backend.chat.chat_room.model.request.SearchChatRoomRequest;
+import minionz.backend.chat.chat_room.model.request.UpdateChatRoomRequest;
 import minionz.backend.chat.chat_room.model.response.CreateChatRoomResponse;
 import minionz.backend.chat.chat_room.model.response.ReadChatRoomResponse;
+import minionz.backend.chat.chat_room.model.response.SearchChatRoomResponse;
 import minionz.backend.chat.message.MessageRepository;
 import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageStatus;
+import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.user.UserRepository;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +61,7 @@ public class ChatRoomService {
 
         // 채팅방 생성
         ChatRoom chatRoom = createChatRoom(chatRoomName);
-        BaseResponse<Void> participantResponse = saveChatParticipants(chatRoom, request.getParticipants());
+        BaseResponse<BaseResponseStatus> participantResponse = saveChatParticipants(chatRoom, request.getParticipants());
         if (!participantResponse.getSuccess()) {
             return new BaseResponse<>(BaseResponseStatus.CHATROOM_CREATE_FAIL);
         }
@@ -72,8 +77,8 @@ public class ChatRoomService {
     }
 
     // 채팅룸 리스트 조회
-    public List<ReadChatRoomResponse> roomList(Long userId) {
-        List<ChatParticipation> chatParticipations = chatParticipationRepository.findByUser_UserId(userId);
+    public List<ReadChatRoomResponse> roomList(Long userId, Long workspaceId) {
+        List<ChatParticipation> chatParticipations = chatParticipationRepository.findByUser_UserIdAndIsActiveTrue(userId);
 
         List<ReadChatRoomResponse> responseList = new ArrayList<>();
 
@@ -87,10 +92,20 @@ public class ChatRoomService {
             Long unreadMessagesCount = messageRepository.countUnreadMessagesByChatRoomIdAndUserId(
                     chatRoom.getChatRoomId(), userId, MessageStatus.UNREAD);
 
+            String messageContents = "채팅방에 메세지가 없습니다.";
+            if (latestMessage != null) {
+                if (latestMessage.getFileUrl() != null) {
+                    messageContents = "파일이 전송되었습니다.";
+                } else {
+                    messageContents = latestMessage.getMessageContents();
+                }
+            }
+
             ReadChatRoomResponse response = ReadChatRoomResponse.builder()
+                    .workspaceId(workspaceId)
                     .chatroomId(chatRoom.getChatRoomId())
                     .chatRoomName(chatRoom.getChatRoomName())
-                    .messageContents(latestMessage != null ? latestMessage.getMessageContents() : "채팅방에 메세지가 없습니다.")
+                    .messageContents(messageContents)
                     .createdAt(latestMessage != null ? latestMessage.getCreatedAt() : chatRoom.getCreatedAt())
                     .UnreadMessages(unreadMessagesCount != null ? unreadMessagesCount.intValue() : 0)
                     .build();
@@ -100,6 +115,70 @@ public class ChatRoomService {
         return responseList;
     }
 
+    public BaseResponse<BaseResponseStatus> updateChatRoomName(Long chatRoomId, UpdateChatRoomRequest request, User user) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElse(null);
+
+        // 채팅방이 존재하지 않는 경우
+        if (chatRoom == null) {
+            return new BaseResponse<>(BaseResponseStatus.CHAT_ROOM_NOT_FOUND);
+        }
+
+        boolean isParticipant = chatParticipationRepository.existsByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, user.getUserId());
+        if (!isParticipant) {
+            return new BaseResponse<>(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED);
+        }
+
+        chatRoom.setChatRoomName(request.getNewChatRoomName());
+        chatRoomRepository.save(chatRoom);
+
+        return new BaseResponse<>(BaseResponseStatus.CHATROOM_UPDATE_SUCCESS);
+    }
+
+    public BaseResponse<BaseResponseStatus> exitChatRoom(Long chatRoomId, User user) {
+        // 채팅방 존재 여부 확인
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHAT_ROOM_NOT_FOUND));
+
+        // 사용자가 해당 채팅방에 참여하고 있는지 확인
+        ChatParticipation chatParticipation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, user.getUserId());
+
+        if (chatParticipation == null) {
+            throw new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED);
+        }
+
+        // 사용자가 나간 것으로 표시
+        chatParticipation.setActive(false);
+        chatParticipationRepository.save(chatParticipation);
+
+        return new BaseResponse<>(BaseResponseStatus.CHATROOM_EXIT_SUCCESS);
+    }
+
+    public List<SearchChatRoomResponse> searchRoomList(SearchChatRoomRequest request) {
+        String chatRoomName = request.getChatRoomName();
+        List<ChatRoom> chatRooms = chatRoomRepository.findByChatRoomNameContainingIgnoreCase(chatRoomName);
+
+        return chatRooms.stream().map(chatRoom -> {
+            Message latestMessage = findLatestMessage(chatRoom.getChatRoomId());
+            Long unreadMessagesCount = messageRepository.countUnreadMessagesByChatRoomIdAndUserId(chatRoom.getChatRoomId(), null, MessageStatus.UNREAD);
+            // 마지막 메세지가 파일인 경우에는 null 값을 방지
+            String messageContents = "채팅방에 메세지가 없습니다.";
+            if (latestMessage != null) {
+                if (latestMessage.getFileUrl() != null) {
+                    messageContents = "파일이 전송되었습니다.";
+                } else {
+                    messageContents = latestMessage.getMessageContents();
+                }
+            }
+            return SearchChatRoomResponse.builder()
+                    .chatroomId(chatRoom.getChatRoomId())
+                    .chatRoomName(chatRoom.getChatRoomName())
+                    .messageContents(messageContents)
+                    .createdAt(latestMessage != null ? latestMessage.getCreatedAt() : chatRoom.getCreatedAt())
+                    .UnreadMessages(unreadMessagesCount != null ? unreadMessagesCount.intValue() : 0)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
     private ChatRoom createChatRoom(String chatRoomName) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .chatRoomName(chatRoomName)
@@ -107,7 +186,7 @@ public class ChatRoomService {
         return chatRoomRepository.save(chatRoom);
     }
 
-    private BaseResponse<Void> saveChatParticipants(ChatRoom chatRoom, List<Long> participantIds) {
+    private BaseResponse<BaseResponseStatus> saveChatParticipants(ChatRoom chatRoom, List<Long> participantIds) {
         for (Long participantId : participantIds) {
             User participant = userRepository.findById(participantId)
                     .orElse(null); // User가 null인 경우를 처리하기 위해
@@ -117,6 +196,7 @@ public class ChatRoomService {
             ChatParticipation chatParticipation = ChatParticipation.builder()
                     .user(participant)
                     .chatRoom(chatRoom)
+                    .isActive(true)
                     .build();
             chatParticipationRepository.save(chatParticipation);
         }

@@ -11,11 +11,14 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class GetErrorBoardResponse {
+    private String userName;
+    private String taskName;
     private Long errorBoardId;
     private String errboardTitle;
     private String errboardContent;
     private String errboardCategory;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private Long workspaceId;
     private List<GetErrorBoardImageResponse> getErrorBoardImageResponsesList;
 }

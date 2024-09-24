@@ -30,6 +30,16 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "ORDER BY m.createdAt DESC")
     List<Message> findLatestMessagesByChatRoomId(Long chatRoomId);
 
+    @Query("SELECT m FROM Message m WHERE m.chatParticipation.chatRoom.chatRoomId = :chatRoomId AND m.deletedAt IS NULL ORDER BY m.createdAt ASC")
+    List<Message> findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(Long chatRoomId);
+
+    @Query("SELECT m FROM Message m WHERE m.messageId = :messageId")
+    Message findMessageById(Long messageId);
+
+    @Query("SELECT m FROM Message m " +
+            "WHERE m.chatRoomId = :chatRoomId " +
+            "AND m.messageStatus = :status")
+    List<Message> findUnreadMessagesByChatRoomId(Long chatRoomId, MessageStatus status);
 
 
 

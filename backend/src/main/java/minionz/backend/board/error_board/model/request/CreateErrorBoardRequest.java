@@ -8,8 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CreateErrorBoardRequest {
+    private Long taskId;
     private String errboardTitle;
     private String errboardContent;
     private String category;
+
 
 }

@@ -1,11 +1,17 @@
 package minionz.backend.user.model;
 
+import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
+import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
+import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.*;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -31,15 +37,41 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return user.getRole();
-            }
-        });
-        return collection;
+        List<WorkspaceParticipation> workspaceParticipations = user.getWorkspaceParticipations();
+        List<SprintParticipation> sprintParticipations = user.getSprintParticipations();
+        List<MeetingParticipation> meetingParticipations = user.getMeetingParticipations();
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        authorities.addAll(workspaceParticipations.stream()
+                .map(participate -> {
+                    String rolePrefix = participate.getIsManager() ? "ROLE_WORKSPACE_ADMIN_" : "ROLE_WORKSPACE_MEMBER_";
+                    String roleName = rolePrefix + participate.getWorkspace().getWorkspaceId();
+                    return new SimpleGrantedAuthority(roleName);
+                })
+                .collect(Collectors.toList()));
+
+        authorities.addAll(sprintParticipations.stream()
+                .map(participate -> {
+                    String rolePrefix = participate.getIsManager() ? "ROLE_SPRINT_ADMIN_" : "ROLE_SPRINT_MEMBER_";
+                    String roleName = rolePrefix + participate.getSprint().getSprintId();
+                    return new SimpleGrantedAuthority(roleName);
+                })
+                .collect(Collectors.toList()));
+
+        authorities.addAll(meetingParticipations.stream()
+                .map(participate -> {
+                    String roleName = "ROLE_MEETING_MEMBER_" + participate.getMeeting().getMeetingId();
+                    return new SimpleGrantedAuthority(roleName);
+                })
+                .collect(Collectors.toList()));
+
+        // 사용자 역할 추가
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+
+        return authorities;
     }
+    public Long getUserId() {return user.getUserId(); }
 
     public String getLoginId() {
         return user.getLoginId();
@@ -56,7 +88,7 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getLoginId();
     }
 
     @Override

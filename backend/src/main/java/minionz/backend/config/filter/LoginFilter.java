@@ -1,5 +1,6 @@
 package minionz.backend.config.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletInputStream;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import minionz.backend.utils.JwtUtil;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.request.LoginUserRequest;
-import minionz.backend.utils.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,7 +24,7 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 
 @Slf4j
@@ -52,11 +52,23 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         CustomSecurityUserDetails customUserDetails = (CustomSecurityUserDetails) authentication.getPrincipal();
         String username = customUserDetails.getUsername();
+
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
-        String token = jwtUtil.createToken(username, customUserDetails.getUser().getUserId(), role);
+
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rolesJson = "[]";
+
+        try {
+            rolesJson = objectMapper.writeValueAsString(roles);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        String token = jwtUtil.createToken(username, customUserDetails.getUser().getUserId(), rolesJson);
         Cookie aToken = new Cookie("ATOKEN", token);
         aToken.setHttpOnly(true);
         aToken.setSecure(true);

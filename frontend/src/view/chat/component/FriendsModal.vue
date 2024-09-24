@@ -1,39 +1,27 @@
 <script setup>
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
-import user4 from '@/assets/icon/persona/user4.svg';
-import user5 from '@/assets/icon/persona/user5.svg';
+import { useParticipants } from '@/stores/user/useParticipantsStore';
 
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 const isModalOpen = ref(true);
 const chattingRoomName = ref('');
-const participantInput = ref('');
-const participants = ref([
-  { name: '박성준', image: user2 },
-  { name: '최승은', image: user3},
-  { name: '지연희', image: user4 },
-]);
-
-const addParticipant = () => {
-  if (participantInput.value.trim() !== '') {
-    participants.value.push({ name: participantInput.value, image: user5});
-    participantInput.value = '';
-  }
-};
-
-const removeParticipant = (index) => {
-  participants.value.splice(index, 1);
-};
+// const participantInput = ref('');
+const { participants, addParticipant, removeParticipant, filteredUsers, participantsName, saveParticipants, userList } = useParticipants();
 
 const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const saveRoom = () => {
-  console.log('Room saved:', chattingRoomName.value, participants.value);
-  closeModal();
+const saveParticipantsToUserList = () => {
+  if (saveParticipants) {
+    saveParticipants(userList);
+    // console.log('Room saved:', chattingRoomName.value, participants.value);
+    closeModal();
+  } else {
+    console.warn("saveParticipants is not defined");
+  }
 };
+
 </script>
 
 <template>
@@ -43,39 +31,54 @@ const saveRoom = () => {
         <p>Add Chat Room</p>
         <button @click="closeModal" class="close-btn">✕</button>
       </div>
-
+    <div class="modal-container">
       <div class="modal-body">
-        <input
-            type="text"
-            v-model="chattingRoomName"
-            placeholder="채팅방 명을 입력하세요"
-            class="input-field"
-        />
-
-        <div class="add-participants">
-          <span class="icon">👤</span>
+        <div class="input-wrap">
+          <label for="chatroom-name">채팅방 이름 설정</label>
           <input
               type="text"
-              v-model="participantInput"
-              placeholder="참여자를 추가하세요"
-              @keyup.enter="addParticipant"
+              id="chatroom-name"
+              v-model="chattingRoomName"
+              placeholder="채팅방 이름을 입력하세요"
               class="input-field"
           />
         </div>
 
-        <hr>
-
-        <div v-for="(participant, index) in participants" :key="index" class="participant-item">
-          <img :src="participant.image" alt="Participant" class="participant-img" />
-          <span class="participant-name">{{ participant.name }}</span>
-          <button @click="removeParticipant(index)" class="remove-btn">✕</button>
+        <div class="add-participants">
+          <div class="add-participants-input">
+            <label for="participants-name">참여자 검색</label>
+            <input
+                type="text"
+                id="participants-name"
+                v-model="participantsName"
+                placeholder="참여자를 추가하세요"
+                class="input-field"
+            />
+          </div>
+          <div v-if="participantsName" class="search-results">
+            <div v-for="user in filteredUsers" :key="user.id" @click="() => { addParticipant(user); participantsName = ''; }">
+              <img :src="user.persona" alt="persona">
+              <span class="participant-name">{{ user.username }}</span>
+            </div>
+          </div>
         </div>
+        <div class="participants-list">
+          <div v-for="(participant) in participants" :key="participant.id" class="participants-item">
+            <div class="participants-item-info">
+              <img :src="participant.persona" alt="persona" class="persona">
+              <span>{{ participant.username }}</span>
+            </div>
+            <button @click="removeParticipant(participant.id)" class="del-btn participants-btn">삭제</button>
+          </div>
+        </div>
+
       </div>
 
       <div class="modal-footer">
-        <button @click="closeModal" class="cancel-btn">Cancel</button>
-        <button @click="saveRoom" class="save-btn">Save</button>
+        <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
+        <button @click="closeModal" class="cancel-btn">취소하기</button>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -100,6 +103,8 @@ const saveRoom = () => {
   width: 400px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 60%;
+  box-sizing: border-box;
 }
 
 .modal-header {
@@ -121,6 +126,13 @@ const saveRoom = () => {
   cursor: pointer;
 }
 
+.modal-container{
+  height: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .modal-body {
   margin-bottom: 20px;
 }
@@ -137,60 +149,20 @@ const saveRoom = () => {
 .add-participants {
   display: flex;
   align-items: center;
+  flex-direction: column;
   //margin-bottom: 20px;
   position: relative;
-  input{
-    padding-left: 35px;
-  }
-}
-
-.icon {
-  margin-left: 10px;
-  font-size: 20px;
-  position: absolute;
-  top: 4px;
-}
-
-.participant-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-.participant-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
 }
 
 .participant-name {
   flex-grow: 1;
 }
 
-.remove-btn {
-  background-color: transparent;
-  border: none;
-  font-size: 20px;
-  color: red;
-  cursor: pointer;
-}
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-}
-
-.cancel-btn {
-  background: none;
-  border: none;
-  color: #888;
-  margin-right: 20px;
-  cursor: pointer;
+  gap: 10px;
 }
 
 .save-btn {
@@ -202,10 +174,96 @@ const saveRoom = () => {
   cursor: pointer;
 }
 
-hr{
+label{
   margin-bottom: 10px;
-  background-color: #f1f1f1;
+}
+
+.add-participants-input{
   width: 100%;
-  height: 1px;
+}
+
+.participants-list{
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+
+.participants-btn {
+  background-color: #C6D2FD;
+  color: #28303F;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.participants-btn:hover {
+  background-color: #93AAFD;
+}
+
+.del-btn{
+  width: 60px;
+}
+
+.input-btn-wrap{
+  display: flex;
+  gap: 10px;
+}
+
+.participants-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  border:  1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  justify-content: space-between;
+  img{
+    width: 36px;
+  }
+}
+
+.participants-item-info{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-results{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  position: absolute;
+  top: 60px;
+  background-color: #fff;
+  div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    img{
+      width: 36px;
+    }
+    &:hover{
+      background-color: #e0e8ff;
+      border: 1px solid #C6D2FD;
+    }
+  }
+}
+
+.cancel-btn {
+  background: none;
+  border: 1px solid #666daf;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 5px;
 }
 </style>

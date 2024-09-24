@@ -42,7 +42,7 @@ watch(() => props.data.tasks, (newTasks) => {
   <div class="task-column">
     <div class="column-header">
       <p>{{ data.status }}</p>
-      <span class="task-count" :style="{ backgroundColor: taskCountBgStyle, color: taskCountColorStyle }">{{ data.tasks.length }}</span>
+      <span class="task-count" :style="{ backgroundColor: taskCountBgStyle, color: taskCountColorStyle }">{{ tasks.length }}</span>
     </div>
     <VueDraggableNext :list="tasks" item-key="id" group="tasks" draggable=".task-card" handle=".task-card">
       <TaskCard v-for="(task) in tasks" :key="task.id" :task="task"/>

@@ -5,22 +5,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.chat.chat_participation.ChatParticipationRepository;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
-import minionz.backend.chat.chat_room.ChatRoomRepository;
+import minionz.backend.chat.chat_room.model.response.ReadMessageResponse;
 import minionz.backend.chat.message.model.Message;
 import minionz.backend.chat.message.model.MessageStatus;
 import minionz.backend.chat.message.model.MessageType;
-import minionz.backend.chat.message.model.request.MessageRequest;
-import minionz.backend.chat.message.model.response.MessageResponse;
+import minionz.backend.chat.message.model.request.FileInfo;
+import minionz.backend.chat.message.model.request.SendMessageRequest;
+import minionz.backend.chat.message.model.request.UpdateMessageRequest;
 import minionz.backend.utils.CloudFileUpload;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ public class MessageService {
     private final SimpMessagingTemplate messagingTemplate;
     private final CloudFileUpload cloudFileUpload;
 
-    public MessageResponse sendMessage(Long chatRoomId, MessageRequest request, MultipartFile[] files, Long senderId) {
+    public void sendMessage(Long chatRoomId, SendMessageRequest request, MultipartFile[] files, Long senderId) {
 
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
 
@@ -58,7 +60,7 @@ public class MessageService {
                 .messageStatus(MessageStatus.UNREAD)
                 .build();
 
-        Message savedMessage = messageRepository.save(message);
+        messageRepository.save(message);
 
         // Kafka 로 메시지 전송
         String topic = "chat-room-" + chatRoomId.toString();
@@ -68,35 +70,81 @@ public class MessageService {
             String messageStr = objectMapper.writeValueAsString(request);
             kafkaTemplate.send(topic, senderId.toString(), messageStr);
         } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
+        }
+    }
+
+    public void updateMessage(Long chatRoomId, UpdateMessageRequest request, Long senderId) {
+        if (!request.getMessageContents().isEmpty()) {
+            // 받아온 senderId로 채팅방 목록을 조회
+            List<ChatParticipation> chatRoomList = chatParticipationRepository.findAllByUser_UserId(senderId);
+
+            // 채팅방 목록에서 요청된 채팅방이 있는지 확인
+            boolean isAuthorized = chatRoomList.stream()
+                    .anyMatch(participation -> participation.getChatRoom().getChatRoomId().equals(chatRoomId));
+
+            if (isAuthorized) {
+                // JPQL 을 사용하여 메시지를 조회합니다.
+                Message message = messageRepository.findMessageById(request.getMessageId());
+                message.setMessageContents(request.getMessageContents());
+                messageRepository.save(message);
+            }
         }
 
-        // 참가자들 목록
-        List<Long> participantIds = chatParticipationRepository.findByChatRoom_ChatRoomId(chatRoomId).stream()
-                .map(chatParticipation -> chatParticipation.getUser().getUserId())
-                .collect(Collectors.toList());
+    }
 
-        return MessageResponse.builder()
-                .chatRoomName(savedMessage.getChatParticipation().getChatRoom().getChatRoomName())
-                .participants(participantIds)
-                .topicName(topic)
-                .fileType(savedMessage.getFileType())
-                .fileSize(savedMessage.getFileSize())
-                .fileName(savedMessage.getFileName())
-                .fileUrl(savedMessage.getFileUrl())
-                .messageContents(savedMessage.getMessageContents())
-                .messageType(savedMessage.getMessageType())
-                .build();
+    public void deleteMessage(Long messageId, Long senderId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 메시지를 찾을 수 없습니다."));
+        if (!message.getChatParticipation().getUser().getUserId().equals(senderId)) {
+            throw new SecurityException("본인의 메시지만 삭제할 수 있습니다.");
+        }
+        message.setDeletedAt(LocalDateTime.now());
+        messageRepository.save(message);
+    }
+
+    public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) {
+        List<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(chatRoomId);
+        if (messages.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messages.stream()
+                .map(message -> ReadMessageResponse.builder()
+                        .messageId(message.getMessageId())
+                        .senderId(userId)
+                        .userName(message.getChatParticipation().getUser().getUserName())
+                        .messageContents(message.getMessageContents())
+                        .createdAt(message.getCreatedAt())
+                        .messageType(message.getMessageType())
+                        .messageStatus(message.getMessageStatus())
+                        .file(FileInfo.builder()
+                                .fileType(message.getFileType())
+                                .fileSize(message.getFileSize())
+                                .fileUrl(message.getFileUrl())
+                                .fileName(message.getFileName())
+                                .build())
+                        .persona(message.getChatParticipation().getUser().getPersona())
+                        .isOwn(message.getChatParticipation().getUser().getUserId().equals(userId))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public void enterChatRoom(Long chatRoomId, Long userId) {
+        List<Message> unreadMessages = messageRepository.findUnreadMessagesByChatRoomId(chatRoomId, MessageStatus.UNREAD);
+        for (Message message : unreadMessages) {
+            message.setMessageStatus(MessageStatus.READ);
+        }
+        messageRepository.saveAll(unreadMessages);
     }
 
     @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeMessage(ConsumerRecord<String, String> record) {
         try {
-            MessageRequest request = objectMapper.readValue(record.value(), MessageRequest.class);
+            SendMessageRequest request = objectMapper.readValue(record.value(), SendMessageRequest.class);
             // STOMP 를 통해 웹소켓으로 메시지 전송
             messagingTemplate.convertAndSend("/sub/room/" + request.getChatRoomId().toString(), request);
         } catch (IOException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
         }
     }
 }

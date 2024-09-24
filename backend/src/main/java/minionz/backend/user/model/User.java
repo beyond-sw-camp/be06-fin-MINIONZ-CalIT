@@ -4,13 +4,17 @@ import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.board.error_board.model.ErrorBoard;
 import minionz.backend.board.error_comment.model.ErrorComment;
+import minionz.backend.board.qa_board.model.QaBoard;
+import minionz.backend.board.qa_comment.model.QaComment;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
-
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
+import minionz.backend.user_alarm.model.UserAlarm;
+
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +26,8 @@ import java.util.List;
 @Builder
 @Entity
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(unique = true)
@@ -44,19 +49,22 @@ public class User {
     private List<ChatParticipation> chatParticipations = new ArrayList<>();
 
     // User : WorkspaceParticipation = 1 : N
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
     private List<WorkspaceParticipation> workspaceParticipations = new ArrayList<>();
 
     // User : SprintParticipation = 1 : N
-    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
     private List<SprintParticipation> sprintParticipations = new ArrayList<>();
 
     // User : TaskParticipation = 1 : N
-    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<TaskParticipation> taskParticipations = new ArrayList<>();
 
     // User : MeetingParticipation = 1 : N
-    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
     private List<MeetingParticipation> meetingParticipations = new ArrayList<>();
 
     // User : errorBoardList = 1 : N
@@ -67,7 +75,21 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ErrorComment> errorCommentList = new ArrayList<>();
 
+    // User : qaBoardList = 1 : N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<QaBoard> qaBoardList = new ArrayList<>();
+
+    // User : qaCommentList = 1 : N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<QaComment> qaCommentList = new ArrayList<>();
+
     // User : Issue = 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Issue> issues = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
+    private List<UserAlarm> receiverAlarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    private List<UserAlarm> senderAlarms = new ArrayList<>();
 }

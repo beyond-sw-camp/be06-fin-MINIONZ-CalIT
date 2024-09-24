@@ -1,12 +1,16 @@
 <script setup>
 import space6 from '@/assets/icon/persona/space6.svg';
 import { defineProps } from 'vue';
+import { chat } from '@/static/chatData';
+// import { ref } from "vue";
 
-const props = defineProps({
-  message: {
-    type: Object,
-    required: true,
-  },
+const message= chat.filter((item) => item.messageType === 'TEXT');
+
+defineProps({
+  // message: {
+  //   type: Object,
+  //   required: true,
+  // },
   isOwnMessage: {
     type: Boolean,
     required: true,
@@ -19,9 +23,9 @@ const props = defineProps({
     <img v-if="!isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
     <div class="message-content">
       <div class="message-bubble">
-        <p>{{ props.message?.text || 'No message' }}</p>
+        <p>{{ message.messageContents || 'No message' }}</p>
       </div>
-      <span class="timestamp">{{ props.message?.time || 'No time' }}</span>
+      <span class="timestamp">{{ message.createdAt || 'No time' }}</span>
     </div>
     <img v-if="isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
   </div>
