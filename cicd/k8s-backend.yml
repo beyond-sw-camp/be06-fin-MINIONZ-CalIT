@@ -54,10 +54,15 @@ metadata:
     nginx.ingress.kubernetes.io/canary-weight: "10"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - www.calit.kro.kr
+      secretName: tls-secret
   rules:
+    - host: www.calit.kro.kr
     - http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
