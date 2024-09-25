@@ -46,29 +46,29 @@ pipeline {
                         echo "Docker Build"
                         sh """
                             docker build \
-                                --build-arg AWS_ACCESSKEY=${{ secrets.AWS_ACCESSKEY }} \
-                                --build-arg AWS_REGION=${{ secrets.AWS_REGION }} \
-                                --build-arg AWS_SECRETKEY=${{ secrets.AWS_SECRETKEY }} \
-                                --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-                                --build-arg DB_URL=${{ secrets.DB_URL }} \
-                                --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }} \
-                                --build-arg GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }} \
-                                --build-arg GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }} \
-                                --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-                                --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-                                --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
-                                --build-arg KAFKA_CONSUMER_GROUP_ID=${{ secrets.KAFKA_CONSUMER_GROUP_ID }} \
-                                --build-arg KAFKA_SERVER=${{ secrets.KAFKA_SERVER }} \
-                                --build-arg KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
-                                --build-arg KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
-                                --build-arg MAIL_HOST=${{ secrets.MAIL_HOST }} \
-                                --build-arg MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
-                                --build-arg MAIL_PORT=${{ secrets.MAIL_PORT }} \
-                                --build-arg MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
-                                --build-arg NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
-                                --build-arg NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
-                                --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
-                                --build-arg DOMAIN_ADDRESS=${{ secrets.DOMAIN_ADDRESS }} \
+                                --build-arg AWS_ACCESSKEY=${{ env.AWS_ACCESSKEY }} \
+                                --build-arg AWS_REGION=${{ env.AWS_REGION }} \
+                                --build-arg AWS_SECRETKEY=${{ env.AWS_SECRETKEY }} \
+                                --build-arg DB_PASSWORD=${{ env.DB_PASSWORD }} \
+                                --build-arg DB_URL=${{ env.DB_URL }} \
+                                --build-arg DB_USERNAME=${{ env.DB_USERNAME }} \
+                                --build-arg GITHUB_CLIENT_ID=${{ env.GITHUB_CLIENT_ID }} \
+                                --build-arg GITHUB_CLIENT_SECRET=${{ env.GITHUB_CLIENT_SECRET }} \
+                                --build-arg GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }} \
+                                --build-arg GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }} \
+                                --build-arg JWT_SECRET=${{ env.JWT_SECRET }} \
+                                --build-arg KAFKA_CONSUMER_GROUP_ID=${{ env.KAFKA_CONSUMER_GROUP_ID }} \
+                                --build-arg KAFKA_SERVER=${{ env.KAFKA_SERVER }} \
+                                --build-arg KAKAO_CLIENT_ID=${{ env.KAKAO_CLIENT_ID }} \
+                                --build-arg KAKAO_CLIENT_SECRET=${{ env.KAKAO_CLIENT_SECRET }} \
+                                --build-arg MAIL_HOST=${{ env.MAIL_HOST }} \
+                                --build-arg MAIL_PASSWORD=${{ env.MAIL_PASSWORD }} \
+                                --build-arg MAIL_PORT=${{ env.MAIL_PORT }} \
+                                --build-arg MAIL_USERNAME=${{ env.MAIL_USERNAME }} \
+                                --build-arg NAVER_CLIENT_ID=${{ env.NAVER_CLIENT_ID }} \
+                                --build-arg NAVER_CLIENT_SECRET=${{ env.NAVER_CLIENT_SECRET }} \
+                                --build-arg S3_BUCKET=${{ env.S3_BUCKET }} \
+                                --build-arg DOMAIN_ADDRESS=${{ env.DOMAIN_ADDRESS }} \
                                 -t minionz/calit-backend:1.${BUILD_ID} ./backend
                         """
 
