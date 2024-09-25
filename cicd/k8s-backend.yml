@@ -57,10 +57,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - www.calit.kro.kr
+        - calit.kro.kr
       secretName: tls-secret
   rules:
-    - host: www.calit.kro.kr
+    - host: calit.kro.kr
       http:
         paths:
           - path: /api

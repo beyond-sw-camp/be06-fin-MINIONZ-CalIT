@@ -8,9 +8,16 @@ public enum BaseResponseStatus {
     /**
      * 1000 : 공통 에러
      */
-    FILE_UPLOAD_FAIL(false, 1001, "파입 업로드에 실패했습니다."),
+    FILE_UPLOAD_FAIL(false, 1001, "파일 업로드에 실패했습니다."),
     INVALID_ACCESS(false, 1002, "비정상적인 접근입니다."),
-
+    INVALID_PARAMETER(false, 1003, "잘못된 파라미터입니다."),
+    DATABASE_CONNECTION_FAIL(false, 1004, "데이터베이스 연결에 실패했습니다."),
+    UNAUTHORIZED_ACCESS(false, 1005, "권한이 없는 접근입니다."),
+    RESOURCE_NOT_FOUND(false, 1006, "요청한 리소스를 찾을 수 없습니다."),
+    INTERNAL_SERVER_ERROR(false, 1007, "서버 내부 오류입니다."),
+    SERVICE_UNAVAILABLE(false, 1008, "서비스를 사용할 수 없습니다."),
+    TIMEOUT_ERROR(false, 1009, "요청 시간이 초과되었습니다."),
+    METHOD_NOT_ALLOWED(false, 1010, "허용되지 않은 요청 방식입니다."),
 
     /**
      * 2000: 유저
