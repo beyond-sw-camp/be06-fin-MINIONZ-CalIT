@@ -78,7 +78,7 @@ pipeline {
                                     sshTransfer(
                                         execCommand: '''
                                             PREV_DEPLOYMENT=$(kubectl get deployment | grep calit-backend-v | awk '{print $1}' | sort | head -1)
-                                            PREV_SERVICE=$(kubectl get service | grep canary-backend-v | awk '{print $1}' | sort | head -1)
+                                            PREV_SERVICE=$(kubectl get service | grep backend-svc-v | awk '{print $1}' | sort | head -1)
                                             PREV_INGRESS=$(kubectl get ingress | grep backend-ingress-v | awk '{print $1}' | sort | head -1)
 
                                             kubectl apply -f /home/master/minionz/cicd/k8s-backend.yml
