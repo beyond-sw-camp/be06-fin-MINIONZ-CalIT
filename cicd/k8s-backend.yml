@@ -60,7 +60,7 @@ spec:
       secretName: tls-secret
   rules:
     - host: www.calit.kro.kr
-    - http:
+      http:
         paths:
           - path: /api
             pathType: Prefix
