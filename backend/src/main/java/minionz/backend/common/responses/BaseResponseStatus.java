@@ -63,7 +63,7 @@ public enum BaseResponseStatus {
     SPRINT_STATUS_UPDATE_SUCCESS(true, 4016, "스프린트 상태 변경에 성공했습니다."),
     WORKSPACE_MONTHLY_READ_SUCCESS(true, 4017, "워크스페이스 월간 캘린더 조회에 성공했습니다."),
     WORKSPACE_WEEKLY_READ_SUCCESS(true, 4018, "워크스페이스 주간 캘린더 조회에 성공했습니다."),
-    WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다."),
+    WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다. "),
     NOTE_REGISTER_SUCCESS(true,4020,"회의록 생성에 성공했습니다."),
     NOTE_SEARCH_SUCCESS(true,4021,"회의록 조회에 성공했습니다."),
 
