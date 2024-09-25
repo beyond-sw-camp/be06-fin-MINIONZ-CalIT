@@ -41,10 +41,7 @@ public class MessageService {
     public void sendMessage(Long chatRoomId, SendMessageRequest request, MultipartFile[] files, Long senderId) throws BaseException {
 
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
-        // 참여자 정보 확인
-        if (participation == null) {
-            throw new BaseException(BaseResponseStatus.CHAT_PARTICIPATION_NOT_FOUND);
-        }
+
         // 파일 업로드 처리
         List<String> fileUrls = null;
         if (files != null) {
