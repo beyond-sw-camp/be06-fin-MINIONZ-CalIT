@@ -10,7 +10,7 @@ const scheduleItems = ref([
 
 <template>
   <div class="weekly-schedule">
-    <h3>Weekly Schedule</h3>
+    <p class="weekly-schedule-title">Weekly Schedule</p>
     <div v-for="(item, index) in scheduleItems" :key="index" class="schedule-item">
       <img :src="item.icon" alt="icon" class="schedule-icon" />
       <div class="schedule-info">
@@ -25,8 +25,14 @@ const scheduleItems = ref([
 .weekly-schedule {
   background-color: #fff;
   border-radius: 10px;
-  padding: 20px;
+  //padding: 20px;
   width: 100%;
+}
+
+.weekly-schedule-title {
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .schedule-item {

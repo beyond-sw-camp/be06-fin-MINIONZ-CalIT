@@ -12,7 +12,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Work Space Monthly';
 contentsDescription.value = '나의 이달 일정을 살펴보세요!';
 
-const selectedWeek = ref(new Date());
+const selectedWeek = ref([new Date()]);
 const updateSelectedWeek = (week) => {
   selectedWeek.value = week;
 };
@@ -20,7 +20,7 @@ const updateSelectedWeek = (week) => {
 
 <template>
   <div class="weekly">
-    <WeeklyComponent :selected-week="selectedWeek"/>
+    <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek"/>
     <div class="week-data">
       <MiniCalendar @update:selectedWeek="updateSelectedWeek"/>
       <div class="mini-lists">
@@ -37,7 +37,7 @@ const updateSelectedWeek = (week) => {
   height: 85vh;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 10px;
   justify-content: space-between;
   box-sizing: border-box;
 }
@@ -45,10 +45,13 @@ const updateSelectedWeek = (week) => {
 .week-data{
   display: flex;
   justify-content: space-between;
+  gap: 20px;
+  align-items: flex-end;
 }
 
 .mini-lists{
   width: calc(100% - 350px);
   display: flex;
+  height: 235px;
 }
 </style>

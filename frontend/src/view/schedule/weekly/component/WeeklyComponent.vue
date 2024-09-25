@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed, onMounted, defineProps } from 'vue';
-import { useRoute } from "vue-router";
-import { formatUtil, getWeekDaysUtil } from '@/utils/dateUtils';
-import { meetingData } from '@/static/meetingData';
+import {ref, computed, onMounted, defineProps, defineEmits} from 'vue';
+import {useRoute} from "vue-router";
+import {formatUtil, getWeekDaysUtil} from '@/utils/dateUtils';
+import {meetingData} from '@/static/meetingData';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
 import {getWeekRange} from "@/utils/timeUtils";
@@ -14,6 +14,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['update:selectedWeek']);
+
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
@@ -23,8 +25,10 @@ onMounted(() => {
     new PerfectScrollbar(container);
   }
 });
-const daysInWeek = computed(() => getWeekDaysUtil(props.selectedWeek.length ? props.selectedWeek[0] : today));
 
+const today = ref(new Date());
+// const currentYear = ref(today.value.getFullYear());
+// const currentMonth = ref(today.value.getMonth());
 const hours = ['7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM'];
 
 const isVisible = ref(false);
@@ -38,7 +42,7 @@ const modalProps = ref({
   left: 0
 });
 
-const show = (event) => {
+const show = (clickEvent, event) => {
   modalProps.value = {
     title: event.title,
     startDate: event.startDate,
@@ -50,34 +54,27 @@ const show = (event) => {
   };
   isVisible.value = true;
   console.log(event.clientY, event.clientX);
-  console.log(props.value);
+  console.log(modalProps.value);
 };
-
-const today = new Date();
-const currentYear = ref(today.getFullYear());
-const currentMonth = ref(today.getMonth());
-// const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
-// const daysInWeek = computed(() => getWeekDaysUtil(today));
-// const startBlankDays = computed(() => {
-//   return startOfMonthUtil(new Date(currentYear.value, currentMonth.value)).getDay();
-// });
 
 const goToToday = () => {
-  currentYear.value = today.getFullYear();
-  currentMonth.value = today.getMonth();
+  const todayDate = new Date();
+  emit('update:selectedWeek', [todayDate]);
 };
-
+const daysInWeek = computed(() =>
+    getWeekDaysUtil(
+        props.selectedWeek.length ? props.selectedWeek[0] : today.value
+    ));
 const prevWeek = () => {
-  const prevDate = new Date(today);
-  prevDate.setDate(today.getDate() - 7);
-  today.setDate(prevDate.getDate());
+  const prevDate = new Date(props.selectedWeek[0]);
+  prevDate.setDate(prevDate.getDate() - 7);
+  emit('update:selectedWeek', [prevDate]);
 };
 
 const nextWeek = () => {
-  const nextDate = new Date(today);
-  nextDate.setDate(today.getDate() + 7);
-  today.setDate(nextDate.getDate());
+  const nextDate = new Date(props.selectedWeek[0]);
+  nextDate.setDate(nextDate.getDate() + 7);
+  emit('update:selectedWeek', [nextDate]);
 };
 
 const events = ref(meetingData.map(meeting => ({
@@ -93,20 +90,36 @@ const events = ref(meetingData.map(meeting => ({
 const eventsForDay = (day) => {
   return events.value.filter(event => formatUtil(event.date, 'yyyy-MM-dd') === formatUtil(day, 'yyyy-MM-dd'));
 };
-</script>
 
+function getEventTop(startDate) {
+  const startHour = new Date(startDate).getHours();
+  return (startHour * 80)+10;
+}
+
+
+function getEventWidth(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const duration = (end - start) / (1000 * 60 * 60 * 24);
+
+  return Math.ceil(duration) + 1;
+}
+</script>
 
 <template>
   <div class="calendar-week-container">
-    <!-- 캘린더 네비게이션 (주간 이동) -->
     <div class="calendar-header">
       <div class="today-tab">
-        <button @click="goToToday">Today</button>
+        <button @click="goToToday" class="today-btn">Today</button>
       </div>
       <div class="calendar-nav">
-        <button @click="prevWeek">◀</button>
+        <button @click="prevWeek" class="week-clicker">
+          <i class="arrowL-icon"></i>
+        </button>
         <span>{{ getWeekRange(props.selectedWeek.length ? props.selectedWeek[0] : today) }}</span>
-        <button @click="nextWeek">▶</button>
+        <button @click="nextWeek" class="week-clicker">
+          <i class="arrowR-icon"></i>
+        </button>
       </div>
       <div class="calendar-tab">
         <router-link :to="`/workspace/${workspaceId}/schedule/monthly`" class="off">Month</router-link>
@@ -114,7 +127,6 @@ const eventsForDay = (day) => {
       </div>
     </div>
 
-    <!-- 시간대와 각 요일 표시 -->
     <div class="calendar-grid">
       <div class="time-column">
         <div class="time-slot" v-for="hour in hours" :key="hour">
@@ -123,16 +135,23 @@ const eventsForDay = (day) => {
       </div>
 
       <div class="days-column" v-for="day in daysInWeek" :key="day">
-        <div class="day-header">{{ formatUtil(day, 'EEE, MMM d') }}</div>
+        <div class="day-header-wrap">
+          <div class="day-header">{{ formatUtil(day, 'EEE, MMM d') }}</div>
+        </div>
         <div class="events-column">
-          <div v-for="event in eventsForDay(day)" :key="event.id" class="event" :style="{ backgroundColor: event.color }" @click="show($event, event)">
+          <div v-for="event in eventsForDay(day)" :key="event.id" class="event"
+               :style="{
+                  top: getEventTop(event.startDate) + 'px',
+                  gridColumn: 'span ' + getEventWidth(event.startDate, event.endDate),
+                  backgroundColor: event.color
+               }"
+               @click="show($event, event)"
+          >
             <div class="event-title">
-              <img v-if="event.icon" :src="event.icon" alt="event icon" class="event-icon" />
               {{ event.title }}
             </div>
             <div class="event-details">
-              <span v-if="event.isZoom" class="zoom-badge">Zoom</span>
-              <span>{{ formatUtil(event.date, 'h:mm a') }}</span>
+              {{ event.contents }}
             </div>
           </div>
         </div>
@@ -140,41 +159,55 @@ const eventsForDay = (day) => {
     </div>
     <ScheduleModal
         v-if="isVisible"
-        :title="events.title"
-        :contents="events.contents"
-        :start-date="events.startDate"
-        :end-date="events.endDate"
-        :participants="events.participants"
-        :top="modalProps.top"
+        :title="modalProps.title"
+        :contents="modalProps.contents"
+        :start-date="modalProps.startDate"
+        :end-date="modalProps.endDate"
+        :participants="modalProps.participants"
+        :top="30"
         :left="modalProps.left"
-        @close="isVisible = false" />
+        @close="isVisible = false"/>
   </div>
 </template>
 
 <style scoped>
-/* 전체 컨테이너 */
 .calendar-week-container {
-  //max-width: 1200px;
-  //margin: 0 auto;
-  //padding: 20px;
-  height: calc(100% - 350px);
-  //overflow: scroll;
+  height: calc(100% - 310px);
+  position: relative;
 }
 
 .calendar-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-  button{
+  align-items: flex-end;
+  padding-bottom: 10px;
+  button {
     background: #e0e8ff;
-    color: #666daf;
+    color: #28303f;
     border: none;
     cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 15px;
     font-size: 14px;
   }
+  .today-btn {
+    border-radius: 20px;
+    padding: 5px 10px;
+  }
+  .week-clicker {
+    border-radius: 50%;
+    display: flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.arrowL-icon {
+  background-image: url('@/assets/icon/etc/arrowL.svg');
+}
+
+.arrowR-icon {
+  background-image: url('@/assets/icon/etc/arrowR.svg');
 }
 
 .calendar-nav {
@@ -182,7 +215,13 @@ const eventsForDay = (day) => {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  span{
+  i{
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+    display: inline-block;
+  }
+  span {
     font-size: 18px;
   }
 }
@@ -194,25 +233,29 @@ const eventsForDay = (day) => {
   background-color: #e0e8ff;
   padding: 5px 10px;
   border-radius: 25px;
-  a{
+  font-size: 14px;
+  a {
     color: #666daf;
     text-decoration: none;
   }
-  .on{
+
+  .on {
     color: #666daf;
-    background-color: white ;
+    background-color: white;
     border-radius: 20px;
     font-weight: 500;
     padding: 5px 10px;
   }
-  .off{
+
+  .off {
     padding-left: 10px;
+    color: #28303f;
   }
 }
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: 70px repeat(7, 1fr);
+  grid-template-columns: 50px repeat(7, 1fr);
   gap: 10px;
   overflow: scroll;
   height: 100%;
@@ -223,6 +266,9 @@ const eventsForDay = (day) => {
   display: flex;
   flex-direction: column;
   margin-top: 35px;
+  background-color: rgba(224, 232, 255, 0.3);
+  border-radius: 15px;
+  padding-top: 10px;
 }
 
 .time-slot {
@@ -239,23 +285,35 @@ const eventsForDay = (day) => {
   flex-direction: column;
 }
 
+.day-header-wrap{
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 .day-header {
   font-weight: 500;
-  padding-bottom: 10px;
-  text-align: center;
+  height: 35px;
+  display: flex;
   color: #28303F;
-  z-index: 10;
-  background-color: rgba(224, 232, 255, 0.3);
+  background-color: #F6F8FF;
   border-radius: 15px 15px 0 0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .events-column {
-  background-color: #f9f9f9;
+  background-color: rgba(249, 249, 249, 0.5);
   flex-grow: 1;
   border-radius: 8px;
   padding: 10px;
   height: 80px;
+  position: relative;
+  grid-auto-rows: 80px;
+  display: grid;
 }
 
 .event {
@@ -268,6 +326,11 @@ const eventsForDay = (day) => {
   cursor: pointer;
   font-weight: 500;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  height: 80px;
+  width: 90%;
+  box-sizing: border-box;
+  margin-left: 5%;
 }
 
 .event-title {
@@ -275,24 +338,14 @@ const eventsForDay = (day) => {
   align-items: center;
 }
 
-.event-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-}
-
-.zoom-badge {
-  background-color: #007bff;
-  color: white;
-  padding: 3px 5px;
-  border-radius: 5px;
-  font-size: 12px;
-  margin-right: 10px;
-}
-
 .event-details {
   margin-top: 5px;
   font-size: 12px;
-  color: #28303F;
+  color: #6b7280;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

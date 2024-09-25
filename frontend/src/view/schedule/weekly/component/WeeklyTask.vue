@@ -1,16 +1,3 @@
-<template>
-  <div class="imminent-issues">
-    <h3>Imminent Issues</h3>
-    <div v-for="(issue, index) in issues" :key="index" class="issue-item">
-      <img :src="issue.icon" alt="icon" class="issue-icon" />
-      <div class="issue-info">
-        <div class="issue-title">{{ issue.title }}</div>
-        <div class="issue-details">{{ issue.details }}</div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue';
 
@@ -21,12 +8,31 @@ const issues = ref([
 ]);
 </script>
 
+<template>
+  <div class="imminent-issues">
+    <p class="imminent-issues-title">Imminent Issues</p>
+    <div v-for="(issue, index) in issues" :key="index" class="issue-item">
+      <img :src="issue.icon" alt="icon" class="issue-icon" />
+      <div class="issue-info">
+        <div class="issue-title">{{ issue.title }}</div>
+        <div class="issue-details">{{ issue.details }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
 .imminent-issues {
   background-color: #fff;
   border-radius: 10px;
-  padding: 20px;
+  //padding: 20px;
   width: 100%;
+}
+
+.imminent-issues-title {
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .issue-item {

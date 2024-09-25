@@ -4,9 +4,9 @@ import { startOfMonth, format, getDay, getDaysInMonth, addMonths, subMonths, add
 
 const emit = defineEmits(['update:selectedWeek']);
 
-const today = new Date();
-const currentYear = ref(today.getFullYear());
-const currentMonth = ref(today.getMonth());
+const today = ref(new Date());
+const currentYear = ref(today.value.getFullYear());
+const currentMonth = ref(today.value.getMonth());
 const weekDays = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const daysInMonth = computed(() => getDaysInMonth(new Date(currentYear.value, currentMonth.value)));
 const startBlankDays = computed(() => Math.max(0, getDay(startOfMonth(new Date(currentYear.value, currentMonth.value))) - 1));
@@ -49,33 +49,38 @@ const isInRange = (day) => {
   return selectedWeek.value.some(selected => isSameDay(selected, selectedDate));
 };
 
-// const formatDate = (date, formatStr) => format(date, formatStr);
+const isToday = (day) => {
+  const todayDate = new Date();
+  const selectedDate = new Date(currentYear.value, currentMonth.value, day);
+  return isSameDay(todayDate, selectedDate);
+};
 </script>
 
 <template>
   <div class="calendar-container">
-    <!-- 상단 네비게이션 (월 이동) -->
     <div class="calendar-header">
       <span>{{ currentMonthLabel }}</span>
-      <div>
-        <button @click="prevMonth">◀</button>
-        <button @click="nextMonth">▶</button>
+      <div class="btn-bundle">
+        <button @click="prevMonth">
+          <i class="arrowL-icon"></i>
+        </button>
+        <button @click="nextMonth">
+          <i class="arrowR-icon"></i>
+        </button>
       </div>
     </div>
 
-    <!-- 요일 표시 -->
     <div class="calendar-grid header">
       <div v-for="day in weekDays" :key="day" class="day-header">{{ day }}</div>
     </div>
 
-    <!-- 날짜 표시 -->
     <div class="calendar-grid">
       <div v-for="n in startBlankDays" :key="n"></div>
       <div
           v-for="day in daysInMonth"
           :key="day"
           class="day-cell"
-          :class="{ selected: isSelected(day), inRange: isInRange(day) }"
+          :class="{ selected: isSelected(day), inRange: isInRange(day), today: isToday(day) }"
           @click="selectDateRange(day)"
       >
         {{ day }}
@@ -96,6 +101,39 @@ const isInRange = (day) => {
   justify-content: space-between;
   align-items: center;
   //margin-bottom: 20px;
+  button {
+    background: #F3F6FF;
+    color: #666daf;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 14px;
+    display: flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    i{
+      width: 12px;
+      height: 12px;
+      background-size: cover;
+      display: inline-block;
+    }
+  }
+}
+
+.btn-bundle{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.arrowL-icon {
+  background-image: url('@/assets/icon/etc/arrowL.svg');
+}
+
+.arrowR-icon {
+  background-image: url('@/assets/icon/etc/arrowR.svg');
 }
 
 .calendar-grid {
@@ -118,14 +156,18 @@ const isInRange = (day) => {
   font-size: 12px;
 }
 
-.day-cell.selected {
-  background-color: #2196f3;
-  //color: white;
-  //border-radius: 50%;
+.day-cell.selected.today {
+  background-color: #0d47a1;
+  color: white;
 }
 
 .day-cell.inRange {
   background-color: #bbdefb;
+}
+
+.day-cell.today {
+  background-color: #0d47a1;
+  color: white;
 }
 
 .selected-week {
