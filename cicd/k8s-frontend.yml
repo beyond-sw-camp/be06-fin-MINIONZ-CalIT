@@ -43,8 +43,13 @@ metadata:
     nginx.ingress.kubernetes.io/canary-weight: "10"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - www.calit.kro.kr
+      secretName: tls-secret
   rules:
-    - http:
+    - host: www.calit.kro.kr
+      http:
         paths:
           - path: /
             pathType: Prefix
@@ -53,4 +58,3 @@ spec:
                 name: frontend-svc-vname
                 port:
                   number: 80
-
