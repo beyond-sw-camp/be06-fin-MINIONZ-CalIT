@@ -21,7 +21,7 @@ pipeline {
 
         stage('Build') {
             when {
-                expression { IS_BACKEND_CHANGED == 'false' }
+                expression { IS_BACKEND_CHANGED == 'true' }
             }
             steps {
                 echo "Add Permission"
