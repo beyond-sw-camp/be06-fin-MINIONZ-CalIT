@@ -17,7 +17,6 @@ public enum BaseResponseStatus {
     INTERNAL_SERVER_ERROR(false, 1007, "서버 내부 오류입니다."),
     SERVICE_UNAVAILABLE(false, 1008, "서비스를 사용할 수 없습니다."),
     TIMEOUT_ERROR(false, 1009, "요청 시간이 초과되었습니다."),
-    METHOD_NOT_ALLOWED(false, 1010, "허용되지 않은 요청 방식입니다."),
 
     /**
      * 2000: 유저
