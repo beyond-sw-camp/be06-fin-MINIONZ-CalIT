@@ -17,8 +17,8 @@ spec:
       containers:
         - name: calit-frontend-vname
           image: minionz/calit-frontend:latest
-#          ports:
-#            - containerPort: 3000
+          ports:
+            - containerPort: 80
 
 ---
 apiVersion: v1
