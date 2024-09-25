@@ -1,12 +1,10 @@
 package minionz.backend.user;
 
+
+import minionz.backend.common.responses.BaseResponse;
+import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.utils.JwtUtil;
-import minionz.backend.user.model.JwtResponse;
-import minionz.backend.user.model.User;
 import minionz.backend.user.model.request.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,39 +19,39 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signupUser(@RequestBody CreateUserRequest createUserRequest) {
+    public BaseResponse<BaseResponseStatus> signupUser(@RequestBody CreateUserRequest createUserRequest) {
         System.out.println(createUserRequest);
         userService.signupUser(createUserRequest);
-        return ResponseEntity.ok("회원 가입이 완료 되었습니다!");
+        return new BaseResponse<>(BaseResponseStatus.USER_CREATE_SUCCESS);
     }
 
     @GetMapping("/check-id")
-    public ResponseEntity<String> checkUserId(@RequestParam String loginId) {
+    public BaseResponse<BaseResponseStatus> checkUserId(@RequestParam String loginId) {
         boolean duplicate = userService.checkLoginDuplicate(loginId);
-        if(duplicate) {
-            return ResponseEntity.ok("사용 가능한 아이디 입니다!");
+        if (duplicate) {
+            return new BaseResponse<>(BaseResponseStatus.USER_ID_DUPLICATE);
         } else {
-            return ResponseEntity.ok("중복된 아이디 입니다.");
+            return new BaseResponse<>(BaseResponseStatus.USER_ID_NOT_DUPLICATE);
         }
     }
 
     @PostMapping("/send-verificationcode")
-    public ResponseEntity<String> sendVerificationCode(@RequestBody EmailVerifyRequest emailVerifyRequest) {
+    public BaseResponse<BaseResponseStatus> sendVerificationCode(@RequestBody EmailVerifyRequest emailVerifyRequest) {
         String email = emailVerifyRequest.getEmail();
         boolean duplicate = userService.sendVerificationCode(email);
         if (duplicate) {
-            return ResponseEntity.ok("인증 메일이 발송 되었습니다!");
+            return new BaseResponse<>(BaseResponseStatus.USER_EMAIL_DUPLICATE);
         } else {
-            return ResponseEntity.ok("이미 가입된 이메일 입니다!");
+            return new BaseResponse<>(BaseResponseStatus.USER_EMAIL_NOT_DUPLICATE);
         }
     }
 
     @PostMapping("/confirm-verificationcode")
-    public ResponseEntity<String> confirmVerificationCode(@RequestBody UuidRequest uuidRequest) {
+    public BaseResponse<BaseResponseStatus> confirmVerificationCode(@RequestBody UuidRequest uuidRequest) {
         boolean verify = userService.verifyUser(uuidRequest.getUuid());
         if (verify) {
-            return ResponseEntity.ok("인증 되었습니다!");
+            return new BaseResponse<>(BaseResponseStatus.USER_UUID_VALID);
         }
-        return ResponseEntity.ok("이메일 및 인증코드를 확인해주세요!");
+        return new BaseResponse<>(BaseResponseStatus.USER_UUID_INVALID);
     }
 }

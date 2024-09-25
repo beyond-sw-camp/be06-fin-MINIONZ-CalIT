@@ -34,7 +34,7 @@ const signup = () => {
       email: email.value
     });
     notyf.success('회원가입에 성공하였습니다.');
-    return router.push('/user/complete');
+    return router.push('/api/user/complete');
   } catch (error) {
     console.error('Signup failed', error);
     notyf.error('회원가입 실패');
@@ -57,7 +57,7 @@ const checkId = (loginId) => {
 const showVerificationInput = (email) => {
   showVerificationCode.value = true;
   try {
-    axios.post('/user/send-verification-code', {
+    axios.post('/api/user/send-verification-code', {
       email: email
     });
     console.log(email);

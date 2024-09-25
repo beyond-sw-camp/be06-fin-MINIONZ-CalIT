@@ -1,0 +1,110 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE = "minionz/calit-backend:latest"
+        IS_BACKEND_CHANGED = 'false'
+        PREV_DEPLOYMENT = ""
+        PREV_SERVICE = ""
+        PREV_INGRESS = ""
+    }
+
+    stages {
+        stage('Check for Backend Changes') {
+            steps {
+                script {
+                    def changedFiles = sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim().split('\n')
+                    IS_BACKEND_CHANGED = changedFiles.any { it.contains("backend") }.toString()
+                    echo "Backend changes: ${IS_BACKEND_CHANGED}"
+                }
+            }
+        }
+
+        stage('Build') {
+            when {
+                expression { IS_BACKEND_CHANGED == 'false' }
+            }
+            steps {
+                echo "Add Permission"
+                sh 'chmod +x /var/lib/jenkins/workspace/calit-backend/backend/gradlew'
+                echo "Gradle Build"
+                sh '''
+                    cd /var/lib/jenkins/workspace/calit-backend/backend
+                    ./gradlew bootJar
+                '''
+            }
+        }
+
+        stage('Docker Build & Push') {
+            when {
+                expression { IS_BACKEND_CHANGED == 'true' }
+            }
+            steps {
+                script {
+                    withCredentials([
+                        usernamePassword(credentialsId: 'minionztest', usernameVariable: 'DOCKERID', passwordVariable: 'DOCKERPW')
+                    ]) {
+                        echo "Docker Build"
+                        sh "docker build --tag minionz/calit-backend:1.${BUILD_ID} ./backend"
+
+                        echo "Docker Login"
+                        sh "docker login -u $DOCKERID -p $DOCKERPW"
+
+                        echo "Docker Push"
+                        sh "docker push minionz/calit-backend:1.${BUILD_ID}"
+                    }
+                }
+            }
+        }
+
+        stage('SSH Transfer and Kubernetes Deployment') {
+            when {
+                expression { IS_BACKEND_CHANGED == 'true' }
+            }
+            steps {
+                script {
+                    sshPublisher(
+                        continueOnError: false,
+                        failOnError: true,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'jenkins',
+                                verbose: true,
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'cicd/k8s-backend.yml',
+                                        remoteDirectory: '/minionz/',
+                                        execCommand: "sed -i 's/latest/1.${BUILD_ID}/g; s/vname/v${BUILD_ID}/g' /home/master/minionz/cicd/k8s-backend.yml"
+                                    ),
+                                    sshTransfer(
+                                        execCommand: '''
+                                            PREV_DEPLOYMENT=$(kubectl get deployment | grep calit-backend-v | awk '{print $1}' | sort | head -1)
+                                            PREV_SERVICE=$(kubectl get service | grep backend-svc-v | awk '{print $1}' | sort | head -1)
+                                            PREV_INGRESS=$(kubectl get ingress | grep backend-ingress-v | awk '{print $1}' | sort | head -1)
+
+                                            kubectl apply -f /home/master/minionz/cicd/k8s-backend.yml
+
+                                            sleep 40
+                                            kubectl patch ingress backend-ingress-v${BUILD_ID} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"50"}}}'
+
+                                            sleep 40
+                                            kubectl patch ingress backend-ingress-v${BUILD_ID} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"100"}}}'
+                                            kubectl patch ingress backend-ingress-v${BUILD_ID} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary":"false"}}}'
+
+                                            if [ -n "$PREV_DEPLOYMENT" ]; then
+                                                kubectl delete deployment "$PREV_DEPLOYMENT"
+                                                kubectl delete service "$PREV_SERVICE"
+                                                kubectl delete ingress "$PREV_INGRESS"
+                                            else
+                                                echo "변경 사항 없음"
+                                            fi
+                                            '''
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+    }
+}

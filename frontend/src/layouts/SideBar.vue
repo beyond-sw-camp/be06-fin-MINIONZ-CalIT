@@ -1,10 +1,9 @@
 <script setup>
 import { computed, defineProps } from 'vue';
-// import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user/useUserStore';
 import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
-import PersonalMenu from '@/layouts/component/PersonalMenu.vue';
-import WorkSpaceMenu from '@/layouts/component/WorkSpaceMenu.vue';
+import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
+import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
 

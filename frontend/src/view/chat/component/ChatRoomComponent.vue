@@ -1,15 +1,73 @@
 <script setup>
-import {ref} from 'vue';
-import {useChatMessageStore} from '@/stores/socket/chat/useChatMessageStore';
+import {ref, defineProps, onMounted, onBeforeUnmount} from 'vue';
+import {useChatMessageStore} from '@/stores/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
+import SockJS from 'sockjs-client';
+import {Stomp} from '@stomp/stompjs';
+
+const props = defineProps({
+  chatroomId: Number,
+  userId: Number,
+  userName: String,
+});
 
 const newMessage = ref('');
-const chatStore = useChatMessageStore();
-
+const messages = ref([]);
+const stompClient = ref(null);
 const fileInput = ref(null);
+
+const chatMessageStore = useChatMessageStore();
+
+onMounted(async () => {
+  // Fetch initial chat messages
+  messages.value = await chatMessageStore.fetchChatMessages(props.chatroomId);
+
+  // WebSocket 연결 설정
+  const socket = new SockJS('http://localhost:8080/chat');
+  stompClient.value = Stomp.over(socket);
+
+  // WebSocket 연결 후 구독 설정
+  stompClient.value.connect({}, (frame) => {
+    console.log('Connected: ' + frame);
+
+    stompClient.value.subscribe(`/sub/room/${props.chatroomId}`, (messageOutput) => {
+      console.log('messageOutput: ' + messageOutput);
+
+      const receivedMessage = JSON.parse(messageOutput.body);
+      if (receivedMessage) {
+        messages.value.push(receivedMessage);
+        chatMessageStore.addMessage(receivedMessage); // Store에 메시지 추가
+      }
+    });
+  }, (error) => {
+    console.error('STOMP 연결 오류:', error);
+  });
+});
+
+onBeforeUnmount(() => {
+  // 컴포넌트가 사라지기 전에 WebSocket 연결 해제
+  if (stompClient.value) {
+    stompClient.value.disconnect();
+  }
+});
+
+const sendMessage = async () => {
+  if (stompClient.value && stompClient.value.connected && newMessage.value.trim() !== '') {
+    const messagePayload = {
+      chatRoomId: props.chatroomId,
+      userId: props.userId,
+      userName: props.userName,
+      messageContents: newMessage.value,
+    };
+    stompClient.value.send(`/pub/room/${props.chatroomId}/send`, {}, JSON.stringify(messagePayload));
+    newMessage.value = ''; // 메시지 전송 후 입력 필드 초기화
+  } else {
+    console.error('STOMP client is not connected or message is empty');
+  }
+};
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -20,16 +78,16 @@ const triggerFileInput = () => {
   <div class="chat-container">
     <div class="chat-header">
       <img :src="space3" alt="img">
-      <p>{{ chatPartner }}</p>
+      <p>{{ props.userName }}</p>
     </div>
 
     <div class="chat-messages">
       <div class="chat-msg-container">
         <Message
-            v-for="(message) in chatStore.messages"
-            :key="message.id"
-            :message="message.content"
-            :isOwnMessage="message.isOwn"
+            v-for="(message, index) in messages"
+            :key="index"
+            :message="message"
+            :isOwnMessage="message.userId === props.userId"
         />
       </div>
     </div>
