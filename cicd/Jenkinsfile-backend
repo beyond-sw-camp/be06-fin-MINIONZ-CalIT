@@ -46,29 +46,29 @@ pipeline {
                         echo "Docker Build"
                         sh """
                             docker build \
-                                --build-arg AWS_ACCESSKEY=${{ env.AWS_ACCESSKEY }} \
-                                --build-arg AWS_REGION=${{ env.AWS_REGION }} \
-                                --build-arg AWS_SECRETKEY=${{ env.AWS_SECRETKEY }} \
-                                --build-arg DB_PASSWORD=${{ env.DB_PASSWORD }} \
-                                --build-arg DB_URL=${{ env.DB_URL }} \
-                                --build-arg DB_USERNAME=${{ env.DB_USERNAME }} \
-                                --build-arg GITHUB_CLIENT_ID=${{ env.GITHUB_CLIENT_ID }} \
-                                --build-arg GITHUB_CLIENT_SECRET=${{ env.GITHUB_CLIENT_SECRET }} \
-                                --build-arg GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }} \
-                                --build-arg GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }} \
-                                --build-arg JWT_SECRET=${{ env.JWT_SECRET }} \
-                                --build-arg KAFKA_CONSUMER_GROUP_ID=${{ env.KAFKA_CONSUMER_GROUP_ID }} \
-                                --build-arg KAFKA_SERVER=${{ env.KAFKA_SERVER }} \
-                                --build-arg KAKAO_CLIENT_ID=${{ env.KAKAO_CLIENT_ID }} \
-                                --build-arg KAKAO_CLIENT_SECRET=${{ env.KAKAO_CLIENT_SECRET }} \
-                                --build-arg MAIL_HOST=${{ env.MAIL_HOST }} \
-                                --build-arg MAIL_PASSWORD=${{ env.MAIL_PASSWORD }} \
-                                --build-arg MAIL_PORT=${{ env.MAIL_PORT }} \
-                                --build-arg MAIL_USERNAME=${{ env.MAIL_USERNAME }} \
-                                --build-arg NAVER_CLIENT_ID=${{ env.NAVER_CLIENT_ID }} \
-                                --build-arg NAVER_CLIENT_SECRET=${{ env.NAVER_CLIENT_SECRET }} \
-                                --build-arg S3_BUCKET=${{ env.S3_BUCKET }} \
-                                --build-arg DOMAIN_ADDRESS=${{ env.DOMAIN_ADDRESS }} \
+                                --build-arg AWS_ACCESSKEY=${AWS_ACCESSKEY} \
+                                --build-arg AWS_REGION=${AWS_REGION} \
+                                --build-arg AWS_SECRETKEY=${AWS_SECRETKEY} \
+                                --build-arg DB_PASSWORD=${DB_PASSWORD} \
+                                --build-arg DB_URL=${DB_URL} \
+                                --build-arg DB_USERNAME=${DB_USERNAME} \
+                                --build-arg GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} \
+                                --build-arg GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} \
+                                --build-arg GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
+                                --build-arg GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
+                                --build-arg JWT_SECRET=${JWT_SECRET} \
+                                --build-arg KAFKA_CONSUMER_GROUP_ID=${KAFKA_CONSUMER_GROUP_ID} \
+                                --build-arg KAFKA_SERVER=${KAFKA_SERVER} \
+                                --build-arg KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID} \
+                                --build-arg KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET} \
+                                --build-arg MAIL_HOST=${MAIL_HOST} \
+                                --build-arg MAIL_PASSWORD=${MAIL_PASSWORD} \
+                                --build-arg MAIL_PORT=${MAIL_PORT} \
+                                --build-arg MAIL_USERNAME=${MAIL_USERNAME} \
+                                --build-arg NAVER_CLIENT_ID=${NAVER_CLIENT_ID} \
+                                --build-arg NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET} \
+                                --build-arg S3_BUCKET=${S3_BUCKET} \
+                                --build-arg DOMAIN_ADDRESS=${DOMAIN_ADDRESS} \
                                 -t minionz/calit-backend:1.${BUILD_ID} ./backend
                         """
 
