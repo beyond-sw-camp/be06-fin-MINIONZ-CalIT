@@ -8,7 +8,7 @@ const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
 contentsTitle.value = 'My Dashboard';
-contentsDescription.value = '나의 할일을 살펴보세요! ';
+contentsDescription.value = '나의 할일을 살펴보세요!';
 </script>
 
 <template>
