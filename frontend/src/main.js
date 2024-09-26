@@ -1,5 +1,6 @@
 import '@/assets/style/styles.css'
-
+// import dotenv from 'dotenv';
+// dotenv.config();
 import { createApp } from 'vue'
 import {createPinia} from "pinia";
 import App from './App.vue'

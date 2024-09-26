@@ -1,0 +1,22 @@
+package minionz.backend.user.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class EmailVerify {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long verifyId;
+    private Long userId;
+    private String email;
+    private String uuid;
+}
