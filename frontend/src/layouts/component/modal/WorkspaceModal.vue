@@ -2,7 +2,10 @@
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
 import {workspaceStore} from '@/stores/workspace/useWorkspaceStore';
+import {useRoute} from "vue-router";
 
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
 const workspaceList = workspaceStore.getWorkspace;
 </script>
 
@@ -28,7 +31,7 @@ const workspaceList = workspaceStore.getWorkspace;
         </li>
         <li v-for="(workspace) in workspaceList" :key="workspace.workspaceId">
           <div class="workspace-item">
-          <router-link :to="'/workspace/' + workspace.workspaceId + '/dashboard'">
+          <router-link :to="'/workspace/' + workspaceId + '/dashboard'">
             <img :src="workspace.persona" alt="workspace">
             <p>{{ workspace.workspaceName }}</p>
           </router-link>
@@ -39,7 +42,7 @@ const workspaceList = workspaceStore.getWorkspace;
     <div class="workspace-modal-footer">
       <hr>
       <div>
-        <router-link to="/workspace/scrum/workspace">
+        <router-link :to="`/workspace/scrum/workspace/create`">
           <img :src="plus" class="plus" alt="plus-btn">
           <p>Add Workspace</p>
         </router-link>

@@ -129,7 +129,7 @@ const rightSideOn = (id) => {
           <i class="task-add column-icon"></i>
           태스크 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
+        <button class="issue-button" @click="rightSideOn('task')">태스크 추가하기</button>
         <span class="issue-id">User_001</span>
       </div>
 
@@ -139,7 +139,7 @@ const rightSideOn = (id) => {
           <i class="issue-add column-icon"></i>
           이슈 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>
+        <button class="issue-button" @click="rightSideOn('issue')">이슈 추가하기</button>
         <span class="issue-id">User_001</span>
       </div>
       </div>

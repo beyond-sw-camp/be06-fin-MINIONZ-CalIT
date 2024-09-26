@@ -1,7 +1,7 @@
 <script setup>
 import {computed, defineProps} from 'vue';
 import RightSideIssue from '@/common/component/RightSide/RightSideIssue.vue';
-// import RightSideLabel from '@/view/scrum/meeting/component/RightSide/RightSideLabel.vue';
+import RightSideLabel from '@/common/component/RightSide/RightSideLabel.vue';
 import RightSideParticipants from '@/common/component/RightSide/RightSideParticipants.vue';
 import RightSideTask from '@/common/component/RightSide/RightSideTask.vue';
 
@@ -17,7 +17,7 @@ const activeComponent = computed(() => {
     case 'issue':
       return RightSideIssue;
     case 'label':
-      return RightSideIssue;
+      return RightSideLabel;
     case 'participants':
       return RightSideParticipants;
     case 'task':

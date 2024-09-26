@@ -175,11 +175,6 @@ const routes = [
                                 name: 'WorkspaceTaskTimeline',
                                 component: () => import('@/view/scrum/Task/timeline/TimeLine.vue')
                             },
-                            {
-                                path: 'create',
-                                name: 'WorkspaceScrumCreateIssue',
-                                component: () => import('@/view/scrum/create/TaskCreate.vue')
-                            },
                         ]
                     },
                     {

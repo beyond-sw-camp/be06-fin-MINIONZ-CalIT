@@ -1,32 +1,34 @@
-import { labelData as importedLabelData } from '@/static/labelData';
-import { labelColorPalette as importedLabelColorPalette } from '@/utils/labelUtils';
+import { ref } from 'vue';
+import { labelData } from '@/static/labelData';
+import { labelColorPalette } from '@/utils/labelUtils';
 
 export const useLabelStore = () => {
-    const labelData = importedLabelData || [];
-    const labelColorPalette = importedLabelColorPalette || [];
+    const labelDatas = ref(labelData || []);
+    const labelColorPalettes = ref(labelColorPalette || []);
+
     const getLabels = () => {
-        return labelData;
+        return labelDatas.value;
     };
 
     const addLabel = (label) => {
-        labelData.push(label);
+        labelDatas.value.push(label);
     };
 
     const updateLabel = (index, updatedLabel) => {
-        if (index >= 0 && index < labelData.length) {
-            labelData[index] = updatedLabel;
+        if (index >= 0 && index < labelDatas.value.length) {
+            labelDatas.value[index] = updatedLabel;
         }
     };
 
     const deleteLabel = (index) => {
-        if (index >= 0 && index < labelData.length) {
-            labelData.splice(index, 1);
+        if (index >= 0 && index < labelDatas.value.length) {
+            labelDatas.value.splice(index, 1);
         }
     };
 
     const setLabelColor = (index, colorIndex) => {
-        if (index >= 0 && index < labelData.length && colorIndex >= 0 && colorIndex < labelColorPalette.length) {
-            labelData[index].color = labelColorPalette[colorIndex];
+        if (index >= 0 && index < labelDatas.value.length && colorIndex >= 0 && colorIndex < labelColorPalettes.value.length) {
+            labelDatas.value[index].color = labelColorPalettes.value[colorIndex];
         }
     };
 

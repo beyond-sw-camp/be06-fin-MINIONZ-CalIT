@@ -102,24 +102,24 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
       </div>
 
       <!-- 태스크 추가하기 -->
-      <div class="issue-section">
-        <span class="column">
-          <i class="task-add column-icon"></i>
-          태스크 추가하기
-        </span>
-<!--        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>-->
-        <span class="issue-id">User_001</span>
-      </div>
+<!--      <div class="issue-section">-->
+<!--        <span class="column">-->
+<!--          <i class="task-add column-icon"></i>-->
+<!--          태스크 추가하기-->
+<!--        </span>-->
+<!--&lt;!&ndash;        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>&ndash;&gt;-->
+<!--        <span class="issue-id">User_001</span>-->
+<!--      </div>-->
 
       <!-- 이슈 추가하기 -->
-      <div class="issue-section">
-        <span class="column">
-          <i class="issue-add column-icon"></i>
-          이슈 추가하기
-        </span>
-<!--        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>-->
-        <span class="issue-id">User_001</span>
-      </div>
+<!--      <div class="issue-section">-->
+<!--        <span class="column">-->
+<!--          <i class="issue-add column-icon"></i>-->
+<!--          이슈 추가하기-->
+<!--        </span>-->
+<!--&lt;!&ndash;        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>&ndash;&gt;-->
+<!--        <span class="issue-id">User_001</span>-->
+<!--      </div>-->
       <router-link class="save-button" to="`/workspace/${workspaceData.workspaceId}/scrum/meeting/edit/${props.id}`">회의록 작성하기</router-link>
 <!--      <QuillEditor ref="editor" class="content-editor" v-model="editor"/>-->
     </div>

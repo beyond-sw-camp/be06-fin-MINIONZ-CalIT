@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useLabelStore } from '@/stores/scrum/useLabelStore';
+import {labelColorPalette} from "@/utils/labelUtils";
 
 const { getLabels, addLabel, deleteLabel } = useLabelStore();
 
@@ -12,7 +13,6 @@ const labelColor = ref('');
 const labelName = ref('');
 const labelDescription = ref('');
 const selectedLabelName = ref('');
-
 function showLabelDetails() {
   if (selectedLabelName.value && !selectedLabel.value.includes(selectedLabelName.value)) {
     selectedLabel.value.push(selectedLabelName.value);
@@ -69,7 +69,7 @@ function addNewLabel() {
               <div v-for="(label, index) in labelDetails" :key="index" class="label-detail-item">
                 <span :style="{ backgroundColor: label.color.backgroundColor, color: label.color.color }">
                   {{ label.labelName }}
-                  <span @click="deleteLabelByName(label.labelName)" style="cursor: pointer; margin-left: 10px;">x</span>
+                  <span @click="deleteLabelByName(label.labelName)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
                 </span>
               </div>
             </div>
@@ -94,18 +94,20 @@ function addNewLabel() {
         </div>
 
         <div class="input-wrap-item">
-          <label for="label-color">라벨 색상</label>
-          <input
-              type="color"
-              id="label-color"
-              v-model="labelColor"
-              class="input-field"
-          />
+          <label >라벨 색상</label>
+          <div class="input-wrap-item">
+            <label>라벨 색상 팔레트</label>
+            <div class="color-palette">
+              <span v-for="color in labelColorPalette" :key="color.id" :style="{ backgroundColor: color.backgroundColor, color: color.color }" @click="labelColor.value = color.backgroundColor" class="color-swatch">
+                {{ color.color }}
+              </span>
+          </div>
         </div>
       </div>
       <!-- 추가 버튼 -->
       <button @click="addNewLabel" class="add-label-btn">라벨 추가하기</button>
     </div>
+  </div>
   </div>
 </template>
 
@@ -172,15 +174,33 @@ label {
   background-color: #93AAFD;
 }
 
-.label-detail-item {
+.label-details{
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.label-detail-item {
   margin-top: 10px;
 
   span {
-    padding: 5px;
+    padding: 5px 8px;
     border-radius: 15px;
+    font-size: 14px;
   }
+}
+
+.color-palette {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.color-swatch {
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
 }
 </style>
