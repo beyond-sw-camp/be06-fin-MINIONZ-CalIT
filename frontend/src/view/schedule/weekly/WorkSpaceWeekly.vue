@@ -4,13 +4,12 @@ import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vu
 import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyScheduleComponent.vue";
 import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTask.vue";
 import MiniCalendar from "@/view/schedule/weekly/component/MiniCalendar.vue";
-// import MonthlyComponent from "@/view/schedule/monthly/component/MonthlyComponent.vue";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
-contentsTitle.value = 'Work Space Monthly';
-contentsDescription.value = '나의 이달 일정을 살펴보세요!';
+contentsTitle.value = 'Work Space Weekly';
+contentsDescription.value = '워크스페이스의 이번주 일정을 살펴보세요!';
 
 const selectedWeek = ref([new Date()]);
 const updateSelectedWeek = (week) => {
