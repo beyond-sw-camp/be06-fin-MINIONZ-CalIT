@@ -57,7 +57,6 @@ pipeline {
                                 --build-arg GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
                                 --build-arg GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
                                 --build-arg JWT_SECRET=${JWT_SECRET} \
-                                --build-arg KAFKA_CONSUMER_GROUP_ID=${KAFKA_CONSUMER_GROUP_ID} \
                                 --build-arg KAFKA_SERVER=${KAFKA_SERVER} \
                                 --build-arg KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID} \
                                 --build-arg KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET} \
