@@ -43,7 +43,7 @@ public class ErrorBoardService {
 
 
         User user1 = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED)); // 예외 처리
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND)); // 예외 처리
 
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.WORKSPACE_NOT_EXISTS));
@@ -119,6 +119,7 @@ public class ErrorBoardService {
                 .modifiedAt(errorBoard.getModifiedAt())
                 .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                 .taskName(errorBoard.getTask().getTaskTitle())
+                .personaImage(errorBoard.getUser().getPersona())
                 .build();
     }
 
@@ -148,6 +149,7 @@ public class ErrorBoardService {
                     .modifiedAt(errorBoard.getModifiedAt())
                     .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                     .taskName(errorBoard.getTask().getTaskTitle())
+                    .personaImage(errorBoard.getUser().getPersona())
                     .build();
         });
         return getErrorBoardResponses;
@@ -179,6 +181,7 @@ public class ErrorBoardService {
                     .modifiedAt(errorBoard.getModifiedAt())
                     .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                     .taskName(errorBoard.getTask().getTaskTitle())
+                    .personaImage(errorBoard.getUser().getPersona())
                     .build();
         });
         return getErrorBoardResponses;
@@ -223,6 +226,7 @@ public class ErrorBoardService {
                     .modifiedAt(errorBoard.getModifiedAt())
                     .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                     .taskName(errorBoard.getTask().getTaskTitle())
+                    .personaImage(errorBoard.getUser().getPersona())
                     .build();
         });
 

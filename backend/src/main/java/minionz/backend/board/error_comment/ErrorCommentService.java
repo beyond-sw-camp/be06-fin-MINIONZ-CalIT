@@ -39,7 +39,7 @@ public class ErrorCommentService {
     public CreateErrorCommentResponse create(Long errorBoardId, CreateErrorCommentRequest request, List<String> fileNames,Long userId) throws BaseException {
 
         User user1 = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED)); // 예외 처리
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND)); // 예외 처리
 
         ErrorBoard errorBoard = errorBoardRepository.findById(errorBoardId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.ERRORBOARD_SERACH_FAIL));
@@ -106,6 +106,7 @@ public class ErrorCommentService {
                             .modifiedAt(comment.getUpdatedAt())
                             .images(imageResponses)
                             .userName(comment.getUser().getUserName())
+                            .personaImage(comment.getUser().getPersona())
                             .build();
                 })
                 .collect(Collectors.toList());

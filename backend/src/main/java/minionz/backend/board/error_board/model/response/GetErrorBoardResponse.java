@@ -13,6 +13,7 @@ import java.util.List;
 public class GetErrorBoardResponse {
     private String userName;
     private String taskName;
+    private Integer personaImage;
     private Long errorBoardId;
     private String errboardTitle;
     private String errboardContent;
@@ -21,4 +22,5 @@ public class GetErrorBoardResponse {
     private LocalDateTime modifiedAt;
     private Long workspaceId;
     private List<GetErrorBoardImageResponse> getErrorBoardImageResponsesList;
+
 }
