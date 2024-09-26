@@ -48,9 +48,9 @@ public class UserService {
                     .uuid(verificationCode)
                     .build();
             emailVerifyRepository.save(emailVerify);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean verifyUser(String uuid) {
@@ -65,8 +65,8 @@ public class UserService {
 
     //ID 중복 여부 확인 메서드
     public boolean checkLoginDuplicate(String loginId) {
-        boolean isExist = userRepository.existsByLoginId(loginId);
-        return isExist;
+        boolean duplicate = userRepository.existsByLoginId(loginId);
+        return duplicate;
     }
 
     public User loginUser(String loginId, String password) {

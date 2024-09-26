@@ -8,14 +8,28 @@ public enum BaseResponseStatus {
     /**
      * 1000 : 공통 에러
      */
-    FILE_UPLOAD_FAIL(false, 1001, "파입 업로드에 실패했습니다."),
+    FILE_UPLOAD_FAIL(false, 1001, "파일 업로드에 실패했습니다."),
     INVALID_ACCESS(false, 1002, "비정상적인 접근입니다."),
-
+    INVALID_PARAMETER(false, 1003, "잘못된 파라미터입니다."),
+    DATABASE_CONNECTION_FAIL(false, 1004, "데이터베이스 연결에 실패했습니다."),
+    UNAUTHORIZED_ACCESS(false, 1005, "권한이 없는 접근입니다."),
+    RESOURCE_NOT_FOUND(false, 1006, "요청한 리소스를 찾을 수 없습니다."),
+    INTERNAL_SERVER_ERROR(false, 1007, "서버 내부 오류입니다."),
 
     /**
      * 2000: 유저
      */
-
+    USER_CREATE_SUCCESS(true, 2001, "회원가입에 성공했습니다. "),
+    USER_LOGIN_SUCCESS(true, 2002, "로그인에 성공했습니다. "),
+    USER_ID_NOT_DUPLICATE(true, 2003, "사용 가능한 아이디 입니다. "),
+    USER_ID_DUPLICATE(false, 2004, "중복된 아이디 입니다. "),
+    USER_EMAIL_NOT_DUPLICATE(true, 2005, "사용가능한 이메일 입니다. "),
+    USER_EMAIL_DUPLICATE(false, 2006, "중복된 이메일 입니다. "),
+    USER_UUID_VALID(true, 2007, "유효한 인증 코드입니다. "),
+    USER_UUID_INVALID(false, 2008, "유효하지 않은 인증 코드입니다. "),
+    USER_CREATE_FAIL(false, 2006, "회원가입에 실패했습니다. "),
+    USER_LOGIN_FAIL(false, 2007, "로그인에 실패했습니다. "),
+    USER_NOT_FOUND(false, 2008, "존재하지 않는 사용자입니다. "),
 
     /**
      * 3000: 마이 페이지
@@ -47,7 +61,7 @@ public enum BaseResponseStatus {
     SPRINT_STATUS_UPDATE_SUCCESS(true, 4016, "스프린트 상태 변경에 성공했습니다."),
     WORKSPACE_MONTHLY_READ_SUCCESS(true, 4017, "워크스페이스 월간 캘린더 조회에 성공했습니다."),
     WORKSPACE_WEEKLY_READ_SUCCESS(true, 4018, "워크스페이스 주간 캘린더 조회에 성공했습니다."),
-    WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다."),
+    WORKSPACE_DASHBOARD_READ_SUCCESS(true, 4019, "워크스페이스 대시보드 조회에 성공했습니다. "),
     NOTE_REGISTER_SUCCESS(true,4020,"회의록 생성에 성공했습니다."),
     NOTE_SEARCH_SUCCESS(true,4021,"회의록 조회에 성공했습니다."),
 
@@ -76,6 +90,15 @@ public enum BaseResponseStatus {
     QABOARD_SERACH_FAIL(true,5102,"게시판 검색에 성공했습니다."),
     QACOMMENT_CREATE_SUCCESS(true,5201,"댓글 등록에 성공했습니다."),
 
+
+    ERRORBOARD_CREATE_FAIL(false, 5002, "게시판 등록에 실패했습니다."),
+    ERRORBOARD_SEARCH_FAIL(false, 5103, "게시판 검색에 실패했습니다."),
+    ERRORCOMMENT_CREATE_FAIL(false, 5202, "댓글 등록에 실패했습니다."),
+
+    QABOARD_CREATE_FAIL(false, 5003, "질문 게시판 등록에 실패했습니다."),
+    QABOARD_SEARCH_FAIL(false, 5103, "질문 게시판 검색에 실패했습니다."),
+    QACOMMENT_CREATE_FAIL(false, 5202, "질문 댓글 등록에 실패했습니다."),
+
     /**
      * 6000: 채팅
      */
@@ -95,11 +118,21 @@ public enum BaseResponseStatus {
     MESSAGE_HISTORY_NOT_FOUND(false, 6303, "해당 채팅방에 메시지 내역이 없습니다."),
     UNAUTHORIZED_CHAT_ACCESS(false, 6304, "해당 채팅방에 접근할 권한이 없습니다."),
     FAILED_TO_RETRIEVE_CHAT_HISTORY(false, 6305, "채팅 내역 조회에 실패했습니다."),
+    CHAT_ROOM_NAME_REQUIRED(false, 6306, "채팅방 이름을 입력하지 않았습니다."),
+
     CHATROOM_UPDATE_SUCCESS(true, 6401, "채팅방 수정이 완료 되었습니다."),
     CHATROOM_NOT_FOUND(false, 6402, "해당 채팅방이 존재하지 않습니다."),
     CHATROOM_USER_NOT_AUTHORIZED(false, 6403, "해당 참가자는 채팅방에 존재하지 않습니다."),
 
     MESSAGE_DELETE_SUCCESS(true, 6501, "메세지가 성공적으로 삭제되었습니다."),
+
+    KAFKA_SEND_FAILED(false, 6502, "카프카 메시지 전송에 실패했습니다."),
+    KAFKA_RECEIVE_FAILED(false, 6503, "카프카 메시지 수신에 실패했습니다."),
+
+    MESSAGE_CONTENT_EMPTY(false, 6504, "메시지 내용이 비어있습니다."),
+    MESSAGE_NOT_FOUND(false, 6505, "메시지를 찾을 수 없습니다."),
+    NOT_AUTHORIZED_TO_DELETE(false, 6506, "본인의 메세지만 삭제할 수 있습니다."),
+    MESSAGE_DELETE_FAILED(false, 6507, "메세지 삭제를 실패하였습니다."),
 
     CHATROOM_EXIT_SUCCESS(true, 6601, "채팅방에서 성공적으로 나갔습니다."),
     CHATROOM_EXIT_FAIL(false, 6602, "채팅방 나가기에 실패했습니다."),
@@ -107,14 +140,15 @@ public enum BaseResponseStatus {
     MESSAGE_STATUS_UPDATE_SUCCESS(true, 6701, "메세지 상태 변경이 성공적으로 완료되었습니다."),
     MESSAGE_STATUS_UPDATE_FAIL(false, 6702, "상태 변경에 실패했습니다."),
 
-    CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다.");
-
+    CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다."),
+    MESSAGE_UPDATE_FAILED(false, 6902, "메시지 업데이트에 실패했습니다."),
 
 
     /**
      * 7000: 알림
      */
-
+    ALARM_CREATE_SUCCESS(true, 7001, "알림 전송에 성공했습니다. "),
+    ALARM_CREATE_FAIL(false, 7002, "알림 전송에 실패했습니다. ");
 
     private final boolean isSuccess;
     private final int code;

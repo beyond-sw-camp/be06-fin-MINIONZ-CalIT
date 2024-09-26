@@ -5,6 +5,7 @@ import lombok.*;
 import minionz.backend.board.qa_comment.model.QaComment;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.workspace.model.Workspace;
+import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 import minionz.backend.user.model.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -39,8 +40,13 @@ public class QaBoard {
 
     @OneToMany(mappedBy = "qaBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QaComment> commentList= new ArrayList<>();
+
     @OneToMany(mappedBy = "qaBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<QaBoardImage> qaBoardImageList= new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "workspace_participant_id")
+    private WorkspaceParticipation workspaceParticipation;
 
     @OneToOne
     @JoinColumn(name = "task_id")
@@ -53,6 +59,7 @@ public class QaBoard {
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
 
 
 

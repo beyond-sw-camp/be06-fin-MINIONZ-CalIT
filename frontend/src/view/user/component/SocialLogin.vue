@@ -1,23 +1,3 @@
-<!--<script setup>-->
-<!--import naver from '@/assets/icon/social/naver.png';-->
-<!--import kakao from '@/assets/icon/social/kakao.png';-->
-
-<!--const naverApiKey = process.env.VUE_APP_NAVER_API_KEY;-->
-<!--const kakaoApiKey = process.env.VUE_APP_KAKAO_API_KEY;-->
-<!--const googleApiKey = process.env.VUE_APP_GOOGLE_API_KEY;-->
-<!--const REDIRECT_URI = process.env.VUE_APP_REDIRECT_URI;-->
-
-<!--function generateState() {-->
-<!--  return Math.random().toString(36).substr(2, 12); // 랜덤 문자열 생성-->
-<!--}-->
-
-<!--const STATE = generateState();-->
-
-<!--const openInNewWindow = (url) => {-->
-<!--  window.open(url, '_blank');-->
-<!--};-->
-
-<!--</script>-->
 <script setup>
 import naver from '@/assets/icon/social/naver.png';
 import kakao from '@/assets/icon/social/kakao.png';

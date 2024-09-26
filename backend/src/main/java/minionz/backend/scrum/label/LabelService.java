@@ -1,17 +1,17 @@
 package minionz.backend.scrum.label;
 
 import lombok.RequiredArgsConstructor;
-
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
+import minionz.backend.note.NoteRepository;
+import minionz.backend.scrum.label.model.NoteLabel;
 import minionz.backend.scrum.label.model.SprintLabel;
 import minionz.backend.scrum.label.model.TaskLabel;
 import minionz.backend.scrum.label.model.request.CreateLabelRequest;
+import minionz.backend.scrum.label.model.request.CreateMeetingLabelRequest;
 import minionz.backend.scrum.label.model.response.ReadLabelResponse;
-import minionz.backend.scrum.workspace.WorkspaceRepository;
+import minionz.backend.scrum.label.model.response.ReadMeetingLabelResponse;
 import minionz.backend.scrum.workspace.model.Workspace;
-import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
-import minionz.backend.user.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +22,8 @@ import java.util.List;
 public class LabelService {
     private final SprintLabelRepository sprintLabelRepository;
     private final TaskLabelRepository taskLabelRepository;
+    private final NoteRepository noteRepository;
+    private final NoteLabelRepository noteLabelRepository;
 
 
     public void createSprintLabel(CreateLabelRequest request) throws BaseException {
@@ -55,6 +57,13 @@ public class LabelService {
         taskLabelRepository.save(TaskLabel.builder().workspace(Workspace.builder().workspaceId(request.getWorkspaceId()).build()).labelName(request.getLabelName()).description(request.getDescription()).color(request.getColor()).build());
     }
 
+    public void createNoteLabel(CreateMeetingLabelRequest request) throws BaseException {
+        if(noteLabelRepository.findByLabelNameAndWorkspace(request.getLabelName(), Workspace.builder().workspaceId(request.getWorkspaceId()).build()) != null) {
+            throw new BaseException(BaseResponseStatus.LABEL_ALREADY_EXISTS);
+        }
+        noteLabelRepository.save(NoteLabel.builder().workspace(Workspace.builder().workspaceId(request.getWorkspaceId()).build()).labelName(request.getLabelName()).description(request.getDescription()).color(request.getColor()).build());
+    }
+
     public List<ReadLabelResponse> readTaskLabel(Long id) throws BaseException {
 
         List<TaskLabel> labels = taskLabelRepository.findByWorkspaceWorkspaceId(id);
@@ -70,6 +79,22 @@ public class LabelService {
 
         return response;
     }
+
+    public List<ReadMeetingLabelResponse> readNoteLabel(Long id) throws BaseException{
+
+        List<NoteLabel> labels = noteLabelRepository.findByWorkspaceWorkspaceId(id);
+
+        List<ReadMeetingLabelResponse> response = labels.stream().map(
+                label -> ReadMeetingLabelResponse
+                        .builder()
+                        .labelId(label.getNoteLabelId())
+                        .labelName(label.getLabelName())
+                        .description(label.getDescription())
+                        .color(label.getColor())
+                        .build()).toList();
+        return response;
+    }
+
 
 
 }

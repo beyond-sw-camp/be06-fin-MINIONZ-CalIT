@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-deployment
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1  # Zookeeper 인스턴스 수
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: zookeeper:3.8.0
+          ports:
+            - containerPort: 2181  # Zookeeper 클라이언트 포트
+          env:
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"  # 익명 로그인 허용 (기본 설정)
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "2181"  # Zookeeper 클라이언트 연결 포트
+            - name: ZOOKEEPER_SERVER_ID
+              value: "1"  # Zookeeper 서버 ID
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-service
+  labels:
+    app: zookeeper
+spec:
+  ports:
+    - port: 2181
+      targetPort: 2181
+  selector:
+    app: zookeeper
