@@ -1,4 +1,5 @@
 <script setup>
+// 일반 작성용
 import {onMounted, ref} from "vue";
 import Quill from "quill";
 import 'quill/dist/quill.bubble.css';

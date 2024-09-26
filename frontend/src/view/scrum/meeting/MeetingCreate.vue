@@ -2,8 +2,8 @@
 import { useRoute } from 'vue-router';
 import { computed, inject, ref } from 'vue';
 import { workspaceData } from '@/static/workspaceData';
-import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
@@ -32,7 +32,7 @@ const addNote = () => {
 const saveNote = () => {
   // const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
   console.log('Meeting title:', meetingTitle.value);
-  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가
+  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가해야함
 };
 
 const rightSideOn = (id) => {
@@ -114,7 +114,6 @@ const rightSideOn = (id) => {
           </div>
         </div>
       </div>
-
       <div class="issue-section">
         <span class="column">
           <i class="label-add column-icon"></i>
@@ -173,10 +172,6 @@ const rightSideOn = (id) => {
   width: 100%;
   height: 100%;
   justify-content: space-between;
-  //height: 100%;
-  //overflow-y: auto;
-  //display: flex;
-  //flex-direction: column-reverse;
 }
 
 .meeting-input-wrap{
@@ -237,6 +232,7 @@ const rightSideOn = (id) => {
   height: 24px;
   display: block;
 }
+
 .user-editor {
   background-image: url("@/assets/icon/boardIcon/userEdit.svg");
 }

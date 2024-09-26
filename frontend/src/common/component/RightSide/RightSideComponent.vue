@@ -1,9 +1,9 @@
 <script setup>
 import {computed, defineProps} from 'vue';
-import RightSideIssue from '@/view/scrum/meeting/component/RightSide/RightSideIssue.vue';
+import RightSideIssue from '@/common/component/RightSide/RightSideIssue.vue';
 // import RightSideLabel from '@/view/scrum/meeting/component/RightSide/RightSideLabel.vue';
-import RightSideParticipants from '@/view/scrum/meeting/component/RightSide/RightSideParticipants.vue';
-import RightSideTask from '@/view/scrum/meeting/component/RightSide/RightSideTask.vue';
+import RightSideParticipants from '@/common/component/RightSide/RightSideParticipants.vue';
+import RightSideTask from '@/common/component/RightSide/RightSideTask.vue';
 
 const props = defineProps({
   activeComponentId: {

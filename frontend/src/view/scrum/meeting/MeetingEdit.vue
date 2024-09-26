@@ -2,8 +2,8 @@
 import {useRoute} from 'vue-router';
 import {computed, inject, ref} from 'vue';
 import {workspaceData} from '@/static/workspaceData';
-import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
