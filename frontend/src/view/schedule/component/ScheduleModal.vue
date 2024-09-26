@@ -64,6 +64,7 @@ function handleClose() {
   width: 300px;
   font-family: 'Arial', sans-serif;
   position: absolute;
+  z-index: 100;
 }
 
 .icon-bundle {

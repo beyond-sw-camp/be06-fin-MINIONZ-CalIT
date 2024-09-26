@@ -18,6 +18,21 @@ const workspaceId = route.params.workspaceId;
         <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
+      <ul class="submenu">
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/schedule/monthly`">
+            <i class="icon-monthly"/>
+            <p class="outfit">Monthly</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/schedule/weekly`">
+            <i class="icon-weekly"/>
+            <p class="outfit">Weekly</p>
+          </router-link>
+        </li>
+      </ul>
+
     </li>
     <li>
       <router-link :to="`/workspace/${workspaceId}/chat`">
@@ -124,6 +139,12 @@ i {
 }
 .icon-schedule {
   background-image: url("@/assets/icon/menu/schedule.svg");
+}
+.icon-monthly {
+  background-image: url("@/assets/icon/menu/monthly.svg");
+}
+.icon-weekly {
+  background-image: url("@/assets/icon/menu/weekly.svg");
 }
 .icon-board {
   background-image: url("@/assets/icon/menu/board.svg");

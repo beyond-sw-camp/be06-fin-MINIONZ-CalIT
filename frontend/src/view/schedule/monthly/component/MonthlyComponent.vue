@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from "vue-router";
-import { getDaysInMonth, startOfMonth, format } from 'date-fns';
+import {formatUtil, getDaysInMonthUtil, startOfMonthUtil} from '@/utils/dateUtils';
 import { meetingData } from '@/static/meetingData';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
@@ -47,9 +47,9 @@ const currentYear = ref(today.getFullYear());
 const currentMonth = ref(today.getMonth());
 const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-const daysInMonth = computed(() => getDaysInMonth(new Date(currentYear.value, currentMonth.value)));
+const daysInMonth = computed(() => getDaysInMonthUtil(new Date(currentYear.value, currentMonth.value)));
 const startBlankDays = computed(() => {
-  return startOfMonth(new Date(currentYear.value, currentMonth.value)).getDay();
+  return startOfMonthUtil(new Date(currentYear.value, currentMonth.value)).getDay();
 });
 
 const goToToday = () => {
@@ -57,20 +57,20 @@ const goToToday = () => {
   currentMonth.value = today.getMonth();
 };
 
-const nextMonth = () => {
-  if (currentMonth.value === 11) {
-    currentMonth.value = 0;
-    currentYear.value++;
-  } else {
-    currentMonth.value++;
-  }
-};
 const prevMonth = () => {
   if (currentMonth.value === 0) {
     currentMonth.value = 11;
     currentYear.value--;
   } else {
     currentMonth.value--;
+  }
+};
+const nextMonth = () => {
+  if (currentMonth.value === 11) {
+    currentMonth.value = 0;
+    currentYear.value++;
+  } else {
+    currentMonth.value++;
   }
 };
 
@@ -85,7 +85,7 @@ const events = ref(meetingData.map(meeting => ({
 })));
 
 const eventsForDay = (day) => {
-  return events.value.filter(event => format(event.date, 'd') === String(day));
+  return events.value.filter(event => formatUtil(event.date, 'd') === String(day));
 };
 </script>
 
