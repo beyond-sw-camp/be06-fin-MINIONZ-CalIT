@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue';
+import task from '@/assets/icon/schedule/task.svg';
 
 const issues = ref([
-  { title: '회원 가입 기능', details: '중요도 마감일', icon: 'https://via.placeholder.com/30' },
-  { title: '로그 아웃 기능', details: 'User 10:00 am', icon: 'https://via.placeholder.com/30' },
-  { title: '회원 가입 기능', details: '중요도 마감일', icon: 'https://via.placeholder.com/30' }
+  { title: '회원 가입 기능', details: '진행중', icon: task },
+  { title: '로그 아웃 기능', details: '진행중', icon: task},
+  { title: '회원 가입 기능', details: '진행중', icon: task }
 ]);
 </script>
 
@@ -39,21 +40,27 @@ const issues = ref([
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  padding: 10px;
+  //background-color: rgba(243, 246, 255, 0.7);
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
 .issue-icon {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
 }
 
 .issue-info {
   display: flex;
+  justify-content: space-between;
+  width: 100%;
   flex-direction: column;
 }
 
 .issue-title {
-  font-weight: bold;
+  font-weight: 400;
   font-size: 14px;
 }
 

@@ -53,5 +53,6 @@ const updateSelectedWeek = (week) => {
   width: calc(100% - 350px);
   display: flex;
   height: 235px;
+  gap: 10px;
 }
 </style>

@@ -223,6 +223,7 @@ function getEventWidth(startDate, endDate) {
   }
   span {
     font-size: 18px;
+    font-weight: 500;
   }
 }
 
@@ -321,7 +322,8 @@ function getEventWidth(startDate, endDate) {
   padding: 10px;
   border-radius: 8px;
   color: #28303F;
-  background-color: #e0e8ff;
+  background-color: rgba(8,181,234,0.1);
+  border: 2px solid rgba(8,181,234);
   font-size: 14px;
   cursor: pointer;
   font-weight: 500;

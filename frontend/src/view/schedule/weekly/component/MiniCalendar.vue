@@ -100,7 +100,9 @@ const isToday = (day) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  //margin-bottom: 20px;
+  span{
+    font-weight: 500;
+  }
   button {
     background: #F3F6FF;
     color: #666daf;

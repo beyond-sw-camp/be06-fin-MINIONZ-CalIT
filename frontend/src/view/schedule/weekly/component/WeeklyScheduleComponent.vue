@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue';
+import meeting from '@/assets/icon/schedule/meeting.svg';
 
 const scheduleItems = ref([
-  { title: '회의1', time: '10:00 am', icon: 'https://via.placeholder.com/30' },
-  { title: '회의2', time: '10:00 am', icon: 'https://via.placeholder.com/30' },
-  { title: '회의3', time: '10:00 am', icon: 'https://via.placeholder.com/30' }
+  { title: '회의1', time: '10:00 am', icon: meeting },
+  { title: '회의2', time: '10:00 am', icon: meeting },
+  { title: '회의3', time: '10:00 am', icon: meeting }
 ]);
 </script>
 
@@ -39,21 +40,27 @@ const scheduleItems = ref([
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  padding: 10px;
+  //background-color: rgba(243, 246, 255, 0.5);
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 .schedule-icon {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
 }
 
 .schedule-info {
   display: flex;
+  justify-content: space-between;
+  width: 100%;
   flex-direction: column;
 }
 
 .schedule-title {
-  font-weight: bold;
+  font-weight: 400;
   font-size: 14px;
 }
 
