@@ -74,7 +74,7 @@ pipeline {
                                 verbose: true,
                                 transfers: [
                                     sshTransfer(
-                                        sourceFiles: 'cicd/k8s-frontend.yml',
+                                        sourceFiles: 'cicd/k8s-frontend.yml cicd/k8s-ingress.yml',
                                         remoteDirectory: '/minionz/',
                                         execCommand: "sed -i 's/latest/1.${BUILD_ID}/g; s/vname/v${BUILD_ID}/g' /home/master/minionz/cicd/k8s-frontend.yml"
                                     ),
