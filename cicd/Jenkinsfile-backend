@@ -103,21 +103,28 @@ pipeline {
                                     sshTransfer(
                                         execCommand: '''
                                             PREV_DEPLOYMENT=$(kubectl get deployment | grep calit-backend-v | awk '{print $1}' | sort | head -1)
-                                            PREV_SERVICE=$(kubectl get service | grep backend-svc-v | awk '{print $1}' | sort | head -1)
-                                            PREV_INGRESS=$(kubectl get ingress | grep backend-ingress-v | awk '{print $1}' | sort | head -1)
+                                            PREV_BACKEND_SERVICE=$(kubectl get service | grep backend-svc-v | awk '{print $1}' | sort | head -1)
+                                            PREV_FRONTEND_SERVICE=$(kubectl get service | grep frontend-svc-v | awk '{print $1}' | sort | head -1)
+                                            PREV_INGRESS=$(kubectl get ingress | grep ingress-v | awk '{print $1}' | sort | head -1)
+
+                                            NEXT_VERSION=$(( $(kubectl get ingress | grep ingress-v | awk '{print $1}' | sort | head -1 | sed 's/[^0-9]*//g') + 1 )) || NEXT_VERSION=1
+
+
+                                            sed -i 's/iname/v${NEXT_VERSION}/g; s/frontend-svc-vname/${PREV_FRONTEND_SERVICE}/g; s/vname/v${BUILD_ID}/g' /home/master/minionz/cicd/k8s-ingress.yml
 
                                             kubectl apply -f /home/master/minionz/cicd/k8s-backend.yml
+                                            kubectl apply -f /home/master/minionz/cicd/k8s-ingress.yml
 
                                             sleep 40
-                                            kubectl patch ingress backend-ingress-v${BUILD_ID} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"50"}}}'
+                                            kubectl patch ingress ingress-v${NEXT_VERSION} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"50"}}}'
 
                                             sleep 40
-                                            kubectl patch ingress backend-ingress-v${BUILD_ID} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"100"}}}'
-                                            kubectl patch ingress backend-ingress-v${BUILD_ID} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary":"false"}}}'
+                                            kubectl patch ingress ingress-v${NEXT_VERSION} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"100"}}}'
+                                            kubectl patch ingress ingress-v${NEXT_VERSION} -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary":"false"}}}'
 
                                             if [ -n "$PREV_DEPLOYMENT" ]; then
                                                 kubectl delete deployment "$PREV_DEPLOYMENT"
-                                                kubectl delete service "$PREV_SERVICE"
+                                                kubectl delete service "$PREV_BACKEND_SERVICE"
                                                 kubectl delete ingress "$PREV_INGRESS"
                                             else
                                                 echo "변경 사항 없음"
