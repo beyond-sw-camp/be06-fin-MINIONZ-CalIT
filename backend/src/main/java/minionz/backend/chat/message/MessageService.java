@@ -159,7 +159,7 @@ public class MessageService {
     }
 
 
-    @KafkaListener(topicPattern = "chat-room-.*", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topicPattern = "chat-room-.*")
     public void consumeMessage(ConsumerRecord<String, String> record) {
         try {
             SendMessageRequest request = objectMapper.readValue(record.value(), SendMessageRequest.class);

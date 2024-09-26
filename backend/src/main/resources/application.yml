@@ -86,7 +86,6 @@ spring:
       bootstrap-servers: ${KAFKA_SERVER}
     consumer:
       bootstrap-servers: ${KAFKA_SERVER}
-      group-id: ${KAFKA_CONSUMER_GROUP_ID}
 
 logging:
   level:
@@ -96,7 +95,6 @@ logging:
     org.apache.kafka: OFF
     kafka: OFF
     org.springframework.kafka: OFF
-
 
 cloud:
   aws:
