@@ -15,7 +15,6 @@ public enum BaseResponseStatus {
     UNAUTHORIZED_ACCESS(false, 1005, "권한이 없는 접근입니다."),
     RESOURCE_NOT_FOUND(false, 1006, "요청한 리소스를 찾을 수 없습니다."),
     INTERNAL_SERVER_ERROR(false, 1007, "서버 내부 오류입니다."),
-    SERVICE_UNAVAILABLE(false, 1008, "서비스를 사용할 수 없습니다."),
 
     /**
      * 2000: 유저
