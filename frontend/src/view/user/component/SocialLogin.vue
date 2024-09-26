@@ -1,22 +1,54 @@
+<!--<script setup>-->
+<!--import naver from '@/assets/icon/social/naver.png';-->
+<!--import kakao from '@/assets/icon/social/kakao.png';-->
+
+<!--const naverApiKey = process.env.VUE_APP_NAVER_API_KEY;-->
+<!--const kakaoApiKey = process.env.VUE_APP_KAKAO_API_KEY;-->
+<!--const googleApiKey = process.env.VUE_APP_GOOGLE_API_KEY;-->
+<!--const REDIRECT_URI = process.env.VUE_APP_REDIRECT_URI;-->
+
+<!--function generateState() {-->
+<!--  return Math.random().toString(36).substr(2, 12); // 랜덤 문자열 생성-->
+<!--}-->
+
+<!--const STATE = generateState();-->
+
+<!--const openInNewWindow = (url) => {-->
+<!--  window.open(url, '_blank');-->
+<!--};-->
+
+<!--</script>-->
 <script setup>
 import naver from '@/assets/icon/social/naver.png';
 import kakao from '@/assets/icon/social/kakao.png';
+import { ref } from 'vue';
 
-// const googleApiKey = process.env.GOOGLE_API_KEY;
-// const naverApiKey = process.env.NAVER_API_KEY;
-// const kakaoApiKey = process.env.KAKAO_API_KEY;
-// const REDIRECT_URI = process.env.REDIRECT_URI;
+// 환경변수 가져오기
+const naverApiKey = ref(process.env.VUE_APP_NAVER_API_KEY);
+const kakaoApiKey = ref(process.env.VUE_APP_KAKAO_API_KEY);
+// const googleApiKey = ref(process.env.VUE_APP_GOOGLE_API_KEY);
+const REDIRECT_URI = encodeURIComponent(process.env.VUE_APP_REDIRECT_URI);
 
+// 상태 값 생성
 function generateState() {
   return Math.random().toString(36).substr(2, 12); // 랜덤 문자열 생성
 }
 
-const STATE = generateState();
+const STATE = ref(generateState());
 
+// 새로운 창을 열어 URL로 이동하는 함수
 const openInNewWindow = (url) => {
   window.open(url, '_blank');
 };
 
+// 구글 로그인 URL 생성
+const googleLoginUrl = (`https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.VUE_APP_GOOGLE_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email profile`);
+
+// 네이버 로그인 URL 생성
+const naverLoginUrl = ref(`https://nid.naver.com/oauth2.0/authorize?client_id=${naverApiKey.value}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE.value}`);
+
+// 카카오 로그인 URL 생성 (리디렉트 URI가 상이하므로 하드코딩 유지)
+const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${kakaoApiKey.value}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=login`);
 </script>
 
 <template>
@@ -25,25 +57,33 @@ const openInNewWindow = (url) => {
     <div class="social-login">
       <div class="social-login_title">소셜 로그인</div>
       <div class="social-login_content">
+        <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(`https://accounts.google.com/o/oauth2/v2/auth?scope=email%20openid&response_type=code&redirect_uri=${REDIRECT_URI}&client_id=${googleApiKey}`)"
-            class="social-login_content_item">
+            @click="openInNewWindow(googleLoginUrl)"
+            class="social-login_content_item"
+        >
           <div class="social-login_content_item_icon">
             <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="구글로고"/>
           </div>
           <div class="social-login_content_item_text">구글 로그인</div>
         </div>
+
+        <!-- 네이버 로그인 버튼 -->
         <div
-            @click="openInNewWindow(`https://nid.naver.com/oauth2.0/authorize?client_id=${naverApiKey}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE}`)"
-            class="social-login_content_item">
+            @click="openInNewWindow(naverLoginUrl)"
+            class="social-login_content_item"
+        >
           <div class="social-login_content_item_icon">
             <img :src="naver" alt="naver logo"/>
           </div>
           <div class="social-login_content_item_text">네이버 로그인</div>
         </div>
+
+        <!-- 카카오 로그인 버튼 -->
         <div
-            @click="openInNewWindow('https://kauth.kakao.com/oauth/authorize?client_id=5c347f3e42c5232217cc650cd95a252a&redirect_uri=http://localhost:8081/user/signup&response_type=code&propmpt=login')"
-            class="social-login_content_item">
+            @click="openInNewWindow(kakaoLoginUrl)"
+            class="social-login_content_item"
+        >
           <div class="social-login_content_item_icon">
             <img :src="kakao" alt="kakao"/>
           </div>
@@ -53,6 +93,7 @@ const openInNewWindow = (url) => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 a {
