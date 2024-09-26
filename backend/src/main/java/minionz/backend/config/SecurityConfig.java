@@ -103,11 +103,11 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
                         // 스케줄 관련 요청
                         .requestMatchers("/schedule/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers("/errboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers("/errcomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers("/qaboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers("/qacomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers(HttpMethod.POST,"/note/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_MEETING_MEMBER, context))
+//                        .requestMatchers("/errboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/errcomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/qaboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/qacomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers(HttpMethod.POST,"/note/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_MEETING_MEMBER, context))
                         .anyRequest().permitAll());
 
         http

@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 public class GetErrorCommentResponse {
 
+    private Integer personaImage;
     private String userName;
     private Long ErrorCommentId;
     private String ErrorCommentContent;

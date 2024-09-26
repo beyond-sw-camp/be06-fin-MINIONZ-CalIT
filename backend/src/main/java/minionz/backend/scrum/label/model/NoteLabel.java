@@ -3,6 +3,7 @@ package minionz.backend.scrum.label.model;
 import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.scrum.label_select.model.NoteLabelSelect;
+import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.scrum.workspace.model.Workspace;
 
 import java.util.ArrayList;
@@ -23,12 +24,17 @@ public class NoteLabel {
     private String description;
     private String color;
 
-    // SprintLabel : SprintLabelSelect = 1 : N
+    // NoteLabel : NoteLabelSelect = 1 : N
     @OneToMany(mappedBy = "noteLabel", fetch = FetchType.LAZY)
     private List<NoteLabelSelect> noteLabelSelects = new ArrayList<>();
 
-    // SprintLabel : Workspace = N : 1
+    // NoteLabel : Workspace = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
+
+    // NoteLabel : meeting = N : 1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "meeting_id")
+    private Meeting meeting;
 }

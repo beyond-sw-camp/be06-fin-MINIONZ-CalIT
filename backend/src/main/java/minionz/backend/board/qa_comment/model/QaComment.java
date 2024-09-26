@@ -40,4 +40,5 @@ public class QaComment {
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "qa_board_id")
     private QaBoard qaBoard;
+
 }

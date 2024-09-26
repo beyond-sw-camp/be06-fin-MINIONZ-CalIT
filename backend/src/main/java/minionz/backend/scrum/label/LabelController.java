@@ -5,9 +5,12 @@ import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.request.CreateLabelRequest;
+import minionz.backend.scrum.label.model.request.CreateMeetingLabelRequest;
 import minionz.backend.scrum.label.model.response.ReadLabelResponse;
+import minionz.backend.scrum.label.model.response.ReadMeetingLabelResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -64,6 +67,31 @@ public class LabelController {
         }
 
         return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
+    }
+
+    @PostMapping("/{workspaceId}/note")
+    public BaseResponse<BaseResponseStatus> createNoteLabel(@RequestBody CreateMeetingLabelRequest request) {
+
+        try {
+            labelService.createNoteLabel(request);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+        return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_CREATE_SUCCESS);
+
+    }
+
+    @GetMapping("/{workspaceId}/note")
+    public BaseResponse<List<ReadMeetingLabelResponse>> readNoteLabel(@RequestParam Long workspaceId) {
+
+        List<ReadMeetingLabelResponse> response = new ArrayList<>();
+
+        try{
+            response = labelService.readNoteLabel(workspaceId);
+        }catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+        return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_SEARCH_SUCCESS, response);
     }
 
 }
