@@ -107,10 +107,10 @@ pipeline {
                                             PREV_FRONTEND_SERVICE=$(kubectl get service | grep frontend-svc-v | awk '{print $1}' | sort | head -1)
                                             PREV_INGRESS=$(kubectl get ingress | grep ingress-v | awk '{print $1}' | sort | head -1)
 
-                                            NEXT_VERSION=$(( $(kubectl get ingress | grep ingress-v | awk '{print $1}' | sort | head -1 | sed 's/[^0-9]*//g') + 1 )) || NEXT_VERSION=1
+                                            NEXT_VERSION=$(kubectl get ingress | grep ingress-v | awk '{print $1}' | sort | head -1 | sed 's/[^0-9]*//g')
+                                            NEXT_VERSION=$(( NEXT_VERSION ? NEXT_VERSION + 1 : 1 ))
 
-
-                                            sed -i 's/iname/v${NEXT_VERSION}/g; s/frontend-svc-vname/${PREV_FRONTEND_SERVICE}/g; s/vname/v${BUILD_ID}/g' /home/master/minionz/cicd/k8s-ingress.yml
+                                            sed -i "s/iname/v${NEXT_VERSION}/g; s/frontend-svc-vname/${PREV_FRONTEND_SERVICE}/g; s/vname/v${BUILD_ID}/g" /home/master/minionz/cicd/k8s-ingress.yml
 
                                             kubectl apply -f /home/master/minionz/cicd/k8s-backend.yml
                                             kubectl apply -f /home/master/minionz/cicd/k8s-ingress.yml
