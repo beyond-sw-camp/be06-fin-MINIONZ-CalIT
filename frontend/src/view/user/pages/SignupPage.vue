@@ -31,7 +31,6 @@ const checkAll = computed(() => {
 });
 
 const signup = () => {
-<<<<<<< HEAD
   if (checkAll.value) {
     try {
       axios.post('/api/user/signup', {
@@ -47,7 +46,7 @@ const signup = () => {
       notyf.error('회원가입 실패');
     }
   } else {
-    notyf.error('빈 칸을 채워주세요.')
+    notyf.error('빈 칸을 채워주세요!')
 }
 }
 const checkId = async (loginId) => {
@@ -71,11 +70,7 @@ const checkId = async (loginId) => {
 const showVerificationInput = async (email) => {
 
   try {
-<<<<<<< HEAD
     const r = await axios.post('/api/user/send-verification-code', {
-=======
-    axios.post('/api/user/send-verification-code', {
->>>>>>> 8d8d9b02f81429255eb975649967aa0da5b7f793
       email: email
     });
     if(r.data){ // 등록 가능 이메일 여부 true 면
