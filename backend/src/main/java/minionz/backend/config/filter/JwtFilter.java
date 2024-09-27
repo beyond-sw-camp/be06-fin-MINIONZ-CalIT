@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
 
-            if (request.getRequestURI().equals("/health")) {
+            if (request.getRequestURI().equals("/api/health")) {
                 log.info("Health check 요청이므로 인증 쿠키를 확인하지 않습니다.");
                 filterChain.doFilter(request, response);
                 return;
