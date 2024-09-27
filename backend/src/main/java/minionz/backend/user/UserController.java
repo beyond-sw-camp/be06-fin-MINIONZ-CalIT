@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/check-id")
-    public BaseResponse<BaseResponseStatus> checkUserId(@RequestParam String loginId) {
+    public BaseResponse<BaseResponseStatus> checkUserId(@RequestBody String loginId) {
         boolean duplicate = userService.checkLoginDuplicate(loginId);
         if (duplicate) {
             return new BaseResponse<>(BaseResponseStatus.USER_ID_DUPLICATE);
