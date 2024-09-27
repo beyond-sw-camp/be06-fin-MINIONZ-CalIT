@@ -8,7 +8,7 @@ import minionz.backend.user.model.request.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
@@ -25,8 +25,8 @@ public class UserController {
         return new BaseResponse<>(BaseResponseStatus.USER_CREATE_SUCCESS);
     }
 
-    @GetMapping("/check-id")
-    public BaseResponse<BaseResponseStatus> checkUserId(@RequestParam String loginId) {
+    @PostMapping("/check-id")
+    public BaseResponse<BaseResponseStatus> checkUserId(@RequestBody String loginId) {
         boolean duplicate = userService.checkLoginDuplicate(loginId);
         if (duplicate) {
             return new BaseResponse<>(BaseResponseStatus.USER_ID_DUPLICATE);

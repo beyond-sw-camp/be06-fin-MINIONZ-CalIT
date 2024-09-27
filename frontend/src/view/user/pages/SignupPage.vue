@@ -31,7 +31,6 @@ const checkAll = computed(() => {
 });
 
 const signup = () => {
-<<<<<<< HEAD
   if (checkAll.value) {
     try {
       axios.post('/api/user/signup', {
@@ -44,10 +43,10 @@ const signup = () => {
       return router.push('/user/complete');
     } catch (error) {
       console.error('Signup failed', error);
-      notyf.error('회원가입 실패');
+      notyf.error('회원가입에 실패했습니다.');
     }
   } else {
-    notyf.error('빈 칸을 채워주세요.')
+    notyf.error('빈 칸을 채워주세요!')
 }
 }
 const checkId = async (loginId) => {
@@ -71,22 +70,18 @@ const checkId = async (loginId) => {
 const showVerificationInput = async (email) => {
 
   try {
-<<<<<<< HEAD
     const r = await axios.post('/api/user/send-verification-code', {
-=======
-    axios.post('/api/user/send-verification-code', {
->>>>>>> 8d8d9b02f81429255eb975649967aa0da5b7f793
       email: email
     });
     if(r.data){ // 등록 가능 이메일 여부 true 면
-      notyf.success('인증 코드를 전송하였습니다.');
+      notyf.success('인증 코드를 전송했습니다.');
       showVerificationCode.value = true;
     } else { //등록 가능 이메일 여부 false 면
       notyf.error("중복된 이메일 입니다.");
     }
   } catch (error) {
     console.error('Verification failed', error);
-    notyf.error('인증 코드 전송에 실패하였습니다.');
+    notyf.error('인증 코드 전송에 실패했습니다.');
   }
 };
 
@@ -95,10 +90,10 @@ const confirmCode = (uuid) => {
     axios.post('/api/user/confirm-verification-code', {
       uuid: uuid
     });
-    notyf.success('이메일 인증에 성공하였습니다.');
+    notyf.success('이메일 인증에 성공했습니다.');
   } catch (error) {
     console.error('Code confirmation failed', error);
-    notyf.error('인증에 실패하였습니다.');
+    notyf.error('이메일 인증에 실패했습니다.');
   }
 };
 

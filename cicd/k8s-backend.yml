@@ -20,14 +20,14 @@ spec:
           image: minionz/calit-backend:latest
           readinessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 10
             successThreshold: 3
           livenessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 10
