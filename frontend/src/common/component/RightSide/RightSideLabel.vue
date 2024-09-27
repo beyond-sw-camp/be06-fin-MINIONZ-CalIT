@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import { useLabelStore } from '@/stores/scrum/useLabelStore';
+import { useSprintLabelStore } from '@/stores/workspace/scrum/useSprintLabelStore';
 import {labelColorPalette} from "@/utils/labelUtils";
 
-const { getLabels, addLabel, deleteLabel } = useLabelStore();
+const { getLabels, addLabel, deleteLabel } = useSprintLabelStore();
 
 const selectedLabel = ref([]);
 const labelDetails = ref([]);

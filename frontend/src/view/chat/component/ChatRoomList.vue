@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue';
 import {getTimeDifference} from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
 import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
-import { workspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import { workspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 
 const { chatRoom, fetchChatRooms } = useChatRoomStore();
 onMounted(() => {

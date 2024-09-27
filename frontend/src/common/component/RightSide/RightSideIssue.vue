@@ -3,7 +3,7 @@ import {computed, ref} from 'vue';
 import Multiselect from 'vue-multiselect';
 import {useFriendsStore} from "@/stores/friends/useFriendsStore";
 import {useRoute} from "vue-router";
-import {useIssueStore} from "@/stores/scrum/useIssueStore";
+import {useIssueStore} from "@/stores/workspace/scrum/useIssueStore";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;

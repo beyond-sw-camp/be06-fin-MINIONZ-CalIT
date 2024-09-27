@@ -3,7 +3,7 @@ import {ref} from 'vue';
 import router from "@/router";
 import {useChatRoomStore} from "@/stores/chat/useChatRoomStore";
 import { useParticipants } from '@/stores/user/useParticipantsStore';
-import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { workspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
 
 const chatRoomStore = useChatRoomStore();
 console.log('chatRoomStore:', chatRoomStore);

@@ -4,7 +4,7 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
-import {workspaceStore} from "@/stores/workspace/useWorkspaceStore";
+import {workspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
 
 const routes = [
     {

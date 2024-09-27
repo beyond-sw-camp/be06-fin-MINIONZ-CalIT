@@ -4,7 +4,7 @@ import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
 import BurndownChart from "@/view/dashboard/component/BurndownChart.vue";
 
-import { workspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import { workspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 import {workspaceData} from "@/static/workspaceData";
 
 const workspaceId = workspaceStore.workspaceId;

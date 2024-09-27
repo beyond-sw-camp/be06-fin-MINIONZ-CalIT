@@ -1,7 +1,7 @@
 <script setup>
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import {workspaceStore} from '@/stores/workspace/useWorkspaceStore';
+import {workspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
 import {useRoute} from "vue-router";
 
 const route = useRoute();

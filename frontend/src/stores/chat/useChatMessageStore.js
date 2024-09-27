@@ -1,13 +1,16 @@
 import axios from 'axios';
+import { defineStore} from "pinia";
 import {setPersona} from "@/utils/personaUtils";
 
-export const useChatMessageStore = () => {
+export const useChatMessageStore = defineStore('chatMessage', () => {
     //[MESSAGE] 채팅 보내기 /room/{chatRoomId}/send
-    const sendMessage = async ({ chatroomId, messageContents }) => {
+    const sendMessage = async ({ messageContents, chatRoomId, userId, userName }) => {
         try {
-            const response = await axios.post('/room/{chatRoomId}/send', {
-                chatroomId,
-                messageContents
+            const response = await axios.post(`/api/room/${chatRoomId}/send`, {
+                chatRoomId,
+                messageContents,
+                userId,
+                userName
             });
             return response.data;
         } catch (error) {
@@ -17,13 +20,16 @@ export const useChatMessageStore = () => {
     };
 
     // [POST] 파일 보내기 /message/sendFile
-    const sendFile = async ( file ) => {
+    const sendFile = async ( {files, chatRoomId} ) => {
         try {
             const formData = new FormData();
-            formData.append('file', file);
-            const response = await axios.post('/message/sendFile', formData, {
+            formData.append('file', files);
+            const response = await axios.post('/api/message/sendFile', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
+                },
+                params: {
+                    chatRoomId
                 }
             });
             return response.data;
@@ -36,9 +42,9 @@ export const useChatMessageStore = () => {
     // [GET] 채팅 내역 조회 /message/{chatroomId}
     const fetchChatMessages = async (chatroomId) => {
         try {
-            const response = await axios.get(`/message/${chatroomId}`);
+            const response = await axios.get(`/api/message/${chatroomId}`);
             const messages = response.data.map(message => {
-                const persona = setPersona(message.personaId);
+                const persona = setPersona(message.persona);
                 return {...message, persona};
             });
             return messages;
@@ -48,13 +54,22 @@ export const useChatMessageStore = () => {
         }
     };
 
-    // [MESSAGE] 채팅 수정 /room/{chatRoomId}/edit
-    const editMessage = async ({ chatroomId, messageId, messageContents }) => {
+    // [GET] 메세지 상태 변경
+    const changeMessageStatus = async (chatRoomId) => {
         try {
-            const response = await axios.patch(`/room/{chatRoomId}/edit`, {
-                chatroomId,
-                messageId,
-                messageContents
+            const response = await axios.patch(`/api/message/${chatRoomId}`);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
+
+    // [MESSAGE] 채팅 수정 /room/{chatRoomId}/edit
+    const editMessage = async ({ chatRoomId,  messageContents, userName, messageId, }) => {
+        try {
+            const response = await axios.patch(`/api/room/${chatRoomId}/edit`, {
+                chatRoomId, messageContents, userName, messageId
             });
             return response.data;
         } catch (error) {
@@ -66,7 +81,7 @@ export const useChatMessageStore = () => {
     // [DELETE]  채팅  삭제 /message/{messageId}
     const deleteMessage = async (messageId) => {
         try {
-            const response = await axios.delete(`/message/${messageId}`);
+            const response = await axios.delete(`/api/message/${messageId}`);
             return response.data;
         } catch (error) {
             console.error(error);
@@ -79,7 +94,8 @@ export const useChatMessageStore = () => {
         sendMessage,
         sendFile,
         fetchChatMessages,
+        changeMessageStatus,
         editMessage,
         deleteMessage
     };
-}
+})
