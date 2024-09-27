@@ -2,7 +2,7 @@
 // 실시간 통신용
 import { onMounted, ref } from 'vue';
 import Quill from 'quill';
-import 'quill/dist/quill.bubble.css';
+import 'quill/dist/quill.snow.css';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
@@ -61,7 +61,7 @@ onMounted(() => {
   // Quill 에디터 초기화
   if (editor.value) {
     quillEditor = new Quill(editor.value, {
-      theme: 'bubble',
+      theme: 'snow',
       placeholder: '내용을 입력하세요...',
       modules: {
         toolbar: {
@@ -80,9 +80,58 @@ onMounted(() => {
           handlers: {
             'image': function () {
               const range = this.quill.getSelection();
-              const value = prompt('Enter image URL');
-              if (value) {
-                this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER);
+              const input = document.createElement('input');
+              input.setAttribute('type', 'file');
+              input.setAttribute('accept', 'image/*');
+              input.click();
+              input.onchange = () => {
+                const file = input.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    const base64Image = e.target.result;
+                    this.quill.insertEmbed(range.index, 'image', base64Image, Quill.sources.USER);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              };
+            }
+          },
+          theme: 'snow',
+          placeholder: '내용을 입력하세요...',
+          modules: {
+            toolbar: {
+              container: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline'],
+                ['image', 'code-block'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'script': 'sub' }, { 'script': 'super' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                [{ 'direction': 'rtl' }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['clean']
+              ],
+              handlers: {
+                'image': function () {
+                  const range = this.quill.getSelection();
+                  const input = document.createElement('input');
+                  input.setAttribute('type', 'file');
+                  input.setAttribute('accept', 'image/*');
+                  input.click();
+                  input.onchange = () => {
+                    const file = input.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (e) => {
+                        const base64Image = e.target.result;
+                        this.quill.insertEmbed(range.index, 'image', base64Image, Quill.sources.USER);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  };
+                }
               }
             }
           }
@@ -117,53 +166,35 @@ onMounted(() => {
   <!-- Quill 에디터 섹션 -->
   <div class="editor-section">
         <span class="column">
-          <i class="quill-editings column-icon"></i>
+<!--          <i class="quill-editings column-icon"></i>-->
           글 작성하기
         </span>
-    <div ref="editor" class="content-editor"></div>
+    <div ref="editor" class="content-editor" style="border: none"></div>
   </div>
 </template>
 
 <style scoped>
 .editor-section {
   margin-top: 30px;
-}
-
-.quill-editings {
-  background-image: url("@/assets/icon/boardIcon/quillEditor.svg");
+  min-height: 50%;
 }
 
 
-.ql-editor {
-  min-height: 200px;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #28303F;
+.toolbar{
+  border: none !important;
+}
+.ql-toolbar{
+  border: none !important;
+}
+.ql-snow{
+  border: none !important;
+}
+.editor-section div.ql-container.ql-snow {
+  border: none !important;
 }
 
-.ql-bubble{
-  //max-width: max-content;
-}
-
-.ql-tooltip{
-  position: static;
-}
-
-.ql-bubble .ql-tooltip-arrow{
-  display: none;
-}
-
-.ql-container {
-  position: relative;
-  overflow: visible;
-}
-
-.ql-bubble .ql-tooltip{
-  position: static !important;
-  max-width: fit-content !important;
-}
-
-.ql-bubble .ql-tooltip-arrow{
-  display: none;
+.editor-section div.ql-toolbar.ql-snow{
+  border: none !important;
+  outline: none !important;
 }
 </style>

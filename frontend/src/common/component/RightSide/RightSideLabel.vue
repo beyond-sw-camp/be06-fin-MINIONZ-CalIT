@@ -54,6 +54,8 @@ function addNewLabel() {
     <hr/>
     <div class="label-wrap">
       <div class="input-wrap">
+
+<!--        기존 라벨 선택-->
         <div>
           <div class="input-wrap-item">
             <label for="label-select">기존 라벨 선택</label>
@@ -75,7 +77,7 @@ function addNewLabel() {
             </div>
           </div>
         </div>
-
+        <hr>
         <h3>라벨 생성하기</h3>
         <div class="input-wrap-item">
           <label for="label-name">라벨 명</label>
@@ -99,7 +101,7 @@ function addNewLabel() {
             <label>라벨 색상 팔레트</label>
             <div class="color-palette">
               <span v-for="color in labelColorPalette" :key="color.id" :style="{ backgroundColor: color.backgroundColor, color: color.color }" @click="labelColor.value = color.backgroundColor" class="color-swatch">
-                {{ color.color }}
+                {{ color.id }} label
               </span>
           </div>
         </div>
@@ -113,7 +115,7 @@ function addNewLabel() {
 
 <style scoped>
 .form-container {
-  height: calc(100vh - 250px);
+  height: calc(100vh - 200px);
   box-sizing: border-box;
 }
 
@@ -168,6 +170,7 @@ label {
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .add-label-btn:hover {
@@ -199,7 +202,7 @@ label {
 
 .color-swatch {
   padding: 5px 10px;
-  border-radius: 10px;
+  border-radius: 15px;
   cursor: pointer;
   font-size: 14px;
 }

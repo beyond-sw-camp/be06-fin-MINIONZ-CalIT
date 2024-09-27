@@ -2,14 +2,14 @@
 // 일반 작성용
 import {onMounted, ref} from "vue";
 import Quill from "quill";
-import 'quill/dist/quill.bubble.css';
+import 'quill/dist/quill.snow.css';
 
 const editor = ref(null);
 
 onMounted(() => {
   if (editor.value) {
     new Quill(editor.value, {
-      theme: 'bubble',
+      theme: 'snow',
       placeholder: '내용을 입력하세요...',
       modules: {
         toolbar: {
@@ -26,12 +26,23 @@ onMounted(() => {
             ['clean']
           ],
           handlers: {
-            'image': function() {
+            'image': function () {
               const range = this.quill.getSelection();
-              const value = prompt('Enter image URL');
-              if (value) {
-                this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER);
-              }
+              const input = document.createElement('input');
+              input.setAttribute('type', 'file');
+              input.setAttribute('accept', 'image/*');
+              input.click();
+              input.onchange = () => {
+                const file = input.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    const base64Image = e.target.result;
+                    this.quill.insertEmbed(range.index, 'image', base64Image, Quill.sources.USER);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              };
             }
           }
         }
@@ -57,41 +68,11 @@ onMounted(() => {
   margin-top: 30px;
 }
 
-.quill-editings {
-  background-image: url("@/assets/icon/boardIcon/quillEditor.svg");
+.ql-toolbar.ql-snow{
+  border: none;
 }
 
-
-.ql-editor {
-  min-height: 200px;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #28303F;
-}
-
-.ql-bubble{
-  //max-width: max-content;
-}
-
-.ql-tooltip{
-  position: static;
-}
-
-.ql-bubble .ql-tooltip-arrow{
-  display: none;
-}
-
-.ql-container {
-  position: relative;
-  overflow: visible;
-}
-
-.ql-bubble .ql-tooltip{
-  position: static !important;
-  max-width: fit-content !important;
-}
-
-.ql-bubble .ql-tooltip-arrow{
-  display: none;
+.ql-container.ql-snow {
+  border: none;
 }
 </style>

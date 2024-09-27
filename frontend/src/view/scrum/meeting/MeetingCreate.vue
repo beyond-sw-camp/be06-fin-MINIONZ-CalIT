@@ -30,7 +30,6 @@ const addNote = () => {
   isQuillVisible.value = true;
 };
 const saveNote = () => {
-  // const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
   console.log('Meeting title:', meetingTitle.value);
   // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가해야함
 };
@@ -297,7 +296,7 @@ const rightSideOn = (id) => {
 
 
 .content-editor {
-  min-height: 200px;
+  min-height: 500px;
   padding: 10px;
   background-color: white;
   margin-top: 10px;

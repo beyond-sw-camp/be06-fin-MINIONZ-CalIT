@@ -161,6 +161,11 @@ const routes = [
                         component: () => import('@/view/scrum/Task/TaskTemplate.vue'),
                         children: [
                             {
+                                path: 'create',
+                                name: 'WorkspaceTaskCreate',
+                                component: () => import('@/view/scrum/Task/create/WorkSpaceTaskCreate.vue')
+                            },
+                            {
                                 path: 'kanban',
                                 name: 'WorkspaceTaskKanban',
                                 component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanban.vue')

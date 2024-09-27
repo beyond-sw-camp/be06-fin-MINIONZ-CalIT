@@ -1,9 +1,14 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import {computed, inject, ref, watch} from 'vue';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import Multiselect from 'vue-multiselect';
 import { useFriendsStore} from "@/stores/friends/useFriendsStore";
 import {useRoute} from "vue-router";
+
+const contentsTitle = inject('contentsTitle');
+const contentsDescription = inject('contentsDescription');
+contentsTitle.value = 'Work Space Task 추가하기';
+contentsDescription.value = 'Work Space Task를 추가해보세요!';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -13,21 +18,15 @@ const taskName = ref('');
 const taskContent = ref('');
 const selectedLevel = ref('');
 const selectedPriority = ref('');
-const userSearch = ref('');
+const taskSearch = ref('');
 const selectedTasks = ref([]);
-const assignees = ref([]);
-const reviewers = ref([]);
+const assignees = ref('');
+const reviewers = ref('');
 const startTime = ref('');
 const endTime = ref('');
 const friendStore = useFriendsStore();
 const filteredUsers = computed(() => {
-  return friendStore.getFilteredUsers(workspaceId, userSearch.value);
-});
-
-const filteredTasks = computed(() => {
-  const tasks = taskStore.getTaskTitle();
-  if (!tasks) return [];
-  return tasks.filter(task => task.title.toLowerCase().includes(String(userSearch.value).toLowerCase()));
+  return friendStore.getFilteredUsers(workspaceId, taskSearch.value);
 });
 
 const addTask = () => {
@@ -44,7 +43,7 @@ const addTask = () => {
   selectedPriority.value = '';
 };
 
-watch(userSearch, (newTask) => {
+watch(taskSearch, (newTask) => {
   if (newTask && !selectedTasks.value.includes(newTask)) {
     selectedTasks.value.push(newTask);
   }
@@ -53,32 +52,8 @@ watch(userSearch, (newTask) => {
 
 <template>
   <div class="form-container">
-    <h2>Task 추가하기</h2>
-    <hr/>
-
     <div class="task-wrap">
       <div class="input-wrap">
-        <div>
-          <div>
-            <label for="task-select">기존 Task 선택</label>
-            <multiselect
-                v-model="userSearch"
-                :options="filteredTasks"
-                :searchable="true"
-                :close-on-select="true"
-                :show-labels="false"
-                placeholder="기존 Task 연동하기"
-                label="title"
-                track-by="id"
-            />
-          </div>
-          <div v-if="selectedTasks && selectedTasks.value && selectedTasks.value.length > 0">
-            <p>연동할 Tasks</p>
-            <ul>
-              <li v-for="task in selectedTasks" :key="task.id">{{ task.title }}</li>
-            </ul>
-          </div>
-        </div>
         <div>
           <label for="task-name">Task 제목</label>
           <input type="text" id="task-name" v-model="taskName" placeholder="Task 제목을 적어주세요" class="input-field"/>
@@ -119,7 +94,6 @@ watch(userSearch, (newTask) => {
           <span>~ 종료 날짜</span>
           <input v-model="endTime" type="datetime-local" class="time-editor" />
         </div>
-        <label for="level">난이도</label>
         <div>
           <label for="level">난이도</label>
           <multiselect
@@ -144,8 +118,8 @@ watch(userSearch, (newTask) => {
 
 <style scoped>
 .form-container {
-  height: calc(100vh - 250px);
   box-sizing: border-box;
+  padding: 30px;
 }
 
 h2 {
