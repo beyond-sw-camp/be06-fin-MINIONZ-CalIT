@@ -60,7 +60,7 @@ public class SprintController {
         return new BaseResponse<>(BaseResponseStatus.SPRINT_READ_ALL_SUCCESS, response);
     }
 
-    @PatchMapping("/{sprintId}")
+    @PatchMapping("/{sprintId}/status")
     public BaseResponse<BaseResponseStatus> updateSprintStatus(@PathVariable Long sprintId, @RequestBody UpdateSprintStatusRequest request) {
 
         try {

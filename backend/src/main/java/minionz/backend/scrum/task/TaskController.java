@@ -74,7 +74,7 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
     }
 
-    @PatchMapping("/{sprintId}/{taskId}")
+    @PatchMapping("/{sprintId}/status/{taskId}")
     public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @RequestBody UpdateTaskStatusRequest request) {
 
         try {

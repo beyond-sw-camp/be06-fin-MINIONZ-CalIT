@@ -51,7 +51,7 @@ public class DashboardController {
         return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
     }
 
-    @GetMapping("/{workspaceId}/burndown/workspace")
+    @GetMapping("/{workspaceId}/burndown")
     public BaseResponse<ReadBurndownResponse> readBurndownChart(@PathVariable Long workspaceId) {
         ReadBurndownResponse response;
 
