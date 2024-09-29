@@ -12,22 +12,22 @@ export const taskData = [
         id: 1,
         status: 'No Status',
         tasks: [
-            { id: 1, title: 'Model Answer', labels: ['Design', 'Backlog'], avatars: [user4], taskNumber: "001", dueDate: '2024-10-01' },
-            { id: 2, title: 'Create calendar, chat and email app pages', labels: ['Development', 'Backlog'], avatars: [user5, user6], taskNumber: "002",  dueDate: '2024-10-01' }
+            { id: 1, title: 'Model Answer', labels: ['Design', 'Backlog'], avatars: [user4], taskNumber: "001",startDate: "2024-9-20T00:00:00", endDate: "2024-9-27T00:00:00" },
+            { id: 2, title: 'Create calendar, chat and email app pages', labels: ['Development', 'Backlog'], avatars: [user5, user6], taskNumber: "002", startDate: "2024-9-24T00:00:00", endDate: "2024-9-27T00:00:00"}
         ]
     },
     {
         id: 2,
         status: 'To Do',
         tasks: [
-            {id: 3, title: 'Model Answer', labels: ['Backend'], avatars: [user3], taskNumber: "003", dueDate: '2024-10-01'},
+            {id: 3, title: 'Model Answer', labels: ['Backend'], avatars: [user3], taskNumber: "003",startDate: "2024-9-20T00:00:00", endDate: "2024-9-27T00:00:00"},
             {
                 id: 4,
                 title: 'Add authentication pages',
                 labels: ['Frontend', 'To Do'],
                 avatars: [user2],
                 taskNumber: "004",
-                dueDate: '2024-10-01'
+               startDate: "2024-9-20T00:00:00", endDate: "2024-9-27T00:00:00"
             }
         ]
     },
@@ -42,7 +42,7 @@ export const taskData = [
                 avatars: [user1, space1],
                 taskNumber: "005",
                 morePeople: 5,
-                dueDate: '2024-10-01'
+               startDate: "2024-9-20T00:00:00",  endDate: "2024-9-27T00:00:00"
             }
         ]
     },
@@ -50,7 +50,7 @@ export const taskData = [
         id: 4,
         status: 'Done',
         tasks: [
-            {id: 6, title: 'Model Answer', labels: ['User'], avatars: [space2], taskNumber: "002", dueDate: '2024-10-01'}
+            {id: 6, title: 'Model Answer', labels: ['User'], avatars: [space2], taskNumber: "002",startDate: "2024-9-20T00:00:00", endDate: "2024-9-27T00:00:00"}
         ]
     }
 ];

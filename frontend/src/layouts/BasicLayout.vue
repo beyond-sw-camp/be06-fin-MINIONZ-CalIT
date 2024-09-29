@@ -5,7 +5,7 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import ContentsArea from "@/layouts/ContentsArea.vue";
 import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { workspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
 
 const route = useRoute();
 const isPersonalMenu = ref(false);

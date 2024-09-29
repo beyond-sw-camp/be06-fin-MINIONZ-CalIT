@@ -148,9 +148,9 @@ const passwordsMatch = computed(() => {
         <router-link to="/user/login">로그인 하기</router-link>
         <router-link to="/user/password">비밀번호 찾기</router-link>
       </div>
-      <div class="social-login">
-        <SocialLogin></SocialLogin>
-      </div>
+<!--      <div class="social-login">-->
+<!--        <SocialLogin></SocialLogin>-->
+<!--      </div>-->
     </div>
   </div>
 </template>

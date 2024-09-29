@@ -42,27 +42,6 @@ const workspaceId = route.params.workspaceId;
     </li>
     <hr>
     <li>
-      <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
-        <i class="icon-board"/>
-        <p class="outfit">Board</p>
-      </router-link>
-      <ul class="submenu">
-        <li>
-          <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
-            <i class="icon-qa"/>
-            <p class="outfit">QA Board</p>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="`/workspace/${workspaceId}/scrum/board/error/list`">
-            <i class="icon-errors"/>
-            <p class="outfit">Errors</p>
-          </router-link>
-        </li>
-      </ul>
-    </li>
-    <hr>
-    <li>
       <router-link :to="`/workspace/${workspaceId}/scrum/task/kanban`">
         <i class="icon-scrum"/>
         <p class="outfit">Scrum</p>
@@ -90,6 +69,28 @@ const workspaceId = route.params.workspaceId;
         </li>
       </ul>
     </li>
+    <hr>
+    <li>
+      <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
+        <i class="icon-board"/>
+        <p class="outfit">Board</p>
+      </router-link>
+      <ul class="submenu">
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
+            <i class="icon-qa"/>
+            <p class="outfit">QA Board</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/board/error/list`">
+            <i class="icon-errors"/>
+            <p class="outfit">Errors</p>
+          </router-link>
+        </li>
+      </ul>
+    </li>
+
   </ul>
 </template>
 

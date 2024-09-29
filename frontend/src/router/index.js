@@ -4,7 +4,7 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
-import {workspaceStore} from "@/stores/workspace/useWorkspaceStore";
+import {workspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
 
 const routes = [
     {
@@ -161,6 +161,11 @@ const routes = [
                         component: () => import('@/view/scrum/Task/TaskTemplate.vue'),
                         children: [
                             {
+                                path: 'create',
+                                name: 'WorkspaceTaskCreate',
+                                component: () => import('@/view/scrum/Task/create/WorkSpaceTaskCreate.vue')
+                            },
+                            {
                                 path: 'kanban',
                                 name: 'WorkspaceTaskKanban',
                                 component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanban.vue')
@@ -174,11 +179,6 @@ const routes = [
                                 path: 'timeline',
                                 name: 'WorkspaceTaskTimeline',
                                 component: () => import('@/view/scrum/Task/timeline/TimeLine.vue')
-                            },
-                            {
-                                path: 'create',
-                                name: 'WorkspaceScrumCreateIssue',
-                                component: () => import('@/view/scrum/create/TaskCreate.vue')
                             },
                         ]
                     },

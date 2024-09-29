@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f7ea2174-af23-46fd-a7b9-c1d16c92aba6" name="Changes" comment="[Feat] 회원가입 페이지 소셜로그인 삭제" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="frontend/feature/scrum/task" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;xeunnie&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/beyond-sw-camp/be06-fin-MINIONZ-CalIT.git&quot;,
+    &quot;accountId&quot;: &quot;72a0959a-082d-449d-a3aa-3c847beb5e50&quot;
+  }
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2ldac07XhRTLtBJ1VMLiQYcNR7M" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "frontend/feature/board/qa",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/chloechoi/Desktop/데스크탑 - 최승은의 MacBook Pro/development/Projects/MinionzStart/frontend/src/stores/workspace/scrum",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "vue.recent.templates": [
+      "Vue Composition API Component"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/stores/workspace/scrum" />
+      <recent name="$PROJECT_DIR$/frontend/src/view/scrum/Task/timeline" />
+      <recent name="$PROJECT_DIR$/frontend/src/common/component/Editor" />
+      <recent name="$PROJECT_DIR$/frontend/src/layouts/component/Modal" />
+      <recent name="$PROJECT_DIR$/frontend/src/static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/stores/workspace/scrum" />
+      <recent name="$PROJECT_DIR$/frontend/src/stores/workspace" />
+      <recent name="$PROJECT_DIR$/frontend/src/stores/workspace/space" />
+      <recent name="$PROJECT_DIR$/frontend/src/common/component" />
+      <recent name="$PROJECT_DIR$/frontend/src/layouts/component/menu" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f7ea2174-af23-46fd-a7b9-c1d16c92aba6" name="Changes" comment="" />
+      <created>1725512483292</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1725512483292</updated>
+      <workItem from="1725512484707" duration="84548000" />
+      <workItem from="1725878798823" duration="55000" />
+      <workItem from="1725882319345" duration="9436000" />
+      <workItem from="1725936630806" duration="1008000" />
+      <workItem from="1725937762533" duration="8063000" />
+      <workItem from="1725949372065" duration="1023000" />
+      <workItem from="1725950410680" duration="13958000" />
+      <workItem from="1726012537149" duration="4659000" />
+      <workItem from="1726018774601" duration="61000" />
+      <workItem from="1726020514952" duration="549000" />
+      <workItem from="1726021097293" duration="25746000" />
+      <workItem from="1726104449168" duration="2946000" />
+      <workItem from="1726107765475" duration="3003000" />
+      <workItem from="1726117083692" duration="24390000" />
+      <workItem from="1726197803058" duration="185000" />
+      <workItem from="1726197993884" duration="260000" />
+      <workItem from="1726198258405" duration="88000" />
+      <workItem from="1726198349969" duration="52000" />
+      <workItem from="1726198435410" duration="155000" />
+      <workItem from="1726198594082" duration="77000" />
+      <workItem from="1726198688443" duration="27945000" />
+      <workItem from="1726231967272" duration="746000" />
+      <workItem from="1726239097038" duration="945000" />
+      <workItem from="1726402265079" duration="13000" />
+      <workItem from="1726402300565" duration="295000" />
+      <workItem from="1726402734356" duration="7588000" />
+      <workItem from="1726669165798" duration="1096000" />
+      <workItem from="1726670271233" duration="38000" />
+      <workItem from="1726670339634" duration="80000" />
+      <workItem from="1726670509020" duration="196000" />
+      <workItem from="1726670719831" duration="110160000" />
+      <workItem from="1727146549124" duration="931000" />
+      <workItem from="1727147494899" duration="29000" />
+      <workItem from="1727147546313" duration="107373000" />
+      <workItem from="1727438538650" duration="2188000" />
+      <workItem from="1727580958683" duration="17000" />
+      <workItem from="1727581003083" duration="2513000" />
+      <workItem from="1727583527925" duration="981000" />
+      <workItem from="1727584517184" duration="434000" />
+    </task>
+    <task id="LOCAL-00001" summary="[Feat] 회의 예약, 상세, 수정 페이지 완료">
+      <option name="closed" value="true" />
+      <created>1726232085477</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1726232085477</updated>
+    </task>
+    <task id="LOCAL-00002" summary="[Feat] 회원가입 페이지 소셜로그인 삭제">
+      <option name="closed" value="true" />
+      <created>1727582473529</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1727582473529</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="frontend/feature/alert" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[Feat] 회의 예약, 상세, 수정 페이지 완료" />
+    <MESSAGE value="[Test] 알림 백업" />
+    <MESSAGE value="[Feat] 회원가입 페이지 소셜로그인 삭제" />
+    <option name="LAST_COMMIT_MESSAGE" value="[Feat] 회원가입 페이지 소셜로그인 삭제" />
+  </component>
+</project>

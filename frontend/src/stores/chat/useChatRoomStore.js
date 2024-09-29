@@ -1,7 +1,9 @@
 import {ref} from "vue";
-import {chatRoomList, chatRoomList as initialChatRoomList} from '@/static/chatData';
 import axios from "axios";
-export const useChatRoomStore = () => {
+import {defineStore} from "pinia";
+import {chatRoomList, chatRoomList as initialChatRoomList} from '@/static/chatData';
+
+export const useChatRoomStore = defineStore('chatRoomStore', () => {
     const chatRoom = chatRoomList;
     const newChatRoomId = ref(0);
 
@@ -18,7 +20,7 @@ export const useChatRoomStore = () => {
 
         const newChatRoomId = ref(0);
         try {
-            const response = await axios.post('/chat/room', {
+            const response = await axios.post('/api/chat/room', {
                 chatroomName,
                 participants
             });
@@ -40,24 +42,27 @@ export const useChatRoomStore = () => {
 
 
     // [GET] 채팅 방 목록 조회
-    const fetchChatRooms = () => {
-        chatRoom.value = initialChatRoomList;
-    };
+    const fetchChatRooms = async (workspaceId) => {
+        try {
+            const response = await axios.get(`/api/chat/${workspaceId}/roomList`);
+            chatRoom.value = response.data;
+        } catch (error) {
+            console.error('Error fetching chat rooms:', error);
+        }
+    }
 
     // [PATCH] 채팅 방 수정
-    const updateChatRoom = async ({chatroomId, chatroomName, participants}) => {
+    const updateChatRoom = async ({chatroomId, newRoomName}) => {
         try {
-            const response = await axios.patch(`/chat/room/${chatroomId}`, {
-                chatroomName,
-                participants
+            const response = await axios.patch(`/api/chat/room/${chatroomId}/edit`, {
+                newRoomName
             });
 
             if (response.data.success) {
                 const index = chatRoom.value.findIndex(room => room.chatroomId === chatroomId);
                 chatRoom.value[index] = {
                     chatroomId,
-                    chatroomName,
-                    participants
+                    newRoomName
                 };
             } else {
                 throw new Error('Failed to update chat room');
@@ -70,7 +75,7 @@ export const useChatRoomStore = () => {
     // [DELETE] 채팅 방 나가기  /chat/{chatroomId}/exit
     const exitChatRoom = async (chatroomId) => {
         try {
-            const response = await axios.delete(`/chat/${chatroomId}/exit`);
+            const response = await axios.delete(`/api/chat/${chatroomId}/exit`);
 
             if (response.data.success) {
                 chatRoom.value = chatRoom.value.filter(room => room.chatroomId !== chatroomId);
@@ -89,5 +94,5 @@ export const useChatRoomStore = () => {
         fetchChatRooms,
         updateChatRoom,
         exitChatRoom
-    };
-};
+    }
+})

@@ -2,26 +2,17 @@
 import { computed, defineProps, ref, watch } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import TaskCard from './KanbanCard.vue';
+import { getTaskCountBackgroundColor, getTaskCountColor } from '@/utils/taskUtils';
+import {useRoute} from "vue-router";
 
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
 const props = defineProps({
   data: {
     type: Object,
     required: true
   }
-});``
-
-const getTaskCountBackgroundColor = (status) => {
-  if (status === 'No Status') return 'rgba(234, 179, 8, 0.1)';
-  else if (status === 'To Do') return 'rgba(236, 72, 153, 0.1)';
-  else if (status === 'In Progress') return 'rgba(168, 85, 247, 0.1)';
-  else return 'rgba(34, 197, 94, 0.1)';
-}
-const getTaskCountColor = (status) => {
-  if (status === 'No Status') return 'rgba(234, 179, 8)';
-  else if (status === 'To Do') return 'rgba(236, 72, 153)';
-  else if (status === 'In Progress') return 'rgba(168, 85, 247)';
-  else return 'rgba(34, 197, 94)';
-}
+});
 
 const taskCountBgStyle = computed(() => {
   return getTaskCountBackgroundColor(props.data.status);
@@ -47,13 +38,17 @@ watch(() => props.data.tasks, (newTasks) => {
     <VueDraggableNext :list="tasks" item-key="id" group="tasks" draggable=".task-card" handle=".task-card">
       <TaskCard v-for="(task) in tasks" :key="task.id" :task="task"/>
     </VueDraggableNext>
-    <div class="add-task-card">
+    <router-link :to="`/workspace/${workspaceId}/scrum/task/create`" class="add-task-card">
       <span class="plus">+</span> <span class="add-text">Add Task</span>
-    </div>
+    </router-link>
   </div>
 </template>
 
 <style scoped>
+a{
+  text-decoration: none;
+  color: #6b7280;
+}
 .task-column {
   width: 100%;
   background-color: #fff;

@@ -1,9 +1,8 @@
 <script setup>
 import {useRoute} from 'vue-router';
-import {computed, inject} from 'vue';
+import {computed, inject, ref} from 'vue';
 import {workspaceData} from '@/static/workspaceData';
-// import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
-// import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
@@ -17,27 +16,8 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Detail';
 contentsDescription.value = '회의 정보를 확인해보세요!';
 
-// const meetingTitle = ref('회의록 제목');
-// const meetingDescription = ref('회의록 상세 설명');
-// const rightSideVisible = ref(false);
-// const activeComponentId = ref('');
-
-// const editor = ref(null);
-// const addNote = () => {
-//   // edit 페이지로 이동하는데 현재의 내용을 모두 들고 가게 해야함
-//   // console.log('Meeting title:', meetingTitle.value);
-// };
-
-// const rightSideOn = (id) => {
-//   const meetingNoteContainer = document.querySelector('.meeting-note-container');
-//   if (meetingNoteContainer) {
-//     meetingNoteContainer.style.transition = 'width 0.5s ease';
-//     meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
-//   }
-//   console.log('Add issue button clicked');
-//   activeComponentId.value = id;
-//   rightSideVisible.value = !rightSideVisible.value;
-// };
+const editor = ref(null);
+const showEditor = ref(false);
 </script>
 
 <template>
@@ -50,7 +30,6 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
         </span>
         <p class="title-editor"> 회의록 제목</p>
       </div>
-      <!--      설명 추가하기-->
       <div class="issue-section">
         <span class="column">
           <i class="meeting-description column-icon"></i>
@@ -58,7 +37,6 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
         </span>
         <p class="description-editor">회의록 상세"</p>
       </div>
-      <!-- 작성자 및 회의 참가자 표시 -->
       <div class="author-section">
         <div class="author">
           <span class="column">
@@ -78,7 +56,6 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
             <i class="user-multiple column-icon"></i>
             회의 참여자
           </span>
-<!--          <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>-->
           <div class="users-list">
             <div class="user-profile">
               <img :src=user2 alt="참여자">
@@ -91,39 +68,16 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
           </div>
         </div>
       </div>
-
       <div class="issue-section">
         <span class="column">
           <i class="label-add column-icon"></i>
-          라벨 추가하기
+          라벨
         </span>
-<!--        <button class="issue-button" @click="rightSideOn('label')">라벨 추가하기</button>-->
         <button class="label-button">Frontend</button>
       </div>
-
-      <!-- 태스크 추가하기 -->
-      <div class="issue-section">
-        <span class="column">
-          <i class="task-add column-icon"></i>
-          태스크 추가하기
-        </span>
-<!--        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>-->
-        <span class="issue-id">User_001</span>
-      </div>
-
-      <!-- 이슈 추가하기 -->
-      <div class="issue-section">
-        <span class="column">
-          <i class="issue-add column-icon"></i>
-          이슈 추가하기
-        </span>
-<!--        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>-->
-        <span class="issue-id">User_001</span>
-      </div>
-      <router-link class="save-button" to="`/workspace/${workspaceData.workspaceId}/scrum/meeting/edit/${props.id}`">회의록 작성하기</router-link>
-<!--      <QuillEditor ref="editor" class="content-editor" v-model="editor"/>-->
+      <div class="save-button" @click="showEditor = !showEditor">회의록 작성하기</div>
+      <QuillEditor v-if="showEditor" ref="editor" class="content-editor" v-model="editor"/>
     </div>
-<!--    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>-->
   </div>
 </template>
 
@@ -252,7 +206,7 @@ a{
 }
 
 .content-editor {
-  min-height: 200px;
+  min-height: 500px;
   padding: 10px;
   background-color: white;
   margin-top: 10px;
@@ -270,6 +224,7 @@ a{
   margin-top: 20px;
   width: 150px;
   margin-left: auto;
+  text-align: center;
 }
 
 .user-profile {
