@@ -33,29 +33,3 @@ spec:
       name: "svc80"
       targetPort: 80
   type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: frontend-ingress-vname
-  namespace: default
-  annotations:
-    nginx.ingress.kubernetes.io/canary: "true"
-    nginx.ingress.kubernetes.io/canary-weight: "10"
-spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - calit.kro.kr
-      secretName: tls-secret
-  rules:
-    - host: calit.kro.kr
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-svc-vname
-                port:
-                  number: 80
