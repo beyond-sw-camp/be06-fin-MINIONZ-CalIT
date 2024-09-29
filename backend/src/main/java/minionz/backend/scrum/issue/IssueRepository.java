@@ -24,4 +24,6 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
             "WHERE w.workspaceId = :workspaceId " +
             "AND i.status = true ")
     int findWorkspaceIssuesCount(Long workspaceId);
+
+    List<Issue> findByWorkspace_WorkspaceId(Long workspaceId);
 }
