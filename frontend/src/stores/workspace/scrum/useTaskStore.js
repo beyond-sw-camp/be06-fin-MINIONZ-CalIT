@@ -5,76 +5,74 @@ import { defineStore} from "pinia";
 import { getTaskCountBackgroundColor, getTaskCountColor } from '@/utils/taskUtils';
 
 //axios ver
-export const useTaskStore = defineStore({
-    const taskDatas = ref([]);
-    const addTask = async (task) => {
-        const response = await axios.post('api/task', task);
-        taskDatas.value.push(response.data);
+export const useTaskStore = defineStore('taskStore', () => {
+    const taskData = ref([]);
+    const addTask = async ({sprintId, startDate, endDate, title, contents, difficulty, priority, labels, participants}) => {
+        try {
+            const response = await axios.post(`api/task/${sprintId}`, {startDate, endDate, title, contents, difficulty, priority, labels, participants});
+            taskData.value.push(response.data);
+        } catch (error) {
+            console.error('Error adding task:', error);
+        }
     };
-    const getTask = async (index) => {
-        const response = await axios.get(`http://localhost:8080/task/${index}`);
-        return response.data;
+
+    const getTask = async ({sprintId, taskId}) => {
+        try {
+            const response = await axios.get(`api/task/${sprintId}/${taskId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error getting task:', error);
+        }
     };
-    const getTasks = async () => {
-        const response = await axios.get('http://localhost:8080/task');
-        taskDatas.value = response.data;
+
+    const getTaskList = async (sprintId) => {
+        try {
+            const response = await axios.get(`/api/task/${sprintId}/all`);
+            taskData.value = response.data;
+        } catch (error) {
+            console.error('Error getting task list:', error);
+        }
     };
+
+    const updateTask = async ({taskId, title, contents, difficulty, priority, labels, participants}) => {
+        try {
+            const response = await axios.put(`api/task/${taskId}`, {taskId, title, contents, difficulty, priority, labels, participants});
+            taskData.value = response.data;
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
+    };
+
+    const updateTaskStatus = async ({sprintId, taskId}) => {
+        try {
+            const response = await axios.put(`api/task/${sprintId}/status/${taskId}`, {taskId, status});
+            taskData.value = response.data;
+        } catch (error) {
+            console.error('Error updating task status:', error);
+        }
+    };
+
+    const deleteTask = async ({sprintId, taskId}) => {
+        try {
+            await axios.delete(`api/task/${sprintId}/${taskId}`);
+            taskData.value = taskData.value.filter(task => task.id !== taskId);
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
+    }
+
+    // api 안씀
     const getTaskCount = () => {
-        return taskDatas.value.length
+        return taskData.value.length
+    }
+
+    return {
+        addTask,
+        getTask,
+        getTaskList,
+        getTaskCount,
+        updateTask,
+        updateTaskStatus,
+        deleteTask
     }
 })
-
-
-// export const useTaskStore = () => {
-//     const taskDatas = ref(taskData || []);
-//
-//     const addTask = (task) => {
-//         taskDatas.value.push(task);
-//     };
-//
-//     const getTask = (index) => {
-//         return taskDatas.value[index];
-//     };
-//
-//     const getTasks = () => {
-//         return taskDatas.value;
-//     };
-//
-//     const getTaskCount = () => {
-//         return taskDatas.value.length
-//     }
-//
-//     const getTaskTitle = () => {
-//         return taskDatas.value.flatMap(status => status.tasks.map(task => ({ title: task.title, status: status.status })));
-//     }
-//
-//     const updateTask = (index, updatedTask) => {
-//         if (index >= 0 && index < taskDatas.value.length) {
-//             taskDatas.value[index] = updatedTask;
-//         }
-//     };
-//
-//     const updateTaskStatus = (index, status) => {
-//         if (index >= 0 && index < taskDatas.value.length) {
-//             taskDatas.value[index].status = status;
-//             taskDatas.value[index].backgroundColor = getTaskCountBackgroundColor(status);
-//             taskDatas.value[index].color = getTaskCountColor(status);
-//         }
-//     };
-//     const deleteTask = (index) => {
-//         if (index >= 0 && index < taskDatas.value.length) {
-//             taskDatas.value.splice(index, 1);
-//         }
-//     };
-//
-//     return {
-//         addTask,
-//         getTask,
-//         getTasks,
-//         getTaskCount,
-//         getTaskTitle,
-//         updateTask,
-//         updateTaskStatus,
-//         deleteTask
-//     };
-// }
