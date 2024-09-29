@@ -13,6 +13,8 @@ import minionz.backend.scrum.task.TaskRepository;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.workspace.WorkspaceRepository;
 import minionz.backend.scrum.workspace.model.Workspace;
+import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
+import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 import minionz.backend.user.UserRepository;
 import minionz.backend.user.model.User;
 import org.springframework.data.domain.Page;
@@ -29,22 +31,26 @@ public class QaBoardService {
     private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final WorkspaceParticipationRepository workspaceParticipationRepository;
 
-    public QaBoardService(QaBoardRepository qaBoardRepository, QaBoardImageRepository qaBoardImageRepository, WorkspaceRepository workspaceRepository, UserRepository userRepository, TaskRepository taskRepository) {
+    public QaBoardService(QaBoardRepository qaBoardRepository, QaBoardImageRepository qaBoardImageRepository, WorkspaceRepository workspaceRepository, UserRepository userRepository, TaskRepository taskRepository, WorkspaceParticipationRepository workspaceParticipationRepository) {
       this.qaBoardImageRepository = qaBoardImageRepository;
       this.qaBoardRepository = qaBoardRepository;
       this.workspaceRepository = workspaceRepository;
       this.userRepository = userRepository;
         this.taskRepository = taskRepository;
+        this.workspaceParticipationRepository = workspaceParticipationRepository;
     }
 
     public CreateQaBoardResponse create( List<String> fileNames, CreateQaBoardRequest request, Long workspaceId, Long userId)  {
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.WORKSPACE_NOT_EXISTS));
         User user1 = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
         Task task = taskRepository.findById(request.getTaskId())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.TASK_NOT_EXISTS));
+        WorkspaceParticipation workspaceParticipation = workspaceParticipationRepository.findById(request.getWorkspaceParticipationId())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
         QaBoard qaBoard = QaBoard.builder()
                 .qaboardTitle(request.getQaboardTitle())
                 .qaboardContent(request.getQaboardContent())
@@ -52,6 +58,7 @@ public class QaBoardService {
                 .workSpace(workspace)
                 .user(user1)
                 .task(task)
+                .workspaceParticipation(workspaceParticipation)
                 .build();
         qaBoardRepository.save(qaBoard);
         List<GetQaBoardImageResponse> getQaBoardImageResponseList = new ArrayList<>();
@@ -86,7 +93,7 @@ public class QaBoardService {
     public GetQaBoardResponse read(Long boardId) throws BaseException {
 
         QaBoard qaBoard = qaBoardRepository.findById(boardId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.ERRORBOARD_SERACH_FAIL));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.QABOARD_SERACH_FAIL));
         List<QaBoardImage> qaBoardImageList = qaBoard.getQaBoardImageList();
         List<GetQaBoardImageResponse> getQaBoardImageResponseList = new ArrayList<>();
         for (QaBoardImage qaBoardImage : qaBoardImageList) {
@@ -103,11 +110,14 @@ public class QaBoardService {
                 .qaBoardId(qaBoard.getQaBoardId())
                 .qaboardTitle(qaBoard.getQaboardTitle())
                 .qaboardContent(qaBoard.getQaboardContent())
+                .getQaBoardImageResponseList(getQaBoardImageResponseList)
                 .answerStatus(qaBoard.getAnswerStatus())
                 .createdAt(qaBoard.getCreatedAt())
                 .modifiedAt(qaBoard.getModifiedAt())
                 .workspaceId(qaBoard.getWorkSpace().getWorkspaceId())
                 .taskName(qaBoard.getTask().getTaskTitle())
+                .assignUser(qaBoard.getWorkspaceParticipation().getUser().getUserName())
+                .personaImage(qaBoard.getUser().getPersona())
                 .build();
     }
     public Page<GetQaBoardResponse> readAll(int page, int size)  {
@@ -136,6 +146,8 @@ public class QaBoardService {
                     .getQaBoardImageResponseList(getQaBoardImageResponseList)
                     .workspaceId(qaBoard.getWorkSpace().getWorkspaceId())
                     .taskName(qaBoard.getTask().getTaskTitle())
+                    .assignUser(qaBoard.getWorkspaceParticipation().getUser().getUserName())
+                    .personaImage(qaBoard.getUser().getPersona())
                     .build();
         });
         return getQaBoardResponses;
@@ -167,6 +179,8 @@ public class QaBoardService {
                     .getQaBoardImageResponseList(getQaBoardImageResponseList)
                     .workspaceId(qaBoard.getWorkSpace().getWorkspaceId())
                     .taskName(qaBoard.getTask().getTaskTitle())
+                    .assignUser(qaBoard.getWorkspaceParticipation().getUser().getUserName())
+                    .personaImage(qaBoard.getUser().getPersona())
                     .build();
         });
         return getQaBoardResponses;

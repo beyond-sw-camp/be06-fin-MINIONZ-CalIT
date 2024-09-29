@@ -11,5 +11,6 @@ public class CreateQaBoardRequest {
     private Long taskId;
     private String qaboardTitle;
     private String qaboardContent;
+    private Long workspaceParticipationId;
 
 }

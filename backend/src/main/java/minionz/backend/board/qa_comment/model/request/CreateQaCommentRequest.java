@@ -12,4 +12,5 @@ public class CreateQaCommentRequest {
     private String qaCommentContent;
     private String progressStatus;
 
+
 }

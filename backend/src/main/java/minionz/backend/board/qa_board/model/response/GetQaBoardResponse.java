@@ -18,6 +18,7 @@ public class GetQaBoardResponse {
     private Long qaBoardId;
     private String qaboardTitle;
     private String qaboardContent;
+    private Integer personaImage;
 
     private Long workspaceId;
     private AnswerStatus answerStatus; //답변상태
@@ -28,4 +29,5 @@ public class GetQaBoardResponse {
 
     private String userName;
     private String taskName;
+    private String assignUser;
 }

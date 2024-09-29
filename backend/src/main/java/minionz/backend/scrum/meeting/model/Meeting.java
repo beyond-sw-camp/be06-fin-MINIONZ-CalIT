@@ -3,6 +3,7 @@ package minionz.backend.scrum.meeting.model;
 import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.common.BaseEntity;
+import minionz.backend.scrum.label.model.NoteLabel;
 import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint.model.Sprint;
@@ -34,6 +35,10 @@ public class Meeting extends BaseEntity {
     // Meeting : Task = 1 : N
     @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
+
+    // Meeting : NoteLabel = 1 : N
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
+    private List<NoteLabel> noteLabels =new ArrayList<>();
 
     // Meeting : Sprint = N : 1
     @ManyToOne(fetch = FetchType.LAZY)

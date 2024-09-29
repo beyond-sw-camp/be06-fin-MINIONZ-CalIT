@@ -26,6 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("JwtFilter가 호출되었습니다: " + request.getRequestURI()); // 요청 URI 로그
         try{
             String authorization = null;
             if(request.getCookies() != null) {
@@ -35,6 +36,13 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
                 }
             }
+
+            if (request.getRequestURI().equals("/api/health")) {
+                log.info("Health check 요청이므로 인증 쿠키를 확인하지 않습니다.");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             if(authorization == null){
                 log.info("인증 쿠키 없음");
                 filterChain.doFilter(request, response);

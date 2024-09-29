@@ -41,7 +41,7 @@ public class QaCommentService {
 
         // Optional 처리
         User user1 = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATROOM_USER_NOT_AUTHORIZED)); // 예외 처리
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND)); // 예외 처리
 
         ProgressStatus progressStatus = ProgressStatus.valueOf(request.getProgressStatus().toUpperCase());
         QaBoard qaBoard = qaBoardRepository.findById(qaBoardId)
@@ -114,6 +114,7 @@ public class QaCommentService {
                             .modifiedAt(comment.getModifiedAt())
                             .images(imageResponses)
                             .progressStatus(String.valueOf(comment.getProgressStatus()))
+                            .personaImage(comment.getUser().getPersona())
                             .build();
                 })
                 .collect(Collectors.toList());
