@@ -12,6 +12,7 @@ import minionz.backend.scrum.sprint.SprintRepository;
 import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.task.TaskRepository;
 import minionz.backend.scrum.task.model.Task;
+import minionz.backend.scrum.task.model.TaskStatus;
 import minionz.backend.scrum.workspace.WorkspaceRepository;
 import minionz.backend.user.model.User;
 import org.springframework.data.domain.PageRequest;
@@ -104,19 +105,34 @@ public class DashboardService {
 
         List<Task> tasks = taskRepository.findAllBySprintSprintId(sprintId);
 
+        // 전체 작업 수 계산
+        int allTaskCount = tasks.size();
+
+        // TODO와 IN_PROGRESS 상태의 작업 수 계산
+        long inProgressAndTodoCount = tasks.stream()
+                .filter(task -> task.getStatus().equals(TaskStatus.TODO)
+                        || task.getStatus().equals(TaskStatus.IN_PROGRESS))
+                .count();
+
+        // 백분율 계산
+        double burndownPercentage = (allTaskCount > 0)
+                ? ((double) inProgressAndTodoCount / allTaskCount) * 100
+                : 0.0;
+
+        // 응답 객체 생성
         return ReadBurndownResponse
                 .builder()
                 .sprintId(sprint.getSprintId())
                 .sprintName(sprint.getSprintTitle())
                 .startDate(sprint.getStartDate())
                 .endDate(sprint.getEndDate())
-                .tasks(tasks.stream().map(
-                        task -> BurnTaskResponse
-                                .builder()
-                                .id(task.getTaskId())
-                                .status(task.getStatus())
-                                .doneDate(task.getDoneDate())
-                                .build()).toList())
+                .tasks(tasks.stream().map(task -> BurnTaskResponse
+                        .builder()
+                        .id(task.getTaskId())
+                        .status(task.getStatus())
+                        .doneDate(task.getDoneDate())
+                        .build()).toList())
+                .burndownPercentage(burndownPercentage) // 백분율 추가
                 .build();
     }
 
