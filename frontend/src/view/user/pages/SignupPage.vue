@@ -54,8 +54,7 @@ const checkId = async (loginId) => {
       const r = await axios.post('/api/user/check-id', {
         loginId: loginId,
       });
-      console.log(r.data);
-      if (r.data) {
+      if (r.data.success) {
         notyf.success('사용 가능한 아이디 입니다.');
       } else {
         notyf.error("중복된 아이디 입니다.")
@@ -73,7 +72,7 @@ const showVerificationInput = async (email) => {
     const r = await axios.post('/api/user/send-verification-code', {
       email: email
     });
-    if(r.data){ // 등록 가능 이메일 여부 true 면
+    if(r.data.success){ // 등록 가능 이메일 여부 true 면
       notyf.success('인증 코드를 전송했습니다.');
       showVerificationCode.value = true;
     } else { //등록 가능 이메일 여부 false 면
@@ -85,12 +84,14 @@ const showVerificationInput = async (email) => {
   }
 };
 
-const confirmCode = (uuid) => {
+const confirmCode = async (uuid) => {
   try {
-    axios.post('/api/user/confirm-verification-code', {
+    const r = await axios.post('/api/user/confirm-verification-code', {
       uuid: uuid
     });
+    if(r.data.success){
     notyf.success('이메일 인증에 성공했습니다.');
+    }
   } catch (error) {
     console.error('Code confirmation failed', error);
     notyf.error('이메일 인증에 실패했습니다.');
