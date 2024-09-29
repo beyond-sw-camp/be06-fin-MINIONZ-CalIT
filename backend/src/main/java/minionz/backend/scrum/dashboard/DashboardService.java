@@ -19,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -119,21 +121,41 @@ public class DashboardService {
                 ? ((double) inProgressAndTodoCount / allTaskCount) * 100
                 : 0.0;
 
+        // 스프린트 기간 계산
+        LocalDateTime startDate = sprint.getStartDate();
+        LocalDateTime endDate = sprint.getEndDate();
+        long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
+        long elapsedDays = ChronoUnit.DAYS.between(startDate, LocalDateTime.now());
+
+
+        if (elapsedDays < 1) {
+            elapsedDays = 0;
+        }
+        // 남아있는 이상적인 작업량 계산 (선형 감소)
+        double idealRemainingTasks = allTaskCount * (1 - ((double) elapsedDays / totalDays));
+
+        // 이상적인 비율 계산 (선형 감소를 기준으로)
+        double idealBurndownPercentage = (allTaskCount > 0)
+                ? (idealRemainingTasks / allTaskCount) * 100
+                : 0.0;
+
         // 응답 객체 생성
         return ReadBurndownResponse
                 .builder()
                 .sprintId(sprint.getSprintId())
                 .sprintName(sprint.getSprintTitle())
-                .startDate(sprint.getStartDate())
-                .endDate(sprint.getEndDate())
+                .startDate(startDate)
+                .endDate(endDate)
                 .tasks(tasks.stream().map(task -> BurnTaskResponse
                         .builder()
                         .id(task.getTaskId())
                         .status(task.getStatus())
                         .doneDate(task.getDoneDate())
                         .build()).toList())
-                .burndownPercentage(burndownPercentage) // 백분율 추가
+                .burndownPercentage(burndownPercentage) // 현재 상태 비율
+                .idealBurndownPercentage(idealBurndownPercentage) // 이상적인 상태 비율
                 .build();
     }
+
 
 }
