@@ -8,7 +8,7 @@ import minionz.backend.user.model.request.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
@@ -26,8 +26,8 @@ public class UserController {
     }
 
     @PostMapping("/check-id")
-    public BaseResponse<BaseResponseStatus> checkUserId(@RequestBody String loginId) {
-        boolean duplicate = userService.checkLoginDuplicate(loginId);
+    public BaseResponse<BaseResponseStatus> checkUserId(@RequestBody CheckIdRequest checkIdRequest) {
+        boolean duplicate = userService.checkLoginDuplicate(checkIdRequest.getLoginId());
         if (duplicate) {
             return new BaseResponse<>(BaseResponseStatus.USER_ID_DUPLICATE);
         } else {
@@ -35,7 +35,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/send-verificationcode")
+    @PostMapping("/send-verification-code")
     public BaseResponse<BaseResponseStatus> sendVerificationCode(@RequestBody EmailVerifyRequest emailVerifyRequest) {
         String email = emailVerifyRequest.getEmail();
         boolean duplicate = userService.sendVerificationCode(email);
@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/confirm-verificationcode")
+    @PostMapping("/confirm-verification-code")
     public BaseResponse<BaseResponseStatus> confirmVerificationCode(@RequestBody UuidRequest uuidRequest) {
         boolean verify = userService.verifyUser(uuidRequest.getUuid());
         if (verify) {
