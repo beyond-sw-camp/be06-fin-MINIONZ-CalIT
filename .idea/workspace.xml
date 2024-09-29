@@ -4,32 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f7ea2174-af23-46fd-a7b9-c1d16c92aba6" name="Changes" comment="[Feat] 회원가입 페이지 소셜로그인 삭제">
-      <change afterPath="$PROJECT_DIR$/cicd/k8s-ingress.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cicd/k8s-kafka.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cicd/k8s-zookeeper.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/stores/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MinionzStart.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cicd/Jenkinsfile-backend" beforeDir="false" afterPath="$PROJECT_DIR$/cicd/Jenkinsfile-backend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cicd/Jenkinsfile-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/cicd/Jenkinsfile-frontend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cicd/k8s-backend.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cicd/k8s-backend.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cicd/k8s-frontend.yml" beforeDir="false" afterPath="$PROJECT_DIR$/cicd/k8s-frontend.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/style/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/style/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/view/user/component/SocialLogin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/view/user/component/SocialLogin.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/view/user/pages/LoginPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/view/user/pages/LoginPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/view/user/pages/SignupPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/view/user/pages/SignupPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/yarn.lock" afterDir="false" />
-    </list>
+    <list default="true" id="f7ea2174-af23-46fd-a7b9-c1d16c92aba6" name="Changes" comment="[Feat] 회원가입 페이지 소셜로그인 삭제" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,32 +55,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Merging frontend/feature/board/qa&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/chloechoi/Desktop/데스크탑 - 최승은의 MacBook Pro/development/Projects/MinionzStart/frontend/src/stores/workspace/scrum&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "frontend/feature/board/qa",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/chloechoi/Desktop/데스크탑 - 최승은의 MacBook Pro/development/Projects/MinionzStart/frontend/src/stores/workspace/scrum",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;vue.recent.templates&quot;: [
-      &quot;Vue Composition API Component&quot;
+  "keyToStringList": {
+    "vue.recent.templates": [
+      "Vue Composition API Component"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/frontend/src/stores/workspace/scrum" />
@@ -168,6 +143,7 @@
       <workItem from="1727580958683" duration="17000" />
       <workItem from="1727581003083" duration="2513000" />
       <workItem from="1727583527925" duration="981000" />
+      <workItem from="1727584517184" duration="434000" />
     </task>
     <task id="LOCAL-00001" summary="[Feat] 회의 예약, 상세, 수정 페이지 완료">
       <option name="closed" value="true" />
