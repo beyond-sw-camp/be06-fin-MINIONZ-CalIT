@@ -15,7 +15,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     List<Issue> findUpcomingWorkspaceIssues(Long workspaceId, Pageable pageable);
 
     @Query("SELECT i FROM Issue i " +
-            "WHERE i.user.userId = :userId " +
+            "WHERE i.manager.userId = :userId " +
             "AND i.status = true ")
     List<Issue> findUpcomingMyIssues(Long userId, Pageable pageable);
 

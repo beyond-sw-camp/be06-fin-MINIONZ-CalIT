@@ -29,9 +29,6 @@ public class Issue extends BaseEntity {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    private String assignees;
-    private String reviewers;
-
     // Issue : Workspace = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
@@ -40,5 +37,5 @@ public class Issue extends BaseEntity {
     // Issue : User = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User manager;
 }
