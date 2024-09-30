@@ -2,8 +2,8 @@
 import { useRoute } from 'vue-router';
 import { computed, inject, ref } from 'vue';
 import { workspaceData } from '@/static/workspaceData';
-import RightSideComponent from "@/view/scrum/meeting/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 import user1 from '@/assets/icon/persona/user1.svg';
 import user2 from '@/assets/icon/persona/user2.svg';
@@ -30,9 +30,8 @@ const addNote = () => {
   isQuillVisible.value = true;
 };
 const saveNote = () => {
-  // const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
   console.log('Meeting title:', meetingTitle.value);
-  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가
+  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가해야함
 };
 
 const rightSideOn = (id) => {
@@ -114,7 +113,6 @@ const rightSideOn = (id) => {
           </div>
         </div>
       </div>
-
       <div class="issue-section">
         <span class="column">
           <i class="label-add column-icon"></i>
@@ -130,7 +128,7 @@ const rightSideOn = (id) => {
           <i class="task-add column-icon"></i>
           태스크 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
+        <button class="issue-button" @click="rightSideOn('task')">태스크 추가하기</button>
         <span class="issue-id">User_001</span>
       </div>
 
@@ -140,7 +138,7 @@ const rightSideOn = (id) => {
           <i class="issue-add column-icon"></i>
           이슈 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>
+        <button class="issue-button" @click="rightSideOn('issue')">이슈 추가하기</button>
         <span class="issue-id">User_001</span>
       </div>
       </div>
@@ -173,10 +171,6 @@ const rightSideOn = (id) => {
   width: 100%;
   height: 100%;
   justify-content: space-between;
-  //height: 100%;
-  //overflow-y: auto;
-  //display: flex;
-  //flex-direction: column-reverse;
 }
 
 .meeting-input-wrap{
@@ -237,6 +231,7 @@ const rightSideOn = (id) => {
   height: 24px;
   display: block;
 }
+
 .user-editor {
   background-image: url("@/assets/icon/boardIcon/userEdit.svg");
 }
@@ -301,7 +296,7 @@ const rightSideOn = (id) => {
 
 
 .content-editor {
-  min-height: 200px;
+  min-height: 500px;
   padding: 10px;
   background-color: white;
   margin-top: 10px;

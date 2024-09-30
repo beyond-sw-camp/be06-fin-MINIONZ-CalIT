@@ -1,6 +1,6 @@
 <script setup>
 import {inject} from "vue";
-import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');

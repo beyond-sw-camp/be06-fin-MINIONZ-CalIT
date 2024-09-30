@@ -6,6 +6,9 @@ import minionz.backend.common.BaseEntity;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.user.model.User;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +22,12 @@ public class Issue extends BaseEntity {
 
     private String issueTitle;
     private String issueContents;
-    private Boolean status;
+
+    private boolean status;
+
+    // 시작일과 종료일 추가
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     // Issue : Workspace = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,5 +37,5 @@ public class Issue extends BaseEntity {
     // Issue : User = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User manager;
 }
