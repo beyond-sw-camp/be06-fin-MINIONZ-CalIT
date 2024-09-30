@@ -50,6 +50,26 @@ public class AlarmService {
         }
     }
 
+    public void sendScheduledEventsToClients(List<Long> receiverIds, Long alarmId) {
+        Optional<Alarm> sendAlarm = alarmRepository.findById(alarmId);
+
+        if (!sendAlarm.isPresent()) {
+            return; // 알람이 존재하지 않으면 종료
+        }
+        List<User> receivers = new ArrayList<>();
+
+        // 유저 리스트 초기화 및 존재하는 유저 추가
+        for (Long receiverId : receiverIds) {
+            Optional<User> receiver = userRepository.findById(receiverId);
+            receiver.ifPresent(receivers::add);
+        }
+
+        // 각 수신자에게 알림 전송
+        for (User receiver : receivers) {
+            sendScheduledAlarmToReceiver(receiver, sendAlarm.get());
+        }
+    }
+
     private void sendAlarmToReceiver(User receiver, User sender, Alarm sendAlarm) {
         SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
 
@@ -57,6 +77,31 @@ public class AlarmService {
         UserAlarm userAlarm = UserAlarm.builder()
                 .receiver(receiver)
                 .sender(sender)
+                .alarm(sendAlarm)
+                .alarmStatus(1) // 전송됨
+                .build();
+        userAlarmRepository.save(userAlarm);
+
+        // 연결된 경우
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("message").data(sendAlarm.getAlarmContents()));
+            } catch (IOException e) {
+                emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
+            }
+        } else {
+            // 연결되지 않은 경우, 알림 저장
+            pendingAlarms.computeIfAbsent(receiver.getUserId(), k -> new ArrayList<>()).add(sendAlarm);
+        }
+    }
+
+    private void sendScheduledAlarmToReceiver(User receiver, Alarm sendAlarm) {
+        SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
+
+        // 알림 객체 생성 및 저장
+        UserAlarm userAlarm = UserAlarm.builder()
+                .receiver(receiver)
+                .sender(null)
                 .alarm(sendAlarm)
                 .alarmStatus(1) // 전송됨
                 .build();
