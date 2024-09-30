@@ -36,4 +36,6 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
             "WHERE w.workspaceId = :workspaceId ")
     int findAllSprintCount(Long workspaceId);
 
+    List<Sprint> findSprintsByEndDateAfter(LocalDateTime endDate);
+
 }
