@@ -1,7 +1,6 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import { errorListData } from "@/static/errorListData";
-// import { useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
+import {useErrorStore} from "@/stores/board/useErrorStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import BoardList from "@/common/component/Board/BoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
@@ -9,8 +8,6 @@ import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-// const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
-// const workspace = useWorkspaceStore();
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -18,10 +15,12 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Error List';
 contentsDescription.value = 'Error 목록을 확인하세요!';
 
+const errorStore = useErrorStore();
+
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const totalPages = computed(() => Math.ceil((errorListData.value?.length || 0) / itemsPerPage));
+const totalPages = computed(() => Math.ceil((errorStore().value?.length || 0) / itemsPerPage));
 
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -53,7 +52,7 @@ const deleteItem = (item) => {
     <div class="header">
       <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/error/create`" />
     </div>
-    <BoardList :items="errorListData" thcolumn="언어" column="language" board-type="error" @edit-item="editItem" @delete-item="deleteItem" />
+    <BoardList :items="errorStore" thcolumn="언어" column="language" board-type="error" @edit-item="editItem" @delete-item="deleteItem" />
     <Pagination
         :currentPage="currentPage"
         :totalPages="totalPages"

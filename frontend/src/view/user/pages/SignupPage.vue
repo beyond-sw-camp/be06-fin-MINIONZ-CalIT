@@ -1,18 +1,11 @@
 <script setup>
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
 // import SocialLogin from "@/view/user/component/SocialLogin.vue";
 import axios from "axios";
 import { Notyf } from 'notyf';
-import PerfectScrollbar from "perfect-scrollbar";
-import 'perfect-scrollbar/css/perfect-scrollbar.css';
-
-onMounted(() => {
-  const container = document.querySelector('.signup-page');
-  new PerfectScrollbar(container);
-});
 
 const router = useRouter();
 const notyf = new Notyf();
@@ -40,7 +33,7 @@ const signup = () => {
         email: email.value
       });
       notyf.success('회원가입에 성공하였습니다.');
-      return router.push('/user/complete');
+      return router.push('/user/login');
     } catch (error) {
       console.error('Signup failed', error);
       notyf.error('회원가입에 실패했습니다.');
@@ -156,14 +149,15 @@ const passwordsMatch = computed(() => {
 </template>
 
 <style scoped>
+button{
+  cursor: pointer;
+}
 .signup-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 h1 {

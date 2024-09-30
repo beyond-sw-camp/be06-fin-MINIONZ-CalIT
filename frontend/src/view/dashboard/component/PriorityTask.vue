@@ -1,47 +1,6 @@
 <script setup>
-import coworker1 from '@/assets/icon/persona/space1.svg';
-import coworker2 from '@/assets/icon/persona/space2.svg';
-import coworker3 from '@/assets/icon/persona/space3.svg';
+import { priorityClass } from '@/utils/priorityUtils';
 
-const tasks = [
-  {
-    id: 1,
-    title: 'Create user flow for Finance App',
-    description: '워크 스페이스 명',
-    priority: 'High Priority',
-    dueDate: 'December 15th, 2023',
-    actionText: 'Detail',
-    idName: 'WS-1',
-    isStarted: 'Started',
-  },
-  {
-    id: 2,
-    title: 'App usability testing with Maze',
-    description: 'on Hour project',
-    priority: 'Med Priority',
-    dueDate: 'January 21st, 2024',
-    actionText: 'Research',
-    idName: 'WS-2',
-    isStarted: 'Not Started',
-  },
-  {
-    id: 3,
-    title: 'App usability testing with Maze',
-    description: 'on Hour project',
-    priority: 'Med Priority',
-    dueDate: 'January 21st, 2024',
-    actionText: 'Research',
-    idName: 'WS-3',
-    isStarted: 'Not Started',
-  },
-];
-
-const priorityClass = (priority) => {
-  return {
-    'high-priority': priority === 'High Priority',
-    'med-priority': priority === 'Med Priority',
-  };
-};
 </script>
 
 <template>

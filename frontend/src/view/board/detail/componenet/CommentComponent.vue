@@ -1,29 +1,28 @@
 <script setup>
-import { ref } from 'vue';
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
+import { ref, defineProps, defineEmits } from 'vue';
 
-const comments = ref([
-  {
-    id: 1,
-    user: { name: '최승은', avatar: user1 },
-    text: '아주 잘했네요 보기 좋아요',
-    timeAgo: '2 hours ago',
-    attachment: '참고자료.pdf'
+const props = defineProps({
+  comments: {
+    type: Array,
+    default: () => []
   }
-]);
+});
+
+const emit = defineEmits(['update-comments']);
 
 const newComment = ref('');
 const newAttachment = ref(null);
+
 const publishComment = () => {
   if (newComment.value.trim() !== '') {
-    comments.value.push({
-      id: comments.value.length + 1,
-      user: { name: 'New User', avatar: user2 },
+    const newComments = [...props.comments, {
+      id: props.comments.length + 1,
+      user: {name: 'New User', avatar: ''}, // Replace with actual user data
       text: newComment.value,
       timeAgo: 'just now',
       attachment: newAttachment.value
-    });
+    }];
+    emit('update-comments', newComments);
     newAttachment.value = null;
   }
 };
@@ -44,28 +43,27 @@ const adjustTextareaHeight = (event) => {
 
 <template>
   <div class="comment-section">
-      <div class="comment-input">
-        <div class="input-wrap">
-        <textarea v-model="newComment" placeholder="답글을 작성하세요" rows="2"  @input="adjustTextareaHeight"></textarea>
+    <div class="comment-input">
+      <div class="input-wrap">
+        <textarea v-model="newComment" placeholder="답글을 작성하세요" rows="2" @input="adjustTextareaHeight"></textarea>
         <div class="input-footer">
           <button class="attachment-button">
             <label class="file-input-icon" for="file"></label>
-            <input type="file" id="file" style="display: none" @change="handleFileUpload" />
+            <input type="file" id="file" style="display: none" @change="handleFileUpload"/>
           </button>
           <button class="publish-button" @click="publishComment">Publish</button>
         </div>
-        </div>
-        <div v-if="newAttachment" class="comment-attachment">
-          <i class="file-icon"></i>
-          <span>{{ newAttachment }}</span>
-        </div>
       </div>
-
+      <div v-if="newAttachment" class="comment-attachment">
+        <i class="file-icon"></i>
+        <span>{{ newAttachment }}</span>
+      </div>
+    </div>
 
     <div class="comment-list">
       <div v-for="comment in comments" :key="comment.id" class="comment-item">
         <div class="comment-header">
-          <img :src="comment.user.avatar" alt="avatar" class="avatar" />
+          <img :src="comment.user.avatar" alt="avatar" class="avatar"/>
           <div class="comment-info">
             <span class="user-name">{{ comment.user.name }}</span>
             <span class="comment-time">{{ comment.timeAgo }}전 작성된 답글</span>
@@ -76,9 +74,7 @@ const adjustTextareaHeight = (event) => {
           <p>{{ comment.text }}</p>
           <div v-if="comment.attachment" class="comment-attachment">
             <i class="file-icon"></i>
-            <span>
-              {{ comment.attachment }}
-            </span>
+            <span>{{ comment.attachment }}</span>
           </div>
         </div>
       </div>
@@ -100,10 +96,9 @@ const adjustTextareaHeight = (event) => {
   flex-direction: column;
 }
 
-.input-wrap{
+.input-wrap {
   width: 100%;
   display: flex;
-  //flex-direction: column;
   align-items: flex-start;
 }
 
@@ -134,7 +129,7 @@ textarea {
   margin-right: 10px;
 }
 
-.file-input-icon{
+.file-input-icon {
   background-image: url("@/assets/icon/chatIcon/clip.svg");
   display: inline-block;
   height: 30px;
@@ -179,7 +174,6 @@ textarea {
 .avatar {
   width: 36px;
   height: 36px;
-  //border-radius: 50%;
   margin-right: 15px;
 }
 

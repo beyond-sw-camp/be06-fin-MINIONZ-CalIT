@@ -1,22 +1,24 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { computed, inject, ref } from 'vue';
-import { workspaceData } from '@/static/workspaceData';
+import { useUserStore} from "@/stores/user/useUserStore";
+import { useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
-
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
+import { timeInputUtils } from '@/utils/timeInputUtils';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+const workspaceStore = useWorkspaceStore();
+const workspace = computed(() => workspaceStore.setWorkspaceId(workspaceId));
+
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Create';
 contentsDescription.value = '회의를 만들어 보세요!';
 
+const userStore = useUserStore();
+const loggedInUser = computed(() => userStore.getUserInfo());
 const meetingTitle = ref('회의 제목');
 const meetingDescription = ref('회의 상세 설명');
 const startTime = ref('');
@@ -25,6 +27,15 @@ const rightSideVisible = ref(false);
 const activeComponentId = ref('');
 const editor = ref(null);
 const isQuillVisible = ref(false);
+const participants = ref([]);
+
+const adjustTime = () => {
+  if (startTime.value && endTime.value) {
+    const { start, end } = timeInputUtils(startTime.value, endTime.value);
+    startTime.value = start;
+    endTime.value = end;
+  }
+};
 
 const addNote = () => {
   isQuillVisible.value = true;
@@ -74,9 +85,9 @@ const rightSideOn = (id) => {
         </span>
         <div class="meeting-time-input">
           <span>시작 시간</span>
-          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <input v-model="startTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
           <span>~ 종료 시간</span>
-          <input v-model="endTime" type="datetime-local" class="time-editor" />
+          <input v-model="endTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
         </div>
 
       </div>
@@ -88,8 +99,8 @@ const rightSideOn = (id) => {
             작성자
           </span>
           <div class="user-profile">
-            <img :src="user1" alt="작성자">
-            <span>최승은</span>
+            <img :src="loggedInUser?.persona" alt="작성자">
+            <span>{{ loggedInUser?.username }}</span>
           </div>
         </div>
       </div>
@@ -102,13 +113,9 @@ const rightSideOn = (id) => {
           </span>
           <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
           <div class="users-list">
-            <div class="user-profile">
-              <img :src=user2 alt="참여자">
-              <span>강혜정</span>
-            </div>
-            <div class="user-profile">
-              <img :src=user3 alt="참여자">
-              <span>차윤슬</span>
+            <div class="user-profile" v-for="participant in participants" :key="participant.id">
+              <img :src="participant.persona" alt="참여자">
+              <span>{{ participant.username }}</span>
             </div>
           </div>
         </div>

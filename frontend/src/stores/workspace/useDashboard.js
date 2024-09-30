@@ -1,9 +1,8 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import {weekSettingUtils} from "@/utils/weekSettingUtils";
 
-export const useMypageStore = defineStore('mypageStore', () => {
+export const useDashboardStore = defineStore('mypageStore', () => {
     const mySprintData = ref([]);
     const getMyKanban = async () => {
         const response = await axios.get('/api/sprint/all/my');
@@ -21,8 +20,7 @@ export const useMypageStore = defineStore('mypageStore', () => {
     }
 
     const getMyDashboard = async () => {
-        const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/dashboard/my?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axios.get('/api/myDashBoard');
         mySprintData.value = response.data;
     }
 
