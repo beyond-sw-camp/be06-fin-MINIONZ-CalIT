@@ -31,9 +31,6 @@ pipeline {
                 echo "Change Directory"
                 sh'''
                 cd /var/lib/jenkins/workspace/calit-frontend/frontend
-                npm install -g yarn
-                yarn
-                yarn build
                 '''
             }
         }
