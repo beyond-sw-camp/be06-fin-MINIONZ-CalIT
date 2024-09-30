@@ -1,7 +1,7 @@
 <script setup>
-import { inject, onMounted, ref} from 'vue';
-import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
-import { useFriendsStore } from '@/stores/friends/useFriendsStore';
+import {inject, onMounted, ref} from 'vue';
+import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
+import {useFriendsStore} from '@/stores/friends/useFriendsStore';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -23,6 +23,15 @@ onMounted(async () => {
     filteredUsers.value = [];
   }
 });
+
+const searchUsers = async () => {
+  if (participants.value) {
+    filteredUsers.value = (await friendStore.getUserList(participants.value)).filter(user => user.includes(participants.value));
+  } else {
+    filteredUsers.value = [];
+  }
+};
+
 const addWorkspace = () => {
   workspaceStore.addWorkspace({
     workspaceName: workspaceName.value,
@@ -38,17 +47,20 @@ const addWorkspace = () => {
         <div>
           <div>
             <label for="workspaceName">WorkSpace 이름</label>
-            <input type="text" id="workspaceName" v-model="workspaceName" placeholder="WorkSpace 이름을 입력하세요" class="input-field">
+            <input type="text" id="workspaceName" v-model="workspaceName" placeholder="WorkSpace 이름을 입력하세요"
+                   class="input-field">
           </div>
 
           <div>
             <label for="workspaceParticipation">참여자 추가</label>
-            <input type="text" id="workspaceParticipation" v-model="participants" placeholder="참여자를 검색해주세요" class="input-field">
+            <input type="text" id="workspaceParticipation" v-model="participants" placeholder="참여자를 검색해주세요"
+                   class="input-field" @keyup.enter="searchUsers">
             <ul v-if="filteredUsers.length">
               <li v-for="user in filteredUsers" :key="user">{{ user }}</li>
             </ul>
             <p v-else>검색된 사용자가 없습니다.</p>
           </div>
+
         </div>
       </div>
       <div class="button-wrap">
