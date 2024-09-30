@@ -42,6 +42,43 @@ const workspaceId = route.params.workspaceId;
     </li>
     <hr>
     <li>
+      <router-link :to="`/workspace/${workspaceId}/scrum/task/kanban`">
+        <i class="icon-scrum"/>
+        <p class="outfit">Scrum</p>
+      </router-link>
+      <ul class="submenu">
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/sprint/list`">
+            <div>
+              <i class="icon-sprint"/>
+            </div>
+            <p class="outfit">Sprint</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/task/kanban`">
+            <i class="icon-task"/>
+            <p class="outfit">Task</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/issue/list`">
+            <div>
+              <i class="icon-sprint"/>
+            </div>
+            <p class="outfit">Issue</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/meeting/list`">
+            <i class="icon-meeting"/>
+            <p class="outfit">Meeting</p>
+          </router-link>
+        </li>
+      </ul>
+    </li>
+    <hr>
+    <li>
       <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/list`">
         <i class="icon-board"/>
         <p class="outfit">Board</p>
@@ -61,35 +98,7 @@ const workspaceId = route.params.workspaceId;
         </li>
       </ul>
     </li>
-    <hr>
-    <li>
-      <router-link :to="`/workspace/${workspaceId}/scrum/task/kanban`">
-        <i class="icon-scrum"/>
-        <p class="outfit">Scrum</p>
-      </router-link>
-      <ul class="submenu">
-        <li>
-          <router-link :to="`/workspace/${workspaceId}/scrum/sprint`">
-            <div>
-              <i class="icon-sprint"/>
-            </div>
-            <p class="outfit">Sprint</p>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="`/workspace/${workspaceId}/scrum/task/kanban`">
-            <i class="icon-task"/>
-            <p class="outfit">Task</p>
-          </router-link>
-        </li>
-        <li>
-          <router-link :to="`/workspace/${workspaceId}/scrum/meeting/list`">
-            <i class="icon-meeting"/>
-            <p class="outfit">Meeting</p>
-          </router-link>
-        </li>
-      </ul>
-    </li>
+
   </ul>
 </template>
 

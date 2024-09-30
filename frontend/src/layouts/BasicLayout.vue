@@ -5,16 +5,17 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import ContentsArea from "@/layouts/ContentsArea.vue";
 import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { workspaceStore } from '@/stores/workspace/useWorkspaceStore';
+// import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
 
 const route = useRoute();
 const isPersonalMenu = ref(false);
 
 onMounted(() => {
   const workspaceId = route.params.workspaceId;
-  if (workspaceId) {
-    workspaceStore.workspaceId = workspaceId;
-    isPersonalMenu.value = route.path.startsWith('/my');
+  if (route.path.startsWith('/my')) {
+    isPersonalMenu.value = true;
+  } else if (workspaceId) {
+    isPersonalMenu.value = false;
   } else {
     console.error('workspaceId is undefined in BasicLayout');
   }

@@ -3,7 +3,7 @@ import {ref, computed, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
-import SocialLogin from "@/view/user/component/SocialLogin.vue";
+// import SocialLogin from "@/view/user/component/SocialLogin.vue";
 import axios from "axios";
 import { Notyf } from 'notyf';
 import PerfectScrollbar from "perfect-scrollbar";
@@ -141,16 +141,16 @@ const passwordsMatch = computed(() => {
         <p v-if="!passwordsMatch" class="error-message">비밀번호가 일치하지 않습니다.</p>
 
         <div @click="signup" style="margin: 0">
-          <UserButton type="submit" button-ment="Sign up" disabled="!checkAll"></UserButton>
+          <UserButton type="submit" button-ment="Sign up"></UserButton>
         </div>
       </form>
       <div class="text-wrap">
         <router-link to="/user/login">로그인 하기</router-link>
         <router-link to="/user/password">비밀번호 찾기</router-link>
       </div>
-      <div class="social-login">
-        <SocialLogin></SocialLogin>
-      </div>
+<!--      <div class="social-login">-->
+<!--        <SocialLogin></SocialLogin>-->
+<!--      </div>-->
     </div>
   </div>
 </template>

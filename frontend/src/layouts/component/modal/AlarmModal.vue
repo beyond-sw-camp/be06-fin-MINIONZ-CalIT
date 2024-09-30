@@ -1,15 +1,17 @@
 <script setup>
-import {alarmData} from "@/static/alarmData";
+// import {alarmData} from "@/static/alarmData";
 import { getTimeDifference } from "@/utils/timeUtils";
 // import { useAlarmStore } from '@/stores/socket/useAlamStore';
 // import {alarmData} from "@/static/alarmData";
 // import { useAlarmStore } from '@/stores/socket/useAlamStore';
 import  notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
-// const alarmStore = useAlarmStore();
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
 import {onMounted} from "vue";
+import {alarmData} from "@/static/alarmData";
+
+// const alarmStore = useAlarmStore();
 
 onMounted(() => {
   const container = document.querySelector('.alarm-modal');
@@ -23,11 +25,11 @@ const deleteAlarm = (alarmId) => {
   }
 };
 
-const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');  // 1번 클라이언트
-eventSource.onmessage = function (event) {
-  document.getElementById("message").textContent = 'Received event: ' + event.data;
-  console.log('테스트 클라이언트 이벤트:' + event.data);
-};
+// const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');  // 1번 클라이언트
+// eventSource.onmessage = function (event) {
+//   document.getElementById("message").textContent = 'Received event: ' + event.data;
+//   console.log('테스트 클라이언트 이벤트:' + event.data);
+// };
 </script>
 
 <template>
@@ -37,7 +39,7 @@ eventSource.onmessage = function (event) {
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in eventSource" :key="alarm.id">
+      <li v-for="alarm in alarmData" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div >
@@ -72,7 +74,7 @@ eventSource.onmessage = function (event) {
     background-color: #F3F6FF;
     border-radius: 10px;
     padding: 15px;
-  width: 200px;
+  width: 300px;
   }
 
 p {
@@ -86,14 +88,18 @@ p {
 }
 
 .alarm-content{
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
-  margin-top: 5px;
+  //margin-top: 5px;
   color: #6b7280;
-  width: 90px;
+  width: 170px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-wrap: inherit;
 }
 
 .alarm-time{
@@ -112,6 +118,9 @@ hr {
 ul {
   text-decoration: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   li {
     list-style: none;

@@ -1,41 +1,84 @@
 <script setup>
-import {inject} from "vue";
-import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import {inject, ref} from "vue";
+import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
+import user2 from "@/assets/icon/persona/user2.svg";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
 contentsTitle.value = 'QA 게시글 만들기';
 contentsDescription.value = 'QA 게시글을 만들어 보세요!';
+
+const rightSideVisible = ref(false);
+const activeComponentId = ref('');
+
+const rightSideOn = (id) => {
+  const meetingNoteContainer = document.querySelector('.meeting-note-container');
+  if (meetingNoteContainer) {
+    meetingNoteContainer.style.transition = 'width 0.5s ease';
+    meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
+  }
+  console.log('Add issue button clicked');
+  activeComponentId.value = id;
+  rightSideVisible.value = !rightSideVisible.value;
+};
 </script>
 
 <template>
+  <div class="qa-wrap">
   <div class="qa-detail-container">
     <div class="qa-note-container">
       <div class="qa-input-wrap">
         <div class="qa-title-container">
-        <span class="column">
-          <i class="qa-title column-icon"></i>
-          게시글 제목
-        </span>
+          <span class="column">
+            <i class="qa-title column-icon"></i>
+            게시글 제목
+          </span>
           <input  class="title-editor" placeholder="게시글 제목" />
         </div>
-        <!--      설명 추가하기-->
-        <div class="language-section">
+        <!--      담당자 추가  -->
+        <div class="author-section">
+          <div class="participants">
+          <span class="column">
+            <i class="user-multiple column-icon"></i>
+            담당자
+          </span>
+            <button class="issue-button" @click="rightSideOn('participants')">담당자 추가하기</button>
+            <div class="users-list">
+              <div class="user-profile">
+                <img :src=user2 alt="참여자">
+                <span>강혜정</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--        태스크 추가하기-->
+        <div class="issue-section">
         <span class="column">
-          <i class="languages column-icon"></i>
-          설명 추가하기
+          <i class="task-add column-icon"></i>
+          태스크 추가하기
         </span>
-          <input class="language-editor" placeholder="언어" />
+          <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
+          <span class="issue-id">User_001</span>
         </div>
     <QuillEditor/>
   </div>
+
 </div>
     <button class="save-button">저장하기</button>
 </div>
+  <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
+  </div>
 </template>
 
 <style scoped>
+.qa-wrap{
+  display: flex;
+  gap: 1rem;
+  height: 70vh;
+}
+
 .qa-detail-container{
   padding: 30px;
   display: flex;
@@ -56,10 +99,6 @@ contentsDescription.value = 'QA 게시글을 만들어 보세요!';
   height: 100%;
   justify-content: space-between;
   box-sizing: border-box;
-  //height: 100%;
-  //overflow-y: auto;
-  //display: flex;
-  //flex-direction: column-reverse;
 }
 
 .qa-input-wrap{
@@ -70,23 +109,19 @@ contentsDescription.value = 'QA 게시글을 만들어 보세요!';
 
 .qa-title-container{
   display: flex;
-  gap: 1rem;
-  align-items: center;
 }
 
 .qa-title{
   background-image: url("@/assets/icon/boardIcon/quillEditor.svg");
-  width: 24px;
-  height: 24px;
-  margin-right: 5px;
 }
 
 .title-editor {
-  width: 100%;
+  width: 70%;
   height: 2rem;
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .column{
@@ -127,5 +162,64 @@ contentsDescription.value = 'QA 게시글을 만들어 보세요!';
   //margin-top: 20px;
   width: 150px;
   margin-left: auto;
+}
+
+.author-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.issue-section{
+  display: flex;
+}
+
+.participants {
+  display: flex;
+  align-items: center;
+}
+
+.participants img {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
+.user-multiple {
+  background-image: url("@/assets/icon/boardIcon/userMultiple.svg");
+}
+
+.task-add{
+  background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
+}
+
+.issue-button {
+  background-color: #f8d7da;
+  color: #c82333;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.issue-id{
+  color: #28303F;
+  background-color: #F3F6FF;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+.column-icon {
+  background-size: cover;
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.user-profile{
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 </style>

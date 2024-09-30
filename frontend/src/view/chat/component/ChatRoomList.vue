@@ -3,14 +3,14 @@ import {onMounted, ref} from 'vue';
 import {getTimeDifference} from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
 import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
-import { workspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 
 const { chatRoom, fetchChatRooms } = useChatRoomStore();
 onMounted(() => {
   fetchChatRooms();
 });
 
-const workspaceId = workspaceStore.workspaceId;
+const workspaceId = useWorkspaceStore().workspaceId;
 
 const showModal = ref(false);
 
@@ -29,7 +29,9 @@ const closeModal = () => {
 <template>
   <div class="message-list-container">
     <div class="message-header">
-      <p>Messages <span class="badge">5</span></p>
+      <p>Messages
+        <span class="badge">{{ chatRoom.filter(room => room.unreadMessages > 0).length }}</span>
+      </p>
       <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list">

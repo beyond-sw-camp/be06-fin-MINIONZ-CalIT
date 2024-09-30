@@ -1,6 +1,7 @@
 package minionz.backend.scrum.workspace;
 
 import lombok.RequiredArgsConstructor;
+import minionz.backend.alarm.AlarmService;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.scrum.workspace.model.request.CreateWorkspaceRequest;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             import minionz.backend.scrum.workspace.model.response.ReadWorkspaceResponse;
@@ -17,6 +18,7 @@ import java.util.List;
 public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceParticipationRepository workspaceParticipationRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public void create(User user, CreateWorkspaceRequest request) {
@@ -25,6 +27,7 @@ public class WorkspaceService {
 //        참여 테이블에 참가자들 추가
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(true).isValid(true).build());
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(false).isValid(true).build());
+        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),1L);
         request.getParticipants().forEach(participantId ->
                 workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(User.builder().userId(participantId).build()).isManager(false).isValid(false).build())
         );
@@ -41,6 +44,7 @@ public class WorkspaceService {
                         ReadWorkspaceResponse.builder()
                                 .workspaceId(workspace.getWorkspaceId())
                                 .workspaceName(workspace.getWorkspaceName())
+                                .avatar(workspace.getAvatar())
                                 .build())
                 .toList();
 

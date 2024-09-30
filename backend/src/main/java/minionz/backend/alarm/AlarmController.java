@@ -1,5 +1,6 @@
 package minionz.backend.alarm;
 
+import minionz.backend.alarm.model.request.AlarmRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -15,12 +16,13 @@ public class AlarmController {
     // 클라이언트 연결
     @GetMapping("/connect/{receiverId}")
     public SseEmitter connect(@PathVariable Long receiverId) {
+
         return alarmService.addEmitter(receiverId);
     }
 
     // 특정 클라이언트에게 이벤트 전송
-    @PostMapping("/send/{receiverId}&{senderId}&{alarmId}")
-    public void sendEventToClient(@PathVariable Long receiverId, @PathVariable Long senderId, @PathVariable Long alarmId) {
-        alarmService.sendEventsToClient(receiverId, senderId, alarmId);
+    @PostMapping("/send")
+    public void sendEventToClient(@RequestBody AlarmRequest alarmRequest) {
+        alarmService.sendEventsToClients(alarmRequest.getReceiverIds(), alarmRequest.getSenderId(), alarmRequest.getAlarmId());
     }
 }

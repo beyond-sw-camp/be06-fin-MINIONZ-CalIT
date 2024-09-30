@@ -24,4 +24,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "AND m.startDate <= :endDate " +
             "AND m.startDate >= :startDate")
     List<Meeting> findMyMeetingsInPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
+
+    List<Meeting> findMeetingByStartDateAfter(LocalDateTime startDate);
 }

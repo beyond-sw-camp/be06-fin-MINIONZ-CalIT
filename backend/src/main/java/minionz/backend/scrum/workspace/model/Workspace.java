@@ -28,6 +28,7 @@ public class Workspace {
     private Long workspaceId;
 
     private String workspaceName;
+    private int avatar;
 
     // Workspace : Sprint = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)

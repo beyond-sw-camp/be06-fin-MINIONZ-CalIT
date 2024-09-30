@@ -14,4 +14,7 @@ public class ReadBurndownResponse {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<BurnTaskResponse> tasks;
+    private double burndownPercentage;
+    private double idealBurndownPercentage;
+
 }
