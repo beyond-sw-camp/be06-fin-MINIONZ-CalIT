@@ -32,7 +32,7 @@ const signup = () => {
         password: password.value,
         email: email.value
       });
-      notyf.success('회원가입에 성공하였습니다.');
+      notyf.success('회원가입에 성공했습니다.');
       return router.push('/user/login');
     } catch (error) {
       console.error('Signup failed', error);
