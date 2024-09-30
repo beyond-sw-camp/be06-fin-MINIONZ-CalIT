@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/schedule")
+@RequestMapping("/api/schedule")
 @RequiredArgsConstructor
 public class ScheduleController {
 

@@ -1,27 +1,21 @@
 package minionz.backend.note;
 
+import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.note.model.Note;
 import minionz.backend.note.model.response.GetNoteResponse;
 import minionz.backend.scrum.meeting.MeetingRepository;
 import minionz.backend.scrum.meeting.model.Meeting;
-import minionz.backend.scrum.meeting_participation.MeetingParticipationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class NoteService {
 
-    @Autowired
-    private NoteRepository noteRepository;
-    @Autowired
-    private MeetingRepository meetingRepository;
-    @Autowired
-    private NoteImageRepository noteImageRepository;
-    @Autowired
-    private MeetingParticipationRepository meetingParticipationRepository;
+    private final NoteRepository noteRepository;
+    private final MeetingRepository meetingRepository;
 
 
     public GetNoteResponse readNote(Long noteId) {

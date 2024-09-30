@@ -2,6 +2,7 @@ package minionz.backend.search;
 
 import lombok.RequiredArgsConstructor;
 import minionz.backend.search.model.request.WorkspaceUserRequest;
+import minionz.backend.search.model.response.SearchUserResponse;
 import minionz.backend.user.UserRepository;
 import minionz.backend.user.model.User;
 import minionz.backend.search.model.request.SearchUserRequest;
@@ -15,17 +16,40 @@ public class SearchService {
     private final SearchRepository searchRepository;
     private final UserRepository userRepository;
 
-    public List<SearchUserRequest> getAllUser() {
+    public List<SearchUserResponse> getAllUser() {
         List<User> users = userRepository.findAll();
+        SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
-                .map(user -> new SearchUserRequest(user.getUserName()))
+                .map(user -> searchUserResponse.builder()
+                        .searchUserIdx(user.getUserId())
+                        .userName(user.getUserName())
+                        .email(user.getEmail())
+                        .persona(user.getPersona())
+                        .build())
                 .collect(Collectors.toList());
     }
 
-    public List<WorkspaceUserRequest> getUsernamesByWorkspaceId(Long workspaceId) {
+    public List<SearchUserResponse> getUsernamesByWorkspaceId(Long workspaceId) {
         List<User> users = searchRepository.findByWorkspaceParticipations_Workspace_WorkspaceId(workspaceId);
+        SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
-                .map(user -> new WorkspaceUserRequest(workspaceId, user.getUserName())) // workspaceId를 포함
+                .map(user -> searchUserResponse.builder()
+                        .searchUserIdx(user.getUserId())
+                        .userName(user.getUserName())
+                        .email(user.getEmail())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<SearchUserResponse> containedUser(String username) {
+        List<User> users = searchRepository.findByUserNameContaining(username);
+        SearchUserResponse searchUserResponse = new SearchUserResponse();
+        return users.stream()
+                .map(user -> searchUserResponse.builder()
+                        .searchUserIdx(user.getUserId())
+                        .userName(user.getUserName())
+                        .email(user.getEmail())
+                        .build())
                 .collect(Collectors.toList());
     }
 }
