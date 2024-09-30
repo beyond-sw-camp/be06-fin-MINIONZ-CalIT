@@ -31,6 +31,117 @@ spec:
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 10
+          env:
+            - name: DOMAIN_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: DOMAIN_ADDRESS
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: DB_URL
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: DB_PASSWORD
+            - name: MAIL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: MAIL_HOST
+            - name: MAIL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: MAIL_PORT
+            - name: MAIL_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: MAIL_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: JWT_SECRET
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: GITHUB_CLIENT_ID
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: GITHUB_CLIENT_SECRET
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: KAKAO_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: KAKAO_CLIENT_ID
+            - name: KAKAO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: KAKAO_CLIENT_SECRET
+            - name: NAVER_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: NAVER_CLIENT_ID
+            - name: NAVER_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: NAVER_CLIENT_SECRET
+            - name: KAFKA_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: KAFKA_SERVER
+            - name: AWS_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: AWS_ACCESSKEY
+            - name: AWS_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: calit-backend-secrets
+                  key: AWS_SECRETKEY
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: AWS_REGION
+            - name: S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: S3_BUCKET
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
