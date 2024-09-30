@@ -1,10 +1,11 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from "vue-router";
-import {formatUtil, getDaysInMonthUtil, startOfMonthUtil} from '@/utils/dateUtils';
 import { meetingData } from '@/static/meetingData';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
+import { useCalendar } from '@/utils/calendarUtils';
+import {formatUtil} from "@/utils/dateUtils";
 
 onMounted(() => {
   const container = document.querySelector('.calendar-container');
@@ -27,13 +28,13 @@ const props = ref({
   left: 0
 });
 
-const show = (event) => {
+const show = (event, eventData) => {
   props.value = {
-    title: event.title,
-    startDate: event.startDate,
-    endDate: event.endDate,
-    contents: event.contents,
-    participants: event.participants,
+    title: eventData.title,
+    startDate: eventData.startDate,
+    endDate: eventData.endDate,
+    contents: eventData.contents,
+    participants: eventData.participants,
     top: event.clientY,
     left: event.clientX
   };
@@ -42,48 +43,29 @@ const show = (event) => {
   console.log(props.value);
 };
 
-const today = new Date();
-const currentYear = ref(today.getFullYear());
-const currentMonth = ref(today.getMonth());
-const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+const {currentYear, currentMonth, weekDays, daysInMonth, startBlankDays, goToToday, prevMonth, nextMonth} = useCalendar();
 
-const daysInMonth = computed(() => getDaysInMonthUtil(new Date(currentYear.value, currentMonth.value)));
-const startBlankDays = computed(() => {
-  return startOfMonthUtil(new Date(currentYear.value, currentMonth.value)).getDay();
+const events = ref([]);
+
+const setEvents = (meetings) => {
+  events.value = meetings.map(meeting => ({
+    id: meeting.id,
+    date: new Date(meeting.startDate),
+    title: meeting.title,
+    startDate: meeting.startDate,
+    endDate: meeting.endDate,
+    contents: meeting.contents,
+    participants: meeting.participants
+  }));
+};
+
+onMounted(() => {
+  const container = document.querySelector('.calendar-container');
+  if (container) {
+    new PerfectScrollbar(container);
+  }
+  setEvents(meetingData);
 });
-
-const goToToday = () => {
-  currentYear.value = today.getFullYear();
-  currentMonth.value = today.getMonth();
-};
-
-const prevMonth = () => {
-  if (currentMonth.value === 0) {
-    currentMonth.value = 11;
-    currentYear.value--;
-  } else {
-    currentMonth.value--;
-  }
-};
-const nextMonth = () => {
-  if (currentMonth.value === 11) {
-    currentMonth.value = 0;
-    currentYear.value++;
-  } else {
-    currentMonth.value++;
-  }
-};
-
-const events = ref(meetingData.map(meeting => ({
-  id: meeting.id,
-  date: new Date(meeting.startDate),
-  title: meeting.title,
-  startDate: meeting.startDate,
-  endDate: meeting.endDate,
-  contents: meeting.contents,
-  participants: meeting.participants
-})));
-
 const eventsForDay = (day) => {
   return events.value.filter(event => formatUtil(event.date, 'd') === String(day));
 };
@@ -102,8 +84,22 @@ const eventsForDay = (day) => {
         <button @click="nextMonth">&gt;</button>
       </div>
       <div class="calendar-tab">
-        <router-link :to="`/workspace/${workspaceId}/schedule/monthly`" class="on">Month</router-link>
-        <router-link :to="`/workspace/${workspaceId}/schedule/weekly`" class="off">Week</router-link>
+        <router-link
+            v-if="workspaceId"
+            :to="`/workspace/${workspaceId}/schedule/monthly`"
+            class="on">Month</router-link>
+        <router-link
+            v-if="workspaceId"
+            :to="`/workspace/${workspaceId}/schedule/weekly`"
+            class="off">Week</router-link>
+        <router-link
+            v-if="!workspaceId"
+            :to="`/my/schedule/monthly`"
+            class="on">My Month</router-link>
+        <router-link
+            v-if="!workspaceId"
+            :to="`/my/schedule/weekly`"
+            class="off">My Week</router-link>
       </div>
     </div>
 
@@ -134,13 +130,13 @@ const eventsForDay = (day) => {
     </div>
     <ScheduleModal
         v-if="isVisible"
-        :title="events.title"
-        :contents="events.contents"
-        :start-date="events.startDate"
-        :end-date="events.endDate"
-        :participants="events.participants"
-        :top="props.top"
-        :left="props.left"
+        :title="props.value.title"
+        :contents="props.value.contents"
+        :start-date="props.value.startDate"
+        :end-date="props.value.endDate"
+        :participants="props.value.participants"
+        :top="props.value.top"
+        :left="props.value.left"
         @close="isVisible = false" />
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup>
 import {inject, ref} from "vue";
+import { useDashboardStore } from "@/stores/workspace/useDashboardStore"
 import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vue";
 import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyScheduleComponent.vue";
 import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTask.vue";
@@ -11,7 +12,8 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Work Space Weekly';
 contentsDescription.value = '워크스페이스의 이번주 일정을 살펴보세요!';
 
-const selectedWeek = ref([new Date()]);
+const dashboardStore = useDashboardStore();
+const selectedWeek = ref(dashboardStore.getWorkspaceWeekly());
 const updateSelectedWeek = (week) => {
   selectedWeek.value = week;
 };
@@ -19,12 +21,12 @@ const updateSelectedWeek = (week) => {
 
 <template>
   <div class="weekly">
-    <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek"/>
+    <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek" />
     <div class="week-data">
       <MiniCalendar @update:selectedWeek="updateSelectedWeek"/>
       <div class="mini-lists">
-        <WeeklyScheduleComponent/>
-        <WeeklyTask/>
+        <WeeklyScheduleComponent :selected-week="selectedWeek" />
+        <WeeklyTask :selected-week="selectedWeek"/>
       </div>
     </div>
   </div>

@@ -1,42 +1,43 @@
 <script setup>
-import { ref } from 'vue';
-import task from '@/assets/icon/schedule/task.svg';
+import { ref, defineProps } from 'vue';
+import taskImg from '@/assets/icon/schedule/task.svg';
 
-const issues = ref([
-  { title: '회원 가입 기능', details: '진행중', icon: task },
-  { title: '로그 아웃 기능', details: '진행중', icon: task},
-  { title: '회원 가입 기능', details: '진행중', icon: task }
-]);
+const props = defineProps(['tasks']);
+const taskWeek = ref(props.tasks.map(task => ({
+  title: task.title,
+  details: task.label,
+  icon: task
+})));
 </script>
 
 <template>
-  <div class="imminent-issues">
-    <p class="imminent-issues-title">Imminent Issues</p>
-    <div v-for="(issue, index) in issues" :key="index" class="issue-item">
-      <img :src="issue.icon" alt="icon" class="issue-icon" />
-      <div class="issue-info">
-        <div class="issue-title">{{ issue.title }}</div>
-        <div class="issue-details">{{ issue.details }}</div>
+  <div class="imminent-tasks">
+    <p class="imminent-tasks-title">Imminent tasks</p>
+    <div v-for="(task, index) in taskWeek" :key="index" class="task-item">
+      <img :src="taskImg" alt="icon" class="task-icon" />
+      <div class="task-info">
+        <div class="task-title">{{ task.title }}</div>
+        <div class="task-details">{{ task.details }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.imminent-issues {
+.imminent-tasks {
   background-color: #fff;
   border-radius: 10px;
   //padding: 20px;
   width: 100%;
 }
 
-.imminent-issues-title {
+.imminent-tasks-title {
   font-weight: 500;
   font-size: 16px;
   margin-bottom: 10px;
 }
 
-.issue-item {
+.task-item {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
@@ -46,25 +47,25 @@ const issues = ref([
   border-radius: 8px;
 }
 
-.issue-icon {
+.task-icon {
   width: 40px;
   height: 40px;
   margin-right: 10px;
 }
 
-.issue-info {
+.task-info {
   display: flex;
   justify-content: space-between;
   width: 100%;
   flex-direction: column;
 }
 
-.issue-title {
+.task-title {
   font-weight: 400;
   font-size: 14px;
 }
 
-.issue-details {
+.task-details {
   font-size: 12px;
   color: #777;
 }

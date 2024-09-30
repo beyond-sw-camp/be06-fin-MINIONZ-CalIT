@@ -5,7 +5,8 @@ import { priorityClass } from '@/utils/priorityUtils';
 defineProps({
   tasks: {
     type: Array,
-    required: true
+    required: true,
+    default: () => []
   }
 });
 </script>
