@@ -1,14 +1,13 @@
 import { ref } from 'vue';
 import axios from "axios";
 import { defineStore } from 'pinia';
-// import { userData } from "@/static/userData";
 
 export const useFriendsStore = defineStore('friendsStore', () => {
     const friends = ref([]);
 
-    const getUserList = async () => {
+    const getUserList = async (username) => {
         try {
-            const response = await axios.get('/api/search/alluser');
+            const response = await axios.get('/api/search/alluser', username);
             friends.value = response.data;
         } catch (error) {
             console.error('Error fetching friends:', error);
