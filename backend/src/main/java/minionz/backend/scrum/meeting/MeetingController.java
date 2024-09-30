@@ -7,12 +7,11 @@ import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.meeting.model.request.CreateMeetingRequest;
 import minionz.backend.scrum.meeting.model.response.ReadMeetingResponse;
 import minionz.backend.user.model.CustomSecurityUserDetails;
-import minionz.backend.user.model.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/meeting")
+@RequestMapping("/api/meeting")
 @RequiredArgsConstructor
 public class MeetingController {
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/errcomment")
+@RequestMapping("/api/errcomment")
 public class ErrorCommentController {
     private final CloudFileUpload cloudFileUpload;
     private final ErrorCommentService errorCommentService;

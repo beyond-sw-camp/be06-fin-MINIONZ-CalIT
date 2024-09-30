@@ -31,7 +31,7 @@ public class MessageController {
     }
 
     // 파일 전송
-    @PostMapping("/message/sendFile")
+    @PostMapping("/api/message/sendFile")
     public void sendFile(
             @RequestParam("chatRoomId") Long chatRoomId,
             @RequestPart(name = "files") MultipartFile[] files,
@@ -45,7 +45,7 @@ public class MessageController {
     }
 
     // 채팅 내역 조회
-    @GetMapping(value = "/message/{chatRoomId}")
+    @GetMapping(value = "/api/message/{chatRoomId}")
     public BaseResponse<List<ReadMessageResponse>> readMessage(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long chatRoomId) {
         try {
             User user = customUserDetails.getUser();
@@ -65,7 +65,7 @@ public class MessageController {
     }
 
     // 메세지 삭제
-    @DeleteMapping("/message/{messageId}")
+    @DeleteMapping("/api/message/{messageId}")
     public BaseResponse<BaseResponseStatus> deleteMessage(@PathVariable Long messageId, @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
         try {
             Long senderId = customUserDetails.getUser().getUserId();
@@ -78,7 +78,7 @@ public class MessageController {
     }
 
     // 상태 업데이트
-    @GetMapping("/enter/{chatRoomId}")
+    @GetMapping("/api/enter/{chatRoomId}")
     public BaseResponse<BaseResponseStatus> enterChatRoom(@PathVariable Long chatRoomId, @AuthenticationPrincipal CustomSecurityUserDetails userDetails) {
         try {
             Long userId = userDetails.getUser().getUserId();
