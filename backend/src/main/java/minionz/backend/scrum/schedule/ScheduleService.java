@@ -122,7 +122,7 @@ public class ScheduleService {
                                         .builder()
                                         .title(issue.getIssueTitle())
                                         .description(issue.getIssueContents())
-                                        .managerId(issue.getUser().getUserName())
+                                        .managerId(issue.getManager().getUserName())
                                         .build()).toList())
                 .build();
     }

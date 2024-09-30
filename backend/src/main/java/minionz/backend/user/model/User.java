@@ -84,7 +84,7 @@ public class User {
     private List<QaComment> qaCommentList = new ArrayList<>();
 
     // User : Issue = 1 : N
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
     private List<Issue> issues = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)

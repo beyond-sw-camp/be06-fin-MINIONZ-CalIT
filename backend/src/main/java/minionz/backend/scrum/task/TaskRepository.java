@@ -78,6 +78,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "AND s.endDate > CURRENT_TIMESTAMP " +
             "AND t.status = minionz.backend.scrum.task.model.TaskStatus.DONE")
     int findSuccessTaskCount(Long workspaceId);
+
+    List<Task> findTasksByEndDateAfter(LocalDateTime endDate);
 }
 
 
