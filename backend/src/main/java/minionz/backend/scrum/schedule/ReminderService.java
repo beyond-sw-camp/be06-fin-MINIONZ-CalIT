@@ -37,7 +37,7 @@ public class ReminderService {
         for (Meeting meeting : upcomingMeetings) {
             if (meeting.getStartDate().minusMinutes(10).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
                 List<Long> participants = meeting.getMeetingParticipations().stream().map(meetingParticipationRepository -> meetingParticipationRepository.getUser().getUserId()).toList();
-                alarmService.sendEventsToClients(participants, 1L, 6L);
+                alarmService.sendScheduledEventsToClients(participants, 6L);
             }
         }
     }
@@ -50,11 +50,11 @@ public class ReminderService {
 
         for (Task task : upcomingTasks) {
             if (task.getEndDate().minusDays(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendEventsToClients(task.getTaskParticipations().stream().map(taskParticipation -> taskParticipation.getUser().getUserId()).toList(), 1L, 7L);
+                alarmService.sendScheduledEventsToClients(task.getTaskParticipations().stream().map(taskParticipation -> taskParticipation.getUser().getUserId()).toList(), 7L);
             }
 
             if (task.getEndDate().minusHours(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendEventsToClients(task.getTaskParticipations().stream().map(taskParticipation -> taskParticipation.getUser().getUserId()).toList(), 1L, 10L);
+                alarmService.sendScheduledEventsToClients(task.getTaskParticipations().stream().map(taskParticipation -> taskParticipation.getUser().getUserId()).toList(), 10L);
             }
         }
     }
@@ -67,11 +67,11 @@ public class ReminderService {
 
         for (Sprint sprint : upcomingSprints) {
             if (sprint.getEndDate().minusDays(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 1L, 9L);
+                alarmService.sendScheduledEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 9L);
             }
 
             if (sprint.getEndDate().minusDays(2).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 1L, 8L);
+                alarmService.sendScheduledEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 8L);
             }
         }
     }
