@@ -48,7 +48,7 @@ const workspaceId = route.params.workspaceId;
       </router-link>
       <ul class="submenu">
         <li>
-          <router-link :to="`/workspace/${workspaceId}/scrum/sprint`">
+          <router-link :to="`/workspace/${workspaceId}/scrum/sprint/list`">
             <div>
               <i class="icon-sprint"/>
             </div>
@@ -59,6 +59,14 @@ const workspaceId = route.params.workspaceId;
           <router-link :to="`/workspace/${workspaceId}/scrum/task/kanban`">
             <i class="icon-task"/>
             <p class="outfit">Task</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/issue/list`">
+            <div>
+              <i class="icon-sprint"/>
+            </div>
+            <p class="outfit">Issue</p>
           </router-link>
         </li>
         <li>

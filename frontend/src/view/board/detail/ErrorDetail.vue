@@ -1,5 +1,5 @@
 <script setup>
-import BoardDetail from "@/view/board/component/BoardDetail.vue";
+import BoardDetail from "@/common/component/Board/BoardDetail.vue";
 import {inject} from "vue";
 import DateComment from "@/view/board/component/DateComment.vue";
 import CommentComponent from "@/view/board/detail/componenet/CommentComponent.vue";

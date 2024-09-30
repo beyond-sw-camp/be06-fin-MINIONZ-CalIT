@@ -1,13 +1,160 @@
 <script setup>
+import { inject, ref} from 'vue';
+import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
+// import { useFriendsStore } from '@/stores/friends/useFriendsStore';
+// import { useSprintLabelStore} from "@/stores/workspace/scrum/useSprintLabelStore";
+// import Multiselect from "vue-multiselect";
 
+const contentsTitle = inject('contentsTitle');
+const contentsDescription = inject('contentsDescription');
+
+contentsTitle.value = '스프린트 추가하기';
+contentsDescription.value = '스프린트를 추가해보세요!';
+
+const sprintStore = useSprintStore();
+// const friendStore = useFriendsStore();
+// const sprintLabelStore = useSprintLabelStore();
+const sprintName = ref('');
+// const sprintManager = ref('');
+const participants = ref('');
+const selectedLabels = ref([]);
+const startDate = ref('');
+const endDate = ref('');
+
+// const filteredUsers = computed(() => {
+//   return friendStore.getUserList().filter(user => {
+//     return !participants.value.includes(user);
+//   });
+// });
+
+const addSprint = () => {
+  sprintStore.addSprint({
+    sprintName: sprintName.value,
+    participants: participants.value,
+  });
+  sprintName.value = '';
+  participants.value = '';
+};
 </script>
 
 <template>
-  <div>
-    <h1>Sprint Create</h1>
+  <div class="form-container">
+    <div class="workspace-wrap">
+      <div class="input-wrap">
+        <div>
+          <div>
+            <label for="sprintName">Sprint 이름</label>
+            <input type="text" id="sprintName" v-model="sprintName" placeholder="Sprint 이름을 입력하세요" class="input-field">
+          </div>
+          <div>
+            <label for="sprintContent">Sprint 내용</label>
+            <input type="text" id="sprintContent" placeholder="Sprint 내용을 입력하세요" class="input-field">
+          </div>
+<!--          <div>-->
+<!--            <label>스프린트 매니저</label>-->
+<!--            <multiselect-->
+<!--                v-model="sprintManager"-->
+<!--                :options="filteredUsers"-->
+<!--                placeholder="담당자를 선택해주세요"-->
+<!--                label="name"-->
+<!--                track-by="id"-->
+<!--            ></multiselect>-->
+<!--          </div>-->
+          <div>
+            <label for="sprintParticipation">담당자 추가</label>
+            <input type="text" id="sprintParticipation" placeholder="참여자를 검색해주세요" class="input-field">
+            <ul>
+              <li v-for="participant in participants" :key="participant">{{ participant }}</li>
+            </ul>
+          </div>
+          <div>
+            <label>시작 날짜</label>
+            <input type="datetime-local" id="startDate" v-model="startDate" class="input-field">
+          </div>
+          <div>
+            <label>종료 날짜</label>
+            <input type="datetime-local" id="endDate" v-model="endDate" class="input-field">
+          </div>
+          <div>
+            <input type="text" v-model="labelSearch" placeholder="label을 검색해주세요" class="input-field">
+            <ul>
+              <li v-for="label in filteredLabels" :key="label.labelId" @click="selectLabel(label)">
+                {{ label.labelName }}
+              </li>
+            </ul>
+            <ul>
+              <li v-for="label in selectedLabels" :key="label.labelId">
+                {{ label.labelName }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="button-wrap">
+        <button @click="addSprint" class="add-workspace-btn">Sprint 추가</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.form-container {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
+h2 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+hr {
+  border: 1px solid #dfe5f1;
+  width: 100%;
+  margin: 10px 0;
+}
+
+label {
+  display: block;
+  font-weight: 400;
+  margin-top: 15px;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.workspace-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.input-field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.add-workspace-btn {
+  background-color: #C6D2FD;
+  color: #28303F;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.add-workspace-btn:hover {
+  background-color: #93AAFD;
+}
 </style>
