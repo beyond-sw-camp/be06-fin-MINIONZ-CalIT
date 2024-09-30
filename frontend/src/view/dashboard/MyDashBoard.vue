@@ -21,7 +21,7 @@ onMounted(async () => {
 <template>
   <div class="dashboard">
     <TaskOverview
-        v-if="mypageStore.mySprintData && mypageStore.mySprintData.progress"
+        v-if="mypageStore.mySprintData && mypageStore.mySprintData.progress && mypageStore.mySprintData.progress.successTaskCount !== undefined && mypageStore.mySprintData.progress.allTaskCount !== undefined"
         :completion-rate="mypageStore.mySprintData.progress.successTaskCount / mypageStore.mySprintData.progress.allTaskCount * 100"
         :tasks-completed="mypageStore.mySprintData.progress.successTaskCount"
         :total-tasks="mypageStore.mySprintData.progress.allTaskCount"

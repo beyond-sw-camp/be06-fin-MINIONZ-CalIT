@@ -5,7 +5,7 @@ import MeetingList from "@/view/dashboard/component/MeetingList.vue";
 import BurndownChart from "@/view/dashboard/component/BurndownChart.vue";
 
 import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
-import { useDashboardStore } from "@/stores/workspace/useDashboard";
+import { useDashboardStore } from "@/stores/workspace/useDashboardStore";
 
 const workspaceId = useWorkspaceStore().workspaceId;
 const dashboardStore = useDashboardStore();

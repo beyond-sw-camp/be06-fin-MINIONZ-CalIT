@@ -10,13 +10,15 @@ export const useMypageStore = defineStore('mypageStore', () => {
         mySprintData.value = response.data;
     };
 
-    const getMyMonthly = async ({startdate, enddate}) => {
-        const response = await axios.get(`/api/myMonthly?startdate=${startdate}&enddate=${enddate}`);
+    const getMyMonthly = async () => {
+        const { startDate, endDate } = weekSettingUtils();
+        const response = await axios.get(`/api/myMonthly?startdate=${startDate}&enddate=${endDate}`);
         mySprintData.value = response.data;
     }
 
-    const getMyWeekly = async ({startdate, enddate}) => {
-        const response = await axios.get(`/api/myWeekly?startdate=${startdate}&enddate=${enddate}`);
+    const getMyWeekly = async () => {
+        const { startDate, endDate } = weekSettingUtils();
+        const response = await axios.get(`/api/myWeekly?startdate=${startDate}&enddate=${endDate}`);
         mySprintData.value = response.data;
     }
 
