@@ -1,6 +1,7 @@
 package minionz.backend.scrum.sprint;
 
 import lombok.RequiredArgsConstructor;
+import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.SprintLabel;
@@ -36,6 +37,7 @@ public class SprintService {
     private final SprintLabelSelectRepository sprintLabelSelectRepository;
     private final WorkspaceParticipationRepository workspaceParticipationRepository;  // final이 없으면 초기화 안됨. RequiredArgsConstructor로 의존성 주입 안됨. like const
     private final TaskRepository taskRepository;
+    private final AlarmService alarmService;
 
     public void createSprint(User user, CreateSprintRequest request) throws BaseException {
         Sprint sprint = sprintRepository.save(Sprint
@@ -51,6 +53,8 @@ public class SprintService {
 //        TODO: 알람 보내야합니다!
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(true).build());
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(false).build());
+        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),2L);
+
         request.getParticipants().forEach(participantId ->
                 sprintParticipationRepository.save(SprintParticipation
                         .builder()

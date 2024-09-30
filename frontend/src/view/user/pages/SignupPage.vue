@@ -141,7 +141,7 @@ const passwordsMatch = computed(() => {
         <p v-if="!passwordsMatch" class="error-message">비밀번호가 일치하지 않습니다.</p>
 
         <div @click="signup" style="margin: 0">
-          <UserButton type="submit" button-ment="Sign up" disabled="!checkAll"></UserButton>
+          <UserButton type="submit" button-ment="Sign up"></UserButton>
         </div>
       </form>
       <div class="text-wrap">
