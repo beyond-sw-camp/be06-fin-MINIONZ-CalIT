@@ -1,6 +1,7 @@
 package minionz.backend.scrum.task;
 
 import lombok.RequiredArgsConstructor;
+import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.label.model.TaskLabel;
@@ -37,6 +38,7 @@ public class TaskService {
     private final SprintParticipationRepository sprintParticipationRepository;
     private final TaskParticipationRepository taskParticipationRepository;
     private final SprintRepository sprintRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public void createTask(User user, CreateTaskRequest request) {
@@ -60,6 +62,8 @@ public class TaskService {
 //        TODO: spint에 참여 중인 유저인지에 대한 검증이 필요함.
 //        참여 테이블에 참가자들 추가
         SprintParticipation sprintParticipation = sprintParticipationRepository.findBySprintAndUser(Sprint.builder().sprintId(request.getSprintId()).build(), user);
+        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L);
+
         if (sprintParticipation.getIsManager()) {
             request.getParticipants().forEach(participantId ->
                     taskParticipationRepository.save(TaskParticipation

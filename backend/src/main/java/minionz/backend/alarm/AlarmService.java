@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AlarmService {
@@ -27,36 +28,53 @@ public class AlarmService {
         this.alarmRepository = alarmRepository;
         this.userAlarmRepository = userAlarmRepository;
     }
-    public void sendEventsToClient(Long receiverId, Long senderId, Long alarmId) {
+
+    public void sendEventsToClients(List<Long> receiverIds, Long senderId, Long alarmId) {
         Optional<User> sender = userRepository.findById(senderId);
-        Optional<User> receiver = userRepository.findById(receiverId);
         Optional<Alarm> sendAlarm = alarmRepository.findById(alarmId);
 
-        if (sender.isPresent() && receiver.isPresent() && sendAlarm.isPresent()) {
-            SseEmitter emitter = emitters.get("" + receiver.get().getUserId());
+        if (!sender.isPresent() || !sendAlarm.isPresent()) {
+            return; // 송신자 또는 알람이 존재하지 않으면 종료
+        }
+        List<User> receivers = new ArrayList<>();
 
-            // 알림 객체 생성
-            UserAlarm userAlarm = UserAlarm.builder()
-                    .receiver(receiver.get())
-                    .sender(sender.get())
-                    .alarm(sendAlarm.get())
-                    .alarmStatus(1) // 전송됨
-                    .build();
-            userAlarmRepository.save(userAlarm);
+        // 유저 리스트 초기화 및 존재하는 유저 추가
+        for (Long receiverId : receiverIds) {
+            Optional<User> receiver = userRepository.findById(receiverId);
+            receiver.ifPresent(receivers::add);
+        }
 
-            // 연결된 경우
-            if (emitter != null) {
-                try {
-                    emitter.send(SseEmitter.event().name("message").data(sendAlarm.get().getAlarmContents()));
-                } catch (IOException e) {
-                    emitters.remove(receiver.get().getUserId());
-                }
-            } else {
-                // 연결되지 않은 경우, 알림 저장
-                pendingAlarms.computeIfAbsent(receiver.get().getUserId(), k -> new ArrayList<>()).add(sendAlarm.get());
-            }
+        // 각 수신자에게 알림 전송
+        for (User receiver : receivers) {
+            sendAlarmToReceiver(receiver, sender.get(), sendAlarm.get());
         }
     }
+
+    private void sendAlarmToReceiver(User receiver, User sender, Alarm sendAlarm) {
+        SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
+
+        // 알림 객체 생성 및 저장
+        UserAlarm userAlarm = UserAlarm.builder()
+                .receiver(receiver)
+                .sender(sender)
+                .alarm(sendAlarm)
+                .alarmStatus(1) // 전송됨
+                .build();
+        userAlarmRepository.save(userAlarm);
+
+        // 연결된 경우
+        if (emitter != null) {
+            try {
+                emitter.send(SseEmitter.event().name("message").data(sendAlarm.getAlarmContents()));
+            } catch (IOException e) {
+                emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
+            }
+        } else {
+            // 연결되지 않은 경우, 알림 저장
+            pendingAlarms.computeIfAbsent(receiver.getUserId(), k -> new ArrayList<>()).add(sendAlarm);
+        }
+    }
+
 
     public SseEmitter addEmitter(Long receiverId) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
@@ -67,7 +85,8 @@ public class AlarmService {
         if (alarms != null) {
             alarms.forEach(alarm -> {
                 try {
-                    emitter.send(SseEmitter.event().name("message").data(alarm.getAlarmContents()));
+                    String message = alarmRepository.findById(alarm.getAlarmId()).get().getAlarmContents();
+                    emitter.send(SseEmitter.event().name("message").data(message));
                 } catch (IOException e) {
                     emitters.remove(receiverId);
                 }
