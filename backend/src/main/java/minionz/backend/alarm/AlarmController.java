@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
-@RequestMapping("/alarm")
+@RequestMapping("/api/alarm")
 public class AlarmController {
 
     private final AlarmService alarmService;

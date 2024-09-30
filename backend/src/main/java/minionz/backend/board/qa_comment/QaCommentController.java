@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/qacomment")
+@RequestMapping("/api/qacomment")
 public class QaCommentController {
     private final CloudFileUpload cloudFileUpload;
     private final QaCommentService qaCommentService;

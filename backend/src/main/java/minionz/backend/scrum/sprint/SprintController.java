@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/sprint")
+@RequestMapping("/api/sprint")
 public class SprintController {
 
     private final SprintService sprintService;

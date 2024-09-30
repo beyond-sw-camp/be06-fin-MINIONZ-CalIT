@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/errboard")
+@RequestMapping("/api/errboard")
 public class ErrorBoardController {
     private final ErrorBoardService errBoardService;
     private final CloudFileUpload cloudFileUpload;
