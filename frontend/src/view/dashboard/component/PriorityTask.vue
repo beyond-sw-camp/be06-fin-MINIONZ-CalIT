@@ -1,6 +1,13 @@
 <script setup>
+import { defineProps } from 'vue';
 import { priorityClass } from '@/utils/priorityUtils';
 
+defineProps({
+  tasks: {
+    type: Array,
+    required: true
+  }
+});
 </script>
 
 <template>
@@ -15,16 +22,16 @@ import { priorityClass } from '@/utils/priorityUtils';
           </div>
           <div class="priority">
             <p :class="priorityClass(task.priority)">{{ task.priority }}</p>
-            <p class="task-id">{{ task.idName }}</p>
+            <p class="task-id">{{ task.taskNumber }}</p>
           </div>
         </div>
         <div class="task-info">
           <div class="task-info-txt">
             <p>{{ task.isStarted }}</p>
             <div>
-              <img :src="coworker1" alt="coworker1">
-              <img :src="coworker2" alt="coworker2">
-              <img :src="coworker3" alt="coworker3">
+<!--              <img :src="coworker1" alt="coworker1">-->
+<!--              <img :src="coworker2" alt="coworker2">-->
+<!--              <img :src="coworker3" alt="coworker3">-->
             </div>
           </div>
           <div class="task-percent">
