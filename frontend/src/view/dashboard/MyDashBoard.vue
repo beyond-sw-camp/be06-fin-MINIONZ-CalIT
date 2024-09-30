@@ -21,12 +21,13 @@ onMounted(async () => {
 <template>
   <div class="dashboard">
     <TaskOverview
+        v-if="mypageStore.mySprintData && mypageStore.mySprintData.progress"
         :completion-rate="mypageStore.mySprintData.progress.successTaskCount / mypageStore.mySprintData.progress.allTaskCount * 100"
         :tasks-completed="mypageStore.mySprintData.progress.successTaskCount"
         :total-tasks="mypageStore.mySprintData.progress.allTaskCount"
         :work-space-count="mypageStore.mySprintData.progress.workspaceCount"/>
-    <PriorityTask />
-    <MeetingList />
+    <PriorityTask :tasks="mypageStore.mySprintData.tasks"/>
+    <MeetingList :meetings="mypageStore.mySprintData.meetings"/>
   </div>
 </template>
 

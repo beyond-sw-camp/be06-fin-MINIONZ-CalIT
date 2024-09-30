@@ -1,51 +1,16 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, defineProps } from 'vue';
+import { getBackgroundColor } from '@/utils/meetingBgUtils';
 
-const meetings = [
-  {
-    id: 1,
-    title: 'Analytic dashboard design',
-    project: '워크스페이스 명',
-    date: 'Today, 15:00pm',
-  },
-  {
-    id: 2,
-    title: 'Contact us section on landing page',
-    project: 'Circles project',
-    date: 'Today, 15:00pm',
-  },
-  {
-    id: 3,
-    title: 'Contact us section on landing page',
-    project: 'Circles project',
-    date: 'Tomorrow, 15:00pm',
-  },
-  {
-    id: 4,
-    title: 'Contact us section on landing page',
-    project: 'Circles project',
-    date: 'Tomorrow, 15:00pm',
-  },
-  {
-    id: 5,
-    title: 'Contact us section on landing page',
-    project: 'Circles project',
-    date: 'Dec 15th',
+const props = defineProps({
+  meetings: {
+    type: Array,
+    required: true
   }
-];
-
-const getBackgroundColor = (date) => {
-  if (date.startsWith('Today')) {
-    return '#FFE3E3';
-  } else if (date.startsWith('Tomorrow')) {
-    return '#FFEEDE';
-  } else {
-    return '#DEE3FF';
-  }
-};
+});
 
 const meetingBackgroundColors = computed(() => {
-  return meetings.map(meeting => getBackgroundColor(meeting.date));
+  return props.meetings.map(meeting => getBackgroundColor(meeting.date));
 });
 </script>
 
@@ -87,7 +52,6 @@ const meetingBackgroundColors = computed(() => {
   padding: 15px;
   margin-bottom: 15px;
   width: 236px;
-  //height: 148px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
