@@ -8,7 +8,7 @@ import minionz.backend.user.model.request.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
