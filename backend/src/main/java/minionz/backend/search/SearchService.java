@@ -24,6 +24,7 @@ public class SearchService {
                         .searchUserIdx(user.getUserId())
                         .userName(user.getUserName())
                         .email(user.getEmail())
+                        .persona(user.getPersona())
                         .build())
                 .collect(Collectors.toList());
     }

@@ -11,4 +11,5 @@ public class SearchUserResponse {
     private Long searchUserIdx;
     private String userName;
     private String email;
+    private Integer persona;
 }

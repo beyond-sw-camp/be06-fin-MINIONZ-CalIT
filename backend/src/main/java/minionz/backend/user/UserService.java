@@ -30,6 +30,7 @@ public class UserService {
                     .role("ROLE_ADMIN")
                     .isEnabled(true)
                     .userName(createUserRequest.getUserName())
+                    .persona((int) Math.random() * 12 + 1)
                     .build();           //유저 객체 값 설정
             userRepository.save(user);  //유저 저장
             return true;
