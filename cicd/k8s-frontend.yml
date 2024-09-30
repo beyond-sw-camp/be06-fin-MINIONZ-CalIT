@@ -19,14 +19,6 @@ spec:
           image: minionz/calit-frontend:latest
           ports:
             - containerPort: 80
-          volumeMounts:
-            - mountPath: /etc/nginx/conf.d
-              name: nginx-config
-
-      volumes:
-        - name: nginx-config
-          configMap:
-            name: calit-frontend-configmap
 ---
 apiVersion: v1
 kind: Service
