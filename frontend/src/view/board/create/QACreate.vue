@@ -1,8 +1,8 @@
 <script setup>
 import {inject, ref} from "vue";
+import { useQAStore  } from "@/stores/board/useQAStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
-import user2 from "@/assets/icon/persona/user2.svg";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -10,65 +10,64 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'QA 게시글 만들기';
 contentsDescription.value = 'QA 게시글을 만들어 보세요!';
 
+const qaStore = useQAStore();
 const rightSideVisible = ref(false);
 const activeComponentId = ref('');
+const participants = ref([]);
 
-const rightSideOn = (id) => {
-  const meetingNoteContainer = document.querySelector('.meeting-note-container');
-  if (meetingNoteContainer) {
-    meetingNoteContainer.style.transition = 'width 0.5s ease';
-    meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
-  }
-  console.log('Add issue button clicked');
-  activeComponentId.value = id;
-  rightSideVisible.value = !rightSideVisible.value;
+// const updateParticipants = (newParticipants) => {
+//   participants.value = newParticipants;
+// };
+
+const rightSideOn = (componentId) => {
+  activeComponentId.value = componentId;
+  rightSideVisible.value = true;
 };
 </script>
 
 <template>
   <div class="qa-wrap">
-  <div class="qa-detail-container">
-    <div class="qa-note-container">
-      <div class="qa-input-wrap">
-        <div class="qa-title-container">
-          <span class="column">
-            <i class="qa-title column-icon"></i>
-            게시글 제목
-          </span>
-          <input  class="title-editor" placeholder="게시글 제목" />
-        </div>
-        <!--      담당자 추가  -->
-        <div class="author-section">
-          <div class="participants">
-          <span class="column">
-            <i class="user-multiple column-icon"></i>
-            담당자
-          </span>
-            <button class="issue-button" @click="rightSideOn('participants')">담당자 추가하기</button>
-            <div class="users-list">
-              <div class="user-profile">
-                <img :src=user2 alt="참여자">
-                <span>강혜정</span>
+    <div class="qa-detail-container">
+      <div class="qa-note-container">
+        <div class="qa-input-wrap">
+          <div class="qa-title-container">
+            <span class="column">
+              <i class="qa-title column-icon"></i>
+              게시글 제목
+            </span>
+            <input v-model="qaStore.title" class="title-editor" placeholder="게시글 제목" />
+          </div>
+          <!--      담당자 추가  -->
+          <div class="author-section">
+            <div class="participants">
+              <span class="column">
+                <i class="user-multiple column-icon"></i>
+                담당자
+              </span>
+              <button class="issue-button" @click="rightSideOn('participants')">담당자 추가하기</button>
+              <div class="users-list">
+                <div class="user-profile" v-for="participant in participants" :key="participant.id">
+                  <img :src="participant.persona" alt="참여자">
+                  <span>{{ participant.username }}</span>
+                </div>
               </div>
             </div>
           </div>
+          <!--        태스크 추가하기-->
+          <div class="issue-section">
+            <span class="column">
+              <i class="task-add column-icon"></i>
+              태스크 추가하기
+            </span>
+            <button class="issue-button" @click="rightSideOn('task'); qaStore.updateTaskId('newTaskId')">태스크 연동하기</button>
+            <span class="issue-id">{{ qaStore.taskId }}</span>
+          </div>
+          <QuillEditor/>
         </div>
-        <!--        태스크 추가하기-->
-        <div class="issue-section">
-        <span class="column">
-          <i class="task-add column-icon"></i>
-          태스크 추가하기
-        </span>
-          <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
-          <span class="issue-id">User_001</span>
-        </div>
-    <QuillEditor/>
-  </div>
-
-</div>
-    <button class="save-button">저장하기</button>
-</div>
-  <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
+      </div>
+      <button class="save-button">저장하기</button>
+    </div>
+    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
   </div>
 </template>
 
@@ -91,7 +90,6 @@ const rightSideOn = (id) => {
 }
 
 .qa-note-container {
-  //padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -159,7 +157,6 @@ const rightSideOn = (id) => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  //margin-top: 20px;
   width: 150px;
   margin-left: auto;
 }

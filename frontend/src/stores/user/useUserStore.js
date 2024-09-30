@@ -13,6 +13,11 @@ export const useUserStore = defineStore('userStore', () => {
 
     const setUser = (userInfo) => {
         user.value = userInfo;
+        sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+    };
+
+    const getUserInfo = () => {
+        return user.value;
     };
 
     const logout = () => {
@@ -20,6 +25,7 @@ export const useUserStore = defineStore('userStore', () => {
         user.value = null;
         isLoggedIn.value = false;
         sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('userInfo');
     };
 
     return {
@@ -28,6 +34,7 @@ export const useUserStore = defineStore('userStore', () => {
         isLoggedIn,
         setToken,
         setUser,
+        getUserInfo,
         logout
     };
 });

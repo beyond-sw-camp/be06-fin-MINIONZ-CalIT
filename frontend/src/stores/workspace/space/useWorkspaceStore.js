@@ -14,7 +14,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // POST 워크스페이스 생성 /api/workspaces
     const addWorkspace = async({workspaceName, participants, persona}) => {
         try {
-            const response = await axios.post('/api/workspace', { workspaceName, participants, persona });
+            const response = await axios.post('/api/workspaces', { workspaceName, participants, persona });
             workspace.value = response.data;
             return response.data;
         } catch (error) {

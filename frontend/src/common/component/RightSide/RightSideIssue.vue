@@ -16,7 +16,7 @@ const endTime = ref('');
 const assignees = ref([]);
 const friendStore = useFriendsStore();
 const filteredUsers = computed(() => {
-  return friendStore.getFilteredUsers(workspaceId, 'userSearch');
+  return friendStore.getFriendsList().filter(user => !assignees.value.includes(user));
 });
 
 const addIssue = () => {
@@ -61,16 +61,7 @@ const addIssue = () => {
 
         <div>
           <label>담당자</label>
-          <multiselect
-              v-model="assignees"
-              :options="filteredUsers"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="담당자를 선택해주세요"
-              label="name"
-              track-by="id"
-              />
+          <input type="text" placeholder="사용자를 검색해주세요" class="input-field">
         </div>
   </div>
     <!-- 추가 버튼 -->

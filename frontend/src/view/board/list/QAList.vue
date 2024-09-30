@@ -1,6 +1,6 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import { qaListData } from "@/static/qaListData";
+import { useQAStore} from "@/stores/board/useQAStore";
 import { workspaceData } from "@/static/workspaceData";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import BoardList from "@/common/component/Board/BoardList.vue";
@@ -20,13 +20,9 @@ contentsDescription.value = 'QA 목록을 확인하세요!';
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const totalPages = computed(() => Math.ceil((qaListData.value?.length || 0) / itemsPerPage));
+const  qaStore = useQAStore();
 
-// const paginatedQaListData = computed(() => {
-//   const start = (currentPage.value - 1) * itemsPerPage;
-//   const end = start + itemsPerPage;
-//   return qaListData.value ? qaListData.value.slice(start, end) : [];
-// });
+const totalPages = computed(() => Math.ceil((qaStore().value?.length || 0) / itemsPerPage));
 
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -58,7 +54,7 @@ const deleteItem = (item) => {
     <div class="header">
       <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
     </div>
-    <BoardList :items="qaListData" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
+    <BoardList :items="qaStore" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
     <Pagination
         :currentPage="currentPage"
         :totalPages="totalPages"

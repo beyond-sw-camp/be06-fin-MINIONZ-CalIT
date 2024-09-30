@@ -1,9 +1,9 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
+import { inject, ref} from 'vue';
 import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
-import { useFriendsStore } from '@/stores/friends/useFriendsStore';
 import { useSprintLabelStore} from "@/stores/workspace/scrum/useSprintLabelStore";
 import Multiselect from "vue-multiselect";
+import {timeInputUtils} from "@/utils/timeInputUtils";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,20 +12,13 @@ contentsTitle.value = '스프린트 추가하기';
 contentsDescription.value = '스프린트를 추가해보세요!';
 
 const sprintStore = useSprintStore();
-const friendStore = useFriendsStore();
 const sprintLabelStore = useSprintLabelStore();
 const sprintName = ref('');
 // const sprintManager = ref('');
 const participants = ref('');
 const selectedLabels = ref([]);
-const startDate = ref('');
-const endDate = ref('');
-
-// const filteredUsers = computed(() => {
-//   return friendStore.getUserList().filter(user => {
-//     return !participants.value.includes(user);
-//   });
-// });
+const startTime = ref('');
+const endTime = ref('');
 
 const addSprint = () => {
   sprintStore.addSprint({
@@ -34,6 +27,14 @@ const addSprint = () => {
   });
   sprintName.value = '';
   participants.value = '';
+};
+
+const adjustTime = () => {
+  if (startTime.value && endTime.value) {
+    const { start, end } = timeInputUtils(startTime.value, endTime.value);
+    startTime.value = start;
+    endTime.value = end;
+  }
 };
 </script>
 
@@ -69,11 +70,11 @@ const addSprint = () => {
           </div>
           <div>
             <label>시작 날짜</label>
-            <input type="date" id="startDate" class="input-field">
+            <input v-model="startTime" type="date" id="startDate" class="input-field" @change="adjustTime">
           </div>
           <div>
             <label>종료 날짜</label>
-            <input type="date" id="endDate" class="input-field">
+            <input v-model="endTime" type="date" id="endDate" class="input-field" @change="adjustTime">
           </div>
           <div>
             <label>label 추가하기</label>

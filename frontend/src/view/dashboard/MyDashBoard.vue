@@ -1,19 +1,30 @@
 <script setup>
-import { inject } from 'vue';
+import {inject, onMounted} from 'vue';
 import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import PriorityTask from "@/view/dashboard/component/PriorityTask.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
+import {useMypageStore} from "@/stores/my/useMypageStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
 contentsTitle.value = 'My Dashboard';
 contentsDescription.value = '나의 할일을 살펴보세요!';
+
+const mypageStore = useMypageStore();
+
+onMounted(async () => {
+  await mypageStore.getMyDashboard();
+});
 </script>
 
 <template>
   <div class="dashboard">
-    <TaskOverview />
+    <TaskOverview
+        :completion-rate="mypageStore.mySprintData.progress.successTaskCount / mypageStore.mySprintData.progress.allTaskCount * 100"
+        :tasks-completed="mypageStore.mySprintData.progress.successTaskCount"
+        :total-tasks="mypageStore.mySprintData.progress.allTaskCount"
+        :work-space-count="mypageStore.mySprintData.progress.workspaceCount"/>
     <PriorityTask />
     <MeetingList />
   </div>

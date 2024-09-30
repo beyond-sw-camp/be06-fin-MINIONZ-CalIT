@@ -17,8 +17,15 @@ function generateState() {
 const STATE = ref(generateState());
 
 // 새로운 창을 열어 URL로 이동하는 함수
-const openInNewWindow = (url) => {
+const openInNewWindow = (url, provider) => {
   window.open(url, '_blank');
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) return;
+    const { token } = event.data;
+    if (token) {
+      localStorage.setItem(`${provider}_token`, token);
+    }
+  });
 };
 
 // 구글 로그인 URL 생성
@@ -39,7 +46,7 @@ const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${k
       <div class="social-login_content">
         <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(googleLoginUrl)"
+            @click="openInNewWindow(googleLoginUrl, 'google')"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -50,7 +57,7 @@ const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${k
 
         <!-- 네이버 로그인 버튼 -->
         <div
-            @click="openInNewWindow(naverLoginUrl)"
+            @click="openInNewWindow(naverLoginUrl, 'naver')"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -61,7 +68,7 @@ const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${k
 
         <!-- 카카오 로그인 버튼 -->
         <div
-            @click="openInNewWindow(kakaoLoginUrl)"
+            @click="openInNewWindow(kakaoLoginUrl, 'kakao')"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -122,6 +129,7 @@ hr {
   border-radius: 4px;
   justify-content: center;
   padding: 10px;
+  cursor: pointer;
 }
 
 .social-login_content_item_icon {

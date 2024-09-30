@@ -1,5 +1,6 @@
 <script setup>
-import {inject} from "vue";
+import {inject, ref} from "vue";
+import { useErrorStore} from "@/stores/board/useErrorStore";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 const contentsTitle = inject('contentsTitle');
@@ -7,6 +8,17 @@ const contentsDescription = inject('contentsDescription');
 
 contentsTitle.value = 'Error 게시글 쓰기';
 contentsDescription.value = 'Error 게시글을 만들어 보세요!';
+
+const errorStore = useErrorStore();
+const errTitle = ref('');
+const errContent = ref('');
+
+const savePost = () => {
+  errorStore.writePost({
+    title: errTitle.value,
+    content: errContent.value,
+  });
+};
 </script>
 
 <template>
@@ -18,7 +30,7 @@ contentsDescription.value = 'Error 게시글을 만들어 보세요!';
           <i class="error-title column-icon"></i>
           게시글 제목
         </span>
-          <input  class="title-editor" placeholder="게시글 제목" />
+          <input v-model="errTitle" class="title-editor" placeholder="게시글 제목" />
         </div>
         <!--      설명 추가하기-->
         <div class="language-section">
@@ -26,12 +38,12 @@ contentsDescription.value = 'Error 게시글을 만들어 보세요!';
           <i class="languages column-icon"></i>
           설명 추가하기
         </span>
-          <input class="language-editor" placeholder="언어" />
+          <input v-model="errContent" class="language-editor" placeholder="언어" />
         </div>
         <QuillEditor/>
       </div>
     </div>
-    <button class="save-button">저장하기</button>
+    <button class="save-button" @click="savePost">저장하기</button>
   </div>
 </template>
 

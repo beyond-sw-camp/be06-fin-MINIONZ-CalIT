@@ -1,22 +1,16 @@
 <script setup>
-import { useParticipants } from "@/stores/user/useParticipantsStore";
+import {ref, defineEmits} from "vue";
+import SearchFriends from "@/common/component/search/SearchFriends.vue";
+// import { SearchFriends } from '@/common/component/search/SearchFriends.vue';
 
-const {
-  participantsName,
-  participants,
-  userList,
-  filteredUsers,
-  addParticipant,
-  removeParticipant,
-  saveParticipants
-} = useParticipants();
+const participants = ref([]);
+const emit = defineEmits(['update-participants']);
+const updateSelectedParticipants = (newParticipants) => {
+  participants.value = newParticipants;
+};
 
 const saveParticipantsToUserList = () => {
-  if (saveParticipants) {
-    saveParticipants(userList);
-  } else {
-    console.warn("saveParticipants is not defined");
-  }
+  emit('update-participants', participants.value);
 };
 </script>
 
@@ -25,36 +19,7 @@ const saveParticipantsToUserList = () => {
     <h2>participants 추가하기</h2>
     <hr/>
     <div class="participants-wrap">
-      <div>
-        <div class="input-wrap">
-          <label for="participants-name">참여자 검색</label>
-          <div class="input-btn-wrap">
-            <input
-                type="text"
-                id="participants-name"
-                v-model="participantsName"
-                placeholder="참여자 이름을 입력하세요"
-                class="input-field"
-            />
-          </div>
-          <div v-if="participantsName" class="search-results">
-            <div v-for="user in filteredUsers" :key="user.id" @click="() => { addParticipant(user); participantsName = ''; }">
-              <img :src="user.persona" alt="persona">
-              <span>{{ user.username }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="participants-list">
-          <div v-for="participant in participants" :key="participant.id" class="participants-item">
-            <div class="participants-item-info">
-              <img :src="participant.persona" alt="persona" class="persona">
-              <span>{{ participant.username }}</span>
-            </div>
-            <button @click="removeParticipant(participant.id)" class="del-btn participants-btn">삭제</button>
-          </div>
-        </div>
-      </div>
-
+      <SearchFriends @update-selected-participants="updateSelectedParticipants" />
       <!-- 저장 버튼 -->
       <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
     </div>
@@ -65,12 +30,6 @@ const saveParticipantsToUserList = () => {
 .form-container {
   height: calc(100vh - 250px);
   box-sizing: border-box;
-  //width: 300px;
-  //margin: 0 auto;
-  //padding: 20px;
-  //border: 1px solid #ddd;
-  //border-radius: 8px;
-  //background-color: #fff;
 }
 
 h2 {

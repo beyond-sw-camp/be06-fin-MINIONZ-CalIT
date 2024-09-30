@@ -1,12 +1,27 @@
 <script setup>
+import { defineProps } from 'vue';
 import itemIcon1 from '@/assets/icon/dashboard/itemIcon1.svg';
 import itemIcon2 from '@/assets/icon/dashboard/itemIcon2.svg';
 import itemIcon3 from '@/assets/icon/dashboard/itemIcon3.svg';
 
-const tasksCompleted = 15;
-const totalTasks = 20;
-const completionRate = 95;
-const workSpaceCount = 5;
+defineProps({
+  tasksCompleted: {
+    type: Number,
+    required: true
+  },
+  totalTasks: {
+    type: Number,
+    required: true
+  },
+  completionRate: {
+    type: Number,
+    required: true
+  },
+  workSpaceCount: {
+    type: Number,
+    required: true
+  }
+});
 </script>
 
 <template>
