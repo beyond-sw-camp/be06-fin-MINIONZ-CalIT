@@ -44,32 +44,7 @@ pipeline {
                         usernamePassword(credentialsId: 'minionztest', usernameVariable: 'DOCKERID', passwordVariable: 'DOCKERPW')
                     ]) {
                         echo "Docker Build"
-                        sh """
-                            docker build \
-                                --build-arg AWS_ACCESSKEY=${AWS_ACCESSKEY} \
-                                --build-arg AWS_REGION=${AWS_REGION} \
-                                --build-arg AWS_SECRETKEY=${AWS_SECRETKEY} \
-                                --build-arg DB_PASSWORD=${DB_PASSWORD} \
-                                --build-arg DB_URL=${DB_URL} \
-                                --build-arg DB_USERNAME=${DB_USERNAME} \
-                                --build-arg GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID} \
-                                --build-arg GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET} \
-                                --build-arg GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
-                                --build-arg GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
-                                --build-arg JWT_SECRET=${JWT_SECRET} \
-                                --build-arg KAFKA_SERVER=${KAFKA_SERVER} \
-                                --build-arg KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID} \
-                                --build-arg KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET} \
-                                --build-arg MAIL_HOST=${MAIL_HOST} \
-                                --build-arg MAIL_PASSWORD=${MAIL_PASSWORD} \
-                                --build-arg MAIL_PORT=${MAIL_PORT} \
-                                --build-arg MAIL_USERNAME=${MAIL_USERNAME} \
-                                --build-arg NAVER_CLIENT_ID=${NAVER_CLIENT_ID} \
-                                --build-arg NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET} \
-                                --build-arg S3_BUCKET=${S3_BUCKET} \
-                                --build-arg DOMAIN_ADDRESS=${DOMAIN_ADDRESS} \
-                                -t minionz/calit-backend:1.${BUILD_ID} ./backend
-                        """
+                        sh "docker build --tag minionz/calit-backend:1.${BUILD_ID} ./backend"
 
                         echo "Docker Login"
                         sh "docker login -u $DOCKERID -p $DOCKERPW"
