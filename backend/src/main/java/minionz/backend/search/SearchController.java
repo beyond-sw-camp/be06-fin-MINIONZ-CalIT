@@ -1,8 +1,7 @@
 package minionz.backend.search;
 
 import lombok.RequiredArgsConstructor;
-import minionz.backend.search.model.request.WorkspaceUserRequest;
-import minionz.backend.search.model.request.SearchUserRequest;
+import minionz.backend.search.model.response.SearchUserResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,13 +12,18 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
-    @PostMapping("/alluser")
-    public List<SearchUserRequest> searchAllUser() {
+    @GetMapping("/alluser")
+    public List<SearchUserResponse> searchAllUser() {
         return searchService.getAllUser();
     }
 
-    @PostMapping("/workspaceuser")
-    public List<WorkspaceUserRequest> searchWorkspaceUser(@RequestBody WorkspaceUserRequest workspace) {
-        return searchService.getUsernamesByWorkspaceId(workspace.getWorkspaceId());
+    @GetMapping("/workspaceuser")
+    public List<SearchUserResponse> searchWorkspaceUser(@RequestParam Long workspaceId) {
+        return searchService.getUsernamesByWorkspaceId(workspaceId);
+    }
+
+    @GetMapping("/containeduser")
+    public List<SearchUserResponse> searchWorkspaceUser(@RequestParam String username) {
+        return searchService.containedUser(username);
     }
 }

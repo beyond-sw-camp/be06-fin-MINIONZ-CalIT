@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface SearchRepository extends JpaRepository<User, Long> {
     List<User> findAll();
-
+    List<User> findByUserNameContaining(String username);
     List<User> findByWorkspaceParticipations_Workspace_WorkspaceId(Long workspaceId);
 }
