@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { defineStore} from "pinia";
 // import { taskData } from '@/static/taskData';
-import { getTaskCountBackgroundColor, getTaskCountColor } from '@/utils/taskUtils';
+// import { getTaskCountBackgroundColor, getTaskCountColor } from '@/utils/taskUtils';
 
 //axios ver
 export const useTaskStore = defineStore('taskStore', () => {

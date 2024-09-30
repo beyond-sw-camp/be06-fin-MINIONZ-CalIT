@@ -4,7 +4,7 @@ import {mySprintData} from "@/static/mySprintData";
 // import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
 // import { useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import ScrumList from "@/common/component/Board/ScrumList.vue";
+import BoardList from "@/common/component/Board/BoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import {useRoute} from "vue-router";
 
@@ -24,7 +24,7 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 
 // const totalPages = computed(() => Math.ceil((sprintListData.value?.length || 0) / itemsPerPage));
-const totalPages = computed(() => Math.ceil((sprintStore?.length || 0) / itemsPerPage));
+const totalPages = computed(() => Math.ceil((sprintStore.sprints.values?.length || 0) / itemsPerPage));
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -40,22 +40,22 @@ const nextPage = () => {
 const goToPage = (page) => {
   currentPage.value = page;
 };
+
+const editItem = (item) => {
+  console.log('Editing:', item);
+};
+
+const deleteItem = (item) => {
+  console.log('Deleting:', item);
+};
 </script>
 
 <template>
   <div class="board-list-container">
     <div class="header">
-      <SearchComponent :link="`/workspace/${workspaceId}/scrum/sprint/create`" />
+      <SearchComponent :link="`/workspace/${workspaceId}/scrum/sprint/list`" />
     </div>
-<!--    <BoardList :items="sprintStore.sprints" thcolumn="스프린트 명" column="sprintTitle" board-type="sprint" @edit-item="editItem" @delete-item="deleteItem" />-->
-    <ScrumList
-        :items="sprintStore"
-        firstColumn="스프린트 명"
-        secondColumn="label"
-        thirdColumn="status"
-        fourthColumn="priority"
-        fifthColumn="taskNumber"
-        board-type="sprint"/>
+    <BoardList :items="sprintStore.sprints" thcolumn="스프린트 명" column="sprintTitle" board-type="sprint" @edit-item="editItem" @delete-item="deleteItem" />
     <Pagination
         :currentPage="currentPage"
         :totalPages="totalPages"

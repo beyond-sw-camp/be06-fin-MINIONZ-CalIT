@@ -1,20 +1,21 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
 import { errorListData } from "@/static/errorListData";
-import { workspaceData } from "@/static/workspaceData";
+// import { useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import BoardList from "@/view/board/component/BoardList.vue";
+import BoardList from "@/common/component/Board/BoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+// const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+// const workspace = useWorkspaceStore();
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Error Board List` : 'Error Board List';
+contentsTitle.value = 'Error List';
 contentsDescription.value = 'Error 목록을 확인하세요!';
 
 const currentPage = ref(1);

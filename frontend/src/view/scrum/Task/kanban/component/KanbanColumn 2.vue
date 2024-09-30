@@ -1,14 +1,14 @@
 <script setup>
-import ListItem from './ListItem.vue';
 import { computed, defineProps, ref, watch } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
+import TaskCard from './KanbanCard.vue';
 
 const props = defineProps({
   data: {
-    type: Array,
+    type: Object,
     required: true
   }
-});
+});``
 
 const getTaskCountBackgroundColor = (status) => {
   if (status === 'No Status') return 'rgba(234, 179, 8, 0.1)';
@@ -41,24 +41,24 @@ watch(() => props.data.tasks, (newTasks) => {
 <template>
   <div class="task-column">
     <div class="column-header">
-      <div class="column-title">
-        <p>{{ data.status }}</p>
-        <span class="task-count" :style="{ backgroundColor: taskCountBgStyle, color: taskCountColorStyle }">{{ tasks.length }}</span>
-      </div>
-      <div class="add-task-card">
-        <span class="plus">+</span> <span class="add-text">Add Task</span>
-      </div>
+      <p>{{ data.status }}</p>
+      <span class="task-count" :style="{ backgroundColor: taskCountBgStyle, color: taskCountColorStyle }">{{ data.tasks.length }}</span>
     </div>
     <VueDraggableNext :list="tasks" item-key="id" group="tasks" draggable=".task-card" handle=".task-card">
-      <ListItem v-for="(task) in tasks" :key="task.id" :task="task"/>
+      <TaskCard v-for="(task) in tasks" :key="task.id" :task="task"/>
     </VueDraggableNext>
+    <div class="add-task-card">
+      <span class="plus">+</span> <span class="add-text">Add Task</span>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .task-column {
+  width: 100%;
   background-color: #fff;
-  padding: 20px;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .column-header {
@@ -68,19 +68,36 @@ watch(() => props.data.tasks, (newTasks) => {
   margin: 0 0 10px 5px;
 }
 
-.column-title{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 p {
-font-size: 14px;
-font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .task-count {
   padding: 0 10px;
   border-radius: 30px;
+}
+
+.add-task-card {
+  background-color: #F7F8FA;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.plus {
+  font-weight: bold;
+  background-color: #C7CED9;
+  color: #fff;
+  padding: 0 7px;
+  border-radius: 50%;
+}
+
+.add-text {
+  font-size: 12px;
 }
 </style>

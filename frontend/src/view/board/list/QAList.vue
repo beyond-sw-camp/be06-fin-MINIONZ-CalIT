@@ -3,7 +3,7 @@ import {computed, inject, ref} from 'vue';
 import { qaListData } from "@/static/qaListData";
 import { workspaceData } from "@/static/workspaceData";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import BoardList from "@/view/board/component/BoardList.vue";
+import BoardList from "@/common/component/Board/BoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import {useRoute} from "vue-router";
 

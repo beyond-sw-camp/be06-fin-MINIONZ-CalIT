@@ -1,12 +1,12 @@
 <script setup>
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import {workspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
+import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
 import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspaceList = workspaceStore.getWorkspace;
+const workspaceList = useWorkspaceStore().getAllWorkspace();
 </script>
 
 <template>
@@ -42,7 +42,7 @@ const workspaceList = workspaceStore.getWorkspace;
     <div class="workspace-modal-footer">
       <hr>
       <div>
-        <router-link :to="`/workspace/scrum/workspace/create`">
+        <router-link to="/my/create">
           <img :src="plus" class="plus" alt="plus-btn">
           <p>Add Workspace</p>
         </router-link>

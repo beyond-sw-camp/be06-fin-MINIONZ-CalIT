@@ -1,7 +1,7 @@
 export const mySprintData = [
     {
         "id": 1,
-        "title": "태스크 1",
+        "title": "유저 기능 추가",
         "label": "backend",
         "participants": [
             {
@@ -20,7 +20,7 @@ export const mySprintData = [
     },
     {
         "id": 2,
-        "title": "태스크 2",
+        "title": "번다운 차트 구현 확장",
         "label": "backend",
         "participants": [
             {
@@ -39,7 +39,7 @@ export const mySprintData = [
     },
     {
         "id": 3,
-        "title": "태스크 3",
+        "title": "Redis 캐시 구현",
         "label": "backend",
         "participants": [
             {

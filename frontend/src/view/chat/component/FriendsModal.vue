@@ -3,11 +3,11 @@ import {ref} from 'vue';
 import router from "@/router";
 import {useChatRoomStore} from "@/stores/chat/useChatRoomStore";
 import { useParticipants } from '@/stores/user/useParticipantsStore';
-import { workspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
+import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
 
 const chatRoomStore = useChatRoomStore();
 console.log('chatRoomStore:', chatRoomStore);
-const workspaceId = workspaceStore.workspaceId;
+const workspaceId = useWorkspaceStore().workspaceId;
 const isModalOpen = ref(true);
 const chattingRoomName = ref('');
 // const participantInput = ref('');
