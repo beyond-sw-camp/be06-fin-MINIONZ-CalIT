@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/qaboard")
+@RequestMapping("/api/qaboard")
 public class QaBoardController {
     private final QaBoardService qaBoardService;
     private final CloudFileUpload cloudFileUpload;

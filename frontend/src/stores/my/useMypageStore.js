@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import {weekSettingUtils} from "@/utils/weekSettingUtils";
 
 export const useMypageStore = defineStore('mypageStore', () => {
     const mySprintData = ref([]);
@@ -20,7 +21,8 @@ export const useMypageStore = defineStore('mypageStore', () => {
     }
 
     const getMyDashboard = async () => {
-        const response = await axios.get('/api/myDashBoard');
+        const { startDate, endDate } = weekSettingUtils();
+        const response = await axios.get(`/api/dashboard/my?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data;
     }
 
@@ -31,4 +33,4 @@ export const useMypageStore = defineStore('mypageStore', () => {
         getMyWeekly,
         getMyDashboard
     };
-}
+})

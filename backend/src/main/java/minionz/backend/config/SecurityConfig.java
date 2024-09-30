@@ -78,36 +78,36 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((requestMatcher) -> requestMatcher
-//                        .requestMatchers("/oauth-login/**", "/user/login").permitAll()  // Allow access to these paths without authentication
+//                        .requestMatchers("/oauth-login/**", "/api/user/login").permitAll()  // Allow access to these paths without authentication
 //                        .anyRequest().authenticated());
                         // 워크스페이스 관련 요청
-                        .requestMatchers(HttpMethod.GET, "/workspace").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers(HttpMethod.POST, "/workspace/**").permitAll()
-                        .requestMatchers("/workspace/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
+                        .requestMatchers(HttpMethod.GET, "/api/workspace").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+                        .requestMatchers(HttpMethod.POST, "/api/workspace/**").permitAll()
+                        .requestMatchers("/api/workspace/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
                         // 스프린트 관련 요청
-                        .requestMatchers(HttpMethod.GET, "/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers(HttpMethod.POST, "/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers("/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
+                        .requestMatchers(HttpMethod.GET, "/api/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+                        .requestMatchers(HttpMethod.POST, "/api/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+                        .requestMatchers("/api/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
                         // 태스크 관련 요청
-                        .requestMatchers(HttpMethod.DELETE, "/task/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
-                        .requestMatchers("/task/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context))
+                        .requestMatchers(HttpMethod.DELETE, "/api/task/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
+                        .requestMatchers("/api/task/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context))
                         // 이슈 관련 요청
-                        .requestMatchers(HttpMethod.DELETE, "/issue/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_ADMIN, context))
-                        .requestMatchers("/issue/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+                        .requestMatchers(HttpMethod.DELETE, "/api/issue/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_ADMIN, context))
+                        .requestMatchers("/api/issue/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
                         // 회의 관련 요청
-                        .requestMatchers(HttpMethod.DELETE, "/meeting/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
-                        .requestMatchers("/meeting/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context))
+                        .requestMatchers(HttpMethod.DELETE, "/api/meeting/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
+                        .requestMatchers("/api/meeting/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context))
                         // 라벨 관련 요청
-                        .requestMatchers("/label/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+                        .requestMatchers("/api/label/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
                         // 대시보드 관련 요청
-                        .requestMatchers("/dashboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+                        .requestMatchers("/api/dashboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
                         // 스케줄 관련 요청
-                        .requestMatchers("/schedule/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-//                        .requestMatchers("/errboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-//                        .requestMatchers("/errcomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-//                        .requestMatchers("/qaboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-//                        .requestMatchers("/qacomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-//                        .requestMatchers(HttpMethod.POST,"/note/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_MEETING_MEMBER, context))
+                        .requestMatchers("/api/schedule/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/api/errboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/api/errcomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/api/qaboard/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers("/api/qacomment/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
+//                        .requestMatchers(HttpMethod.POST,"/api/note/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_MEETING_MEMBER, context))
                         .anyRequest().permitAll());
 
         http
@@ -117,18 +117,18 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
-        loginFilter.setFilterProcessesUrl("/user/login");
+        loginFilter.setFilterProcessesUrl("/api/user/login");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     private AuthorizationDecision hasAuthorities(Supplier<Authentication> authentication, String requiredRole, RequestAuthorizationContext object) {
-        if (object.getRequest().getRequestURI().split("/")[2].equals("my")) {
+        if (object.getRequest().getRequestURI().split("/")[3].equals("my")) {
             return new AuthorizationDecision(true);
         }
 
-        String number = object.getRequest().getRequestURI().split("/")[2];
-        String role = number.equals("all") ? requiredRole + "_" +  object.getRequest().getRequestURI().split("/")[3] : requiredRole + "_" + number;
+        String number = object.getRequest().getRequestURI().split("/")[3];
+        String role = number.equals("all") ? requiredRole + "_" +  object.getRequest().getRequestURI().split("/")[4] : requiredRole + "_" + number;
 
         List<String> roles = parseRoles(authentication);
         return new AuthorizationDecision(roles.contains(role));

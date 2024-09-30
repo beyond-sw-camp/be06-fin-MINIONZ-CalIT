@@ -1,12 +1,8 @@
 <script setup>
-import {computed, ref} from 'vue';
-import Multiselect from 'vue-multiselect';
-import {useFriendsStore} from "@/stores/friends/useFriendsStore";
-import {useRoute} from "vue-router";
-import {useIssueStore} from "@/stores/workspace/scrum/useIssueStore";
+import { ref} from 'vue';
+import SearchFriends from "@/common/component/search/SearchFriends.vue";
 
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
+import {useIssueStore} from "@/stores/workspace/scrum/useIssueStore";
 
 const issueStore = useIssueStore();
 const issueName = ref('');
@@ -14,10 +10,6 @@ const issueContent = ref('');
 const startTime = ref('');
 const endTime = ref('');
 const assignees = ref([]);
-const friendStore = useFriendsStore();
-const filteredUsers = computed(() => {
-  return friendStore.getFilteredUsers(workspaceId, 'userSearch');
-});
 
 const addIssue = () => {
   issueStore.addIssue({
@@ -61,16 +53,7 @@ const addIssue = () => {
 
         <div>
           <label>담당자</label>
-          <multiselect
-              v-model="assignees"
-              :options="filteredUsers"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="담당자를 선택해주세요"
-              label="name"
-              track-by="id"
-              />
+          <SearchFriends v-model="assignees" />
         </div>
   </div>
     <!-- 추가 버튼 -->

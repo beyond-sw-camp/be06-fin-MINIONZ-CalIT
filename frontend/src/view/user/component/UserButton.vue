@@ -26,5 +26,6 @@ button {
   align-items: center;
   font-size: 16px;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 </style>

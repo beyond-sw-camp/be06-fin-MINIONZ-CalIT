@@ -1,7 +1,6 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import { issueData } from "@/static/issueData";
-// import { useIssueStore } from '@/stores/workspace/scrum/useIssueStore';
+import { useIssueStore } from '@/stores/workspace/scrum/useIssueStore';
 import { useFriendsStore } from '@/stores/friends/useFriendsStore';
 
 const contentsTitle = inject('contentsTitle');
@@ -10,7 +9,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Issue 추가하기';
 contentsDescription.value = 'Issue를 추가해보세요!';
 
-const issueStore = issueData;
+const issueStore = useIssueStore();
 const friendStore = useFriendsStore();
 const issueName = ref('');
 const participants = ref('');
