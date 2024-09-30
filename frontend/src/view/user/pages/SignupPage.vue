@@ -3,7 +3,7 @@ import {ref, computed, onMounted} from 'vue';
 import { useRouter } from 'vue-router';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
-import SocialLogin from "@/view/user/component/SocialLogin.vue";
+// import SocialLogin from "@/view/user/component/SocialLogin.vue";
 import axios from "axios";
 import { Notyf } from 'notyf';
 import PerfectScrollbar from "perfect-scrollbar";

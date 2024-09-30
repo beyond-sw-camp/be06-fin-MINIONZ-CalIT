@@ -1,10 +1,10 @@
 import {ref} from "vue";
 import axios from "axios";
 import {defineStore} from "pinia";
-import {chatRoomList, chatRoomList as initialChatRoomList} from '@/static/chatData';
+// import {chatRoomList, chatRoomList } from '@/static/chatData';
 
 export const useChatRoomStore = defineStore('chatRoomStore', () => {
-    const chatRoom = chatRoomList;
+    const chatRoom = ref([]);
     const newChatRoomId = ref(0);
 
 

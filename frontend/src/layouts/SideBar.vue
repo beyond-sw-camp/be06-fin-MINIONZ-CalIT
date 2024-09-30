@@ -1,7 +1,7 @@
 <script setup>
 import { computed, defineProps } from 'vue';
 import { useUserStore } from '@/stores/user/useUserStore';
-import { workspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
+import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
@@ -11,6 +11,7 @@ const props = defineProps({
   isPersonalMenu: Boolean
 });
 
+const workspaceStore = useWorkspaceStore();
 // const route = useRoute();
 const workspaceName = computed(() => props.isPersonalMenu ? 'My Space' : workspaceStore.workspaceName);
 

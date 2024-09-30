@@ -4,7 +4,7 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
-import {workspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
+import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 
 const routes = [
     {
@@ -53,6 +53,11 @@ const routes = [
         name: 'My',
         component: () => import('@/layouts/ContentsArea.vue'),
         children: [
+            {
+                path: 'create',
+                name: 'WorkSpaceCreate',
+                component: () => import('@/view/scrum/create/WorkSpaceCreate.vue')
+            },
             {
                 path: 'dashboard',
                 name: 'MyDashboard',
@@ -130,11 +135,6 @@ const routes = [
                 name: 'WorkspaceScrum',
                 children: [
                     {
-                        path: 'dashboard',
-                        name: 'WorkspaceScrumWorkspaceCreate',
-                        component: () => import('@/view/scrum/create/WorkSpaceCreate.vue')
-                    },
-                    {
                         path: 'label',
                         name: 'WorkspaceScrumLabel',
                         component: () => import('@/view/scrum/list/LabelList.vue')
@@ -150,8 +150,13 @@ const routes = [
                             },
                             {
                                 path: 'create',
-                                name: 'WorkspaceScrumSprintCreate',
+                                name: 'WorkspaceSprintCreate',
                                 component: () => import('@/view/scrum/create/SprintCreate.vue')
+                            },
+                            {
+                                path: 'detail/:id',
+                                name: 'WorkspaceSprintDetail',
+                                component: () => import('@/view/scrum/detail/SprintDetail.vue')
                             }
                         ]
                     },
@@ -181,6 +186,27 @@ const routes = [
                                 component: () => import('@/view/scrum/Task/timeline/TimeLine.vue')
                             },
                         ]
+                    },
+                    {
+                        path: 'issue',
+                        name: 'WorkspaceScrumIssue',
+                        children: [
+                            {
+                                path: 'list',
+                                name: 'WorkspaceIssueList',
+                                component: () => import('@/view/scrum/list/IssueList.vue')
+                            },
+                            {
+                                path: 'detail/:id',
+                                name: 'WorkspaceIssueDetail',
+                                component: () => import('@/view/scrum/detail/IssueDetail.vue')
+                            },
+                            {
+                                path: 'create',
+                                name: 'WorkspaceIssueCreate',
+                                component: () => import('@/view/scrum/create/IssueCreate.vue')
+                            }
+                            ]
                     },
                     {
                         path: 'meeting',
@@ -273,10 +299,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    const workspaceStore = useWorkspaceStore();
     if (to.params.workspaceId) {
-        workspaceStore.setWorkspaceId(to.params.workspaceId);
+        workspaceStore.setWorkspaceId(to.params.workspaceId).then(() => {
+            next();
+        }).catch(error => {
+            console.error(error);
+            next();
+        });
+    } else {
+        next();
     }
-    next();
 });
 
 export default router;

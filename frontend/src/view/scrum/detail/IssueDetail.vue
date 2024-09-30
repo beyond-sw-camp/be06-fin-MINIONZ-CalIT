@@ -1,6 +1,6 @@
 <script setup>
 import {useRoute} from 'vue-router';
-import { inject, onMounted, ref} from 'vue';
+import {inject, onMounted, ref} from 'vue';
 import { useSprintStore } from '@/stores/workspace/scrum/useSprintStore';
 
 const route = useRoute();
