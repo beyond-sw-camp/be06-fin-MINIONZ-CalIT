@@ -26,10 +26,8 @@ public class IssueService {
                         .status(true)
                         .startDate(request.getStartDate())
                         .endDate(request.getEndDate())
-                        .assignees(request.getAssignees())
-                        .reviewers(request.getReviewers())
                         .workspace(Workspace.builder().workspaceId(workspaceId).build())
-                        .user(User.builder().userId(request.getManagerId()).build())
+                        .manager(User.builder().userId(request.getManagerId()).build())
                         .build()
         );
     }
@@ -48,11 +46,10 @@ public class IssueService {
         return ReadIssueResponse.builder()
                 .title(issue.getIssueTitle())
                 .contents(issue.getIssueContents())
-                .assignees(issue.getAssignees())
-                .reviewers(issue.getReviewers())
                 .startDate(issue.getStartDate())
                 .endDate(issue.getEndDate())
                 .status(issue.isStatus())
+                .manager(issue.getManager().getUserName())
                 .build();
     }
 
@@ -63,11 +60,10 @@ public class IssueService {
         return issues.stream().map(issue -> ReadIssueResponse.builder()
                         .title(issue.getIssueTitle())
                         .contents(issue.getIssueContents())
-                        .reviewers(issue.getReviewers())
-                        .assignees(issue.getAssignees())
                         .startDate(issue.getStartDate())
                         .endDate(issue.getEndDate())
                         .status(issue.isStatus())
+                        .manager(issue.getManager().getUserName())
                         .build())
                 .collect(Collectors.toList());
     }

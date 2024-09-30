@@ -10,4 +10,5 @@ import java.util.List;
 public class CreateWorkspaceRequest {
     public String workspaceName;
     public List<Long> participants;
+    private int avatar;
 }

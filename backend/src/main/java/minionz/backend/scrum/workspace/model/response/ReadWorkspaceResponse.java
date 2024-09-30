@@ -7,4 +7,5 @@ import lombok.*;
 public class ReadWorkspaceResponse {
     private Long workspaceId;
     private String workspaceName;
+    private int avatar;
 }

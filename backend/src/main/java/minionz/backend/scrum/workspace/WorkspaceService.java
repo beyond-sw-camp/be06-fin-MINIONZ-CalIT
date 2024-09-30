@@ -41,6 +41,7 @@ public class WorkspaceService {
                         ReadWorkspaceResponse.builder()
                                 .workspaceId(workspace.getWorkspaceId())
                                 .workspaceName(workspace.getWorkspaceName())
+                                .avatar(workspace.getAvatar())
                                 .build())
                 .toList();
 

@@ -11,12 +11,10 @@ public class ReadIssueResponse {
     private String title;
     private String contents;
 
-    private String reviewers;
-    private String assignees;
-
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
     private boolean status;
+    private String manager;
     // 1이 InProgress, 0이 Done
 }
