@@ -44,7 +44,7 @@ pipeline {
                         usernamePassword(credentialsId: 'minionztest', usernameVariable: 'DOCKERID', passwordVariable: 'DOCKERPW')
                     ]) {
                         echo "Docker Build"
-                        sh "docker build minionz/calit-backend:1.${BUILD_ID} ./backend"
+                        sh "docker build --tag minionz/calit-backend:1.${BUILD_ID} ./backend"
 
                         echo "Docker Login"
                         sh "docker login -u $DOCKERID -p $DOCKERPW"
