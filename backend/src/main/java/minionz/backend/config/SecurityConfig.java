@@ -96,8 +96,7 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated());
                         // 워크스페이스 관련 요청
                         .requestMatchers(HttpMethod.GET, "/api/workspace").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
-                        .requestMatchers(HttpMethod.POST, "/api/workspace/**").permitAll()
-                        .requestMatchers("/api/workspace/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context))
+                        .requestMatchers("/api/workspace/**").permitAll()
                         // 스프린트 관련 요청
                         .requestMatchers(HttpMethod.GET, "/api/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
                         .requestMatchers(HttpMethod.POST, "/api/sprint/**").access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context))
@@ -142,7 +141,7 @@ public class SecurityConfig {
         }
 
         String number = object.getRequest().getRequestURI().split("/")[3];
-        String role = number.equals("all") ? requiredRole + "_" +  object.getRequest().getRequestURI().split("/")[4] : requiredRole + "_" + number;
+        String role = number.equals("all") ? requiredRole + "_" + object.getRequest().getRequestURI().split("/")[4] : requiredRole + "_" + number;
 
         List<String> roles = parseRoles(authentication);
         return new AuthorizationDecision(roles.contains(role));
@@ -153,7 +152,8 @@ public class SecurityConfig {
         String jsonString = firstAuthority.map(GrantedAuthority::getAuthority).orElse("");
 
         try {
-            return new ObjectMapper().readValue(jsonString, new TypeReference<List<String>>() {});
+            return new ObjectMapper().readValue(jsonString, new TypeReference<List<String>>() {
+            });
         } catch (IOException e) {
             throw new AccessDeniedException("Failed to parse roles", e);
         }
