@@ -3,6 +3,7 @@ import axios from "axios";
 import { setPersona } from "@/utils/personaUtils";
 import { defineStore } from "pinia";
 // import { workspaceData } from "@/static/workspaceData";
+import { useAlarmStore } from "@/stores/socket/useAlarmStore";
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
 
@@ -10,6 +11,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     const workspaceId = ref(null);
     const workspaceName = ref('');
     const persona = ref(setPersona(null));
+    const alarmStore = useAlarmStore();
 
     // POST 워크스페이스 생성 /api/workspaces
     const addWorkspace = async({workspaceName, participants, persona}) => {
@@ -73,6 +75,30 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         }
     }
 
+    // [PATCH] 워크스페이스 초대 수락 /api/workspace/accept/{workspaceId}
+    const acceptWorkspace = async(alarmId) => {
+        const alarm = alarmStore.alarms.find(a => a.id === alarmId);
+        const workspaceId = alarm.workspaceId;
+        try {
+            const response = await axios.patch(`/api/workspace/accept/${workspaceId}`);
+            workspace.value = response.data;
+        } catch (error) {
+            console.error('Failed to accept workspace', error);
+        }
+    }
+
+    // [DELETE] 워크스페이스 거절 /api/workspace/accept/{workspaceId}
+    const rejectWorkspace = async(alarmId) => {
+        const alarm = alarmStore.alarms.find(a => a.id === alarmId);
+        const workspaceId = alarm.workspaceId;
+        try {
+            const response = await axios.delete(`/api/workspace/accept/${workspaceId}`);
+            workspace.value = response.data;
+        } catch (error) {
+            console.error('Failed to reject workspace', error);
+        }
+    }
+
     return {
         workspace,
         workspaceId,
@@ -82,6 +108,8 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         addWorkspace,
         getAllWorkspace,
         updateWorkspace,
-        deleteWorkspace
+        deleteWorkspace,
+        acceptWorkspace,
+        rejectWorkspace
     };
 });

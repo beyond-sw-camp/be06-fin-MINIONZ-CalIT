@@ -2,11 +2,11 @@
 import naver from '@/assets/icon/social/naver.png';
 import kakao from '@/assets/icon/social/kakao.png';
 import { ref } from 'vue';
+import axios from "axios";
 
 // 환경변수 가져오기
 const naverApiKey = ref(process.env.VUE_APP_NAVER_API_KEY);
-const kakaoApiKey = ref(process.env.VUE_APP_KAKAO_API_KEY);
-// const googleApiKey = ref(process.env.VUE_APP_GOOGLE_API_KEY);
+const googleApiKey = ref(process.env.VUE_APP_GOOGLE_API_KEY);
 const REDIRECT_URI = encodeURIComponent(process.env.VUE_APP_REDIRECT_URI);
 
 // 상태 값 생성
@@ -29,13 +29,40 @@ const openInNewWindow = (url, provider) => {
 };
 
 // 구글 로그인 URL 생성
-const googleLoginUrl = (`https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.VUE_APP_GOOGLE_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email profile`);
+const googleLoginUrl = (`https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleApiKey.value}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email profile`);
 
 // 네이버 로그인 URL 생성
 const naverLoginUrl = ref(`https://nid.naver.com/oauth2.0/authorize?client_id=${naverApiKey.value}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE.value}`);
 
-// 카카오 로그인 URL 생성 (리디렉트 URI가 상이하므로 하드코딩 유지)
-const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${kakaoApiKey.value}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=login`);
+// 카카오 로그인 URL 생성
+const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.VUE_APP_KAKAO_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`);
+
+const sendGoogleRequest = async () => {
+  try {
+    const response = await axios.get('/oauth2/authorization/google');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error sending request to Kakao:', error);
+  }
+};
+
+const sendNaverRequest = async () => {
+  try {
+    const response = await axios.get('/oauth2/authorization/naver');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error sending request to Kakao:', error);
+  }
+};
+
+const sendKakaoRequest = async () => {
+  try {
+    const response = await axios.get('/oauth2/authorization/kakao');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error sending request to Kakao:', error);
+  }
+};
 </script>
 
 <template>
@@ -46,7 +73,7 @@ const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${k
       <div class="social-login_content">
         <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(googleLoginUrl, 'google')"
+            @click="openInNewWindow(googleLoginUrl, 'google'); sendGoogleRequest()"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -57,7 +84,7 @@ const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${k
 
         <!-- 네이버 로그인 버튼 -->
         <div
-            @click="openInNewWindow(naverLoginUrl, 'naver')"
+            @click="openInNewWindow(naverLoginUrl, 'naver'); sendNaverRequest()"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -68,7 +95,7 @@ const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${k
 
         <!-- 카카오 로그인 버튼 -->
         <div
-            @click="openInNewWindow(kakaoLoginUrl, 'kakao')"
+            @click="openInNewWindow(kakaoLoginUrl, 'kakao'); sendKakaoRequest()"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
