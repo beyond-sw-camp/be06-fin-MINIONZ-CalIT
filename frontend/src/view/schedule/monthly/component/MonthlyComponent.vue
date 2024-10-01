@@ -1,17 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from "vue-router";
+import { meetingData } from '@/static/meetingData';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
 import { useCalendar } from '@/utils/calendarUtils';
 import {formatUtil} from "@/utils/dateUtils";
 
-onMounted((props) => {
+onMounted(() => {
   const container = document.querySelector('.calendar-container');
   if (container) {
     new PerfectScrollbar(container);
   }
-  setEvents(props.meetings);
 });
 
 const route = useRoute();
@@ -58,6 +58,14 @@ const setEvents = (meetings) => {
     participants: meeting.participants
   }));
 };
+
+onMounted(() => {
+  const container = document.querySelector('.calendar-container');
+  if (container) {
+    new PerfectScrollbar(container);
+  }
+  setEvents(meetingData);
+});
 const eventsForDay = (day) => {
   return events.value.filter(event => formatUtil(event.date, 'd') === String(day));
 };

@@ -1,8 +1,7 @@
 <script setup>
 import { inject } from 'vue';
+import { taskData } from '@/static/taskData';
 import TaskColumn from './component/KanbanColumn.vue';
-import { useTaskStore} from "@/stores/workspace/scrum/useTaskStore";
-import {useRoute} from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -10,10 +9,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Workspace Kanban';
 contentsDescription.value = '워크스페이스의 태스크를 살펴보세요!';
 
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
-
-const tasks = useTaskStore().getAllTask(workspaceId);
+const tasks = taskData;
 </script>
 
 <template>
