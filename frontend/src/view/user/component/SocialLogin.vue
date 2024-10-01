@@ -4,7 +4,6 @@ import kakao from '@/assets/icon/social/kakao.png';
 import {ref} from 'vue';
 import axios from "axios";
 
-
 // 새로운 창을 열어 URL로 이동하는 함수
 const openInNewWindow = (url, provider) => {
   window.open(url, '_blank');
