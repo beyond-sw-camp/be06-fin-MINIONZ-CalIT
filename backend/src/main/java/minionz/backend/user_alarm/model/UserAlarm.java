@@ -33,4 +33,6 @@ public class UserAlarm {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "alarm_id")
     private Alarm alarm;
+
+    private Long type;
 }
