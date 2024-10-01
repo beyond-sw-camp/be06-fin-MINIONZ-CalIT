@@ -154,12 +154,12 @@ public class SecurityConfig {
 
   private AuthorizationDecision hasAuthorities(Supplier<Authentication> authentication, String requiredRole,
       RequestAuthorizationContext object) {
-    if (object.getRequest().getRequestURI().split("/")[3].equals("my")) {
+    if (object.getRequest().getRequestURI().split("/")[2].equals("my")) {
       return new AuthorizationDecision(true);
     }
 
-    String number = object.getRequest().getRequestURI().split("/")[3];
-    String role = number.equals("all") ? requiredRole + "_" + object.getRequest().getRequestURI().split("/")[4]
+    String number = object.getRequest().getRequestURI().split("/")[2];
+    String role = number.equals("all") ? requiredRole + "_" + object.getRequest().getRequestURI().split("/")[3]
         : requiredRole + "_" + number;
 
     List<String> roles = parseRoles(authentication);
