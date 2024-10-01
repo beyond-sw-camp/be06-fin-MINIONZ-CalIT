@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HealthController {
-    @RequestMapping(method = RequestMethod.GET, value = "/api/health")
-    public String test() {
-        return "health ckeck! ";
-    }
+  @RequestMapping(method = RequestMethod.GET, value = "/health")
+  public String test() {
+    return "health ckeck! ";
+  }
 }

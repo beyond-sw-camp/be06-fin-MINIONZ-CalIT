@@ -16,75 +16,77 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/task")
+@RequestMapping("/task")
 public class TaskController {
 
-    private final TaskService taskService;
+  private final TaskService taskService;
 
-    @PostMapping("/{sprintId}")
-    public BaseResponse<BaseResponseStatus> createTask(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
+  @PostMapping("/{sprintId}")
+  public BaseResponse<BaseResponseStatus> createTask(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
-        try {
-            taskService.createTask(customUserDetails.getUser(), request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
+    try {
+      taskService.createTask(customUserDetails.getUser(), request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{sprintId}/{taskId}")
-    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId) {
-        ReadTaskResponse response;
+    return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
+  }
 
-        try {
-            response = taskService.readTask(taskId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/{sprintId}/{taskId}")
+  public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId) {
+    ReadTaskResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.TASK_READ_SUCCESS, response);
+    try {
+      response = taskService.readTask(taskId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{sprintId}/all")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long sprintId) {
+    return new BaseResponse<>(BaseResponseStatus.TASK_READ_SUCCESS, response);
+  }
 
-        List<ReadAllTaskResponse> response;
+  @GetMapping("/{sprintId}/all")
+  public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long sprintId) {
 
-        try {
-            response = taskService.readAllTask(sprintId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    List<ReadAllTaskResponse> response;
 
-        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+    try {
+      response = taskService.readAllTask(sprintId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/my/all")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+    return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+  }
 
-        List<ReadAllTaskResponse> response;
+  @GetMapping("/my/all")
+  public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
-        try {
-            response = taskService.readAllMyTask(customUserDetails.getUser());
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    List<ReadAllTaskResponse> response;
 
-        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+    try {
+      response = taskService.readAllMyTask(customUserDetails.getUser());
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @PatchMapping("/{sprintId}/status/{taskId}")
-    public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @RequestBody UpdateTaskStatusRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+  }
 
-        try {
-            taskService.updateTaskStatus(taskId, request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @PatchMapping("/{sprintId}/status/{taskId}")
+  public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId,
+      @RequestBody UpdateTaskStatusRequest request) {
 
-        return new BaseResponse<>(BaseResponseStatus.TASK_STATUS_UPDATE_SUCCESS);
+    try {
+      taskService.updateTaskStatus(taskId, request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
+    return new BaseResponse<>(BaseResponseStatus.TASK_STATUS_UPDATE_SUCCESS);
+  }
 
 }

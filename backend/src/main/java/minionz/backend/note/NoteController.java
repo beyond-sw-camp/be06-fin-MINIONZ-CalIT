@@ -13,16 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/note")
+@RequestMapping("/note")
 public class NoteController {
 
-    private final NoteService noteService;
-    
-    @GetMapping("/search")
-    public BaseResponse<GetNoteResponse> searchNote(@RequestParam Long noteId) throws BaseException {
-        GetNoteResponse response = noteService.readNote(noteId);
-        return new BaseResponse<>(BaseResponseStatus.NOTE_SEARCH_SUCCESS, response);
-    }
+  private final NoteService noteService;
+
+  @GetMapping("/search")
+  public BaseResponse<GetNoteResponse> searchNote(@RequestParam Long noteId) throws BaseException {
+    GetNoteResponse response = noteService.readNote(noteId);
+    return new BaseResponse<>(BaseResponseStatus.NOTE_SEARCH_SUCCESS, response);
+  }
 
 }
-

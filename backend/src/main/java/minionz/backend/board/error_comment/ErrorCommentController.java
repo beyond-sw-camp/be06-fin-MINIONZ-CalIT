@@ -17,29 +17,29 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/errcomment")
+@RequestMapping("/errcomment")
 public class ErrorCommentController {
-    private final CloudFileUpload cloudFileUpload;
-    private final ErrorCommentService errorCommentService;
+  private final CloudFileUpload cloudFileUpload;
+  private final ErrorCommentService errorCommentService;
 
-    // 게시글별 댓글 작성
-    @PostMapping("/write")
-    public BaseResponse<CreateErrorCommentResponse> createCommentWithImages(
-            @RequestParam Long errorBoardId,
-            @RequestPart(name = "request") CreateErrorCommentRequest request,
-            @RequestPart(name = "files") MultipartFile[] files,
-            @AuthenticationPrincipal CustomSecurityUserDetails userDetails
-        ) throws BaseException {
-        List<String> fileNames = cloudFileUpload.multipleUpload(files);
-        Long userId = userDetails.getUserId();
-        CreateErrorCommentResponse response = errorCommentService.create(errorBoardId, request, fileNames,userId);
-        return new BaseResponse<>(BaseResponseStatus.ERRORCOMMENT_CREATE_SUCCESS, response);
-    }
-    // 게시글별 댓글 조회
-    @GetMapping("/search")
-    public BaseResponse<List<GetErrorCommentResponse>> getCommentsByErrorBoard(
-            @RequestParam Long errorBoardId) throws BaseException {
-        List<GetErrorCommentResponse> responses = errorCommentService.read(errorBoardId);
-        return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, responses);
-    }
+  // 게시글별 댓글 작성
+  @PostMapping("/write")
+  public BaseResponse<CreateErrorCommentResponse> createCommentWithImages(
+      @RequestParam Long errorBoardId,
+      @RequestPart(name = "request") CreateErrorCommentRequest request,
+      @RequestPart(name = "files") MultipartFile[] files,
+      @AuthenticationPrincipal CustomSecurityUserDetails userDetails) throws BaseException {
+    List<String> fileNames = cloudFileUpload.multipleUpload(files);
+    Long userId = userDetails.getUserId();
+    CreateErrorCommentResponse response = errorCommentService.create(errorBoardId, request, fileNames, userId);
+    return new BaseResponse<>(BaseResponseStatus.ERRORCOMMENT_CREATE_SUCCESS, response);
+  }
+
+  // 게시글별 댓글 조회
+  @GetMapping("/search")
+  public BaseResponse<List<GetErrorCommentResponse>> getCommentsByErrorBoard(
+      @RequestParam Long errorBoardId) throws BaseException {
+    List<GetErrorCommentResponse> responses = errorCommentService.read(errorBoardId);
+    return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, responses);
+  }
 }

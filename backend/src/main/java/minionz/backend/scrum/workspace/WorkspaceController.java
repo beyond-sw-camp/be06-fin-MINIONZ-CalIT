@@ -14,48 +14,52 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/workspace")
+@RequestMapping("/workspace")
 public class WorkspaceController {
-    private final WorkspaceService workspaceService;
+  private final WorkspaceService workspaceService;
 
-    @PostMapping("")
-    public BaseResponse<BaseResponseStatus> createWorkspace(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateWorkspaceRequest request) {
+  @PostMapping("")
+  public BaseResponse<BaseResponseStatus> createWorkspace(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails,
+      @RequestBody CreateWorkspaceRequest request) {
 
-        workspaceService.create(customUserDetails.getUser(), request);
+    workspaceService.create(customUserDetails.getUser(), request);
 
-        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_CREATE_SUCCESS);
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_CREATE_SUCCESS);
+  }
+
+  @PatchMapping("/accept/{workspaceId}")
+  public BaseResponse<BaseResponseStatus> acceptWorkspace(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId) {
+
+    try {
+      workspaceService.accept(customUserDetails.getUser(), workspaceId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @PatchMapping("/accept/{workspaceId}")
-    public BaseResponse<BaseResponseStatus> acceptWorkspace(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId) {
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_ACCEPT_SUCCESS);
+  }
 
-        try {
-            workspaceService.accept(customUserDetails.getUser(), workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @DeleteMapping("/accept/{workspaceId}")
+  public BaseResponse<BaseResponseStatus> denyWorkspace(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId) {
 
-        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_ACCEPT_SUCCESS);
+    try {
+      workspaceService.deny(customUserDetails.getUser(), workspaceId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @DeleteMapping("/accept/{workspaceId}")
-    public BaseResponse<BaseResponseStatus> denyWorkspace(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId) {
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_DENY_SUCCESS);
+  }
 
-        try {
-            workspaceService.deny(customUserDetails.getUser(), workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/my/all")
+  public BaseResponse<List<ReadWorkspaceResponse>> readAllWorkspace(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
-        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_DENY_SUCCESS);
-    }
+    List<ReadWorkspaceResponse> readWorkspaceResponses = workspaceService.readAll(customUserDetails.getUser());
 
-
-    @GetMapping("/my/all")
-    public BaseResponse<List<ReadWorkspaceResponse>> readAllWorkspace(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
-
-        List<ReadWorkspaceResponse> readWorkspaceResponses = workspaceService.readAll(customUserDetails.getUser());
-
-        return new BaseResponse<>(BaseResponseStatus.MY_WORKSPACE_READ_SUCCESS, readWorkspaceResponses);
-    }
+    return new BaseResponse<>(BaseResponseStatus.MY_WORKSPACE_READ_SUCCESS, readWorkspaceResponses);
+  }
 }
