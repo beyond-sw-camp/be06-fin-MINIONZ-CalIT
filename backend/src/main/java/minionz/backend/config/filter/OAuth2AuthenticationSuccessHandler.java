@@ -35,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         aToken.setPath("/");
         aToken.setMaxAge(60 * 60 * 100000);
         response.addCookie(aToken);
-        super.onAuthenticationSuccess(request, response, authentication);
+        getRedirectStrategy().sendRedirect(request, response, "http://calit.kro.kr/my/dashboard");
     }
 }
 

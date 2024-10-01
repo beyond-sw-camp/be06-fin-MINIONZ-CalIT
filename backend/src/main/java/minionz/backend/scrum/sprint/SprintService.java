@@ -53,7 +53,7 @@ public class SprintService {
 //        TODO: 알람 보내야합니다!
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(true).build());
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(false).build());
-        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),2L);
+        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),2L, sprint.getSprintId());
 
         request.getParticipants().forEach(participantId ->
                 sprintParticipationRepository.save(SprintParticipation

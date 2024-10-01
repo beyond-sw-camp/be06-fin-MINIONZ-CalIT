@@ -62,7 +62,7 @@ public class TaskService {
 //        TODO: spint에 참여 중인 유저인지에 대한 검증이 필요함.
 //        참여 테이블에 참가자들 추가
         SprintParticipation sprintParticipation = sprintParticipationRepository.findBySprintAndUser(Sprint.builder().sprintId(request.getSprintId()).build(), user);
-        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L);
+        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId());
 
         if (sprintParticipation.getIsManager()) {
             request.getParticipants().forEach(participantId ->
