@@ -16,11 +16,6 @@ const openInNewWindow = (url, provider) => {
   });
 };
 
-// 구글 로그인 URL 생성
-// const googleLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/google")
-// 네이버 로그인 URL 생성
-// const naverLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/naver")
-// 카카오 로그인 URL 생성
 const kakaoLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/kakao")
 
 const sendGoogleRequest = async () => {
