@@ -52,6 +52,7 @@ const routes = [
         path: '/my',
         name: 'My',
         component: () => import('@/layouts/ContentsArea.vue'),
+        meta: { requiresAuth: true },
         children: [
             {
                 path: 'create',
@@ -104,6 +105,7 @@ const routes = [
         path: '/workspace/:workspaceId',
         name: 'Workspace',
         component: () => import('@/layouts/ContentsArea.vue'),
+        meta: { requiresAuth: true },
         children: [
             // dashboard
             {
@@ -300,15 +302,34 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const workspaceStore = useWorkspaceStore();
+    const isAuthenticated = !!localStorage.getItem('ATOKEN'); // Check for ATOKEN
+
+    const proceed = () => {
+        if (to.matched.some(record => record.meta.requiresAuth)) {
+            if (!isAuthenticated) {
+                const loginRoute = {
+                    path: '/user/login',
+                    query: {}
+                };
+                if (to.params.workspaceId) {
+                    loginRoute.query.workspaceId = to.params.workspaceId;
+                }
+                next(loginRoute);
+            } else {
+                next();
+            }
+        } else {
+            next();
+        }
+    };
+
     if (to.params.workspaceId) {
-        workspaceStore.setWorkspaceId(to.params.workspaceId).then(() => {
-            next();
-        }).catch(error => {
+        workspaceStore.setWorkspaceId(to.params.workspaceId).then(proceed).catch(error => {
             console.error(error);
-            next();
+            proceed();
         });
     } else {
-        next();
+        proceed();
     }
 });
 
