@@ -2,6 +2,8 @@
 import { inject } from 'vue';
 import { taskData } from '@/static/taskData';
 import TaskColumn from './component/KanbanColumn.vue';
+import { useDashboardStore} from "@/stores/workspace/useDashboardStore";
+import {useRoute} from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -9,7 +11,10 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Workspace Kanban';
 contentsDescription.value = '워크스페이스의 태스크를 살펴보세요!';
 
-const tasks = taskData;
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const tasks = useDashboardStore().getWorkspaceKanban(workspaceId);
 </script>
 
 <template>
