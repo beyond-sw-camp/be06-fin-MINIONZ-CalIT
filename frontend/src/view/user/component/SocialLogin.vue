@@ -19,13 +19,13 @@ const openInNewWindow = (url, provider) => {
 // 구글 로그인 URL 생성
 const googleLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/google")
 // 네이버 로그인 URL 생성
-const naverLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/naver")
+// const naverLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/naver")
 // 카카오 로그인 URL 생성
 const kakaoLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/kakao")
 
 const sendGoogleRequest = async () => {
   try {
-    const response = await axios.post('/oauth2/authorization/google');
+    const response = await axios.post('/api/oauth2/authorization/google');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -59,7 +59,7 @@ const sendKakaoRequest = async () => {
       <div class="social-login_content">
         <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(googleLoginUrl, 'google'); sendGoogleRequest()"
+            @click="openInNewWindow(googleLoginUrl, 'google');"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
