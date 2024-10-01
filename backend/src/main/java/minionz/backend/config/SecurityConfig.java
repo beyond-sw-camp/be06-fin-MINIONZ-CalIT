@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.config.filter.JwtAccessDeniedHandler;
 import minionz.backend.config.filter.JwtFilter;
+import minionz.backend.config.filter.OAuth2AuthenticationSuccessHandler;
+import minionz.backend.user.CustomOauth2UserService;
 import minionz.backend.utils.JwtUtil;
 import minionz.backend.config.filter.LoginFilter;
 import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
@@ -42,6 +44,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomOauth2UserService customOauth2UserService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -70,6 +74,16 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/my/dashboard")
                         .failureUrl("/user/login")
                         .permitAll());
+
+//        http
+//                .oauth2Login((auth) -> auth.loginPage("/user/login")
+//                        .defaultSuccessUrl("/oauth-login")
+//                        .failureUrl("/user/login")
+//                        .permitAll());
+        http.oauth2Login((config) -> {
+            config.successHandler(oAuth2AuthenticationSuccessHandler);
+            config.userInfoEndpoint((endpoint) -> endpoint.userService(customOauth2UserService));
+        });
 
         http
                 .logout(logout -> logout
@@ -116,7 +130,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
-        loginFilter.setFilterProcessesUrl("/api/user/login");
+        loginFilter.setFilterProcessesUrl("/user/login");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
