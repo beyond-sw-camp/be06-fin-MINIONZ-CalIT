@@ -27,7 +27,7 @@ public class WorkspaceService {
 //        참여 테이블에 참가자들 추가
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(true).isValid(true).build());
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(false).isValid(true).build());
-        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),1L);
+//        alarmService.sendWorkspaceEventsToClients(request.getParticipants(),user.getUserId(),1L, workspace.getWorkspaceId());
         request.getParticipants().forEach(participantId ->
                 workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(User.builder().userId(participantId).build()).isManager(false).isValid(false).build())
         );

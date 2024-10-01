@@ -1,27 +1,15 @@
 <script setup>
 import naver from '@/assets/icon/social/naver.png';
 import kakao from '@/assets/icon/social/kakao.png';
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from "axios";
-
-// 환경변수 가져오기
-const naverApiKey = ref(process.env.VUE_APP_NAVER_API_KEY);
-const googleApiKey = ref(process.env.VUE_APP_GOOGLE_API_KEY);
-const REDIRECT_URI = encodeURIComponent(process.env.VUE_APP_REDIRECT_URI);
-
-// 상태 값 생성
-function generateState() {
-  return Math.random().toString(36).substr(2, 12); // 랜덤 문자열 생성
-}
-
-const STATE = ref(generateState());
 
 // 새로운 창을 열어 URL로 이동하는 함수
 const openInNewWindow = (url, provider) => {
   window.open(url, '_blank');
   window.addEventListener('message', (event) => {
     if (event.origin !== window.location.origin) return;
-    const { token } = event.data;
+    const {token} = event.data;
     if (token) {
       localStorage.setItem(`${provider}_token`, token);
     }
@@ -29,17 +17,15 @@ const openInNewWindow = (url, provider) => {
 };
 
 // 구글 로그인 URL 생성
-const googleLoginUrl = (`https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleApiKey.value}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email profile`);
-
+const googleLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/google")
 // 네이버 로그인 URL 생성
-const naverLoginUrl = ref(`https://nid.naver.com/oauth2.0/authorize?client_id=${naverApiKey.value}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE.value}`);
-
+const naverLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/naver")
 // 카카오 로그인 URL 생성
-const kakaoLoginUrl = ref(`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.VUE_APP_KAKAO_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`);
+const kakaoLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/kakao")
 
 const sendGoogleRequest = async () => {
   try {
-    const response = await axios.get('/oauth2/authorization/google');
+    const response = await axios.post('/api/oauth2/authorization/google');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -48,7 +34,7 @@ const sendGoogleRequest = async () => {
 
 const sendNaverRequest = async () => {
   try {
-    const response = await axios.get('/oauth2/authorization/naver');
+    const response = await axios.post('/oauth2/authorization/naver');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -57,7 +43,7 @@ const sendNaverRequest = async () => {
 
 const sendKakaoRequest = async () => {
   try {
-    const response = await axios.get('/oauth2/authorization/kakao');
+    const response = await axios.post('/oauth2/authorization/kakao');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -73,7 +59,7 @@ const sendKakaoRequest = async () => {
       <div class="social-login_content">
         <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(googleLoginUrl, 'google'); sendGoogleRequest()"
+            @click="openInNewWindow(googleLoginUrl, 'google');"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">

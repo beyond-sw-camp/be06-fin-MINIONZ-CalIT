@@ -10,4 +10,5 @@ public class AlarmRequest {
     List<Long> receiverIds;
     Long senderId;
     Long alarmId;
+    Long type;
 }

@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from 'vue';
+import { taskData } from '@/static/taskData';
 import TaskColumn from './component/KanbanColumn.vue';
-// import { useTaskStore} from "@/stores/workspace/scrum/useTaskStore";
 import { useDashboardStore} from "@/stores/workspace/useDashboardStore";
 import {useRoute} from "vue-router";
 

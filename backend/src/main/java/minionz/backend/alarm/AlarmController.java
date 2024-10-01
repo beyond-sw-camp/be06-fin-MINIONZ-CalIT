@@ -23,6 +23,6 @@ public class AlarmController {
     // 특정 클라이언트에게 이벤트 전송
     @PostMapping("/send")
     public void sendEventToClient(@RequestBody AlarmRequest alarmRequest) {
-        alarmService.sendEventsToClients(alarmRequest.getReceiverIds(), alarmRequest.getSenderId(), alarmRequest.getAlarmId());
+        alarmService.sendEventsToClients(alarmRequest.getReceiverIds(), alarmRequest.getSenderId(), alarmRequest.getAlarmId(), alarmRequest.getType());
     }
 }

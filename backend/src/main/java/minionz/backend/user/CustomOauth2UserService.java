@@ -51,7 +51,9 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         if (findUser == null) {
             user = User.builder()
                     .loginId(loginId)
+                    .email(email)
                     .userName(name)
+                    .role("ROLE_ADMIN")
                     .provider(provider)
                     .providerId(providerId)
                     .build();
