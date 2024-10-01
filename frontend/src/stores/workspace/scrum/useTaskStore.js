@@ -61,6 +61,15 @@ export const useTaskStore = defineStore('taskStore', () => {
         }
     }
 
+    const getAllTask = async (workspaceId) => {
+        try {
+            const response = await axios.get(`/api/sprint/all/${workspaceId}`);
+            taskData.value = response.data;
+        } catch (error) {
+            console.error('Error getting task list:', error);
+        }
+    };
+
     // api 안씀
     const getTaskCount = () => {
         return taskData.value.length
@@ -73,6 +82,7 @@ export const useTaskStore = defineStore('taskStore', () => {
         getTaskCount,
         updateTask,
         updateTaskStatus,
-        deleteTask
+        deleteTask,
+        getAllTask,
     }
 })
