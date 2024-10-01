@@ -27,9 +27,10 @@ export const alarmData = [
     //     content: 'seong-xun님이 태스크의 담당자로 할당하였습니다.',
     //     time: '2024-09-10T16:45:04.930487',
     // },
+    // id는 모든 알람에 대해
     {
         id: 4,
-        type: 'meeting-start',
+        type: 1,
         title: '회의 알림입니다.',
         content: '회의 시작 10분 전입니다.',
         time: '2024-09-10T16:45:04.930487',
