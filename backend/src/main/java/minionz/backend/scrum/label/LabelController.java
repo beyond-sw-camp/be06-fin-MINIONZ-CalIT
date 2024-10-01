@@ -15,83 +15,83 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/label")
+@RequestMapping("/label")
 public class LabelController {
-    private final LabelService labelService;
+  private final LabelService labelService;
 
-    @PostMapping("/{workspaceId}/sprint")
-    public BaseResponse<BaseResponseStatus> createSprintLabel(@RequestBody CreateLabelRequest request) {
+  @PostMapping("/{workspaceId}/sprint")
+  public BaseResponse<BaseResponseStatus> createSprintLabel(@RequestBody CreateLabelRequest request) {
 
-        try {
-            labelService.createSprintLabel(request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_CREATE_SUCCESS);
+    try {
+      labelService.createSprintLabel(request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{workspaceId}/sprint")
-    public BaseResponse<List<ReadLabelResponse>> readSprintLabel(@RequestParam Long id) {
-        List<ReadLabelResponse> response;
+    return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_CREATE_SUCCESS);
+  }
 
-        try {
-            response = labelService.readSprintLabel(id);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/{workspaceId}/sprint")
+  public BaseResponse<List<ReadLabelResponse>> readSprintLabel(@RequestParam Long id) {
+    List<ReadLabelResponse> response;
 
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
+    try {
+      response = labelService.readSprintLabel(id);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @PostMapping("/{workspaceId}/task")
-    public BaseResponse<BaseResponseStatus> createTaskLabel(@RequestBody CreateLabelRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
+  }
 
-        try {
-            labelService.createTaskLabel(request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @PostMapping("/{workspaceId}/task")
+  public BaseResponse<BaseResponseStatus> createTaskLabel(@RequestBody CreateLabelRequest request) {
 
-        return new BaseResponse<>(BaseResponseStatus.TASK_LABEL_CREATE_SUCCESS);
+    try {
+      labelService.createTaskLabel(request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{workspaceId}/task")
-    public BaseResponse<List<ReadLabelResponse>> readTaskLabel(@RequestParam Long workspaceId) {
-        List<ReadLabelResponse> response;
+    return new BaseResponse<>(BaseResponseStatus.TASK_LABEL_CREATE_SUCCESS);
+  }
 
-        try {
-            response = labelService.readTaskLabel(workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/{workspaceId}/task")
+  public BaseResponse<List<ReadLabelResponse>> readTaskLabel(@RequestParam Long workspaceId) {
+    List<ReadLabelResponse> response;
 
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
+    try {
+      response = labelService.readTaskLabel(workspaceId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @PostMapping("/{workspaceId}/note")
-    public BaseResponse<BaseResponseStatus> createNoteLabel(@RequestBody CreateMeetingLabelRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.SPRINT_LABEL_READ_SUCCESS, response);
+  }
 
-        try {
-            labelService.createNoteLabel(request);
-        }catch (BaseException e){
-            return new BaseResponse<>(e.getStatus());
-        }
-        return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_CREATE_SUCCESS);
+  @PostMapping("/{workspaceId}/note")
+  public BaseResponse<BaseResponseStatus> createNoteLabel(@RequestBody CreateMeetingLabelRequest request) {
 
+    try {
+      labelService.createNoteLabel(request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
+    return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_CREATE_SUCCESS);
 
-    @GetMapping("/{workspaceId}/note")
-    public BaseResponse<List<ReadMeetingLabelResponse>> readNoteLabel(@RequestParam Long workspaceId) {
+  }
 
-        List<ReadMeetingLabelResponse> response = new ArrayList<>();
+  @GetMapping("/{workspaceId}/note")
+  public BaseResponse<List<ReadMeetingLabelResponse>> readNoteLabel(@RequestParam Long workspaceId) {
 
-        try{
-            response = labelService.readNoteLabel(workspaceId);
-        }catch (BaseException e){
-            return new BaseResponse<>(e.getStatus());
-        }
-        return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_SEARCH_SUCCESS, response);
+    List<ReadMeetingLabelResponse> response = new ArrayList<>();
+
+    try {
+      response = labelService.readNoteLabel(workspaceId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
+    return new BaseResponse<>(BaseResponseStatus.NOTE_LABEL_SEARCH_SUCCESS, response);
+  }
 
 }

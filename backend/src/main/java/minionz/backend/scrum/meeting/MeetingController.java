@@ -11,35 +11,36 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/meeting")
+@RequestMapping("/meeting")
 @RequiredArgsConstructor
 public class MeetingController {
 
-    private final MeetingService meetingService;
+  private final MeetingService meetingService;
 
-    @PostMapping("/{sprintId}")
-    public BaseResponse<BaseResponseStatus> createMeeting(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId, @RequestBody CreateMeetingRequest request) {
+  @PostMapping("/{sprintId}")
+  public BaseResponse<BaseResponseStatus> createMeeting(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId,
+      @RequestBody CreateMeetingRequest request) {
 
-        try {
-            meetingService.createMeeting(customUserDetails.getUser(), request, sprintId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.MEETING_CREATE_SUCCESS);
+    try {
+      meetingService.createMeeting(customUserDetails.getUser(), request, sprintId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{workspaceId}/{meetingId}")
-    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long meetingId) {
-        ReadMeetingResponse response;
-        try {
-            response = meetingService.readMeeting(meetingId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    return new BaseResponse<>(BaseResponseStatus.MEETING_CREATE_SUCCESS);
+  }
 
-        return new BaseResponse<>(BaseResponseStatus.MEETING_READ_SUCCESS, response);
+  @GetMapping("/{workspaceId}/{meetingId}")
+  public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long meetingId) {
+    ReadMeetingResponse response;
+    try {
+      response = meetingService.readMeeting(meetingId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
+    return new BaseResponse<>(BaseResponseStatus.MEETING_READ_SUCCESS, response);
+  }
 
 }

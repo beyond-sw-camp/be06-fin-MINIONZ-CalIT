@@ -8,22 +8,22 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/search")
+@RequestMapping("/search")
 public class SearchController {
-    private final SearchService searchService;
+  private final SearchService searchService;
 
-    @GetMapping("/alluser")
-    public List<SearchUserResponse> searchAllUser() {
-        return searchService.getAllUser();
-    }
+  @GetMapping("/alluser")
+  public List<SearchUserResponse> searchAllUser() {
+    return searchService.getAllUser();
+  }
 
-    @GetMapping("/workspaceuser")
-    public List<SearchUserResponse> searchWorkspaceUser(@RequestParam Long workspaceId) {
-        return searchService.getUsernamesByWorkspaceId(workspaceId);
-    }
+  @GetMapping("/workspaceuser")
+  public List<SearchUserResponse> searchWorkspaceUser(@RequestParam Long workspaceId) {
+    return searchService.getUsernamesByWorkspaceId(workspaceId);
+  }
 
-    @GetMapping("/containeduser")
-    public List<SearchUserResponse> searchWorkspaceUser(@RequestParam String username) {
-        return searchService.containedUser(username);
-    }
+  @GetMapping("/containeduser")
+  public List<SearchUserResponse> searchWorkspaceUser(@RequestParam String username) {
+    return searchService.containedUser(username);
+  }
 }

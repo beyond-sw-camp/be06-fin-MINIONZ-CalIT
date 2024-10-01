@@ -1,6 +1,5 @@
 package minionz.backend.scrum.schedule;
 
-
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
@@ -13,65 +12,69 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/schedule")
 @RequiredArgsConstructor
 public class ScheduleController {
 
-    private final ScheduleService scheduleService;
+  private final ScheduleService scheduleService;
 
-    @GetMapping("/{workspaceId}/monthly")
-    public BaseResponse<ReadMonthlyResponse> readWorkspaceMonthly(@PathVariable Long workspaceId, ReadScheduleRequest request) {
+  @GetMapping("/{workspaceId}/monthly")
+  public BaseResponse<ReadMonthlyResponse> readWorkspaceMonthly(@PathVariable Long workspaceId,
+      ReadScheduleRequest request) {
 
-        ReadMonthlyResponse response;
+    ReadMonthlyResponse response;
 
-        try {
-            response = scheduleService.readWorkspaceMonthly(workspaceId, request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
+    try {
+      response = scheduleService.readWorkspaceMonthly(workspaceId, request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/my/monthly")
-    public BaseResponse<ReadMonthlyResponse> readMyspaceMonthly(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, ReadScheduleRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
+  }
 
-        ReadMonthlyResponse response;
+  @GetMapping("/my/monthly")
+  public BaseResponse<ReadMonthlyResponse> readMyspaceMonthly(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, ReadScheduleRequest request) {
 
-        try {
-            response = scheduleService.readMyspaceMonthly(customUserDetails.getUser(), request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    ReadMonthlyResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.MY_MONTHLY_READ_SUCCESS, response);
+    try {
+      response = scheduleService.readMyspaceMonthly(customUserDetails.getUser(), request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{workspaceId}/weekly")
-    public BaseResponse<ReadWeeklyResponse> readWorkspaceWeekly(@PathVariable Long workspaceId, ReadScheduleRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.MY_MONTHLY_READ_SUCCESS, response);
+  }
 
-        ReadWeeklyResponse response;
+  @GetMapping("/{workspaceId}/weekly")
+  public BaseResponse<ReadWeeklyResponse> readWorkspaceWeekly(@PathVariable Long workspaceId,
+      ReadScheduleRequest request) {
 
-        try {
-            response = scheduleService.readWorkspaceWeekly(workspaceId, request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    ReadWeeklyResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
+    try {
+      response = scheduleService.readWorkspaceWeekly(workspaceId, request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/my/weekly")
-    public BaseResponse<ReadWeeklyResponse> readMyspaceWeekly(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails,ReadScheduleRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
+  }
 
-        ReadWeeklyResponse response;
+  @GetMapping("/my/weekly")
+  public BaseResponse<ReadWeeklyResponse> readMyspaceWeekly(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, ReadScheduleRequest request) {
 
-        try {
-            response = scheduleService.readMyspaceWeekly(customUserDetails.getUser(), request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    ReadWeeklyResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.MY_WEEKLY_READ_SUCCESS, response);
+    try {
+      response = scheduleService.readMyspaceWeekly(customUserDetails.getUser(), request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
+
+    return new BaseResponse<>(BaseResponseStatus.MY_WEEKLY_READ_SUCCESS, response);
+  }
 }
