@@ -42,12 +42,7 @@ const login = async () => {
   if (token) {
     userStore.setToken(token);
     notyf.success('로그인 성공');
-    try {
-      await router.push('/my/dashboard');
-    } catch (error) {
-      console.error('Router push failed', error);
-      notyf.error('페이지 이동 실패');
-    }
+    router.push('/my/dashboard');
   } else {
     notyf.error('로그인 실패');
   }

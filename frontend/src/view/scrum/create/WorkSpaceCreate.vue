@@ -1,7 +1,7 @@
 <script setup>
-import {inject, onMounted, ref} from 'vue';
-import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
-import {useFriendsStore} from '@/stores/friends/useFriendsStore';
+import { inject, onMounted, ref, watch } from 'vue';
+import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
+import { useFriendsStore } from '@/stores/friends/useFriendsStore';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -16,19 +16,26 @@ const participants = ref('');
 const filteredUsers = ref([]);
 
 onMounted(async () => {
-  const users = await friendStore.getUserList();
-  if (users && Array.isArray(users)) {
-    filteredUsers.value = users.filter(user => user && user.includes(participants.value || ''));
-  } else {
-    filteredUsers.value = [];
-  }
+  await searchUsers();
+});
+
+watch(participants, async () => {
+  await searchUsers();
 });
 
 const searchUsers = async () => {
+  console.log('Searching users with participants:', participants.value);
   if (participants.value) {
-    // filteredUsers.value = (await friendStore.getUserList(participants.value)).filter(user => user && user.includes(participants.value || ''));
-    filteredUsers.value = (await friendStore.getUserList(participants.value) || []).filter(user => user && user.includes(participants.value || ''));
-
+    await friendStore.getUserList(participants.value);
+    filteredUsers.value = friendStore.friends.filter(user => {
+      if (typeof user === 'string') {
+        return user.toLowerCase().includes(participants.value.toLowerCase());
+      } else if (user && typeof user.username === 'string') {
+        return user.username.toLowerCase().includes(participants.value.toLowerCase());
+      }
+      return false;
+    });
+    console.log('Filtered users:', filteredUsers.value);
   } else {
     filteredUsers.value = [];
   }
@@ -58,7 +65,7 @@ const addWorkspace = () => {
             <input type="text" id="workspaceParticipation" v-model="participants" placeholder="참여자를 검색해주세요"
                    class="input-field" @keyup.enter="searchUsers">
             <ul v-if="filteredUsers.length">
-              <li v-for="user in filteredUsers" :key="user">{{ user }}</li>
+              <li v-for="user in filteredUsers" :key="user">{{ typeof user === 'string' ? user : user.username }}</li>
             </ul>
             <p v-else>검색된 사용자가 없습니다.</p>
           </div>
