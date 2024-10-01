@@ -130,7 +130,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
-        loginFilter.setFilterProcessesUrl("/user/login");
+        loginFilter.setFilterProcessesUrl("/api/user/login");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
