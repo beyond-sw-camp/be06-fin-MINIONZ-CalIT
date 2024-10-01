@@ -29,7 +29,7 @@ public class AlarmService {
         this.userAlarmRepository = userAlarmRepository;
     }
 
-    public void sendEventsToClients(List<Long> receiverIds, Long senderId, Long alarmId) {
+    public void sendEventsToClients(List<Long> receiverIds, Long senderId, Long alarmId, Long type) {
         Optional<User> sender = userRepository.findById(senderId);
         Optional<Alarm> sendAlarm = alarmRepository.findById(alarmId);
 
@@ -46,11 +46,11 @@ public class AlarmService {
 
         // 각 수신자에게 알림 전송
         for (User receiver : receivers) {
-            sendAlarmToReceiver(receiver, sender.get(), sendAlarm.get());
+            sendAlarmToReceiver(receiver, sender.get(), sendAlarm.get(), type);
         }
     }
 
-    public void sendScheduledEventsToClients(List<Long> receiverIds, Long alarmId) {
+    public void sendScheduledEventsToClients(List<Long> receiverIds, Long alarmId, Long type) {
         Optional<Alarm> sendAlarm = alarmRepository.findById(alarmId);
 
         if (!sendAlarm.isPresent()) {
@@ -66,11 +66,11 @@ public class AlarmService {
 
         // 각 수신자에게 알림 전송
         for (User receiver : receivers) {
-            sendScheduledAlarmToReceiver(receiver, sendAlarm.get());
+            sendScheduledAlarmToReceiver(receiver, sendAlarm.get(), type);
         }
     }
 
-    private void sendAlarmToReceiver(User receiver, User sender, Alarm sendAlarm) {
+    private void sendAlarmToReceiver(User receiver, User sender, Alarm sendAlarm, Long type) {
         SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
 
         // 알림 객체 생성 및 저장
@@ -79,13 +79,14 @@ public class AlarmService {
                 .sender(sender)
                 .alarm(sendAlarm)
                 .alarmStatus(1) // 전송됨
+                .type(type)
                 .build();
         userAlarmRepository.save(userAlarm);
 
         // 연결된 경우
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("message").data(sendAlarm.getAlarmContents()));
+                emitter.send(SseEmitter.event().name("message").data("AlarmContents : " + sendAlarm.getAlarmContents() + ",type : " + type));
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
             }
@@ -95,7 +96,7 @@ public class AlarmService {
         }
     }
 
-    private void sendScheduledAlarmToReceiver(User receiver, Alarm sendAlarm) {
+    private void sendScheduledAlarmToReceiver(User receiver, Alarm sendAlarm, Long type) {
         SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
 
         // 알림 객체 생성 및 저장
@@ -104,13 +105,14 @@ public class AlarmService {
                 .sender(null)
                 .alarm(sendAlarm)
                 .alarmStatus(1) // 전송됨
+                .type(type)
                 .build();
         userAlarmRepository.save(userAlarm);
 
         // 연결된 경우
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("message").data(sendAlarm.getAlarmContents()));
+                emitter.send(SseEmitter.event().name("message").data("AlarmContents : " + sendAlarm.getAlarmContents() + ",type : " + type));
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
             }
