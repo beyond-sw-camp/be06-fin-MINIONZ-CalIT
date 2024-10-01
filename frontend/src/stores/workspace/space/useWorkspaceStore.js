@@ -16,7 +16,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // POST 워크스페이스 생성 /api/workspaces
     const addWorkspace = async({workspaceName, participants, persona}) => {
         try {
-            const response = await axios.post('/api/workspaces', { workspaceName, participants, persona });
+            const response = await axios.post('/api/workspace', { workspaceName, participants, persona });
             workspace.value = response.data;
             return response.data;
         } catch (error) {
@@ -28,7 +28,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // GET 워크스페이스 리스트 조회 /api/workspaces/all
     const getAllWorkspace = async() => {
         try {
-            const response = await axios.get('/api/workspace/all');
+            const response = await axios.get('/api/workspace/my/all');
             workspace.value = response.data.map(ws => ({
                 ...ws,
                 persona: setPersona(ws.persona)
