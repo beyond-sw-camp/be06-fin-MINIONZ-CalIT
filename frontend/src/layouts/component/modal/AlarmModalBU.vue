@@ -1,26 +1,29 @@
 <script setup>
+// TODO 현재 가지고 오는 데이터 워크스페이스만 있음
+
 import { getTimeDifference } from "@/utils/timeUtils";
 import  notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
 import {onMounted} from "vue";
-import {useUserStore} from "@/stores/user/useUserStore";
 import {useAlarmStore} from "@/stores/socket/useAlarmStore";
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 
 const alarmStore = useAlarmStore();
-const workspaceStore = useWorkspaceStore();
 
 onMounted(() => {
   const container = document.querySelector('.alarm-modal');
   new PerfectScrollbar(container);
 });
 
-const userStore = useUserStore();
-const userId = userStore.user?.id;
+const deleteAlarm = (alarmId) => {
+  const index = alarmStore.findIndex(alarm => alarm.id === alarmId);
+  if (index !== -1) {
+    alarmStore.splice(index, 1);
+  }
+};
 
-const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
+const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');
 eventSource.onmessage = function (event) {
   document.getElementById("message").textContent = 'Received event: ' + event.data;
   console.log('테스트 클라이언트 이벤트:' + event.data);
@@ -34,7 +37,7 @@ eventSource.onmessage = function (event) {
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in alarmStore.alarms" :key="alarm.id">
+      <li v-for="alarm in alarmData" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div >
@@ -42,22 +45,14 @@ eventSource.onmessage = function (event) {
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
-          <div class="right-side accept-bundle" v-if="alarm.type === 1">
-            <button @click="workspaceStore.acceptWorkspace">
-              수락
-            </button>
-            <button @click="workspaceStore.rejectWorkspace">
-              거절
-            </button>
-          <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
-        </div>
-        <div class="right-side normal-alarm" v-else>
-          <button @click="alarmStore.deleteAlarm">
+        <div class="right-side">
+          <button @click="deleteAlarm">
             <i class="delete-icon"></i>
           </button>
+          <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
         </div>
       </li>
-      <li v-if="alarmStore.alarms.length === 0">
+      <li v-if="alarmData.length === 0">
         <div class="notification-item">
           <img :src="info" alt="alam">
           <div >

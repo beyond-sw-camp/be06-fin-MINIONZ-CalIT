@@ -25,7 +25,7 @@ const kakaoLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/kakao")
 
 const sendGoogleRequest = async () => {
   try {
-    const response = await axios.post('/api/oauth2/authorization/google');
+    const response = await axios.post('/oauth2/authorization/google');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -59,7 +59,7 @@ const sendKakaoRequest = async () => {
       <div class="social-login_content">
         <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(googleLoginUrl, 'google');"
+            @click="openInNewWindow(googleLoginUrl, 'google'); sendGoogleRequest()"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
