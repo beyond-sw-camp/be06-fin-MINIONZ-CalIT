@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('userStore', () => {
     const token = ref(null);
-    const user = ref([]);
+    const user = ref(null);
     const isLoggedIn = ref(false);
 
     const setToken = (newToken) => {
