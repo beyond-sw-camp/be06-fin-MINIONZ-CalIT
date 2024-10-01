@@ -22,7 +22,15 @@ const routes = [
             {
                 path: 'login',
                 name: 'Login',
-                component: LoginPage
+                component: LoginPage,
+                beforeEnter: (to, from, next) => {
+                    const token = sessionStorage.getItem('userInfo');
+                    if (token) {
+                        next('/my/dashboard');
+                    } else {
+                        next();
+                    }
+                }
             },
             {
                 path: 'signup',
@@ -302,7 +310,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const workspaceStore = useWorkspaceStore();
-    const isAuthenticated = !!localStorage.getItem('ATOKEN'); // Check for ATOKEN
+    const isAuthenticated = !!sessionStorage.getItem('userInfo');
 
     const proceed = () => {
         if (to.matched.some(record => record.meta.requiresAuth)) {
