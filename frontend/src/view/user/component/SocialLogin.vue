@@ -4,7 +4,6 @@ import kakao from '@/assets/icon/social/kakao.png';
 import {ref} from 'vue';
 import axios from "axios";
 
-
 // 새로운 창을 열어 URL로 이동하는 함수
 const openInNewWindow = (url, provider) => {
   window.open(url, '_blank');
@@ -35,7 +34,7 @@ const sendGoogleRequest = async () => {
 
 const sendNaverRequest = async () => {
   try {
-    const response = await axios.post('/oauth2/authorization/naver');
+    const response = await axios.post('/api/oauth2/authorization/naver');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -44,7 +43,7 @@ const sendNaverRequest = async () => {
 
 const sendKakaoRequest = async () => {
   try {
-    const response = await axios.post('/oauth2/authorization/kakao');
+    const response = await axios.post('/api/oauth2/authorization/kakao');
     console.log(response.data);
   } catch (error) {
     console.error('Error sending request to Kakao:', error);
@@ -71,7 +70,7 @@ const sendKakaoRequest = async () => {
 
         <!-- 네이버 로그인 버튼 -->
         <div
-            @click="openInNewWindow(naverLoginUrl, 'naver'); sendNaverRequest()"
+            @click="sendNaverRequest()"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
