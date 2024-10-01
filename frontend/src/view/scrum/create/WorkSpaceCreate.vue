@@ -17,8 +17,8 @@ const filteredUsers = ref([]);
 
 onMounted(async () => {
   const users = await friendStore.getUserList();
-  if (users) {
-    filteredUsers.value = users.filter(user => user.includes(participants.value));
+  if (users && Array.isArray(users)) {
+    filteredUsers.value = users.filter(user => user && user.includes(participants.value || ''));
   } else {
     filteredUsers.value = [];
   }
@@ -26,7 +26,7 @@ onMounted(async () => {
 
 const searchUsers = async () => {
   if (participants.value) {
-    filteredUsers.value = (await friendStore.getUserList(participants.value)).filter(user => user.includes(participants.value));
+    filteredUsers.value = (await friendStore.getUserList(participants.value)).filter(user => user && user.includes(participants.value || ''));
   } else {
     filteredUsers.value = [];
   }

@@ -9,7 +9,7 @@ const scheduleItems = ref(props.meetings.map(meeting => ({
   icon: meeting
 })));
 </script>
-
+rt
 <template>
   <div class="weekly-schedule">
     <p class="weekly-schedule-title">Weekly Schedule</p>

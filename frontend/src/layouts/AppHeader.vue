@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 import { onMounted, onBeforeUnmount } from 'vue';
 import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
@@ -8,6 +8,7 @@ import arrow from '@/assets/icon/menu/arrow.svg';
 import WorkspaceModal from "@/layouts/component/modal/WorkspaceModal.vue";
 import AlarmModal from "@/layouts/component/modal/AlarmModal.vue";
 import ChatModal from "@/layouts/component/modal/ChatModal.vue";
+import {useUserStore} from "@/stores/user/useUserStore";
 
 const showAlarmModal = ref(false);
 const showWorkspaceModal = ref(false);
@@ -55,12 +56,15 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
 });
+
+const userStore = useUserStore();
+const userName = computed(() => userStore.user?.useName || '');
 </script>
 
 <template>
   <div class="header">
     <div class="user-name">
-      <p class="outfit">Seung Eun</p>
+      <p class="outfit">{{ userName }}</p>
     </div>
     <div class="right-side">
       <div class="notice-bundle">
