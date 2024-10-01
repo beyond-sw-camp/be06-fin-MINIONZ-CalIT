@@ -1,12 +1,12 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from "@/stores/user/useUserStore";
-import UserButton from "@/view/user/component/UserButton.vue";
-import UserInput from "@/view/user/component/UserInput.vue";
-import SocialLogin from "@/view/user/component/SocialLogin.vue";
-import axios from "axios";
-import { Notyf } from 'notyf';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {useUserStore} from '@/stores/user/useUserStore';
+import UserButton from '@/view/user/component/UserButton.vue';
+import UserInput from '@/view/user/component/UserInput.vue';
+import SocialLogin from '@/view/user/component/SocialLogin.vue';
+import axios from 'axios';
+import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const router = useRouter();
@@ -40,7 +40,6 @@ const login = async () => {
 
   const token = await authenticate(loginId.value, password.value);
   if (token) {
-    localStorage.setItem('ATOKEN', token);
     userStore.setToken(token);
     notyf.success('로그인 성공');
     try {

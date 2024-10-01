@@ -1,18 +1,17 @@
 <script setup>
-import {computed, ref} from 'vue';
-import { onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useUserStore } from '@/stores/user/useUserStore';
+import ChatModal from '@/layouts/component/modal/ChatModal.vue';
+import AlarmModal from '@/layouts/component/modal/AlarmModal.vue';
+import WorkspaceModal from '@/layouts/component/modal/WorkspaceModal.vue';
 import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
 import arrow from '@/assets/icon/menu/arrow.svg';
-import WorkspaceModal from "@/layouts/component/modal/WorkspaceModal.vue";
-import AlarmModal from "@/layouts/component/modal/AlarmModal.vue";
-import ChatModal from "@/layouts/component/modal/ChatModal.vue";
-import {useUserStore} from "@/stores/user/useUserStore";
 
+const showChatModal = ref(false);
 const showAlarmModal = ref(false);
 const showWorkspaceModal = ref(false);
-const showChatModal = ref(false);
 
 const toggleChatModal = () => {
   showChatModal.value = !showChatModal.value;
@@ -33,6 +32,7 @@ const closeChatModal = () => {
 const closeAlarmModal = () => {
   showAlarmModal.value = false;
 };
+
 const closeWorkspaceModal = () => {
   showWorkspaceModal.value = false;
 };
@@ -58,7 +58,13 @@ onBeforeUnmount(() => {
 });
 
 const userStore = useUserStore();
-const userName = computed(() => userStore.user?.useName || '');
+console.log('User Store:', userStore);
+console.log('User:', userStore.user.value);
+console.log('User Name:', userStore.user);
+const userName = computed(() => {
+  console.log('Computed userName:', userStore.user.value ? userStore.user.value.username : '');
+  return userStore.user.value ? userStore.user.value.username : '';
+});
 </script>
 
 <template>
@@ -68,7 +74,7 @@ const userName = computed(() => userStore.user?.useName || '');
     </div>
     <div class="right-side">
       <div class="notice-bundle">
-        <div  class="chat" @click="toggleChatModal">
+        <div class="chat" @click="toggleChatModal">
           <img :src="message" alt="chat">
         </div>
         <div class="alarm" @click="toggleAlarmModal">
