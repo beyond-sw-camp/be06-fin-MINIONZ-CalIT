@@ -6,6 +6,7 @@ pipeline {
         PREV_DEPLOYMENT = ""
         PREV_SERVICE = ""
         PREV_INGRESS = ""
+        DISCORD_WEBHOOK = credentials("DISCORD_WEBHOOK")
     }
 
     stages {
@@ -119,26 +120,25 @@ pipeline {
     }
 
     post {
-                success {
-                    discordSend description: """
-                    제목 : ${currentBuild.displayName}
-                    결과 : ${currentBuild.result}
-                    실행 시간 : ${currentBuild.duration / 1000}s
-                    """,
-                    link: env.BUILD_URL, result: currentBuild.currentResult,
-                    title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
-                    webhookURL: "${env.DISCORD_WEBHOOK}"
-                }
-                failure {
-                    discordSend description: """
-                    제목 : ${currentBuild.displayName}
-                    결과 : ${currentBuild.result}
-                    실행 시간 : ${currentBuild.duration / 1000}s
-                    """,
-                    link: env.BUILD_URL, result: currentBuild.currentResult,
-                    title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
-                    webhookURL: "${env.DISCORD_WEBHOOK}"
-                }
+        success {
+            discordSend description: """
+            제목 : ${currentBuild.displayName}
+            결과 : ${currentBuild.result}
+            실행 시간 : ${currentBuild.duration / 1000}s
+            """,
+            link: env.BUILD_URL, result: currentBuild.currentResult,
+            title: "빌드 : ${currentBuild.displayName} 성공",
+            webhookURL: "${env.DISCORD_WEBHOOK}"
+        }
+        failure {
+            discordSend description: """
+            제목 : ${currentBuild.displayName}
+            결과 : ${currentBuild.result}
+            실행 시간 : ${currentBuild.duration / 1000}s
+            """,
+            link: env.BUILD_URL, result: currentBuild.currentResult,
+            title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
+            webhookURL: "${env.DISCORD_WEBHOOK}"
+        }
     }
 }
-
