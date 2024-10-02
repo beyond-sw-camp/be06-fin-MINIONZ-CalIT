@@ -24,7 +24,7 @@ public class WorkspaceService {
 
     @Transactional
     public void create(User user, CreateWorkspaceRequest request) {
-        Workspace workspace = workspaceRepository.save(Workspace.builder().workspaceName(request.getWorkspaceName()).build());
+        Workspace workspace = workspaceRepository.save(Workspace.builder().workspaceName(request.getWorkspaceName()).avatar((int) Math.random() * 12 + 1).build());
 
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(true).isValid(true).build());
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(false).isValid(true).build());
