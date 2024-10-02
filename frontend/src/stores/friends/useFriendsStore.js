@@ -7,7 +7,7 @@ export const useFriendsStore = defineStore('friendsStore', () => {
 
     const getUserList = async (username) => {
         try {
-            const response = await axios.get('/api/search/alluser', username);
+            const response = await axios.get('/api/search/alluser', { params: { username } });
             friends.value = response.data;
         } catch (error) {
             console.error('Error fetching friends:', error);
