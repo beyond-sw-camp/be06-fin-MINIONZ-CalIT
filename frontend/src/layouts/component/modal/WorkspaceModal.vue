@@ -6,7 +6,7 @@ import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspaceList = useWorkspaceStore().getAllWorkspace();
+const workspaceList = useWorkspaceStore().getAllWorkspace().filter(workspace => workspace.value.workspaceId !== workspaceId);
 </script>
 
 <template>

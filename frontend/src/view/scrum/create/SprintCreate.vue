@@ -1,7 +1,9 @@
 <script setup>
-import { inject, ref} from 'vue';
-import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
-import {timeInputUtils} from "@/utils/timeInputUtils";
+import { inject, ref, computed } from 'vue';
+import { useSprintStore } from "@/stores/workspace/scrum/useSprintStore";
+import { useSprintLabelStore } from "@/stores/workspace/scrum/useSprintLabelStore";
+import { timeInputUtils } from "@/utils/timeInputUtils";
+import { useRoute } from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -9,27 +11,50 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = '스프린트 추가하기';
 contentsDescription.value = '스프린트를 추가해보세요!';
 
+const route = useRoute();
+const workSpaceId = route.params.workspaceId;
+
 const sprintStore = useSprintStore();
-const sprintName = ref('');
-const participants = ref('');
+const sprintLabelStore = useSprintLabelStore();
+const sprintTitle = ref('');
+const sprintContent = ref('');
+const participants = ref([]);
 const selectedLabels = ref([]);
-const startTime = ref('');
-const endTime = ref('');
+const startData = ref('');
+const endData = ref('');
+const labelSearch = ref('');
+
+const filteredLabels = computed(() => {
+  const allLabels = sprintLabelStore.getSprintLabel(workSpaceId);
+  if (!labelSearch.value) {
+    return allLabels;
+  }
+  return allLabels.filter(label => label.labelName.includes(labelSearch.value));
+});
+
+const selectLabel = (label) => {
+  if (!selectedLabels.value.includes(label)) {
+    selectedLabels.value.push(label);
+  }
+};
 
 const addSprint = () => {
   sprintStore.addSprint({
-    sprintName: sprintName.value,
+    workspaceId: workSpaceId,
+    sprintTitle: sprintTitle.value,
+    sprintContents: sprintContent.value,
+    labels: selectedLabels.value,
     participants: participants.value,
+    startDate: startData.value,
+    endDate: endData.value,
   });
-  sprintName.value = '';
-  participants.value = '';
 };
 
 const adjustTime = () => {
-  if (startTime.value && endTime.value) {
-    const { start, end } = timeInputUtils(startTime.value, endTime.value);
-    startTime.value = start;
-    endTime.value = end;
+  if (startData.value && endData.value) {
+    const { start, end } = timeInputUtils(startData.value, endData.value);
+    startData.value = start;
+    endData.value = end;
   }
 };
 </script>
@@ -40,23 +65,13 @@ const adjustTime = () => {
       <div class="input-wrap">
         <div>
           <div>
-            <label for="sprintName">Sprint 이름</label>
-            <input type="text" id="sprintName" v-model="sprintName" placeholder="Sprint 이름을 입력하세요" class="input-field">
+            <label for="sprintTitle">Sprint 이름</label>
+            <input type="text" id="sprintTitle" v-model="sprintTitle" placeholder="Sprint 이름을 입력하세요" class="input-field">
           </div>
           <div>
             <label for="sprintContent">Sprint 내용</label>
-            <input type="text" id="sprintContent" placeholder="Sprint 내용을 입력하세요" class="input-field">
+            <input type="text" id="sprintContent" v-model="sprintContent" placeholder="Sprint 내용을 입력하세요" class="input-field">
           </div>
-<!--          <div>-->
-<!--            <label>스프린트 매니저</label>-->
-<!--            <multiselect-->
-<!--                v-model="sprintManager"-->
-<!--                :options="filteredUsers"-->
-<!--                placeholder="담당자를 선택해주세요"-->
-<!--                label="name"-->
-<!--                track-by="id"-->
-<!--            ></multiselect>-->
-<!--          </div>-->
           <div>
             <label for="sprintParticipation">담당자 추가</label>
             <input type="text" id="sprintParticipation" placeholder="참여자를 검색해주세요" class="input-field">
@@ -66,11 +81,11 @@ const adjustTime = () => {
           </div>
           <div>
             <label>시작 날짜</label>
-            <input type="datetime-local" id="startDate" v-model="startTime" class="input-field" @change="adjustTime">
+            <input type="datetime-local" id="startDate" v-model="startData" class="input-field" @change="adjustTime">
           </div>
           <div>
             <label>종료 날짜</label>
-            <input type="datetime-local" id="endDate" v-model="endTime" class="input-field" @change="adjustTime">
+            <input type="datetime-local" id="endDate" v-model="endData" class="input-field" @change="adjustTime">
           </div>
           <div>
             <input type="text" v-model="labelSearch" placeholder="label을 검색해주세요" class="input-field">
