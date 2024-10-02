@@ -6,19 +6,19 @@ import {weekSettingUtils} from "@/utils/weekSettingUtils";
 export const useMypageStore = defineStore('mypageStore', () => {
     const mySprintData = ref([]);
     const getMyKanban = async () => {
-        const response = await axios.get('/api/sprint/all/my');
+        const response = await axios.get('/api/task/my/all');
         mySprintData.value = response.data;
     };
 
     const getMyMonthly = async () => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/myMonthly?startdate=${startDate}&enddate=${endDate}`);
+        const response = await axios.get(`/api/my/monthly?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data;
     }
 
     const getMyWeekly = async () => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/myWeekly?startdate=${startDate}&enddate=${endDate}`);
+        const response = await axios.get(`/api/myWeekly?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data;
     }
 
