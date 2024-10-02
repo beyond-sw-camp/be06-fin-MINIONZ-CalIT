@@ -46,7 +46,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: http://calit.kro.kr/api/login/oauth2/code/google
             scope:
               - email
               - profile
@@ -57,7 +57,7 @@ spring:
               - account_email
               - profile_nickname
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: http://calit.kro.kr/api/login/oauth2/code/kakao
             client-name: Kakao
             client-authentication-method: client_secret_post
           naver:
@@ -68,7 +68,7 @@ spring:
               - email
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/naver
+            redirect-uri: http://calit.kro.kr/api/login/oauth2/code/naver
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
