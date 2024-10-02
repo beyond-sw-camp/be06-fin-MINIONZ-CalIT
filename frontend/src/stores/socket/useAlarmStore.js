@@ -1,14 +1,13 @@
-import axios from "axios";
 import { defineStore } from 'pinia';
-// import {alarmData} from "@/static/alarmData";
 import {ref} from "vue";
+import { axiosInstance } from '@/utils/axiosInstance';
 
 export const useAlarmStore = defineStore('alarmStore', () => {
     const alarms = ref([]);
-    const getAlarmData = async (userId) => {
+    const getAlarmData = async () => {
         alarms.value = [];
         try {
-            const response = await axios.get(`/api/alarm/connect/${userId}`);
+            const response = await axiosInstance.get('api/alarm/my');
             alarms.value = response.data;
         }
         catch (error) {
@@ -18,7 +17,7 @@ export const useAlarmStore = defineStore('alarmStore', () => {
 
     const deleteAlarm = async (alarmId) => {
         try {
-            await axios.delete(`/api/alarm/${alarmId}`);
+            await axiosInstance.delete(`/api/alarm/${alarmId}`);
             alarms.value = alarms.value.filter(alarm => alarm.id !== alarmId);
         }
         catch (error) {

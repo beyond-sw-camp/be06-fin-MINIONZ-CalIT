@@ -18,7 +18,7 @@ onMounted(() => {
 });
 
 const userStore = useUserStore();
-const userId = userStore.userId;
+const userId = userStore.user.idx;
 
 const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
 eventSource.onmessage = function (event) {
@@ -34,7 +34,7 @@ eventSource.onmessage = function (event) {
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in alarmStore.alarms" :key="alarm.id">
+      <li v-for="(alarm, index) in alarmStore.alarms" :key="index">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div >
