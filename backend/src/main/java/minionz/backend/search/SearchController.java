@@ -23,7 +23,7 @@ public class SearchController {
   }
 
   @GetMapping("/containeduser")
-  public List<SearchUserResponse> searchWorkspaceUser(@RequestParam String username) {
-    return searchService.containedUser(username);
+  public List<SearchUserResponse> searchWorkspaceUser(@RequestParam String loginId) {
+    return searchService.containedUser(loginId);
   }
 }
