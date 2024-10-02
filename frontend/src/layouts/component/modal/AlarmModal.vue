@@ -18,7 +18,7 @@ onMounted(() => {
 });
 
 const userStore = useUserStore();
-const userId = userStore.user?.id;
+const userId = userStore.userId;
 
 const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
 eventSource.onmessage = function (event) {
@@ -43,10 +43,10 @@ eventSource.onmessage = function (event) {
           </div>
         </div>
           <div class="right-side accept-bundle" v-if="alarm.type === 1">
-            <button @click="workspaceStore.acceptWorkspace">
+            <button @click="workspaceStore.acceptWorkspace(alarm.idx)">
               수락
             </button>
-            <button @click="workspaceStore.rejectWorkspace">
+            <button @click="workspaceStore.rejectWorkspace(alarm.idx)">
               거절
             </button>
           <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>

@@ -1,7 +1,5 @@
 <script setup>
-import { chatRoomList } from "@/static/chatData";
 import { getTimeDifference} from "@/utils/timeUtils";
-// import  notification from "@/assets/icon/alarm/notification.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
 import {onMounted} from "vue";
