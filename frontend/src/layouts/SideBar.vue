@@ -6,14 +6,17 @@ import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
+import {useRoute} from "vue-router";
 
 const props = defineProps({
   isPersonalMenu: Boolean
 });
 
 const workspaceStore = useWorkspaceStore();
-// const route = useRoute();
-const workspaceName = computed(() => props.isPersonalMenu ? 'My Space' : workspaceStore.workspaceName);
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+const workspaceList = workspaceStore.getAllWorkspace();
+const workspaceName = computed(() => props.isPersonalMenu ? 'My Space' : workspaceList.find(workspace => workspace.value.workspaceId === workspaceId).value.workspaceName);
 
 const logout = () => {
   useUserStore().logout();
