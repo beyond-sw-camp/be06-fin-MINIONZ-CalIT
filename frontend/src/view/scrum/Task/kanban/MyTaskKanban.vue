@@ -18,6 +18,9 @@ const tasks = useTaskStore().getAllTask(workspaceId);
 
 <template>
   <div class="kanban-board">
+    <div>
+
+    </div>
     <TaskColumn v-for="task in tasks" :key="task.id" :data="task"/>
   </div>
 </template>
