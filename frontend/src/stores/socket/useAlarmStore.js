@@ -7,7 +7,7 @@ export const useAlarmStore = defineStore('alarmStore', () => {
     const getAlarmData = async () => {
         alarms.value = [];
         try {
-            const response = await axiosInstance.get('/api/alarm/my');
+            const response = await axiosInstance.patch('/api/alarm/my');
             alarms.value = response.data.result;
         }
         catch (error) {
