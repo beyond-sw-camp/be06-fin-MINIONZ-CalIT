@@ -127,7 +127,7 @@ pipeline {
                     """,
                     link: env.BUILD_URL, result: currentBuild.currentResult,
                     title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
-                    webhookURL: "${env.Discord-WebHook}"
+                    webhookURL: "${env.DISCORD_WEBHOOK}"
                 }
                 failure {
                     discordSend description: """
@@ -137,7 +137,7 @@ pipeline {
                     """,
                     link: env.BUILD_URL, result: currentBuild.currentResult,
                     title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
-                    webhookURL: "${env.Discord-WebHook}"
+                    webhookURL: "${env.DISCORD_WEBHOOK}"
                 }
           }
 }
