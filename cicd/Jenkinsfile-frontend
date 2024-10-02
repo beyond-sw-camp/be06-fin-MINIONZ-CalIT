@@ -122,7 +122,7 @@ pipeline {
     post {
         success {
             discordSend description: """
-            제목 : ${currentBuild.displayName}
+            제목 : "${currentBuild.displayName} 번째 프론트엔드 배포에 성공했습니다."
             결과 : ${currentBuild.result}
             실행 시간 : ${currentBuild.duration / 1000}s
             """,
@@ -132,7 +132,7 @@ pipeline {
         }
         failure {
             discordSend description: """
-            제목 : ${currentBuild.displayName}
+            제목 : "${currentBuild.displayName} 번째 프론트엔드 배포에 실패했습니다."
             결과 : ${currentBuild.result}
             실행 시간 : ${currentBuild.duration / 1000}s
             """,
