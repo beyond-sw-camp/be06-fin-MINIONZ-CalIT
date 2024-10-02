@@ -18,7 +18,7 @@ export const useMypageStore = defineStore('mypageStore', () => {
 
     const getMyWeekly = async () => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/myWeekly?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axios.get(`/api/my/weekly?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data;
     }
 
