@@ -35,7 +35,7 @@ onMounted(async () => {
     </div>
     <div v-else class="initial-wrap">
       <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
-      <router-link to="my/create">워크스페이스 추가하기</router-link>
+      <router-link to="/my/create">워크스페이스 추가하기</router-link>
     </div>
   </div>
 </template>

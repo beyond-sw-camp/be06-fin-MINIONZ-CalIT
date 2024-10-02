@@ -29,11 +29,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     const getAllWorkspace = async() => {
         try {
             const response = await axiosInstance.get('/api/workspace/my/all', { withCredentials: true });
-            workspace.value = response.data.map(ws => ({
-                ...ws,
-                avatar: setPersona(ws.persona)
-            }));
-            return workspace.value;
+            workspace.value = response.data;
         } catch (error) {
             console.error('Failed to fetch workspace', error);
             return [];
@@ -75,6 +71,25 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         }
     }
 
+    // 워크스페이스 수락
+    const acceptWorkspace = async(workspaceId) => {
+        try {
+            const response = await axiosInstance.post(`/api/workspace/accept/${workspaceId}`);
+            workspace.value = response.data;
+        } catch (error) {
+            console.error('Failed to accept workspace', error);
+        }
+    }
+
+    const rejectWorkspace = async(workspaceId) => {
+        try {
+            const response = await axiosInstance.post(`/api/workspace/reject/${workspaceId}`);
+            workspace.value = response.data;
+        } catch (error) {
+            console.error('Failed to reject workspace', error);
+        }
+    }
+
     return {
         workspace,
         workspaceId,
@@ -84,6 +99,8 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         addWorkspace,
         getAllWorkspace,
         updateWorkspace,
-        deleteWorkspace
+        deleteWorkspace,
+        acceptWorkspace,
+        rejectWorkspace
     };
 });
