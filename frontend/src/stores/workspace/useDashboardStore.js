@@ -10,7 +10,7 @@ export const useDashboardStore = defineStore('mypageStore', () => {
     const workspaceDashboardData = ref([]);
 
     const getWorkspaceKanban = async (workspaceId) => {
-        const response = await axios.get(`/api/sprint/all/${workspaceId}`);
+        const response = await axios.get(`/api/sprint/all/${workspaceId}`, {withCredentials: true});
         workspaceSprintData.value = response.data;
     };
 
@@ -20,9 +20,9 @@ export const useDashboardStore = defineStore('mypageStore', () => {
         workspaceMonthlyData.value = response.data;
     }
 
-    const getWorkspaceWeekly = async () => {
+    const getWorkspaceWeekly = async (workspaceId) => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/workspaceWeekly?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axios.get(`/api/schedule/${workspaceId}/weekly?startDate=${startDate}&endDate=${endDate}`);
         workspaceWeeklyData.value = response.data;
     }
 

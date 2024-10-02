@@ -61,16 +61,16 @@ const userStore = useUserStore();
 console.log('User Store:', userStore);
 console.log('User:', userStore.user.value);
 console.log('User Name:', userStore.user);
-const userName = computed(() => {
-  console.log('Computed userName:', userStore.user.value ? userStore.user.value.username : '');
-  return userStore.user.value ? userStore.user.value.username : '';
+const loginId = computed(() => {
+  console.log('Computed loginId:', userStore.user.value ? userStore.user.value.loginId : '');
+  return userStore.user.value ? userStore.user.value.loginId : '';
 });
 </script>
 
 <template>
   <div class="header">
     <div class="user-name">
-      <p class="outfit">{{ userName }}</p>
+      <p class="outfit">{{ loginId }}</p>
     </div>
     <div class="right-side">
       <div class="notice-bundle">

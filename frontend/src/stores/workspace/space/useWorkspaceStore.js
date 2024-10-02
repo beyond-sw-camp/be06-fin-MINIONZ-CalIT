@@ -2,19 +2,22 @@ import { ref } from 'vue';
 import axios from "axios";
 import { setPersona } from "@/utils/personaUtils";
 import { defineStore } from "pinia";
-// import { workspaceData } from "@/static/workspaceData";
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
 
+    // const ATOKEN = sessionStorage.getItem('ATOKEN');
     const workspace = ref([]);
     const workspaceId = ref(null);
     const workspaceName = ref('');
     const persona = ref(setPersona(null));
 
     // POST 워크스페이스 생성 /api/workspaces
-    const addWorkspace = async({workspaceName, participants, persona}) => {
+    const addWorkspace = async({workspaceName, participants, avatar}) => {
         try {
-            const response = await axios.post('/api/workspace', { workspaceName, participants, persona });
+            console.log('Sending request to API with:', { workspaceName, participants, avatar });
+            const response = await axios.post('/api/workspace', { workspaceName, participants, avatar },
+                {withCredentials: true});
+            console.log('API response:', response.data);
             workspace.value = response.data;
             return response.data;
         } catch (error) {
@@ -26,7 +29,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // GET 워크스페이스 리스트 조회 /api/workspaces/all
     const getAllWorkspace = async() => {
         try {
-            const response = await axios.get('/api/workspace/my/all');
+            const response = await axios.get('/api/workspace/my/all', {withCredentials: true});
             workspace.value = response.data.map(ws => ({
                 ...ws,
                 persona: setPersona(ws.persona)

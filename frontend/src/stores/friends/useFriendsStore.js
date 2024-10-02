@@ -5,9 +5,10 @@ import { defineStore } from 'pinia';
 export const useFriendsStore = defineStore('friendsStore', () => {
     const friends = ref([]);
 
-    const getUserList = async (username) => {
+    const getUserList = async (loginId) => {
         try {
-            const response = await axios.get('/api/search/alluser', { params: { username } });
+            const response = await axios.get(`/api/search/containeduser?loginId=${loginId}` );
+            console.log('API response:', response);
             friends.value = response.data;
         } catch (error) {
             console.error('Error fetching friends:', error);

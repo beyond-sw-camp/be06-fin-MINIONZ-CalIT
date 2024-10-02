@@ -54,7 +54,7 @@ const checkId = async (loginId) => {
       }
     } catch (error) {
       console.error('Check ID failed', error);
-      notyf.error('이미 사용중인 아이디 입니다.');
+      notyf.error('인증에 실패했습니다.');
     }
 }
 
