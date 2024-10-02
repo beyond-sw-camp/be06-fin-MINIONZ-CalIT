@@ -135,5 +135,5 @@ pipeline {
                 title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
                 webhookURL: "${env.DISCORD_WEBHOOK}"
             }
-        }
+    }
 }
