@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { jwtDecode } from 'jwt-decode'; // Ensure correct import
+import { jwtDecode } from 'jwt-decode';
 
 export const useUserStore = () => {
     const token = ref(null);
@@ -65,7 +65,6 @@ export const useUserStore = () => {
         token.value = null;
         user.value = null;
         isLoggedIn.value = false;
-        localStorage.removeItem('ATOKEN');
         sessionStorage.removeItem('userInfo');
     };
 
@@ -86,9 +85,10 @@ export const useUserStore = () => {
 
             console.log('Token is valid, extracting user info');
             return {
-                username: decodedToken.username,
-                userId: decodedToken.userId,
-                role: decodedToken.role
+                idx: decodedToken.idx,
+                loginId: decodedToken.loginId,
+                role: decodedToken.role,
+                userName: decodedToken.userName
             };
         } catch (error) {
             console.error('Failed to decode or validate token:', error);

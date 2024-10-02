@@ -1,7 +1,8 @@
 <script setup>
-import { inject, onMounted, ref, watch } from 'vue';
-import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
-import { useFriendsStore } from '@/stores/friends/useFriendsStore';
+import {inject, onMounted, ref, watch} from 'vue';
+import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
+import {useFriendsStore} from '@/stores/friends/useFriendsStore';
+import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,8 +13,9 @@ contentsDescription.value = 'WorkSpace를 추가해보세요!';
 const workspaceStore = useWorkspaceStore();
 const friendStore = useFriendsStore();
 const workspaceName = ref('');
-const participants = ref('');
+const participants = ref([]);
 const filteredUsers = ref([]);
+const selectedUsers = ref([]);
 
 onMounted(async () => {
   await searchUsers();
@@ -26,26 +28,36 @@ watch(participants, async () => {
 const searchUsers = async () => {
   console.log('Searching users with participants:', participants.value);
   if (participants.value) {
-    await friendStore.getUserList(participants.value);
-    filteredUsers.value = friendStore.friends.filter(user => {
-      if (typeof user === 'string') {
-        return user.toLowerCase().includes(participants.value.toLowerCase());
-      } else if (user && typeof user.username === 'string') {
-        return user.username.toLowerCase().includes(participants.value.toLowerCase());
-      }
-      return false;
-    });
-    console.log('Filtered users:', filteredUsers.value);
+    try {
+      await friendStore.getUserList(participants.value);
+      console.log('Fetched friends from store:', friendStore.friends);
+      filteredUsers.value = friendStore.friends;
+      console.log('Fetched users:', filteredUsers.value);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
   } else {
     filteredUsers.value = [];
   }
 };
 
+// const toggleUserSelection = (user) => {
+//   const index = selectedUsers.value.indexOf(user);
+//   if (index === -1) {
+//     selectedUsers.value.push(user.searchUserIdx);
+//   } else {
+//     selectedUsers.value.splice(index, 1);
+//   }
+// };
+
 const addWorkspace = () => {
   workspaceStore.addWorkspace({
     workspaceName: workspaceName.value,
+    participants: selectedUsers.value,
+    avatar: 1
   });
   workspaceName.value = '';
+  router.push('/my/dashboard');
 };
 </script>
 
@@ -62,10 +74,12 @@ const addWorkspace = () => {
 
           <div>
             <label for="workspaceParticipation">참여자 추가</label>
-            <input type="text" id="workspaceParticipation" v-model="participants" placeholder="참여자를 검색해주세요"
+            <input type="text" id="workspaceParticipation" v-model="participants" placeholder="아이디를 검색해주세요"
                    class="input-field" @keyup.enter="searchUsers">
             <ul v-if="filteredUsers.length">
-              <li v-for="user in filteredUsers" :key="user">{{ typeof user === 'string' ? user : user.username }}</li>
+              <li v-for="user in filteredUsers" :key="user">
+                {{ typeof user === 'string' ? user : user.userName }}
+              </li>
             </ul>
             <p v-else>검색된 사용자가 없습니다.</p>
           </div>
@@ -138,5 +152,9 @@ label {
 
 .add-workspace-btn:hover {
   background-color: #93AAFD;
+}
+
+.selected {
+  background-color: #C6D2FD;
 }
 </style>
