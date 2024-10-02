@@ -19,8 +19,8 @@ onMounted(async () => {
 });
 
 const userStore = useUserStore();
-console.log('User Store:', userStore.user.value.idx);
-const userId = userStore.user.value?.idx;
+console.log('User Store:', userStore);
+const userId = userStore.user?.idx;
 console.log('User ID:', userId);
 
 if (userId) {
