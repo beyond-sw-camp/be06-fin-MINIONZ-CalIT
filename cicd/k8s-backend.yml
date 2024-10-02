@@ -22,14 +22,14 @@ spec:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            successThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            successThreshold: 1
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
             periodSeconds: 10
           env:
             - name: DOMAIN_ADDRESS
