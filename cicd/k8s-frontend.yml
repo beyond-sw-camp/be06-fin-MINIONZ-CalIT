@@ -41,3 +41,4 @@ spec:
       name: "svc80"
       targetPort: 80
   type: ClusterIP
+  sessionAffinity: ClientIP  # 스티키 세션 적용
