@@ -1,5 +1,6 @@
 package minionz.backend.scrum.task;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
@@ -41,7 +42,7 @@ public class TaskService {
     private final AlarmService alarmService;
 
     @Transactional
-    public void createTask(User user, CreateTaskRequest request) {
+    public void createTask(User user, CreateTaskRequest request) throws JsonProcessingException {
 
         Meeting meeting = request.getMeetingId() != null ? Meeting.builder().meetingId(request.getMeetingId()).build() : null;
 

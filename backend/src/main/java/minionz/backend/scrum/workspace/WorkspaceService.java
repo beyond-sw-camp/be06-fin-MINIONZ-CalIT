@@ -1,5 +1,6 @@
 package minionz.backend.scrum.workspace;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
@@ -23,7 +24,7 @@ public class WorkspaceService {
     private final AlarmService alarmService;
 
     @Transactional
-    public void create(User user, CreateWorkspaceRequest request) {
+    public void create(User user, CreateWorkspaceRequest request) throws JsonProcessingException {
         Workspace workspace = workspaceRepository.save(Workspace.builder().workspaceName(request.getWorkspaceName()).avatar((int) Math.random() * 12 + 1).build());
 
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(true).isValid(true).build());

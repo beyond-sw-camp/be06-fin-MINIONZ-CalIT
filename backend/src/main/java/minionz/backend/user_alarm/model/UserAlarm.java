@@ -3,6 +3,7 @@ package minionz.backend.user_alarm.model;
 import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.alarm.model.Alarm;
+import minionz.backend.common.BaseEntity;
 import minionz.backend.user.model.User;
 
 @Entity
@@ -11,7 +12,7 @@ import minionz.backend.user.model.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserAlarm {
+public class UserAlarm extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userAlarmId;

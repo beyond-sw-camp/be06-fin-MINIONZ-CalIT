@@ -1,5 +1,6 @@
 package minionz.backend.scrum.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
@@ -39,7 +40,7 @@ public class SprintService {
     private final TaskRepository taskRepository;
     private final AlarmService alarmService;
 
-    public void createSprint(User user, CreateSprintRequest request) throws BaseException {
+    public void createSprint(User user, CreateSprintRequest request) throws BaseException, JsonProcessingException {
         Sprint sprint = sprintRepository.save(Sprint
                 .builder()
                 .sprintTitle(request.getSprintTitle())

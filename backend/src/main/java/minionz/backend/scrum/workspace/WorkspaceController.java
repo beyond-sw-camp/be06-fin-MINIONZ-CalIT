@@ -1,5 +1,6 @@
 package minionz.backend.scrum.workspace;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
@@ -20,7 +21,7 @@ public class WorkspaceController {
 
     @PostMapping("")
     public BaseResponse<BaseResponseStatus> createWorkspace(
-            @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateWorkspaceRequest request) {
+            @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateWorkspaceRequest request) throws JsonProcessingException {
 
         workspaceService.create(customUserDetails.getUser(), request);
 
