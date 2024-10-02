@@ -1,13 +1,13 @@
 <script setup>
-import {getTimeDifference} from "@/utils/timeUtils";
+import { getTimeDifference } from "@/utils/timeUtils";
 import notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
-import {onMounted} from "vue";
-import {useUserStore} from "@/stores/user/useUserStore";
-import {useAlarmStore} from "@/stores/socket/useAlarmStore";
-import {useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
+import { onMounted } from "vue";
+import { useUserStore } from "@/stores/user/useUserStore";
+import { useAlarmStore } from "@/stores/socket/useAlarmStore";
+import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 
 const alarmStore = useAlarmStore();
 const workspaceStore = useWorkspaceStore();
@@ -19,13 +19,19 @@ onMounted(async () => {
 });
 
 const userStore = useUserStore();
-const userId = userStore.user.idx;
+console.log('User Store:', userStore.user.value.idx);
+const userId = userStore.user.value?.idx;
+console.log('User ID:', userId);
 
-const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
-eventSource.onmessage = function (event) {
-  document.getElementById("message").textContent = 'Received event: ' + event.data;
-  console.log('테스트 클라이언트 이벤트:' + event.data);
-};
+if (userId) {
+  const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
+  eventSource.onmessage = function (event) {
+    document.getElementById("message").textContent = 'Received event: ' + event.data;
+    console.log('테스트 클라이언트 이벤트:' + event.data);
+  };
+} else {
+  console.error('User ID is undefined');
+}
 </script>
 
 <template>
@@ -35,7 +41,7 @@ eventSource.onmessage = function (event) {
     </div>
     <hr>
     <ul>
-      <li v-for="(alarm, index) in alarmStore.alarms" :key="index">
+      <li v-for="alarm in alarmStore.alarms" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
           <div>
