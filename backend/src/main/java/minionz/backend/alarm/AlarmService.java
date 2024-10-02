@@ -3,16 +3,21 @@ package minionz.backend.alarm;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import minionz.backend.alarm.model.Alarm;
+import minionz.backend.alarm.model.response.ReadMyAlarmResponse;
 import minionz.backend.user.UserRepository;
 import minionz.backend.user.model.User;
 import minionz.backend.user_alarm.UserAlarmRepository;
 import minionz.backend.user_alarm.model.UserAlarm;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.data.domain.Sort;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 public class AlarmService {
@@ -29,7 +34,7 @@ public class AlarmService {
         this.userAlarmRepository = userAlarmRepository;
     }
 
-    public void sendEventsToClients(List<Long> receiverIds, Long senderId, Long alarmId, Long type) {
+    public void sendEventsToClients(List<Long> receiverIds, Long senderId, Long alarmId, Long type) throws JsonProcessingException {
         Optional<User> sender = userRepository.findById(senderId);
         Optional<Alarm> sendAlarm = alarmRepository.findById(alarmId);
 
@@ -70,8 +75,15 @@ public class AlarmService {
         }
     }
 
-    private void sendAlarmToReceiver(User receiver, User sender, Alarm sendAlarm, Long type) {
+    private void sendAlarmToReceiver(User receiver, User sender, Alarm sendAlarm, Long type) throws JsonProcessingException {
         SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> alarmData = new HashMap<>();
+        alarmData.put("AlarmTitle", sendAlarm.getAlarmTitle());
+        alarmData.put("AlarmContents", sendAlarm.getAlarmContents());
+        alarmData.put("idx", String.valueOf(type));
+
+        String jsonData = objectMapper.writeValueAsString(alarmData);
 
         // 알림 객체 생성 및 저장
         UserAlarm userAlarm = UserAlarm.builder()
@@ -86,7 +98,7 @@ public class AlarmService {
         // 연결된 경우
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("message").data("AlarmContents : " + sendAlarm.getAlarmContents() + ",type : " + type));
+                emitter.send(SseEmitter.event().name("message").data(jsonData));
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
             }
@@ -144,5 +156,22 @@ public class AlarmService {
         emitter.onCompletion(() -> emitters.remove(receiverId));
         emitter.onTimeout(() -> emitters.remove(receiverId));
         return emitter;
+    }
+
+    public List<ReadMyAlarmResponse> readMyAlarms(User user){
+        List<UserAlarm> alarms = userAlarmRepository.findByReceiver(user, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        List<ReadMyAlarmResponse> response =  alarms.stream().map(
+               userAlarm -> ReadMyAlarmResponse
+                       .builder()
+                       .idx(userAlarm.getType())
+                       .type(userAlarm.getAlarm().getAlarmId())
+                       .title(userAlarm.getAlarm().getAlarmTitle())
+                       .content(userAlarm.getAlarm().getAlarmContents())
+                       .time(userAlarm.getCreatedAt())
+                       .build()
+       ).toList();
+
+        return response;
     }
 }

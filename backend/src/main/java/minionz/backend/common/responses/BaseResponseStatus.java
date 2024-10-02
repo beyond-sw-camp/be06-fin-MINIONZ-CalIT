@@ -38,6 +38,7 @@ public enum BaseResponseStatus {
     MY_MONTHLY_READ_SUCCESS(true, 3002, "나의 월간 캘린더 조회에 성공했습니다."),
     MY_WEEKLY_READ_SUCCESS(true, 3003, "나의 주간 캘린더 조회에 성공했습니다."),
     MY_DASHBOARD_READ_SUCCESS(true, 3004, "나의 대시보드 조회에 성공했습니다."),
+    MY_ALARM_READ_SUCCESS(true, 3005, "나의 알람 조회에 성공했습니다."),
 
 
     /**

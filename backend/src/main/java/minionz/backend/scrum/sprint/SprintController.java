@@ -1,5 +1,6 @@
 package minionz.backend.scrum.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
@@ -29,9 +30,11 @@ public class SprintController {
       sprintService.createSprint(customUserDetails.getUser(), request);
     } catch (BaseException e) {
       return new BaseResponse<>(e.getStatus());
+    } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
     }
 
-    return new BaseResponse<>(BaseResponseStatus.SPRINT_CREATE_SUCCESS);
+      return new BaseResponse<>(BaseResponseStatus.SPRINT_CREATE_SUCCESS);
   }
 
   @GetMapping("/{workspaceId}/{sprintId}")
