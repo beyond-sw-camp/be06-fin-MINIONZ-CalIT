@@ -29,11 +29,11 @@ const workspaceList = useWorkspaceStore().getAllWorkspace();
           </div>
           <hr>
         </li>
-        <li v-for="(workspace) in workspaceList" :key="workspace.workspaceId">
+        <li v-for="(workspace) in workspaceList" :key="workspace.value.workspaceId">
           <div class="workspace-item">
           <router-link :to="'/workspace/' + workspaceId + '/dashboard'">
-            <img :src="workspace.persona" alt="workspace">
-            <p>{{ workspace.workspaceName }}</p>
+            <img :src="workspace.value.persona" alt="workspace">
+            <p>{{ workspace.value.workspaceName }}</p>
           </router-link>
           </div>
         </li>
