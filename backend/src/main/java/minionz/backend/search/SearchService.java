@@ -41,13 +41,14 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
-    public List<SearchUserResponse> containedUser(String username) {
-        List<User> users = searchRepository.findByUserNameContaining(username);
+    public List<SearchUserResponse> containedUser(String loginId) {
+        List<User> users = searchRepository.findByLoginIdContaining(loginId);
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
                 .map(user -> searchUserResponse.builder()
                         .searchUserIdx(user.getUserId())
                         .userName(user.getUserName())
+                        .loginId(user.getLoginId())
                         .email(user.getEmail())
                         .build())
                 .collect(Collectors.toList());

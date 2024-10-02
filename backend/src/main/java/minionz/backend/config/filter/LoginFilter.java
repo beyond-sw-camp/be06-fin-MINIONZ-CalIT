@@ -51,8 +51,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         CustomSecurityUserDetails customUserDetails = (CustomSecurityUserDetails) authentication.getPrincipal();
-        String username = customUserDetails.getUsername();
-
+        String loginId = customUserDetails.getUsername();
+        String userName = customUserDetails.getUserName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
         List<String> roles = authorities.stream()
@@ -68,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             e.printStackTrace();
         }
 
-        String token = jwtUtil.createToken(username, customUserDetails.getUser().getUserId(), rolesJson);
+        String token = jwtUtil.createToken(loginId, customUserDetails.getUser().getUserId(), rolesJson, userName);
         Cookie aToken = new Cookie("ATOKEN", token);
         aToken.setHttpOnly(true);
         aToken.setSecure(true);
