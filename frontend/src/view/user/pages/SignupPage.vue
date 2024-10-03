@@ -10,7 +10,7 @@ import { Notyf } from 'notyf';
 const router = useRouter();
 const notyf = new Notyf();
 
-const username = ref('');
+const userName = ref('');
 const loginId = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -20,14 +20,14 @@ const verificationCode = ref('');
 
 //checkAll은 값을 통과하지 못하면 signup 버튼이 disabled 되게 하기 위함
 const checkAll = computed(() => {
-  return username.value.trim() !== '' && loginId.value.trim() !== '' && password.value.trim() !== '' && confirmPassword.value.trim() !== '' && email.value.trim() !== '';
+  return userName.value.trim() !== '' && loginId.value.trim() !== '' && password.value.trim() !== '' && confirmPassword.value.trim() !== '' && email.value.trim() !== '';
 });
 
 const signup = () => {
   if (checkAll.value) {
     try {
       axios.post('/api/user/signup', {
-        username: username.value,
+        userName: userName.value,
         loginId: loginId.value,
         password: password.value,
         email: email.value
@@ -54,7 +54,7 @@ const checkId = async (loginId) => {
       }
     } catch (error) {
       console.error('Check ID failed', error);
-      notyf.error('이미 사용중인 아이디 입니다.');
+      notyf.error('인증에 실패했습니다.');
     }
 }
 
@@ -116,7 +116,7 @@ const passwordsMatch = computed(() => {
     </div>
     <div class="signup-body">
       <form @submit.prevent="signup">
-        <UserInput v-model="username" input-placeholder="이름을 입력하세요" label="이름" type="text"/>
+        <UserInput v-model="userName" input-placeholder="이름을 입력하세요" label="이름" type="text"/>
         <div class="verify">
           <UserInput v-model="loginId" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
           <button type="button" @click="checkId(loginId)" class="btn-verify" >중복 확인</button>

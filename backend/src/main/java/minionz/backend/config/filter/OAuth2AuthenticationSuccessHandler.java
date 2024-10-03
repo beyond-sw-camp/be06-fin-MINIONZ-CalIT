@@ -24,18 +24,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomOauth2UserDetails oAuth2Member = (CustomOauth2UserDetails) authentication.getPrincipal();
         Long id = oAuth2Member.getUser().getUserId();
-        String username = oAuth2Member.getUsername();
+        String userName = oAuth2Member.getUsername();
         String role = oAuth2Member.getUser().getRole();
         String email = oAuth2Member.getUser().getEmail();
-        String token = jwtUtil.createToken(username, id, role);
-        log.info(id + " " + role + " " + username);
+        String token = jwtUtil.createToken(email , id, role, userName);
+        log.info(id + " " + role + " " + userName);
         Cookie aToken = new Cookie("ATOKEN", token);
         aToken.setHttpOnly(true);
         aToken.setSecure(true);
         aToken.setPath("/");
         aToken.setMaxAge(60 * 60 * 100000);
         response.addCookie(aToken);
-        getRedirectStrategy().sendRedirect(request, response, "http://calit.kro.kr/my/dashboard");
+        getRedirectStrategy().sendRedirect(request, response, "https://calit.kro.kr/my/dashboard");
     }
 }
 

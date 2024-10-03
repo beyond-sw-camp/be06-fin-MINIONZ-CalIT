@@ -1,5 +1,6 @@
 package minionz.backend.scrum.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
@@ -16,61 +17,66 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/sprint")
+@RequestMapping("/sprint")
 public class SprintController {
 
-    private final SprintService sprintService;
+  private final SprintService sprintService;
 
-    @PostMapping("/{workspaceId}")
-    public BaseResponse<BaseResponseStatus> createSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateSprintRequest request) {
+  @PostMapping("/{workspaceId}")
+  public BaseResponse<BaseResponseStatus> createSprint(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateSprintRequest request) {
 
-        try {
-            sprintService.createSprint(customUserDetails.getUser(), request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_CREATE_SUCCESS);
+    try {
+      sprintService.createSprint(customUserDetails.getUser(), request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
+    } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
     }
 
-    @GetMapping("/{workspaceId}/{sprintId}")
-    public BaseResponse<ReadSprintResponse> readSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId) {
-        ReadSprintResponse response;
+      return new BaseResponse<>(BaseResponseStatus.SPRINT_CREATE_SUCCESS);
+  }
 
-        try {
-            response = sprintService.readSprint(customUserDetails.getUser(), sprintId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/{workspaceId}/{sprintId}")
+  public BaseResponse<ReadSprintResponse> readSprint(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId) {
+    ReadSprintResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_READ_SUCCESS, response);
+    try {
+      response = sprintService.readSprint(customUserDetails.getUser(), sprintId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/all/{workspaceId}")
-    public BaseResponse<List<ReadAllSprintResponse>> readAllSprint(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails,@PathVariable Long workspaceId) {
+    return new BaseResponse<>(BaseResponseStatus.SPRINT_READ_SUCCESS, response);
+  }
 
-        List<ReadAllSprintResponse> response;
+  @GetMapping("/all/{workspaceId}")
+  public BaseResponse<List<ReadAllSprintResponse>> readAllSprint(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId) {
 
-        try {
-            response = sprintService.readAllSprint(customUserDetails.getUser(), workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+    List<ReadAllSprintResponse> response;
 
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_READ_ALL_SUCCESS, response);
+    try {
+      response = sprintService.readAllSprint(customUserDetails.getUser(), workspaceId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @PatchMapping("/{sprintId}/status")
-    public BaseResponse<BaseResponseStatus> updateSprintStatus(@PathVariable Long sprintId, @RequestBody UpdateSprintStatusRequest request) {
+    return new BaseResponse<>(BaseResponseStatus.SPRINT_READ_ALL_SUCCESS, response);
+  }
 
-        try {
-            sprintService.updateSprintStatus(sprintId, request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @PatchMapping("/{sprintId}/status")
+  public BaseResponse<BaseResponseStatus> updateSprintStatus(@PathVariable Long sprintId,
+      @RequestBody UpdateSprintStatusRequest request) {
 
-        return new BaseResponse<>(BaseResponseStatus.SPRINT_STATUS_UPDATE_SUCCESS);
+    try {
+      sprintService.updateSprintStatus(sprintId, request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
+    return new BaseResponse<>(BaseResponseStatus.SPRINT_STATUS_UPDATE_SUCCESS);
+  }
 
 }

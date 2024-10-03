@@ -1,12 +1,12 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from "@/stores/user/useUserStore";
-import UserButton from "@/view/user/component/UserButton.vue";
-import UserInput from "@/view/user/component/UserInput.vue";
-import SocialLogin from "@/view/user/component/SocialLogin.vue";
-import axios from "axios";
-import { Notyf } from 'notyf';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {useUserStore} from '@/stores/user/useUserStore';
+import UserButton from '@/view/user/component/UserButton.vue';
+import UserInput from '@/view/user/component/UserInput.vue';
+import SocialLogin from '@/view/user/component/SocialLogin.vue';
+import axios from 'axios';
+import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const router = useRouter();
@@ -30,7 +30,7 @@ const authenticate = async (loginId, password) => {
       notyf.error('로그인 실패');
     }
   }
-}; // authenticate 함수 종료
+};
 
 const login = async () => {
   if (loginId.value === '' || password.value === '') {
@@ -40,10 +40,9 @@ const login = async () => {
 
   const token = await authenticate(loginId.value, password.value);
   if (token) {
-    sessionStorage.setItem('authToken', token);
     userStore.setToken(token);
     notyf.success('로그인 성공');
-    await router.push('/my/dashboard');
+    router.push('/my/dashboard');
   } else {
     notyf.error('로그인 실패');
   }
@@ -56,12 +55,12 @@ const login = async () => {
       <h1>로그인</h1>
     </div>
     <form @submit.prevent="login">
-      <UserInput v-model="loginId" input-placeholder="아이디를 입력하세요" label="아이디" type="text" />
+      <UserInput v-model="loginId" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
       <UserInput v-model="password" input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
-        <UserButton type="submit" button-ment="Login" class="btn"></UserButton>
+      <UserButton type="submit" button-ment="Login" class="btn"></UserButton>
     </form>
     <div class="link-wrap">
-      <router-link to="/user/password" >비밀번호 찾기</router-link>
+      <router-link to="/user/password">비밀번호 찾기</router-link>
       <router-link to="/user/signup">회원가입 하기</router-link>
     </div>
     <div class="social-login">
@@ -77,13 +76,16 @@ const login = async () => {
   align-items: center;
   width: 100%;
 }
-h1{
+
+h1 {
   margin: 10px;
 }
-.btn{
+
+.btn {
   text-decoration: none;
 }
-.login-header{
+
+.login-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -91,16 +93,19 @@ h1{
   width: 100%;
   margin-bottom: 10px;
 }
+
 form {
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 100%;
 }
-.social-login{
+
+.social-login {
   width: 100%;
 }
-.link-wrap{
+
+.link-wrap {
   display: flex;
   gap: 1rem;
 }

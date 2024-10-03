@@ -1,20 +1,22 @@
 import { ref } from 'vue';
-import axios from "axios";
+import { axiosInstance } from '@/utils/axiosInstance';
 import { setPersona } from "@/utils/personaUtils";
 import { defineStore } from "pinia";
-// import { workspaceData } from "@/static/workspaceData";
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
 
+    // const ATOKEN = sessionStorage.getItem('ATOKEN');
     const workspace = ref([]);
     const workspaceId = ref(null);
     const workspaceName = ref('');
     const persona = ref(setPersona(null));
 
     // POST 워크스페이스 생성 /api/workspaces
-    const addWorkspace = async({workspaceName, participants, persona}) => {
+    const addWorkspace = async({workspaceName, participants, avatar}) => {
         try {
-            const response = await axios.post('/api/workspaces', { workspaceName, participants, persona });
+            console.log('Sending request to API with:', { workspaceName, participants, avatar });
+            const response = await axiosInstance.post('/api/workspace', { workspaceName, participants, avatar });
+            console.log('API response:', response.data);
             workspace.value = response.data;
             return response.data;
         } catch (error) {
@@ -26,12 +28,8 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // GET 워크스페이스 리스트 조회 /api/workspaces/all
     const getAllWorkspace = async() => {
         try {
-            const response = await axios.get('/api/workspace/all');
-            workspace.value = response.data.map(ws => ({
-                ...ws,
-                persona: setPersona(ws.persona)
-            }));
-            return workspace.value;
+            const response = await axiosInstance.get('/api/workspace/my/all', { withCredentials: true });
+            workspace.value = response.data;
         } catch (error) {
             console.error('Failed to fetch workspace', error);
             return [];
@@ -41,7 +39,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // PATCH 워크스페이스 수정 api/workspace/:id
     const updateWorkspace = async({workspaceId, workspaceName, participants}) => {
         try {
-            const response = await axios.patch(`/api/workspace/${workspaceId}`, { workspaceId, workspaceName, participants });
+            const response = await axiosInstance.patch(`/api/workspace/${workspaceId}`, { workspaceId, workspaceName, participants });
             workspace.value = response.data;
         } catch (error) {
             console.error('Failed to update workspace', error);
@@ -51,7 +49,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // DELETE 워크스페이스 삭제 api/workspace/:id
     const deleteWorkspace = async(workspaceId) => {
         try {
-            const response = await axios.delete(`/api/workspace/${workspaceId}`);
+            const response = await axiosInstance.delete(`/api/workspace/${workspaceId}`);
             workspace.value = response.data;
         } catch (error) {
             console.error('Failed to delete workspace', error);
@@ -73,6 +71,25 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         }
     }
 
+    // 워크스페이스 수락
+    const acceptWorkspace = async(workspaceId) => {
+        try {
+            const response = await axiosInstance.post(`/api/workspace/accept/${workspaceId}`);
+            workspace.value = response.data;
+        } catch (error) {
+            console.error('Failed to accept workspace', error);
+        }
+    }
+
+    const rejectWorkspace = async(workspaceId) => {
+        try {
+            const response = await axiosInstance.post(`/api/workspace/reject/${workspaceId}`);
+            workspace.value = response.data;
+        } catch (error) {
+            console.error('Failed to reject workspace', error);
+        }
+    }
+
     return {
         workspace,
         workspaceId,
@@ -82,6 +99,8 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         addWorkspace,
         getAllWorkspace,
         updateWorkspace,
-        deleteWorkspace
+        deleteWorkspace,
+        acceptWorkspace,
+        rejectWorkspace
     };
 });

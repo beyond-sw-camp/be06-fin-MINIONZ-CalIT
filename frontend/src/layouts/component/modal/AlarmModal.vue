@@ -1,35 +1,37 @@
 <script setup>
-// import {alarmData} from "@/static/alarmData";
 import { getTimeDifference } from "@/utils/timeUtils";
-// import { useAlarmStore } from '@/stores/socket/useAlamStore';
-// import {alarmData} from "@/static/alarmData";
-// import { useAlarmStore } from '@/stores/socket/useAlamStore';
-import  notification from "@/assets/icon/alarm/notification.svg";
+import notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
-import {onMounted} from "vue";
-import {alarmData} from "@/static/alarmData";
+import { onMounted } from "vue";
+import { useUserStore } from "@/stores/user/useUserStore";
+import { useAlarmStore } from "@/stores/socket/useAlarmStore";
+import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
 
-// const alarmStore = useAlarmStore();
+const alarmStore = useAlarmStore();
+const workspaceStore = useWorkspaceStore();
 
-onMounted(() => {
+onMounted(async () => {
   const container = document.querySelector('.alarm-modal');
   new PerfectScrollbar(container);
+  await alarmStore.getAlarmData();
 });
 
-const deleteAlarm = (alarmId) => {
-  const index = alarmData.findIndex(alarm => alarm.id === alarmId);
-  if (index !== -1) {
-    alarmData.splice(index, 1);
-  }
-};
+const userStore = useUserStore();
+console.log('User Store:', userStore);
+const userId = userStore.user?.idx;
+console.log('User ID:', userId);
 
-// const eventSource = new EventSource('http://localhost:8080/alarm/connect/7');  // 1번 클라이언트
-// eventSource.onmessage = function (event) {
-//   document.getElementById("message").textContent = 'Received event: ' + event.data;
-//   console.log('테스트 클라이언트 이벤트:' + event.data);
-// };
+if (userId) {
+  const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
+  eventSource.onmessage = function (event) {
+    document.getElementById("message").textContent = 'Received event: ' + event.data;
+    console.log('테스트 클라이언트 이벤트:' + event.data);
+  };
+} else {
+  console.error('User ID is undefined');
+}
 </script>
 
 <template>
@@ -39,25 +41,33 @@ const deleteAlarm = (alarmId) => {
     </div>
     <hr>
     <ul>
-      <li v-for="alarm in alarmData" :key="alarm.id">
+      <li v-for="alarm in alarmStore.alarms" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
-          <div >
+          <div>
             <p class="alarm-title">{{ alarm.title }}</p>
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
-        <div class="right-side">
-          <button @click="deleteAlarm">
-            <i class="delete-icon"></i>
+        <div class="right-side accept-bundle" v-if="alarm.type === 1">
+          <button @click="workspaceStore.acceptWorkspace(alarm.idx)">
+            수락
+          </button>
+          <button @click="workspaceStore.rejectWorkspace(alarm.idx)">
+            거절
           </button>
           <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
         </div>
+        <div class="right-side normal-alarm" v-else>
+          <button @click="alarmStore.deleteAlarm(alarm.id)">
+            <i class="delete-icon"></i>
+          </button>
+        </div>
       </li>
-      <li v-if="alarmData.length === 0">
+      <li v-if="alarmStore.alarms.length === 0">
         <div class="notification-item">
           <img :src="info" alt="alam">
-          <div >
+          <div>
             <p class="alarm-title">알림이 없습니다.</p>
           </div>
         </div>
@@ -68,29 +78,28 @@ const deleteAlarm = (alarmId) => {
 
 <style scoped>
 .alarm-modal {
-    position: absolute;
-    top: 50px;
-    right: 100px;
-    background-color: #F3F6FF;
-    border-radius: 10px;
-    padding: 15px;
+  position: absolute;
+  top: 50px;
+  right: 100px;
+  background-color: #F3F6FF;
+  border-radius: 10px;
+  padding: 15px;
   width: 300px;
-  }
-
-p {
-    font-weight: 500;
-    margin: 0;
 }
 
-.alarm-title{
+p {
+  font-weight: 500;
+  margin: 0;
+}
+
+.alarm-title {
   font-size: 14px;
   font-weight: 500;
 }
 
-.alarm-content{
+.alarm-content {
   font-size: 12px;
   font-weight: 400;
-  //margin-top: 5px;
   color: #6b7280;
   width: 170px;
   white-space: nowrap;
@@ -102,7 +111,7 @@ p {
   text-wrap: inherit;
 }
 
-.alarm-time{
+.alarm-time {
   font-size: 12px;
   font-weight: 400;
   margin-top: 5px;
@@ -153,28 +162,28 @@ a {
   }
 }
 
-.notification-item{
+.notification-item {
   display: flex;
   gap: 10px;
 }
 
-button{
+button {
   background-color: transparent;
   border: none;
 }
 
-.right-side{
+.right-side {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
 
-  .delete-icon{
-    background-image: url('@/assets/icon/etc/cancel.svg');
-    background-size: cover;
-    width: 16px;
-    height: 16px;
-    display: block;
-    color: #6b7280;
-  }
+.delete-icon {
+  background-image: url('@/assets/icon/etc/cancel.svg');
+  background-size: cover;
+  width: 16px;
+  height: 16px;
+  display: block;
+  color: #6b7280;
+}
 </style>

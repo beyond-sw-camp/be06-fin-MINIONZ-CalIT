@@ -1,16 +1,17 @@
 <script setup>
-import { chatRoomList } from "@/static/chatData";
-import { getTimeDifference} from "@/utils/timeUtils";
-// import  notification from "@/assets/icon/alarm/notification.svg";
+import { getTimeDifference } from "@/utils/timeUtils";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 import info from "@/assets/icon/alarm/info.svg";
+import {useChatRoomStore} from "@/stores/chat/useChatRoomStore";
 
 onMounted(() => {
   const container = document.querySelector('.chat-modal');
   new PerfectScrollbar(container);
 });
+
+const chatRoomStore = useChatRoomStore();
 </script>
 
 <template>
@@ -20,58 +21,58 @@ onMounted(() => {
     </div>
     <hr>
     <ul>
-      <li v-for="chat in chatRoomList" :key="chat.id">
+      <li v-for="chat in chatRoomStore.chatRoom" :key="chat.id">
         <router-link :to="'/workspace/' + chat.workspaceId + '/dashboard'">
-        <div class="notification-item">
-          <img :src="chat.profilePic" alt="alam" class="notify-img">
-          <div>
-            <p class="chat-title">{{ chat.chatRoomName }}</p>
-            <p class="chat-content">{{ chat.messageContents }}</p>
-          </div>
-        </div>
-        <div class="message-item-right">
-          <span class="unread-count">{{ chat.unreadMessages }}</span>
-          <p class="chat-time">{{ getTimeDifference(chat.createdAt) }}</p>
-        </div>
-        </router-link>
-      </li>
-        <li v-if="chatRoomList.length === 0">
           <div class="notification-item">
-            <img :src="info" alt="alam">
-            <div >
-              <p class="chat-title"> 안읽은 메시지가 없습니다.</p>
+            <img :src="chat.profilePic" alt="alam" class="notify-img">
+            <div>
+              <p class="chat-title">{{ chat.chatRoomName }}</p>
+              <p class="chat-content">{{ chat.messageContents }}</p>
             </div>
           </div>
-        </li>
+          <div class="message-item-right">
+            <span class="unread-count">{{ chat.unreadMessages }}</span>
+            <p class="chat-time">{{ getTimeDifference(chat.createdAt) }}</p>
+          </div>
+        </router-link>
+      </li>
+      <li v-if="chatRoomStore.chatRoom.length === 0">
+        <div class="notification-item">
+          <img :src="info" alt="alam">
+          <div>
+            <p class="chat-title"> 안읽은 메시지가 없습니다.</p>
+          </div>
+        </div>
+      </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
 .chat-modal {
-    position: absolute;
-    top: 50px;
-    right: 150px;
-    background-color: #F3F6FF;
-    border-radius: 10px;
-    padding: 15px;
-   width: 200px;
+  position: absolute;
+  top: 50px;
+  right: 150px;
+  background-color: #F3F6FF;
+  border-radius: 10px;
+  padding: 15px;
+  width: 200px;
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-  }
-
-p {
-    font-weight: 500;
-    margin: 0;
 }
 
-.chat-title{
+p {
+  font-weight: 500;
+  margin: 0;
+}
+
+.chat-title {
   font-size: 14px;
   font-weight: 500;
 }
 
-.chat-content{
+.chat-content {
   font-size: 14px;
   font-weight: 400;
   margin-top: 5px;
@@ -82,7 +83,7 @@ p {
   text-overflow: ellipsis;
 }
 
-.chat-time{
+.chat-time {
   font-size: 12px;
   font-weight: 400;
   margin-top: 5px;
@@ -132,12 +133,12 @@ a {
   }
 }
 
-.notify-img{
+.notify-img {
   width: 36px;
   height: 36px;
 }
 
-.notification-item{
+.notification-item {
   display: flex;
   gap: 10px;
 }
@@ -148,6 +149,7 @@ a {
   justify-content: space-between;
   align-items: flex-end;
 }
+
 .unread-count {
   background-color: #e74c3c;
   color: white;

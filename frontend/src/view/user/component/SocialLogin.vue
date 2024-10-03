@@ -1,53 +1,18 @@
 <script setup>
 import naver from '@/assets/icon/social/naver.png';
 import kakao from '@/assets/icon/social/kakao.png';
-import {ref} from 'vue';
-import axios from "axios";
 
-// 새로운 창을 열어 URL로 이동하는 함수
-const openInNewWindow = (url, provider) => {
-  window.open(url, '_blank');
-  window.addEventListener('message', (event) => {
-    if (event.origin !== window.location.origin) return;
-    const {token} = event.data;
-    if (token) {
-      localStorage.setItem(`${provider}_token`, token);
-    }
-  });
-};
-
-// 구글 로그인 URL 생성
-const googleLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/google")
-// 네이버 로그인 URL 생성
-const naverLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/naver")
-// 카카오 로그인 URL 생성
-const kakaoLoginUrl = ref("http://calit.kro.kr/oauth2/authorization/kakao")
 
 const sendGoogleRequest = async () => {
-  try {
-    const response = await axios.post('/api/oauth2/authorization/google');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error sending request to Kakao:', error);
-  }
+    window.location.href = 'https://calit.kro.kr/api/oauth2/authorization/google';
 };
 
 const sendNaverRequest = async () => {
-  try {
-    const response = await axios.post('/oauth2/authorization/naver');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error sending request to Kakao:', error);
-  }
+     window.location.href = 'https://calit.kro.kr/api/oauth2/authorization/naver';
 };
 
 const sendKakaoRequest = async () => {
-  try {
-    const response = await axios.post('/oauth2/authorization/kakao');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error sending request to Kakao:', error);
-  }
+  window.location.href = 'https://calit.kro.kr/api/oauth2/authorization/kakao';
 };
 </script>
 
@@ -59,7 +24,7 @@ const sendKakaoRequest = async () => {
       <div class="social-login_content">
         <!-- 구글 로그인 버튼 -->
         <div
-            @click="openInNewWindow(googleLoginUrl, 'google');"
+            @click="sendGoogleRequest"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -70,7 +35,7 @@ const sendKakaoRequest = async () => {
 
         <!-- 네이버 로그인 버튼 -->
         <div
-            @click="openInNewWindow(naverLoginUrl, 'naver'); sendNaverRequest()"
+            @click="sendNaverRequest"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">
@@ -81,7 +46,7 @@ const sendKakaoRequest = async () => {
 
         <!-- 카카오 로그인 버튼 -->
         <div
-            @click="openInNewWindow(kakaoLoginUrl, 'kakao'); sendKakaoRequest()"
+            @click="sendKakaoRequest"
             class="social-login_content_item"
         >
           <div class="social-login_content_item_icon">

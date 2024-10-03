@@ -1,5 +1,6 @@
 package minionz.backend.scrum.sprint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
@@ -39,7 +40,7 @@ public class SprintService {
     private final TaskRepository taskRepository;
     private final AlarmService alarmService;
 
-    public void createSprint(User user, CreateSprintRequest request) throws BaseException {
+    public void createSprint(User user, CreateSprintRequest request) throws BaseException, JsonProcessingException {
         Sprint sprint = sprintRepository.save(Sprint
                 .builder()
                 .sprintTitle(request.getSprintTitle())
@@ -50,7 +51,6 @@ public class SprintService {
                 .workspace(Workspace.builder().workspaceId(request.getWorkspaceId()).build())
                 .build());
 
-//        TODO: 알람 보내야합니다!
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(true).build());
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(false).build());
         alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),2L, sprint.getSprintId());
@@ -64,7 +64,6 @@ public class SprintService {
                         .build())
         );
 
-//      TODO: 스프린트 라벨이 존재하는지 검증하는 유효성 테스트 필요
         request.getLabels().forEach(labelId ->
                 sprintLabelSelectRepository.save(SprintLabelSelect
                         .builder()

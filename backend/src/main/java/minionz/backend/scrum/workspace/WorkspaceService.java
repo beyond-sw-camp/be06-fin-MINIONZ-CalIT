@@ -1,10 +1,13 @@
 package minionz.backend.scrum.workspace;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.alarm.AlarmService;
+import minionz.backend.common.exception.BaseException;
+import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.scrum.workspace.model.request.CreateWorkspaceRequest;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            import minionz.backend.scrum.workspace.model.response.ReadWorkspaceResponse;
+import minionz.backend.scrum.workspace.model.response.ReadWorkspaceResponse;
 import minionz.backend.scrum.workspace_participation.WorkspaceParticipationRepository;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 import minionz.backend.user.model.User;
@@ -21,21 +24,47 @@ public class WorkspaceService {
     private final AlarmService alarmService;
 
     @Transactional
-    public void create(User user, CreateWorkspaceRequest request) {
-        Workspace workspace = workspaceRepository.save(Workspace.builder().workspaceName(request.getWorkspaceName()).build());
+    public void create(User user, CreateWorkspaceRequest request) throws JsonProcessingException {
+        Workspace workspace = workspaceRepository.save(Workspace.builder().workspaceName(request.getWorkspaceName()).avatar((int) Math.random() * 12 + 1).build());
 
-//        참여 테이블에 참가자들 추가
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(true).isValid(true).build());
         workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(user).isManager(false).isValid(true).build());
-//        alarmService.sendWorkspaceEventsToClients(request.getParticipants(),user.getUserId(),1L, workspace.getWorkspaceId());
+        alarmService.sendEventsToClients(request.getParticipants(), user.getUserId(), 1L, workspace.getWorkspaceId());
         request.getParticipants().forEach(participantId ->
                 workspaceParticipationRepository.save(WorkspaceParticipation.builder().workspace(workspace).user(User.builder().userId(participantId).build()).isManager(false).isValid(false).build())
         );
 
-//        TODO: request.getParticipants() 에 요청 보내야 함. -> 얘네가 수락하면 workspaceParticipation에 user 추가.
-
-
     }
+
+    @Transactional
+    public void accept(User user, Long workspaceId) throws BaseException {
+        WorkspaceParticipation workspaceParticipation = workspaceParticipationRepository.findWorkspaceParticipationByWorkspaceAndUserAndIsManager(Workspace.builder().workspaceId(workspaceId).build(), user, false);
+
+        if (workspaceParticipation.getIsValid()) {
+            throw new BaseException(BaseResponseStatus.WORKSPACE_INVITE_END);
+        }
+
+        workspaceParticipationRepository.save(WorkspaceParticipation
+                .builder()
+                .workspaceParticipationId(workspaceParticipation.getWorkspaceParticipationId())
+                .workspace(Workspace.builder().workspaceId(workspaceId).build())
+                .user(user)
+                .isValid(true)
+                .isManager(workspaceParticipation.getIsManager())
+                .build());
+    }
+
+    @Transactional
+    public void deny(User user, Long workspaceId) throws BaseException {
+        WorkspaceParticipation workspaceParticipation = workspaceParticipationRepository.findWorkspaceParticipationByWorkspaceAndUserAndIsManager(Workspace.builder().workspaceId(workspaceId).build(), user, false);
+
+        if (workspaceParticipation.getIsValid()) {
+            throw new BaseException(BaseResponseStatus.WORKSPACE_INVITE_END);
+        }
+
+        workspaceParticipationRepository.delete(workspaceParticipation);
+    }
+
 
     public List<ReadWorkspaceResponse> readAll(User user) {
         List<Workspace> workspaces = workspaceRepository.findWorkspaceByUserId(user.getUserId());
@@ -50,4 +79,6 @@ public class WorkspaceService {
 
         return response;
     }
+
+
 }

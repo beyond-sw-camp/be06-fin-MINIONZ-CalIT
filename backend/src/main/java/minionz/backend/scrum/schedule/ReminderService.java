@@ -27,7 +27,6 @@ public class ReminderService {
     private final TaskRepository taskRepository;
     private final SprintRepository sprintRepository;
 
-
     @Scheduled(cron = "0 */10 * * * ?")
     @Transactional
     public void sendMeetingReminders() {

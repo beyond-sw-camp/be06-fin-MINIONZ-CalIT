@@ -1,5 +1,6 @@
 package minionz.backend.scrum.task;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.alarm.AlarmService;
 import minionz.backend.common.exception.BaseException;
@@ -41,7 +42,7 @@ public class TaskService {
     private final AlarmService alarmService;
 
     @Transactional
-    public void createTask(User user, CreateTaskRequest request) {
+    public void createTask(User user, CreateTaskRequest request) throws JsonProcessingException {
 
         Meeting meeting = request.getMeetingId() != null ? Meeting.builder().meetingId(request.getMeetingId()).build() : null;
 
@@ -59,10 +60,9 @@ public class TaskService {
                 .meeting(meeting)
                 .build());
 
-//        TODO: spint에 참여 중인 유저인지에 대한 검증이 필요함.
-//        참여 테이블에 참가자들 추가
+
         SprintParticipation sprintParticipation = sprintParticipationRepository.findBySprintAndUser(Sprint.builder().sprintId(request.getSprintId()).build(), user);
-        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId());
+        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId() );
 
         if (sprintParticipation.getIsManager()) {
             request.getParticipants().forEach(participantId ->

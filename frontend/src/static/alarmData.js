@@ -27,9 +27,10 @@ export const alarmData = [
     //     content: 'seong-xun님이 태스크의 담당자로 할당하였습니다.',
     //     time: '2024-09-10T16:45:04.930487',
     // },
+    // id는 모든 알람에 대해
     {
         id: 4,
-        type: 'meeting-start',
+        type: 1,
         title: '회의 알림입니다.',
         content: '회의 시작 10분 전입니다.',
         time: '2024-09-10T16:45:04.930487',
@@ -46,6 +47,14 @@ export const alarmData = [
         type: 'sprint-end',
         title: '스프린트 마감 알림입니다.',
         content: '스프린트 마감 이틀 전입니다.',
+        time: '2024-09-10T16:45:04.930487',
+    },
+    {
+        // 찐 데이터
+        type: 1, // 알람 종류
+        idx: 6, // 알람 시 그 그룹의 인덱스
+        title: '스프린트 마감 알림입니다.',
+        content: 'sprint01 스프린트 마감 이틀 전입니다.',
         time: '2024-09-10T16:45:04.930487',
     }
 ]

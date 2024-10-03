@@ -1,6 +1,5 @@
 package minionz.backend.scrum.dashboard;
 
-
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponse;
@@ -17,49 +16,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
 
-    private final DashboardService dashboardService;
+  private final DashboardService dashboardService;
 
+  @GetMapping("/my")
+  public BaseResponse<ReadMyDashboardResponse> readMyDashboard(
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, ReadMyDashboardRequest request) {
+    ReadMyDashboardResponse response;
 
-    @GetMapping("/my")
-    public BaseResponse<ReadMyDashboardResponse> readMyDashboard(@AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, ReadMyDashboardRequest request) {
-        ReadMyDashboardResponse response;
-
-        try {
-            response = dashboardService.readMyDashboard(customUserDetails.getUser(), request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
+    try {
+      response = dashboardService.readMyDashboard(customUserDetails.getUser(), request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{workspaceId}")
-    public BaseResponse<ReadWorkspaceDashboardResponse> readWorkspaceDashboard(@PathVariable Long workspaceId, ReadMyDashboardRequest request) {
-        ReadWorkspaceDashboardResponse response;
+    return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
+  }
 
-        try {
-            response = dashboardService.readWorkspaceDashboard(workspaceId, request);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/{workspaceId}")
+  public BaseResponse<ReadWorkspaceDashboardResponse> readWorkspaceDashboard(@PathVariable Long workspaceId,
+      ReadMyDashboardRequest request) {
+    ReadWorkspaceDashboardResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
+    try {
+      response = dashboardService.readWorkspaceDashboard(workspaceId, request);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
 
-    @GetMapping("/{workspaceId}/burndown")
-    public BaseResponse<ReadBurndownResponse> readBurndownChart(@PathVariable Long workspaceId) {
-        ReadBurndownResponse response;
+    return new BaseResponse<>(BaseResponseStatus.MY_DASHBOARD_READ_SUCCESS, response);
+  }
 
-        try {
-            response = dashboardService.readBurndownChart(workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
+  @GetMapping("/{workspaceId}/burndown")
+  public BaseResponse<ReadBurndownResponse> readBurndownChart(@PathVariable Long workspaceId) {
+    ReadBurndownResponse response;
 
-        return new BaseResponse<>(BaseResponseStatus.WORKSPACE_DASHBOARD_READ_SUCCESS, response);
+    try {
+      response = dashboardService.readBurndownChart(workspaceId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
     }
+
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_DASHBOARD_READ_SUCCESS, response);
+  }
 }

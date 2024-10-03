@@ -1,7 +1,8 @@
 <script setup>
-import {inject, onMounted, ref} from 'vue';
+import {inject, ref} from 'vue';
 import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
 import {useFriendsStore} from '@/stores/friends/useFriendsStore';
+import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,31 +13,48 @@ contentsDescription.value = 'WorkSpace를 추가해보세요!';
 const workspaceStore = useWorkspaceStore();
 const friendStore = useFriendsStore();
 const workspaceName = ref('');
-const participants = ref('');
+// const participants = ref([]);
+const participantsInput = ref('');
 const filteredUsers = ref([]);
-
-onMounted(async () => {
-  const users = await friendStore.getUserList();
-  if (users) {
-    filteredUsers.value = users.filter(user => user.includes(participants.value));
-  } else {
-    filteredUsers.value = [];
-  }
-});
+const selectedUsers = ref([]);
 
 const searchUsers = async () => {
-  if (participants.value) {
-    filteredUsers.value = (await friendStore.getUserList(participants.value)).filter(user => user.includes(participants.value));
+  console.log('Searching users with participants:', participantsInput.value);
+  if (participantsInput.value) {
+    try {
+      await friendStore.getUserList(participantsInput.value);
+      console.log('Fetched friends from store:', friendStore.friends);
+      filteredUsers.value = friendStore.friends;
+      console.log('Fetched users:', filteredUsers.value);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
   } else {
     filteredUsers.value = [];
   }
 };
 
+const toggleUserSelection = (user) => {
+  const index = selectedUsers.value.indexOf(user.searchUserIdx);
+  if (index === -1) {
+    selectedUsers.value.push(user.searchUserIdx);
+  } else {
+    selectedUsers.value.splice(index, 1);
+  }
+};
+
+const isSelected = (user) => {
+  return selectedUsers.value.includes(user.searchUserIdx);
+};
+
 const addWorkspace = () => {
   workspaceStore.addWorkspace({
     workspaceName: workspaceName.value,
+    participants: selectedUsers.value,
+    avatar: 1
   });
   workspaceName.value = '';
+  router.push('/my/dashboard');
 };
 </script>
 
@@ -53,10 +71,13 @@ const addWorkspace = () => {
 
           <div>
             <label for="workspaceParticipation">참여자 추가</label>
-            <input type="text" id="workspaceParticipation" v-model="participants" placeholder="참여자를 검색해주세요"
+            <input type="text" id="workspaceParticipation" v-model="participantsInput" placeholder="아이디를 검색해주세요"
                    class="input-field" @keyup.enter="searchUsers">
             <ul v-if="filteredUsers.length">
-              <li v-for="user in filteredUsers" :key="user">{{ user }}</li>
+              <li v-for="user in filteredUsers" :key="user.id" @click="toggleUserSelection(user)"
+                  :class="{ selected: isSelected(user) }">
+                {{ typeof user === 'string' ? user : user.userName }}
+              </li>
             </ul>
             <p v-else>검색된 사용자가 없습니다.</p>
           </div>
@@ -71,6 +92,12 @@ const addWorkspace = () => {
 </template>
 
 <style scoped>
+ul, il{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .form-container {
   width: 100%;
   padding: 20px;
@@ -129,5 +156,17 @@ label {
 
 .add-workspace-btn:hover {
   background-color: #93AAFD;
+}
+
+li{
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.selected {
+  background-color: #C6D2FD;
+  border: none;
 }
 </style>

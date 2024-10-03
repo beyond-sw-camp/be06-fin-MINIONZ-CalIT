@@ -20,16 +20,16 @@ spec:
           image: minionz/calit-backend:latest
           readinessProbe:
             httpGet:
-              path: /api/health
+              path: /health
               port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            successThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            successThreshold: 1
           livenessProbe:
             httpGet:
-              path: /api/health
+              path: /health
               port: 8080
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
             periodSeconds: 10
           env:
             - name: DOMAIN_ADDRESS
@@ -155,3 +155,4 @@ spec:
     - port: 8080
       protocol: TCP
       targetPort: 8080
+  sessionAffinity: ClientIP  # 스티키 세션 적용
