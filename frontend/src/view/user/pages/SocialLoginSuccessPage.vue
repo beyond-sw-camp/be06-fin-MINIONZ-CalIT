@@ -6,7 +6,9 @@
 </script>
 
 <template>
-
+<div>
+  social login success
+</div>
 </template>
 
 <style scoped>
