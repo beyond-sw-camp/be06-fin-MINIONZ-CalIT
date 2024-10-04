@@ -29,7 +29,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     const getAllWorkspace = async() => {
         try {
             const response = await axiosInstance.get('/api/workspace/my/all', { withCredentials: true });
-            workspace.value = response.data;
+            workspace.value = response.data.result;
         } catch (error) {
             console.error('Failed to fetch workspace', error);
             return [];
