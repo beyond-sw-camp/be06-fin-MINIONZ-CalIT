@@ -52,12 +52,12 @@ const routes = [
                 name: 'Complete',
                 component: CompletePage
             },
+            {
+                path: 'social-login-success',
+                name: 'SocialLoginSuccess',
+                component: () => import('@/view/user/pages/SocialLoginSuccessPage.vue')
+            }
         ]
-    },
-    {
-        path: 'social/login/success',
-        name: 'SocialLoginSuccess',
-        component: () => import('@/view/user/pages/SocialLoginSuccessPage.vue')
     },
 
     // my
