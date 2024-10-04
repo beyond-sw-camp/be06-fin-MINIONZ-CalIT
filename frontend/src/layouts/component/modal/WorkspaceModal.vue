@@ -1,12 +1,15 @@
 <script setup>
+import {onMounted} from "vue";
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
 import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
-import {useRoute} from "vue-router";
+import { setPersona } from "@/utils/personaUtils";
 
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
-const workspaceList = useWorkspaceStore().getAllWorkspace();
+const workspaceStore = useWorkspaceStore();
+
+onMounted(async () => {
+  await workspaceStore.getAllWorkspace()
+})
 </script>
 
 <template>
@@ -29,11 +32,11 @@ const workspaceList = useWorkspaceStore().getAllWorkspace();
           </div>
           <hr>
         </li>
-        <li v-for="(workspace) in workspaceList" :key="workspace.value.workspaceId">
+        <li v-for="(workspace, index) in workspaceStore.workspace" :key="index">
           <div class="workspace-item">
-          <router-link :to="'/workspace/' + workspaceId + '/dashboard'">
-            <img :src="workspace.value.persona" alt="workspace">
-            <p>{{ workspace.value.workspaceName }}</p>
+          <router-link :to="'/workspace/' + workspace.workspaceId + '/dashboard'">
+            <img :src="setPersona(workspace.avatar)" alt="workspace">
+            <p>{{ workspace.workspaceName }}</p>
           </router-link>
           </div>
         </li>

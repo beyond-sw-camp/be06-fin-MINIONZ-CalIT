@@ -7,7 +7,7 @@ export const useErrorStore = defineStore('errorStore', async () => {
     const writePost = async ({ workspaceId, files, errboardTitle, taskId, errboardContent, category }) => {
         try {
             const response = await axios.post(`/errboard/write?workspaceId=${workspaceId}`, { files, errboardTitle, taskId, errboardContent, category });
-            return response.data;
+            return response.data.result;
         } catch (error) {
             return error.response.data;
         }
