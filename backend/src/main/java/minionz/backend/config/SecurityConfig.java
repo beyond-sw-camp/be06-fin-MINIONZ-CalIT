@@ -67,19 +67,13 @@ public class SecurityConfig {
         .cors(Customizer.withDefaults()); // CORS 설정 추가
 
     http
-        .formLogin(auth -> auth
-            .loginPage("/user/login")
-            .usernameParameter("loginId")
-            .passwordParameter("password")
-            .defaultSuccessUrl("/my/dashboard")
-            .failureUrl("/user/login")
-            .permitAll());
+        .formLogin(auth -> auth.disable());
 
-    // http
-    // .oauth2Login((auth) -> auth.loginPage("/user/login")
-    // .defaultSuccessUrl("/oauth-login")
-    // .failureUrl("/user/login")
-    // .permitAll());
+//     http
+//     .oauth2Login((auth) -> auth.loginPage("/user/login")
+//     .defaultSuccessUrl("/social/login/success")
+//     .failureUrl("/user/login")
+//     .permitAll());
     http.oauth2Login((config) -> {
       config.successHandler(oAuth2AuthenticationSuccessHandler);
       config.userInfoEndpoint((endpoint) -> endpoint.userService(customOauth2UserService));
