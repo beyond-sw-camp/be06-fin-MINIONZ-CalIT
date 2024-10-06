@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import axios from 'axios';
+import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
 import {weekSettingUtils} from "@/utils/weekSettingUtils";
 
@@ -10,24 +10,24 @@ export const useDashboardStore = defineStore('mypageStore', () => {
     const workspaceDashboardData = ref([]);
 
     const getWorkspaceKanban = async (workspaceId) => {
-        const response = await axios.get(`/api/sprint/all/${workspaceId}`, {withCredentials: true});
+        const response = await axiosInstance.get(`/api/sprint/all/${workspaceId}`, {withCredentials: true});
         workspaceSprintData.value = response.data;
     };
 
     const getWorkspaceMonthly = async (workspaceId) => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/schedule/${workspaceId}/monthly?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axiosInstance.get(`/api/schedule/${workspaceId}/monthly?startDate=${startDate}&endDate=${endDate}`);
         workspaceMonthlyData.value = response.data;
     }
 
     const getWorkspaceWeekly = async (workspaceId) => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axios.get(`/api/schedule/${workspaceId}/weekly?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axiosInstance.get(`/api/schedule/${workspaceId}/weekly?startDate=${startDate}&endDate=${endDate}`);
         workspaceWeeklyData.value = response.data;
     }
 
     const getWorkspaceDashboard = async (workspaceId) => {
-        const response = await axios.get(`/api/dashboard/${workspaceId}`);
+        const response = await axiosInstance.get(`/api/dashboard/${workspaceId}`);
         workspaceDashboardData.value = {
             progress: {
                 sprintCount: response.data.sprintCount,

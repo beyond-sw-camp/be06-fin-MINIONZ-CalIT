@@ -1,6 +1,5 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
-// import { setPersona } from "@/utils/personaUtils";
 import { defineStore } from "pinia";
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
@@ -9,7 +8,6 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     const workspace = ref([]);
     const workspaceId = ref(null);
     const workspaceName = ref('');
-    // const persona = ref(setPersona(null));
 
     // POST 워크스페이스 생성 /api/workspaces
     const addWorkspace = async({workspaceName, participants, avatar}) => {
@@ -59,11 +57,10 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     // api 아님 라우터에서 받은 정보 셋팅해주는 함수
     const setWorkspaceId = async(id) => {
         console.log(`Setting workspaceId to ${id}`);
-        const allWorkspaces = await getAllWorkspace();
-        const workspace = allWorkspaces.find(ws => ws.id === id);
+        const allWorkspaces = await getAllWorkspace() || [];
+        const workspace = allWorkspaces.find(ws => ws.workspaceId === id);
         if (workspace) {
             workspaceName.value = workspace.workspaceName;
-            // persona.value = setPersona(workspace.avatar);
         } else {
             console.error(`Workspace with id ${id} not found`);
             workspaceName.value = '';

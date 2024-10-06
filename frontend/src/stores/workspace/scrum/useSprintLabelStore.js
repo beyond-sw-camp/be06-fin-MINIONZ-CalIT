@@ -1,8 +1,7 @@
-import {ref} from "vue";
-import axios from "axios";
+import { ref } from "vue";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 import { labelColorPalette } from '@/utils/labelUtils';
-// import { labelData } from '@/static/labelData';
 
 export const useSprintLabelStore = defineStore('labelStore', () => {
     const labels = ref([]);
@@ -10,7 +9,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
 
     const addSprintLabel = async ({workspaceId, labelName, description, color}) => {
         try {
-            const response = await axios.get('/api/label/sprint', {workspaceId, labelName, description, color});
+            const response = await axiosInstance.get('/api/label/sprint', {workspaceId, labelName, description, color});
             labels.value.push(response.data);
         }
         catch (error) {
@@ -20,7 +19,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
 
     const getSprintLabel = async (workspaceId) => {
         try {
-            const response = await axios.post(`/api/label/sprint?id=${workspaceId}`);
+            const response = await axiosInstance.post(`/api/label/sprint?id=${workspaceId}`);
             labels.value = response.data;
         }
         catch (error) {
@@ -30,7 +29,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
 
     const updateLabel = async ({sprintLabelId, labelName, description}) => {
         try {
-            const response = await axios.put(`/api/label?id=${sprintLabelId}`, {sprintLabelId, labelName, description});
+            const response = await axiosInstance.put(`/api/label?id=${sprintLabelId}`, {sprintLabelId, labelName, description});
             labels.value = response.data;
         }
         catch (error) {
@@ -40,7 +39,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
 
     const deleteLabel = async (sprintLabelId) => {
         try {
-            await axios.delete(`/api/label?id=${sprintLabelId}`);
+            await axiosInstance.delete(`/api/label?id=${sprintLabelId}`);
             labels.value = labels.value.filter(label => label.id !== sprintLabelId);
         }
         catch (error) {

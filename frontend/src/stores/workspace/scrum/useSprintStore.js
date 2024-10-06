@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import axios from 'axios';
+import {axiosInstance} from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useSprintStore = defineStore('sprintStore', () => {
@@ -7,7 +7,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const addSprint = async({workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate}) => {
         try{
-            const response = await axios.post(`/api/sprint/${workspaceId}`, {workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate});
+            const response = await axiosInstance.post(`/api/sprint/${workspaceId}`, {workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate});
             sprints.value.push(response.data);
         }
         catch (error){
@@ -17,7 +17,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const getSprint = async(sprintId) => {
         try {
-            const response  = await axios.post(`/api/sprint/${sprintId}`);
+            const response  = await axiosInstance.post(`/api/sprint/${sprintId}`);
             sprints.value = response.data;
         }
         catch (error) {
@@ -27,7 +27,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const getSprintList = async(workspaceId) => {
         try{
-            const response = await axios.get(`/api/sprint/${workspaceId}`)
+            const response = await axiosInstance.get(`/api/sprint/${workspaceId}`)
             sprints.value = response.data;
         }
         catch (error) {
@@ -37,7 +37,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const updateSprint = async ({sprintId, sprintTitle, sprintContents, labelId}) => {
         try {
-            const response = await axios.put(`/api/sprint`, {sprintId, sprintTitle, sprintContents, labelId});
+            const response = await axiosInstance.put(`/api/sprint`, {sprintId, sprintTitle, sprintContents, labelId});
             sprints.value = response.data;
         }
         catch (error) {
@@ -47,7 +47,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const updateSprintState = async(status) => {
         try {
-            const response = axios.put(`/api/sprint/status`, status);
+            const response = axiosInstance.put(`/api/sprint/status`, status);
             sprints.value = response.data;
         }
         catch (error) {
@@ -58,7 +58,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const deleteSprint = async(sprintId) => {
         try{
-            await axios.delete(`/api/sprint/${sprintId}`);
+            await axiosInstance.delete(`/api/sprint/${sprintId}`);
             sprints.value = sprints.value.filter(sprint => sprint.id !== sprintId);
         }
         catch (error) {
