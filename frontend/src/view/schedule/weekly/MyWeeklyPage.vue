@@ -1,9 +1,9 @@
 <script setup>
-import {inject, ref} from "vue";
-import {useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
+import { inject, ref } from "vue";
+import { useMyDashboardStore } from "@/stores/myspace/useMyDashboardStore";
 import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vue";
-import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyScheduleComponent.vue";
-import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTask.vue";
+import WeeklyIssues from "@/view/schedule/weekly/component/WeeklyIssues.vue";
+import WeeklyTasks from "@/view/schedule/weekly/component/WeeklyTasks.vue";
 import MiniCalendar from "@/view/schedule/weekly/component/MiniCalendar.vue";
 
 const contentsTitle = inject('contentsTitle');
@@ -12,8 +12,16 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Space Weekly';
 contentsDescription.value = '나의 이번주 일정을 살펴보세요!';
 
+const myWeek = ref({
+  sprints: [],
+  meetings: [],
+  tasks: [],
+  issues: []
+});
+
 const mypageStore = useMyDashboardStore();
 const selectedWeek = ref(mypageStore.getMyWeekly());
+const myWeeklyMeeting = ref(selectedWeek.value.meetings);
 const updateSelectedWeek = (week) => {
   selectedWeek.value = week;
 };
@@ -22,12 +30,12 @@ const updateSelectedWeek = (week) => {
 <template>
   <div class="weekly">
     <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek"
-                     :data="mypageStore.getMyWeekly()"/>
+                     :sprints="myWeek.sprints" :meetings="myWeek.meetings"/>
     <div class="week-data">
       <MiniCalendar @update:selected-week="updateSelectedWeek"/>
       <div class="mini-lists">
-        <WeeklyScheduleComponent :selected-week="selectedWeek"/>
-        <WeeklyTask :selected-week="selectedWeek"/>
+        <WeeklyIssues :selected-week="selectedWeek" :meetings="myWeeklyMeeting" :issues="myWeek.issues"/>
+        <WeeklyTasks :selected-week="selectedWeek" :tasks="myWeek.tasks"/>
       </div>
     </div>
   </div>

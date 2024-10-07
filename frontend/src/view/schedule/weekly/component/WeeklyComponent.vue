@@ -4,17 +4,13 @@ import {useRoute} from "vue-router";
 import { formatUtil, getWeekDaysUtil } from '@/utils/dateUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import {getWeekRange} from "@/utils/timeUtils";
+import { getWeekRange } from "@/utils/timeUtils";
 
 const props = defineProps({
   selectedWeek: {
     type: Array,
     required: true
   },
-  data: {
-    type: Array,
-    required: true
-  }
 });
 
 const emit = defineEmits(['update:selectedWeek']);

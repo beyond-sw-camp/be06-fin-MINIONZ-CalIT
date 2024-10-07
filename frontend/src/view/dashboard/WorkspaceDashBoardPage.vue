@@ -4,13 +4,14 @@ import TaskOverview from '@/view/dashboard/component/TaskOverview.vue';
 import MeetingList from '@/view/dashboard/component/MeetingList.vue';
 import BurndownChart from '@/view/dashboard/component/BurndownChart.vue';
 
-import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
+// import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
 import {useWorkspaceDashboardStore} from '@/stores/workspace/useWorkspaceDashboardStore';
 import {useRoute} from 'vue-router';
+import {axiosInstance} from "@/utils/axiosInstance";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspaceStore = useWorkspaceStore();
+// const workspaceStore = useWorkspaceStore();
 const dashboardStore = useWorkspaceDashboardStore();
 // const workspace = computed(() => workspaceStore.workspace);
 const contentsTitle = inject('contentsTitle');
@@ -19,9 +20,14 @@ contentsTitle.value = 'Workspace Dashboard';
 contentsDescription.value = '워크스페이스의 대시보드를 살펴보세요!';
 
 onMounted(async () => {
-  await workspaceStore.setWorkspaceId(workspaceId);
   if (workspaceId) {
-    await dashboardStore.getWorkspaceDashboard(workspaceId);
+    try {
+      const response = await axiosInstance.get(`/api/workspace/${workspaceId}`);
+      await dashboardStore.setWorkspaceData(response.data);
+      await dashboardStore.getWorkspaceDashboard(workspaceId);
+    } catch (error) {
+      console.error('Failed to fetch workspace data', error);
+    }
   } else {
     console.error('workspaceId is not set');
   }
