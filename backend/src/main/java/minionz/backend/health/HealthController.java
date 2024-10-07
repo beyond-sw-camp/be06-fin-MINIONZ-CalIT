@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.*;
 public class HealthController {
   @RequestMapping(method = RequestMethod.GET, value = "/health")
   public String test() {
-    return "health check!!!";
+    return "health check! ";
   }
 }

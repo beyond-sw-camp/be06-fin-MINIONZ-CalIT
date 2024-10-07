@@ -26,10 +26,10 @@ pipeline {
             }
             steps {
                 echo "Add Permission"
-                sh 'chmod +x /var/lib/jenkins/workspace/calit-backend/backend/gradlew'
+                sh 'chmod +x /var/lib/jenkins/workspace/minionz_calit_backend/backend/gradlew'
                 echo "Gradle Build"
                 sh '''
-                    cd /var/lib/jenkins/workspace/calit-backend/backend
+                    cd /var/lib/jenkins/workspace/minionz_calit_backend/backend
                     ./gradlew bootJar
                 '''
             }

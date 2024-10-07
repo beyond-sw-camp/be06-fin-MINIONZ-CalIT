@@ -27,11 +27,11 @@ pipeline {
 
             steps {
                 echo "Add Permission"
-                sh 'chmod +x /var/lib/jenkins/workspace/calit-frontend/frontend'
+                sh 'chmod +x /var/lib/jenkins/workspace/minionz_calit_frontend/frontend'
 
                 echo "Change Directory"
                 sh'''
-                cd /var/lib/jenkins/workspace/calit-frontend/frontend
+                cd /var/lib/jenkins/workspace/minionz_calit_frontend/frontend
                 '''
             }
         }
