@@ -1,12 +1,14 @@
 package minionz.backend.scrum.workspace;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.common.responses.BaseResponse;
 import minionz.backend.scrum.workspace.model.request.CreateWorkspaceRequest;
 import minionz.backend.scrum.workspace.model.response.ReadWorkspaceResponse;
+import minionz.backend.user.UserService;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/workspace")
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
+    private final UserService userService;
 
     @PostMapping("")
     public BaseResponse<BaseResponseStatus> createWorkspace(
@@ -30,10 +33,11 @@ public class WorkspaceController {
 
     @PatchMapping("/accept/{workspaceId}")
     public BaseResponse<BaseResponseStatus> acceptWorkspace(
-            @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId) {
+            @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long workspaceId, HttpServletResponse response) {
 
         try {
             workspaceService.accept(customUserDetails.getUser(), workspaceId);
+            userService.sendNewToken(customUserDetails, response);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
