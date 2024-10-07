@@ -1,27 +1,30 @@
 <script setup>
-  import { useRouter } from 'vue-router';
-  import {useUserStore} from "@/stores/user/useUserStore";
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user/useUserStore';
 
-  const router = useRouter();
-  // const token = router.currentRoute.value.query.Authorization?.replace('Bearer%20', '');
-  const token = decodeURIComponent(router.currentRoute.value.query.Authorization?.replace('Bearer%20', ''));
-  console.log(router.currentRoute.value.query);
-  console.log(router.currentRoute.value.query.Authorization);
-  if (token) {
-    console.log(token)
-    const userStore = useUserStore();
-    userStore.setToken(token);
-    router.push({ path: '/my/dashboard' });
-  }
+const router = useRouter();
+const route = router.currentRoute.value;
+const token = route.query.Authorization;
 
+if (token) {
+  const userStore = useUserStore();
+  userStore.setToken(token);
+  router.push({ path: '/my/dashboard' });
+} else {
+  console.error('Authorization token not found in URL');
+}
 </script>
 
 <template>
-<div>
-  social login success
-</div>
+  <div class="test">
+    social login success
+  </div>
 </template>
 
 <style scoped>
-
+.test {
+  background-color: #f0f0f0;
+  height: 100%;
+  width: 100%;
+}
 </style>

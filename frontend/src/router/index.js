@@ -4,6 +4,7 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
+import SocialLoginSuccessPage from "@/view/user/pages/SocialLoginSuccessPage.vue";
 import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
 
 const routes = [
@@ -11,6 +12,12 @@ const routes = [
         path: '/',
         name: 'Thumbnail',
         component: () => import('@/view/thumbnail/ThumbnailPage.vue')
+    },
+
+    {
+        path: '/social/login/success',
+        name: 'SocialLoginSuccess',
+        component: SocialLoginSuccessPage,
     },
 
     // user
@@ -53,11 +60,6 @@ const routes = [
                 component: CompletePage
             }
         ]
-    },
-    {
-        path: '/social/login/success',
-        name: 'SocialLoginSuccess',
-        component: () => import('@/view/user/pages/SocialLoginSuccessPage.vue')
     },
 
     // my
