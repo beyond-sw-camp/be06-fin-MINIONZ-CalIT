@@ -1,6 +1,6 @@
 <script setup>
 import {inject, ref} from "vue";
-import { useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
+import {useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
 import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vue";
 import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyScheduleComponent.vue";
 import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTask.vue";
@@ -21,11 +21,12 @@ const updateSelectedWeek = (week) => {
 
 <template>
   <div class="weekly">
-    <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek"/>
+    <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek"
+                     :data="mypageStore.getMyWeekly()"/>
     <div class="week-data">
-      <MiniCalendar @update:selectedWeek="updateSelectedWeek"/>
+      <MiniCalendar @update:selected-week="updateSelectedWeek"/>
       <div class="mini-lists">
-        <WeeklyScheduleComponent :selected-week="selectedWeek" />
+        <WeeklyScheduleComponent :selected-week="selectedWeek"/>
         <WeeklyTask :selected-week="selectedWeek"/>
       </div>
     </div>
@@ -33,7 +34,7 @@ const updateSelectedWeek = (week) => {
 </template>
 
 <style scoped>
-.weekly{
+.weekly {
   padding: 30px;
   height: 85vh;
   display: flex;
@@ -43,14 +44,14 @@ const updateSelectedWeek = (week) => {
   box-sizing: border-box;
 }
 
-.week-data{
+.week-data {
   display: flex;
   justify-content: space-between;
   gap: 20px;
   align-items: flex-end;
 }
 
-.mini-lists{
+.mini-lists {
   width: calc(100% - 350px);
   display: flex;
   height: 235px;
