@@ -17,7 +17,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const getSprint = async(sprintId) => {
         try {
-            const response  = await axiosInstance.post(`/api/sprint/${sprintId}`);
+            const response  = await axiosInstance.get(`/api/sprint/${sprintId}`);
             sprints.value = response.data.result;
         }
         catch (error) {
@@ -47,14 +47,13 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const updateSprintState = async(status) => {
         try {
-            const response = axiosInstance.put(`/api/sprint/status`, status);
+            const response = await axiosInstance.put(`/api/sprint/status`, status);
             sprints.value = response.data.result;
         }
         catch (error) {
             console.log('Error updating Sprint State', error);
         }
     }
-
 
     const deleteSprint = async(sprintId) => {
         try{
