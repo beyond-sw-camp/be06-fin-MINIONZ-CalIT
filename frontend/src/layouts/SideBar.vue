@@ -1,24 +1,30 @@
 <script setup>
-import { computed } from 'vue';
+import {computed, ref, watchEffect} from 'vue';
 import {useRoute} from "vue-router";
-import { useUserStore } from '@/stores/user/useUserStore';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import {useUserStore} from '@/stores/user/useUserStore';
+// import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
+import {axiosInstance} from "@/utils/axiosInstance";
 
 const route = useRoute();
 const isPersonalMenu = computed(() => route.path.startsWith('/my'));
 
-const workspaceStore = useWorkspaceStore();
+const workspaceName = ref('Workspace');
 
-const workspaceName = computed(() => {
+watchEffect(async () => {
   if (isPersonalMenu.value) {
-    return 'My Space';
+    workspaceName.value = 'My Space';
   } else {
-    const workspace = workspaceStore.workspace.find(ws => ws.id === route.params.workspaceId);
-    return workspace ? workspace.workspaceName : 'Workspace';
+    try {
+      const response = await axiosInstance.get(`/api/workspace/${route.params.workspaceId}`);
+      workspaceName.value = response.data.workspaceName || 'Workspace';
+    } catch (error) {
+      console.error('Failed to fetch workspace name', error);
+      workspaceName.value = 'Workspace';
+    }
   }
 });
 
@@ -58,86 +64,87 @@ const logout = () => {
 </template>
 
 <style scoped>
-  .sidebar_bg{
-    background-color: #F3F6FF;
-    width: 16.25rem;
-    padding: 1.25rem;
-    gap: 0.625rem;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    box-sizing: border-box;
-    position: fixed;
-    z-index: 100;
-  }
-  .logo_area{
-    display: flex;
-    width: 13.25rem;
-    height: 3.75rem;
-    align-items: center;
-    justify-content: center;
-    //background-color: #fff;
-    border-radius: 12px;
-    //box-shadow: inset 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
-  }
-  .user-info{
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    //justify-content: center;
-    font-size: 1.3rem;
-    padding: 0.5rem 0 0.5rem 1rem;
-    background-color: #fff;
-    //background: linear-gradient(45deg, #fff, #FEE6ED);
-    border-radius: 12px;
-    //border: 2px solid #dfe5f1;
-    box-shadow: inset 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
-    p{
-      margin: 0;
-    }
-    img{
-      width: 2.5rem;
-      border-radius: 50%;
-      box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
-    }
-  }
-  a{
-    padding: 0 1rem;
-    gap: 0.625rem;
-    text-decoration: none;
-    display: flex;
-    color: #000;
-    font-weight: 400;
-  }
-  .menu-wrap{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+.sidebar_bg {
+  background-color: #F3F6FF;
+  width: 16.25rem;
+  padding: 1.25rem;
+  gap: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 100;
+}
+
+.logo_area {
+  display: flex;
+  width: 13.25rem;
+  height: 3.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.user-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.3rem;
+  padding: 0.5rem 0 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: inset 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
+
+  p {
+    margin: 0;
   }
 
-  button{
-    background-color: transparent;
-    border: none;
+  img {
+    width: 2.5rem;
+    border-radius: 50%;
+    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   }
+}
 
-  .logout-wrap{
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-  }
+a {
+  padding: 0 1rem;
+  gap: 0.625rem;
+  text-decoration: none;
+  display: flex;
+  color: #000;
+  font-weight: 400;
+}
 
-  .logout-ico{
-    background: url(@/assets/icon/menu/logout.svg) no-repeat;
-    width: 24px;
-    height: 24px;
-    background-size: cover;
-    display: block;
-  }
+.menu-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
 
-  hr {
-    border: 1px solid #dfe5f1;
-    width: 100%;
-    margin: 10px 0;
-  }
+button {
+  background-color: transparent;
+  border: none;
+}
+
+.logout-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.logout-ico {
+  background: url(@/assets/icon/menu/logout.svg) no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  display: block;
+}
+
+hr {
+  border: 1px solid #dfe5f1;
+  width: 100%;
+  margin: 10px 0;
+}
 </style>

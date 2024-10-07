@@ -5,7 +5,8 @@ import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
 import SocialLoginSuccessPage from "@/view/user/pages/SocialLoginSuccessPage.vue";
-import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+// import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import {axiosInstance} from "@/utils/axiosInstance";
 
 const routes = [
     {
@@ -315,8 +316,8 @@ const router = createRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
-    const workspaceStore = useWorkspaceStore();
+router.beforeEach(async (to, from, next) => {
+    // const workspaceStore = useWorkspaceStore();
     const isAuthenticated = !!sessionStorage.getItem('userInfo');
 
     const proceed = () => {
@@ -339,10 +340,13 @@ router.beforeEach((to, from, next) => {
     };
 
     if (to.params.workspaceId) {
-        workspaceStore.setWorkspaceId(to.params.workspaceId).then(proceed).catch(error => {
-            console.error(error);
+        try {
+            const response = await axiosInstance.get(`/api/workspace/${to.params.workspaceId}`, { withCredentials: true });
+            if (response.data && response.data.result) proceed();
+        } catch (error) {
+            console.error('Failed to fetch workspace details', error);
             proceed();
-        });
+        }
     } else {
         proceed();
     }

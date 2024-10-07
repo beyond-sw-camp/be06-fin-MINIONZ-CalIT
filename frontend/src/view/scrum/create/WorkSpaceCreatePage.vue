@@ -1,6 +1,5 @@
 <script setup>
 import {inject, ref} from 'vue';
-// import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
 import {useFriendsStore} from '@/stores/user/useFriendsStore';
 import {axiosInstance} from "@/utils/axiosInstance";
 
@@ -10,7 +9,6 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'WorkSpace 추가하기';
 contentsDescription.value = 'WorkSpace를 추가해보세요!';
 
-// const workspaceStore = useWorkspaceStore();
 const friendStore = useFriendsStore();
 const workspaceName = ref('');
 const participantsInput = ref('');
