@@ -12,19 +12,21 @@ export const useMyDashboardStore = defineStore('mypageStore', () => {
 
     const getMyMonthly = async () => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axiosInstance.get(`/api/my/monthly?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axiosInstance.get(`/api/schedule/my/monthly?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data.result;
     }
 
     const getMyWeekly = async () => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axiosInstance.get(`/api/my/weekly?startDate=${startDate}&endDate=${endDate}`);
+        const response = await axiosInstance.get(`/api/schedule/my/weekly?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data.result;
     }
 
     const getMyDashboard = async () => {
         const { startDate, endDate } = weekSettingUtils();
-        const response = await axiosInstance.get(`/api/dashboard/my?startDate=${startDate}&endDate=${endDate}`);
+        const isoStartDate = new Date(startDate).toISOString();
+        const isoEndDate = new Date(endDate).toISOString();
+        const response = await axiosInstance.get(`/api/dashboard/my?startDate=${isoStartDate}&endDate=${isoEndDate}`);
         mySprintData.value = response.data.result;
     }
 
