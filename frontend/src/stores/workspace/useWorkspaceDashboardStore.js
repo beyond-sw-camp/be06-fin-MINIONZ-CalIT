@@ -30,12 +30,12 @@ export const useWorkspaceDashboardStore = defineStore('mypageStore', () => {
         const response = await axiosInstance.get(`/api/dashboard/${workspaceId}`);
         workspaceDashboardData.value = {
             progress: {
-                sprintCount: response.data.result.sprintCount,
-                alltaskCount: response.data.result.alltaskCount,
-                successtaskCount: response.data.result.successtaskCount,
-                issueCount: response.data.result.issueCount
+                sprintCount: response.data.sprintCount,
+                alltaskCount: response.data.alltaskCount,
+                successtaskCount: response.data.successtaskCount,
+                issueCount: response.data.issueCount
             },
-            upcomingMeetings: response.data.result.upcomingMeetings
+            upcomingMeetings: response.data.upcomingMeetings
         };
     }
 

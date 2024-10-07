@@ -14,8 +14,8 @@ const dashboardStore = useWorkspaceDashboardStore();
 const workspace = computed(() => useWorkspaceStore().workspace);
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = 'Dashboard';
-contentsDescription.value = '워크스페이스의 할일을 살펴보세요!';
+contentsTitle.value = 'Workspace Dashboard';
+contentsDescription.value = '워크스페이스의 대시보드를 살펴보세요!';
 
 onMounted(async () => {
   await useWorkspaceStore().setWorkspaceId(workspaceId);

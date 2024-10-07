@@ -75,7 +75,7 @@ const routes = [
             {
                 path: 'dashboard',
                 name: 'MyDashboard',
-                component: () => import('@/view/dashboard/MyDashBoard.vue')
+                component: () => import('@/view/dashboard/MyDashBoardPage.vue')
             },
             {
                 path: 'schedule',
@@ -84,12 +84,12 @@ const routes = [
                     {
                         path: 'monthly',
                         name: 'MyMonthly',
-                        component: () => import('@/view/schedule/monthly/MyMonthly.vue')
+                        component: () => import('@/view/schedule/monthly/MyMonthlyPage.vue')
                     },
                     {
                         path: 'weekly',
                         name: 'myWeekly',
-                        component: () => import('@/view/schedule/weekly/MyWeekly.vue')
+                        component: () => import('@/view/schedule/weekly/MyWeeklyPage.vue')
                     }
                 ]
             },
@@ -124,7 +124,7 @@ const routes = [
             {
                 path: 'dashboard',
                 name: 'WorkspaceDashboard',
-                component: () => import('@/view/dashboard/WorkspaceDashBoard.vue')
+                component: () => import('@/view/dashboard/WorkspaceDashBoardPage.vue')
             },
             // schedule
             {
@@ -139,7 +139,7 @@ const routes = [
                     {
                         path: 'weekly',
                         name: 'WorkspaceWeekly',
-                        component: () => import('@/view/schedule/weekly/WorkSpaceWeekly.vue')
+                        component: () => import('@/view/schedule/weekly/WorkSpaceWeeklyPage.vue')
                     }
                 ]
             },
@@ -166,7 +166,7 @@ const routes = [
                             {
                                 path: 'create',
                                 name: 'WorkspaceSprintCreate',
-                                component: () => import('@/view/scrum/create/SprintCreate.vue')
+                                component: () => import('@/view/scrum/create/SprintCreatePage.vue')
                             },
                             {
                                 path: 'detail/:id',
@@ -219,7 +219,7 @@ const routes = [
                             {
                                 path: 'create',
                                 name: 'WorkspaceIssueCreate',
-                                component: () => import('@/view/scrum/create/IssueCreate.vue')
+                                component: () => import('@/view/scrum/create/IssueCreatePage.vue')
                             }
                             ]
                     },
@@ -260,12 +260,12 @@ const routes = [
                                     {
                                         path: 'detail/:boardId',
                                         name: 'ErrorDetail',
-                                        component: () => import('@/view/board/detail/ErrorDetail.vue')
+                                        component: () => import('@/view/board/detail/ErrorDetailPage.vue')
                                     },
                                     {
                                         path: 'create',
                                         name: 'ErrorCreate',
-                                        component: () => import('@/view/board/create/ErrorCreate.vue')
+                                        component: () => import('@/view/board/create/ErrorCreatePage.vue')
                                     }
                                 ]
                             },
@@ -281,12 +281,12 @@ const routes = [
                                     {
                                         path: 'detail/:id',
                                         name: 'QADetail',
-                                        component: () => import('@/view/board/detail/QADetail.vue')
+                                        component: () => import('@/view/board/detail/QADetailPage.vue')
                                     },
                                     {
                                         path: 'create',
                                         name: 'QACreate',
-                                        component: () => import('@/view/board/create/QACreate.vue')
+                                        component: () => import('@/view/board/create/QACreatePage.vue')
                                     }
                                 ]
                             }
