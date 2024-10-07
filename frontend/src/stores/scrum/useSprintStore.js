@@ -27,7 +27,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
     const getSprintList = async(workspaceId) => {
         try{
-            const response = await axiosInstance.get(`/api/all/sprint/${workspaceId}`)
+            const response = await axiosInstance.get(`/api/sprint/all/${workspaceId}`)
             sprints.value = response.data.result;
         }
         catch (error) {

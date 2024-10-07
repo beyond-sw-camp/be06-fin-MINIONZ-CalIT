@@ -1,17 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from "vue-router";
+import {ref, onMounted} from 'vue';
+import {useRoute} from "vue-router";
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import { useCalendar } from '@/utils/calendarUtils';
+import {useCalendar} from '@/utils/calendarUtils';
 import {formatUtil} from "@/utils/dateUtils";
 
-onMounted((props) => {
+onMounted(() => {
   const container = document.querySelector('.calendar-container');
   if (container) {
     new PerfectScrollbar(container);
   }
-  setEvents(props.meetings);
+  if (props.value.meetings) setEvents(props.value.meetings);
 });
 
 const route = useRoute();
@@ -25,7 +25,8 @@ const props = ref({
   contents: '',
   participants: [],
   top: 0,
-  left: 0
+  left: 0,
+  meeting: []
 });
 
 const show = (event, eventData) => {
@@ -43,7 +44,16 @@ const show = (event, eventData) => {
   console.log(props.value);
 };
 
-const {currentYear, currentMonth, weekDays, daysInMonth, startBlankDays, goToToday, prevMonth, nextMonth} = useCalendar();
+const {
+  currentYear,
+  currentMonth,
+  weekDays,
+  daysInMonth,
+  startBlankDays,
+  goToToday,
+  prevMonth,
+  nextMonth
+} = useCalendar();
 
 const events = ref([]);
 
@@ -65,7 +75,6 @@ const eventsForDay = (day) => {
 
 <template>
   <div class="calendar-container">
-    <!-- 상단 네비게이션: 이전/다음 월, 현재 월 표시 -->
     <div class="calendar-header">
       <div class="today-tab">
         <button @click="goToToday">Today</button>
@@ -79,33 +88,32 @@ const eventsForDay = (day) => {
         <router-link
             v-if="workspaceId"
             :to="`/workspace/${workspaceId}/schedule/monthly`"
-            class="on">Month</router-link>
+            class="on">Month
+        </router-link>
         <router-link
             v-if="workspaceId"
             :to="`/workspace/${workspaceId}/schedule/weekly`"
-            class="off">Week</router-link>
+            class="off">Week
+        </router-link>
         <router-link
             v-if="!workspaceId"
             :to="`/my/schedule/monthly`"
-            class="on">My Month</router-link>
+            class="on">My Month
+        </router-link>
         <router-link
             v-if="!workspaceId"
             :to="`/my/schedule/weekly`"
-            class="off">My Week</router-link>
+            class="off">My Week
+        </router-link>
       </div>
     </div>
 
-    <!-- 달력 헤더: 요일 표시 -->
     <div class="calendar-grid header">
       <div v-for="(day, index) in weekDays" :key="index" class="day-header">{{ day }}</div>
     </div>
 
-    <!-- 날짜와 이벤트 표시 -->
     <div class="calendar-grid">
-      <!-- 빈 공간: 월 시작 전 빈칸 -->
       <div v-for="n in startBlankDays" :key="n"></div>
-
-      <!-- 실제 날짜와 이벤트 -->
       <div v-for="day in daysInMonth" :key="day" class="day-cell">
         <div class="day-number">{{ day }}</div>
         <div class="events">
@@ -129,25 +137,23 @@ const eventsForDay = (day) => {
         :participants="props.value.participants"
         :top="props.value.top"
         :left="props.value.left"
-        @close="isVisible = false" />
+        @close="isVisible = false"/>
   </div>
 </template>
 
 <style scoped>
 .calendar-container {
-  //max-width: 1000px;
-  //margin: 0 auto;
   text-align: center;
-  //padding: 30px;
   position: relative;
 }
 
-.calendar-header{
+.calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
-  button{
+
+  button {
     background: #e0e8ff;
     color: #666daf;
     border: none;
@@ -163,7 +169,8 @@ const eventsForDay = (day) => {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  span{
+
+  span {
     font-size: 18px;
   }
 }
@@ -175,18 +182,21 @@ const eventsForDay = (day) => {
   background-color: #e0e8ff;
   padding: 5px 10px;
   border-radius: 25px;
-  a{
+
+  a {
     color: #666daf;
     text-decoration: none;
   }
-  .on{
+
+  .on {
     color: #666daf;
-    background-color: white ;
+    background-color: white;
     border-radius: 20px;
     font-weight: 500;
     padding: 5px 10px;
   }
-  .off{
+
+  .off {
     padding-right: 10px;
   }
 }
@@ -194,8 +204,6 @@ const eventsForDay = (day) => {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  //border-top: 1px solid #;
-  //gap: 10px;
 }
 
 .header .day-header {
@@ -206,6 +214,7 @@ const eventsForDay = (day) => {
   color: #28303F;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
 }
+
 .header .day-header:first-child {
   border-radius: 15px 0 0 0;
 }
