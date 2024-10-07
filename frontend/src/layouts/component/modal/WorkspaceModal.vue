@@ -1,57 +1,61 @@
 <script setup>
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import { setPersona } from "@/utils/personaUtils";
 
 const workspaceStore = useWorkspaceStore();
 
 onMounted(async () => {
-  await workspaceStore.getAllWorkspace();
-})
+  try {
+    await workspaceStore.getAllWorkspace();
+  } catch (error) {
+    console.error('Failed to fetch all workspaces', error);
+  }
+});
 </script>
 
 <template>
   <div class="workspace-modal">
     <div class="modal-wrap">
-    <div class="workspace-modal-header">
-      <div>
-        <p>Workspace List</p>
+      <div class="workspace-modal-header">
+        <div>
+          <p>Workspace List</p>
+        </div>
+        <hr>
       </div>
-      <hr>
-    </div>
-    <div class="workspace-modal-body">
-      <ul>
-        <li>
-          <div class="workspace-item">
-            <router-link to="/my/dashboard">
-              <img :src="user1" alt="user">
-              <p>My Space</p>
-            </router-link>
-          </div>
-          <hr>
-        </li>
-        <li v-for="(workspace, index) in workspaceStore.workspace" :key="index">
-          <div class="workspace-item">
-          <router-link :to="'/workspace/' + workspace.workspaceId + '/dashboard'">
-            <img :src="setPersona(workspace.avatar)" alt="workspace">
-            <p>{{ workspace.workspaceName }}</p>
+      <div class="workspace-modal-body">
+        <ul>
+          <li>
+            <div class="workspace-item">
+              <router-link to="/my/dashboard">
+                <img :src="user1" alt="user">
+                <p>My Space</p>
+              </router-link>
+            </div>
+            <hr>
+          </li>
+          <li v-for="(workspace, index) in workspaceStore.workspace" :key="index">
+            <div class="workspace-item">
+              <router-link :to="'/workspace/' + workspace.workspaceId + '/dashboard'">
+                <img :src="setPersona(workspace.avatar)" alt="workspace">
+                <p>{{ workspace.workspaceName }}</p>
+              </router-link>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="workspace-modal-footer">
+        <hr>
+        <div>
+          <router-link to="/my/create">
+            <img :src="plus" class="plus" alt="plus-btn">
+            <p>Add Workspace</p>
           </router-link>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="workspace-modal-footer">
-      <hr>
-      <div>
-        <router-link to="/my/create">
-          <img :src="plus" class="plus" alt="plus-btn">
-          <p>Add Workspace</p>
-        </router-link>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -73,7 +77,7 @@ onMounted(async () => {
   position: relative;
 }
 
-.workspace-modal-header{
+.workspace-modal-header {
   position: absolute;
   z-index: 1;
   background-color: #F3F6FF;
@@ -103,9 +107,9 @@ ul {
   flex-direction: column;
   gap: 10px;
 
-  li{
+  li {
     list-style: none;
-    hr{
+    hr {
       margin-bottom: 0;
     }
   }

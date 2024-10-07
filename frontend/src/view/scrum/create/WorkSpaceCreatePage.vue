@@ -1,8 +1,8 @@
 <script setup>
-import { inject, ref } from 'vue';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
-import { useFriendsStore } from '@/stores/user/useFriendsStore';
-import router from "@/router";
+import {inject, ref} from 'vue';
+// import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
+import {useFriendsStore} from '@/stores/user/useFriendsStore';
+import {axiosInstance} from "@/utils/axiosInstance";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -10,7 +10,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'WorkSpace 추가하기';
 contentsDescription.value = 'WorkSpace를 추가해보세요!';
 
-const workspaceStore = useWorkspaceStore();
+// const workspaceStore = useWorkspaceStore();
 const friendStore = useFriendsStore();
 const workspaceName = ref('');
 const participantsInput = ref('');
@@ -27,6 +27,7 @@ const searchUsers = async () => {
       console.log('Fetched users:', filteredUsers.value);
     } catch (error) {
       console.error('Error fetching users:', error);
+      filteredUsers.value = [];
     }
   } else {
     filteredUsers.value = [];
@@ -46,15 +47,17 @@ const isSelected = (user) => {
   return selectedUsers.value.includes(user.searchUserIdx);
 };
 
-const addWorkspace = () => {
-  workspaceStore.addWorkspace({
-    workspaceName: workspaceName.value,
-    participants: selectedUsers.value,
-    avatar: 1
-  });
-  workspaceName.value = '';
-  router.push('/my/dashboard');
-};
+const addWorkspace = async ({workspaceName, participants}) => {
+  try {
+    console.log('Sending request to API with:', {workspaceName, participants});
+    const response = await axiosInstance.post('/api/workspace', {workspaceName, participants});
+    console.log('API response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to add workspace', error);
+    throw error;
+  }
+}
 </script>
 
 <template>
@@ -84,14 +87,14 @@ const addWorkspace = () => {
         </div>
       </div>
       <div class="button-wrap">
-        <button @click="addWorkspace" class="add-workspace-btn">WorkSpace 추가</button>
+        <button @click="addWorkspace({ workspaceName: workspaceName, participants: selectedUsers })" class="add-workspace-btn">WorkSpace 추가</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-ul, il{
+ul, il {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -157,7 +160,7 @@ label {
   background-color: #93AAFD;
 }
 
-li{
+li {
   padding: 10px;
   cursor: pointer;
   border: 1px solid #ccc;
