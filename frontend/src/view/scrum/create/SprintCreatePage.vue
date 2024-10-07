@@ -1,9 +1,9 @@
 <script setup>
-import { inject, ref, onMounted, defineExpose } from 'vue';
-import { useRoute } from 'vue-router';
-import { VTextField } from 'vuetify/components';
-import { useSprintStore } from '@/stores/scrum/useSprintStore';
-import { useFriendsStore } from "@/stores/user/useFriendsStore";
+import {inject, ref, onMounted} from 'vue';
+import {useRoute} from 'vue-router';
+import {VTextField, VSelect} from 'vuetify/components';
+import {useSprintStore} from '@/stores/scrum/useSprintStore';
+import {useFriendsStore} from "@/stores/user/useFriendsStore";
 import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
@@ -17,7 +17,6 @@ const workspaceId = route.params.workspaceId;
 
 const sprintStore = useSprintStore();
 const friend = useFriendsStore();
-// const workspaceStore = useWorkspaceStore();
 
 const sprintTitle = ref('');
 const sprintContent = ref('');
@@ -40,36 +39,16 @@ const addSprint = () => {
   router.push(`/workspace/${workspaceId}/scrum/sprint/list`)
 };
 
-const adjustTime = () => {
-  if (startData.value && endData.value) {
-    const start = startData.value;
-    const end = endData.value;
-    if (start !== startData.value || end !== endData.value) {
-      startData.value = start;
-      endData.value = end;
-    }
+const fetchParticipants = async () => {
+  await friend.getFriendsList(workspaceId);
+  if (friend.friends) {
+    availableParticipants.value = friend.friends.map(friend => friend.userName);
+  } else {
+    availableParticipants.value = [];
   }
 };
 
-const fetchParticipants = async () => {
-  await friend.getFriendsList(workspaceId).userName
-};
-
 onMounted(fetchParticipants);
-
-defineExpose({
-  sprintTitle,
-  sprintContent,
-  participants,
-  selectedLabels,
-  startData,
-  endData,
-  addSprint,
-  adjustTime,
-  availableParticipants
-});
-
-// watch([startData, endData], adjustTime);
 </script>
 
 <template>
@@ -94,6 +73,7 @@ defineExpose({
             />
           </div>
           <div>
+            <label for="participants">참여자 선택</label>
             <VSelect
                 v-model="participants"
                 :items="availableParticipants"
@@ -116,13 +96,6 @@ defineExpose({
                 type="datetime-local"
             />
           </div>
-<!--          <div>-->
-<!--            <label>라벨 추가하기</label>-->
-<!--            <SearchLabels-->
-<!--                v-model="selectedLabels"-->
-<!--                :workspace-id="workSpaceId"-->
-<!--            />-->
-<!--          </div>-->
         </div>
       </div>
       <div class="button-wrap">
@@ -131,68 +104,6 @@ defineExpose({
     </div>
   </div>
 </template>
-
-<style scoped>
-.form-container {
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: 500;
-  margin: 0;
-}
-
-hr {
-  border: 1px solid #dfe5f1;
-  width: 100%;
-  margin: 10px 0;
-}
-
-label {
-  display: block;
-  font-weight: 400;
-  margin-top: 15px;
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.workspace-wrap {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.input-field {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-.add-workspace-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.add-workspace-btn:hover {
-  background-color: #93AAFD;
-}
-</style>
 
 <style scoped>
 .form-container {
