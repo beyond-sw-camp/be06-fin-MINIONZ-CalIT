@@ -3,8 +3,8 @@ import {inject, onMounted} from 'vue';
 import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import PriorityTask from "@/view/dashboard/component/PriorityTask.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
-import {useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
-import {useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
+import { useMyDashboardStore } from "@/stores/myspace/useMyDashboardStore";
+import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,11 +12,11 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Dashboard';
 contentsDescription.value = '나의 할 일을 살펴보세요!';
 
-const mypageStore = useMyDashboardStore();
+const myDashboardStore = useMyDashboardStore();
 const workspaceStore = useWorkspaceStore();
 
 onMounted(async () => {
-  await mypageStore.getMyDashboard();
+  await myDashboardStore.getMyDashboard();
 });
 </script>
 
@@ -24,14 +24,14 @@ onMounted(async () => {
   <div class="dashboard">
     <div v-if="workspaceStore.getAllWorkspace().length === 0">
       <TaskOverview
-          v-if="mypageStore.mySprintData && mypageStore.mySprintData.progress && mypageStore.mySprintData.progress.successTaskCount
-        !== undefined && mypageStore.mySprintData.progress.allTaskCount !== undefined"
-          :completion-rate="mypageStore.mySprintData.progress.successTaskCount / mypageStore.mySprintData.progress.allTaskCount * 100"
-          :tasks-completed="mypageStore.mySprintData.progress.successTaskCount"
-          :total-tasks="mypageStore.mySprintData.progress.allTaskCount"
-          :work-space-count="mypageStore.mySprintData.progress.workspaceCount"/>
-      <PriorityTask :tasks="mypageStore.mySprintData.tasks"/>
-      <MeetingList :meetings="mypageStore.mySprintData.meetings"/>
+          v-if="myDashboardStore.mySprintData && myDashboardStore.mySprintData.progress && myDashboardStore.mySprintData.progress.successTaskCount
+        !== undefined && myDashboardStore.mySprintData.progress.allTaskCount !== undefined"
+          :completion-rate="myDashboardStore.mySprintData.progress.successTaskCount / myDashboardStore.mySprintData.progress.allTaskCount * 100"
+          :tasks-completed="myDashboardStore.mySprintData.progress.successTaskCount"
+          :total-tasks="myDashboardStore.mySprintData.progress.allTaskCount"
+          :work-space-count="myDashboardStore.mySprintData.progress.workspaceCount"/>
+      <PriorityTask :tasks="myDashboardStore.mySprintData.tasks"/>
+      <MeetingList :meetings="myDashboardStore.mySprintData.meetings"/>
     </div>
     <div v-else class="initial-wrap">
       <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
