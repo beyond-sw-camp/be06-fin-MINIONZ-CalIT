@@ -5,8 +5,9 @@
   const router = useRouter();
   // const token = router.currentRoute.value.query.Authorization?.replace('Bearer%20', '');
   const token = decodeURIComponent(router.currentRoute.value.query.Authorization?.replace('Bearer%20', ''));
-
+  console.log(router.currentRoute.value.query.Authorization);
   if (token) {
+    console.log(token)
     const userStore = useUserStore();
     userStore.setToken(token);
     router.push({ path: '/my/dashboard' });

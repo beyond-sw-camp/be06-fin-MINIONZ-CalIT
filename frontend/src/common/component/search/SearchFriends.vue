@@ -1,17 +1,17 @@
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineEmits } from 'vue';
 import { useFriendsStore } from "@/stores/user/useFriendsStore";
 
-const { participantsName, participants, filteredUsers, removeParticipant } = useFriendsStore();
-const props = defineProps({availableParticipants: Array});
+const { participantsName, participants, filteredUsers, removeParticipant, filterUsers } = useFriendsStore();
+// const props = defineProps({availableParticipants: Array});
 const emit = defineEmits(['participantSelected']);
 
-const selectedParticipants = ref(props.availableParticipants);
+const selectedParticipants = ref([]);
 
 const selectParticipant = (participant) => {
   if (!selectedParticipants.value.includes(participant)) {
     selectedParticipants.value.push(participant);
-    emit('update:selectedParticipants', selectedParticipants.value);
+    emit('participantSelected', selectedParticipants.value);
   }
 };
 </script>
@@ -27,7 +27,14 @@ const selectParticipant = (participant) => {
             v-model="participantsName"
             placeholder="참여자 이름을 입력하세요"
             class="input-field"
+            @keyup="filterUsers"
         />
+        <div v-if="participantsName" class="search-results">
+          <div v-for="user in filteredUsers" :key="user.id" @click="selectParticipant(user)">
+            <img :src="user.persona" alt="persona">
+            <span>{{ user.username }}</span>
+          </div>
+        </div>
       </div>
       <div v-if="participantsName" class="search-results">
         <div v-for="user in filteredUsers" :key="user.id" @click="() => selectParticipant(user)">

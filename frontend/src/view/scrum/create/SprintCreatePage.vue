@@ -1,12 +1,13 @@
 <script setup>
-import { inject, ref, onMounted, defineExpose, watch } from 'vue';
+import { inject, ref, onMounted, defineExpose } from 'vue';
 import { useRoute } from 'vue-router';
 import { VTextField } from 'vuetify/components';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
-import { timeInputUtils } from '@/utils/timeInputUtils';
+// import { timeInputUtils } from '@/utils/timeInputUtils';
 // import SearchLabels from '@/common/component/search/SearchLabels.vue';
 import SearchFriends from '@/common/component/search/SearchFriends.vue';
+import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -38,13 +39,17 @@ const addSprint = () => {
     startDate: startData.value,
     endDate: endData.value,
   });
+  router.push(`/workspace/${workSpaceId}/scrum/sprint/list`)
 };
 
 const adjustTime = () => {
   if (startData.value && endData.value) {
-    const { start, end } = timeInputUtils.adjustTime(startData.value, endData.value);
-    startData.value = start;
-    endData.value = end;
+    const start = startData.value;
+    const end = endData.value;
+    if (start !== startData.value || end !== endData.value) {
+      startData.value = start;
+      endData.value = end;
+    }
   }
 };
 
@@ -70,7 +75,7 @@ defineExpose({
   availableParticipants
 });
 
-watch([startData, endData], adjustTime);
+// watch([startData, endData], adjustTime);
 </script>
 
 <template>
@@ -95,7 +100,6 @@ watch([startData, endData], adjustTime);
             />
           </div>
           <div>
-            <label for="sprintParticipation">참여자 추가</label>
             <SearchFriends
                 v-model="participants"
                 :availableParticipants="availableParticipants"
@@ -107,7 +111,6 @@ watch([startData, endData], adjustTime);
                 v-model="startData"
                 label="시작 날짜"
                 type="datetime-local"
-                @change="adjustTime"
             />
           </div>
           <div>
@@ -116,7 +119,6 @@ watch([startData, endData], adjustTime);
                 v-model="endData"
                 label="종료 날짜"
                 type="datetime-local"
-                @change="adjustTime"
             />
           </div>
 <!--          <div>-->

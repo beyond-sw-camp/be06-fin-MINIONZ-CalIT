@@ -1,14 +1,18 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
+import {computed, inject, onMounted, ref} from 'vue';
 import { useSprintStore} from "@/stores/scrum/useSprintStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import ScrumList from "@/common/component/Board/ScrumList.vue";
+import {useRoute} from "vue-router";
 
 const sprintStore = useSprintStore();
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 contentsTitle.value =  'Sprint List';
 contentsDescription.value = 'sprint 목록을 확인하세요!';
+
+const route = useRoute();
+const workSpaceId = route.params.workspaceId;
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -29,6 +33,10 @@ const nextPage = () => {
 const goToPage = (page) => {
   currentPage.value = page;
 };
+
+onMounted(() => {
+  sprintStore.getSprintList(workSpaceId);
+});
 </script>
 
 <template>
