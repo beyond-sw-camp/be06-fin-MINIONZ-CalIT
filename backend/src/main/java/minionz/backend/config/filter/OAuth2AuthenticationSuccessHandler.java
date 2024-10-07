@@ -35,10 +35,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         aToken.setPath("/");
         aToken.setMaxAge(60 * 60 * 100000);
         response.addCookie(aToken);
-        response.addHeader("Authorization", "Bearer " + token);
 
         log.info("로그인을 위한 메소드 실행 확인용");
-        getRedirectStrategy().sendRedirect(request, response, "https://calit.kro.kr/social/login/success");
+        getRedirectStrategy().sendRedirect(request, response, "https://calit.kro.kr/social/login/success?Authorization=Bearer "+token);
     }
 }
 
