@@ -15,7 +15,14 @@ const props = defineProps({
 const workspaceStore = useWorkspaceStore();
 // const route = useRoute();
 // const workspaceId = route.params.workspaceId;
-const workspaceName = computed(() => props.isPersonalMenu ? 'My Space' : workspaceStore.workspaceName);
+const workspaceName = computed(() => {
+  if (props.isPersonalMenu) {
+    return 'My Space';
+  } else {
+    const workspace = workspaceStore.workspace.find(ws => ws.id === workspaceStore.workspaceId);
+    return workspace ? workspace.workspaceName : 'Workspace';
+  }
+});
 
 const logout = () => {
   useUserStore().logout();

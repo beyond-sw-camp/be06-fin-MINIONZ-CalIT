@@ -9,7 +9,7 @@ export const useFriendsStore = defineStore('friendsStore', () => {
         try {
             const response = await axiosInstance.get(`/api/search/containeduser?loginId=${loginId}` );
             console.log('API response:', response);
-            friends.value = response.data.result;
+            friends.value = response.data;
         } catch (error) {
             console.error('Error fetching friends:', error);
         }

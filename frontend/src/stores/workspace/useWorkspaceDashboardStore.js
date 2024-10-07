@@ -7,7 +7,7 @@ export const useWorkspaceDashboardStore = defineStore('mypageStore', () => {
     const workspaceSprintData = ref([]);
     const workspaceMonthlyData = ref([]);
     const workspaceWeeklyData = ref([]);
-    const workspaceDashboardData = ref([]);
+    const workspaceDashboardData = ref(null);
 
     const getWorkspaceKanban = async (workspaceId) => {
         const response = await axiosInstance.get(`/api/sprint/all/${workspaceId}`, {withCredentials: true});

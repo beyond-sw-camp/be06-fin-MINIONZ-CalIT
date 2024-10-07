@@ -22,7 +22,7 @@ const searchUsers = async () => {
   if (participantsInput.value) {
     try {
       await friendStore.getUserList(participantsInput.value);
-      console.log('Fetched friends from store:', friendStore.friends);
+      console.log('Fetched friends from store:', friendStore.friends.value);
       filteredUsers.value = friendStore.friends;
       console.log('Fetched users:', filteredUsers.value);
     } catch (error) {
@@ -72,13 +72,13 @@ const addWorkspace = () => {
             <label for="workspaceParticipation">참여자 추가</label>
             <input type="text" id="workspaceParticipation" v-model="participantsInput" placeholder="아이디를 검색해주세요"
                    class="input-field" @keyup.enter="searchUsers">
-            <ul v-if="filteredUsers.length">
+            <ul v-if="filteredUsers && filteredUsers.length">
               <li v-for="user in filteredUsers" :key="user.id" @click="toggleUserSelection(user)"
                   :class="{ selected: isSelected(user) }">
                 {{ typeof user === 'string' ? user : user.userName }}
               </li>
             </ul>
-            <p v-else>검색된 사용자가 없습니다.</p>
+            <p v-else-if="filteredUsers === null">검색된 사용자가 없습니다.</p>
           </div>
 
         </div>

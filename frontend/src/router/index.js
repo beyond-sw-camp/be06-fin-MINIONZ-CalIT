@@ -70,7 +70,7 @@ const routes = [
             {
                 path: 'create',
                 name: 'WorkSpaceCreate',
-                component: () => import('@/view/scrum/create/WorkSpaceCreate.vue')
+                component: () => import('@/view/scrum/create/WorkSpaceCreatePage.vue')
             },
             {
                 path: 'dashboard',
@@ -101,12 +101,12 @@ const routes = [
                     {
                         path: 'kanban',
                         name: 'MyTaskKanban',
-                        component: () => import('@/view/scrum/Task/kanban/MyTaskKanban.vue')
+                        component: () => import('@/view/scrum/Task/kanban/MyTaskKanbanPage.vue')
                     },
                     {
                         path: 'list',
                         name: 'MyTaskList',
-                        component: () => import('@/view/scrum/Task/list/MyTaskList.vue')
+                        component: () => import('@/view/scrum/Task/list/MyTaskListPage.vue')
                     },
                 ]
             }
@@ -152,7 +152,7 @@ const routes = [
                     {
                         path: 'label',
                         name: 'WorkspaceScrumLabel',
-                        component: () => import('@/view/scrum/list/LabelList.vue')
+                        component: () => import('@/view/scrum/list/LabelListPage.vue')
                     },
                     {
                         path: 'sprint',
@@ -161,7 +161,7 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'WorkspaceScrumSprintList',
-                                component: () => import('@/view/scrum/list/SprintList.vue')
+                                component: () => import('@/view/scrum/list/SprintListPage.vue')
                             },
                             {
                                 path: 'create',
@@ -171,7 +171,7 @@ const routes = [
                             {
                                 path: 'detail/:id',
                                 name: 'WorkspaceSprintDetail',
-                                component: () => import('@/view/scrum/detail/SprintDetail.vue')
+                                component: () => import('@/view/scrum/detail/SprintDetailPage.vue')
                             }
                         ]
                     },
@@ -183,22 +183,22 @@ const routes = [
                             {
                                 path: 'create',
                                 name: 'WorkspaceTaskCreate',
-                                component: () => import('@/view/scrum/Task/create/WorkSpaceTaskCreate.vue')
+                                component: () => import('@/view/scrum/Task/create/WorkSpaceTaskCreatePage.vue')
                             },
                             {
                                 path: 'kanban',
                                 name: 'WorkspaceTaskKanban',
-                                component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanban.vue')
+                                component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanbanPage.vue')
                             },
                             {
                                 path: 'list',
                                 name: 'WorkspaceTaskList',
-                                component: () => import('@/view/scrum/Task/list/WorkSpaceTaskList.vue')
+                                component: () => import('@/view/scrum/Task/list/WorkSpaceTaskListPage.vue')
                             },
                             {
                                 path: 'timeline',
                                 name: 'WorkspaceTaskTimeline',
-                                component: () => import('@/view/scrum/Task/timeline/TimeLine.vue')
+                                component: () => import('@/view/scrum/Task/timeline/TimeLinePage.vue')
                             },
                         ]
                     },
@@ -209,12 +209,12 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'WorkspaceIssueList',
-                                component: () => import('@/view/scrum/list/IssueList.vue')
+                                component: () => import('@/view/scrum/list/IssueListPage.vue')
                             },
                             {
                                 path: 'detail/:id',
                                 name: 'WorkspaceIssueDetail',
-                                component: () => import('@/view/scrum/detail/IssueDetail.vue')
+                                component: () => import('@/view/scrum/detail/IssueDetailPage.vue')
                             },
                             {
                                 path: 'create',
@@ -230,17 +230,17 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'BoardMeetingList',
-                                component: () => import('@/view/scrum/meeting/MeetingList.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingListPage.vue')
                             },
                             {
                                 path: 'detail/:id',
                                 name: 'BoardMeetingDetail',
-                                component: () => import('@/view/scrum/meeting/MeetingDetail.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingDetailPage.vue')
                             },
                             {
                                 path: 'create',
                                 name: 'BoardMeetingCreate',
-                                component: () => import('@/view/scrum/meeting/MeetingCreate.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingCreatePage.vue')
                             }
                         ]
                     },
@@ -255,7 +255,7 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'ErrorList',
-                                        component: () => import('@/view/board/list/ErrorList.vue')
+                                        component: () => import('@/view/board/list/ErrorListPage.vue')
                                     },
                                     {
                                         path: 'detail/:boardId',
@@ -276,7 +276,7 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'QAList',
-                                        component: () => import('@/view/board/list/QAList.vue')
+                                        component: () => import('@/view/board/list/QAListPage.vue')
                                     },
                                     {
                                         path: 'detail/:id',

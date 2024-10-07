@@ -10,7 +10,7 @@ import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const dashboardStore = useWorkspaceDashboardStore();
+// const dashboardStore = useWorkspaceDashboardStore();
 const workspace = computed(() => useWorkspaceStore().workspace);
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -20,7 +20,7 @@ contentsDescription.value = '워크스페이스의 대시보드를 살펴보세�
 onMounted(async () => {
   await useWorkspaceStore().setWorkspaceId(workspaceId);
   if (workspaceId) {
-    await dashboardStore.getWorkspaceDashboard(workspaceId);
+    await useWorkspaceDashboardStore().getWorkspaceDashboard(workspaceId);
   } else {
     console.error('workspaceId is not set');
   }
@@ -29,7 +29,7 @@ onMounted(async () => {
 
 <template>
   <div class="dashboard">
-    <div v-if="dashboardStore.workspaceDashboardData && dashboardStore.workspaceDashboardData.progress && dashboardStore.workspaceDashboardData.progress.sprintCount > 0">
+    <div v-if="useWorkspaceStore.workspaceDashboardData && useWorkspaceStore.workspaceDashboardData.progress && useWorkspaceStore.workspaceDashboardData.progress.sprintCount > 0">
     <TaskOverview
         v-if="workspace && workspace.progress"
         :completion-rate="workspace.progress.successtaskCount / workspace.progress.alltaskCount * 100"
