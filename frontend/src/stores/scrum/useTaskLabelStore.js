@@ -1,7 +1,6 @@
 import {ref} from "vue";
-import axios from "axios";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
-// import { labelData } from '@/static/labelData';
 import { labelColorPalette } from '@/utils/labelUtils';
 
 export const useTaskLabelStore = defineStore('labelStore', () => {
@@ -10,8 +9,8 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
 
     const addTaskLabel = async ({workspaceId, labelName, description, color}) => {
         try {
-            const response = await axios.post('/api/label/task', {workspaceId, labelName, description, color});
-            labels.value.push(response.data);
+            const response = await axiosInstance.post('/api/label/task', {workspaceId, labelName, description, color});
+            labels.value.push(response.data.result);
         }
         catch (error) {
             console.error('Error adding label:', error);
@@ -20,8 +19,8 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
 
     const getTaskLabel = async (workspaceId) => {
         try {
-            const response = await axios.get(`/api/label/task?id=${workspaceId}`);
-            labels.value = response.data;
+            const response = await axiosInstance.get(`/api/label/task?id=${workspaceId}`);
+            labels.value = response.data.result;
         }
         catch (error) {
             console.error('Error fetching labels:', error);
@@ -30,8 +29,8 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
 
     const updateLabel = async ({taskLabelId, labelName, description}) => {
         try {
-            const response = await axios.put(`/api/label?id=${taskLabelId}`, {taskLabelId, labelName, description});
-            labels.value = response.data;
+            const response = await axiosInstance.put(`/api/label?id=${taskLabelId}`, {taskLabelId, labelName, description});
+            labels.value = response.data.result;
         }
         catch (error) {
             console.error('Error updating label:', error);
@@ -40,7 +39,7 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
 
     const deleteLabel = async (taskLabelId) => {
         try {
-            await axios.delete(`/api/label?id=${taskLabelId}`);
+            await axiosInstance.delete(`/api/label?id=${taskLabelId}`);
             labels.value = labels.value.filter(label => label.id !== taskLabelId);
         }
         catch (error) {

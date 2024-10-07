@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useSprintStore = defineStore('sprintStore', () => {
@@ -8,7 +8,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
     const addSprint = async({workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate}) => {
         try{
             const response = await axiosInstance.post(`/api/sprint/${workspaceId}`, {workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate});
-            sprints.value.push(response.data);
+            sprints.value.push(response.data.result);
         }
         catch (error){
             console.error('Error adding label:', error);
@@ -18,7 +18,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
     const getSprint = async(sprintId) => {
         try {
             const response  = await axiosInstance.post(`/api/sprint/${sprintId}`);
-            sprints.value = response.data;
+            sprints.value = response.data.result;
         }
         catch (error) {
             console.log('Error getting Sprint', error)
@@ -28,7 +28,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
     const getSprintList = async(workspaceId) => {
         try{
             const response = await axiosInstance.get(`/api/sprint/${workspaceId}`)
-            sprints.value = response.data;
+            sprints.value = response.data.result;
         }
         catch (error) {
             console.log('Error getting Sprint List', error);
@@ -38,7 +38,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
     const updateSprint = async ({sprintId, sprintTitle, sprintContents, labelId}) => {
         try {
             const response = await axiosInstance.put(`/api/sprint`, {sprintId, sprintTitle, sprintContents, labelId});
-            sprints.value = response.data;
+            sprints.value = response.data.result;
         }
         catch (error) {
             console.log('Error updating Sprint', error);
@@ -48,7 +48,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
     const updateSprintState = async(status) => {
         try {
             const response = axiosInstance.put(`/api/sprint/status`, status);
-            sprints.value = response.data;
+            sprints.value = response.data.result;
         }
         catch (error) {
             console.log('Error updating Sprint State', error);

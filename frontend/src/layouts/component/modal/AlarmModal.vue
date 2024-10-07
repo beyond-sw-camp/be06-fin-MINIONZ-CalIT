@@ -6,8 +6,8 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
 import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user/useUserStore";
-import { useAlarmStore } from "@/stores/socket/useAlarmStore";
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
+import { useAlarmStore } from "@/stores/alarm/useAlarmStore";
+import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
 
 const alarmStore = useAlarmStore();
 const workspaceStore = useWorkspaceStore();

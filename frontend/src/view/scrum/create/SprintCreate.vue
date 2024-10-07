@@ -1,11 +1,12 @@
 <script setup>
-import { inject, ref, computed, onMounted, defineExpose } from 'vue';
-import { VSelect, VTextField } from 'vuetify/components';
-import { useSprintStore } from "@/stores/workspace/scrum/useSprintStore";
-import { useSprintLabelStore } from "@/stores/workspace/scrum/useSprintLabelStore";
-import { timeInputUtils } from "@/utils/timeInputUtils";
-import { useRoute } from "vue-router";
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
+import { inject, ref, onMounted, defineExpose, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { VTextField } from 'vuetify/components';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { timeInputUtils } from '@/utils/timeInputUtils';
+import SearchLabels from '@/common/component/search/SearchLabels.vue';
+import SearchFriends from '@/common/component/search/SearchFriends.vue';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -17,7 +18,6 @@ const route = useRoute();
 const workSpaceId = route.params.workspaceId;
 
 const sprintStore = useSprintStore();
-const sprintLabelStore = useSprintLabelStore();
 const workspaceStore = useWorkspaceStore();
 
 const sprintTitle = ref('');
@@ -26,22 +26,7 @@ const participants = ref([]);
 const selectedLabels = ref([]);
 const startData = ref('');
 const endData = ref('');
-const labelSearch = ref('');
 const availableParticipants = ref([]);
-
-const filteredLabels = computed(() => {
-  const allLabels = sprintLabelStore.getSprintLabel(workSpaceId);
-  if (!labelSearch.value) {
-    return allLabels;
-  }
-  return allLabels.filter(label => label.labelName.includes(labelSearch.value));
-});
-
-const selectLabel = (label) => {
-  if (!selectedLabels.value.includes(label)) {
-    selectedLabels.value.push(label);
-  }
-};
 
 const addSprint = () => {
   sprintStore.addSprint({
@@ -80,13 +65,12 @@ defineExpose({
   selectedLabels,
   startData,
   endData,
-  labelSearch,
-  filteredLabels,
-  selectLabel,
   addSprint,
   adjustTime,
   availableParticipants
 });
+
+watch([startData, endData], adjustTime);
 </script>
 
 <template>
@@ -111,22 +95,11 @@ defineExpose({
             />
           </div>
           <div>
-            <label for="sprintParticipation">담당자 추가</label>
-            <v-select
+            <label for="sprintParticipation">참여자 추가</label>
+            <SearchFriends
                 v-model="participants"
-                :items="availableParticipants"
-                item-text="name"
-                item-value="id"
-                label="담당자 추가"
-                multiple
-                chips
-                clearable
-            ></v-select>
-            <ul>
-              <li v-for="participant in participants" :key="participant">
-                {{ participant }}
-              </li>
-            </ul>
+                :availableParticipants="availableParticipants"
+            />
           </div>
           <div>
             <label>시작 날짜</label>
@@ -148,28 +121,10 @@ defineExpose({
           </div>
           <div>
             <label>라벨 추가하기</label>
-            <VTextField
-                v-model="labelSearch"
-                placeholder="label을 검색해주세요"
-                class="input-field"
-                @keyup.enter="selectLabel({ labelName: labelSearch.value, labelId: Date.now() })"
-            />
-            <VSelect
+            <SearchLabels
                 v-model="selectedLabels"
-                :items="filteredLabels"
-                item-text="labelName"
-                item-value="labelId"
-                label="라벨 추가하기"
-                multiple
-                chips
-                clearable
-                @change="selectLabel"
+                :workspace-id="workSpaceId"
             />
-            <ul>
-              <li v-for="label in selectedLabels" :key="label.labelId">
-                {{ label.labelName }}
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -179,6 +134,68 @@ defineExpose({
     </div>
   </div>
 </template>
+
+<style scoped>
+.form-container {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+hr {
+  border: 1px solid #dfe5f1;
+  width: 100%;
+  margin: 10px 0;
+}
+
+label {
+  display: block;
+  font-weight: 400;
+  margin-top: 15px;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.workspace-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.input-field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.add-workspace-btn {
+  background-color: #C6D2FD;
+  color: #28303F;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.add-workspace-btn:hover {
+  background-color: #93AAFD;
+}
+</style>
 
 <style scoped>
 .form-container {

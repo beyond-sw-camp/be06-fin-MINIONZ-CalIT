@@ -1,15 +1,18 @@
 <script setup>
-import { ref } from 'vue';
-import { defineEmits } from 'vue';
-import { useFriendsStore} from "@/stores/friends/useFriendsStore";
+import { ref, defineProps, defineEmits } from 'vue';
+import { useFriendsStore } from "@/stores/user/useFriendsStore";
 
 const { participantsName, participants, filteredUsers, removeParticipant } = useFriendsStore();
-
-const selectedParticipants = ref([]);
+const props = defineProps({availableParticipants: Array});
 const emit = defineEmits(['participantSelected']);
+
+const selectedParticipants = ref(props.availableParticipants);
+
 const selectParticipant = (participant) => {
-  selectedParticipants.value.push(participant);
-  emit('update-selected-participants', selectedParticipants.value);
+  if (!selectedParticipants.value.includes(participant)) {
+    selectedParticipants.value.push(participant);
+    emit('update:selectedParticipants', selectedParticipants.value);
+  }
 };
 </script>
 

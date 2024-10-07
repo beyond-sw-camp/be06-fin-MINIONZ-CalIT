@@ -10,7 +10,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
     const addSprintLabel = async ({workspaceId, labelName, description, color}) => {
         try {
             const response = await axiosInstance.get('/api/label/sprint', {workspaceId, labelName, description, color});
-            labels.value.push(response.data);
+            labels.value.push(response.data.result);
         }
         catch (error) {
             console.error('Error adding label:', error);
@@ -20,7 +20,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
     const getSprintLabel = async (workspaceId) => {
         try {
             const response = await axiosInstance.post(`/api/label/sprint?id=${workspaceId}`);
-            labels.value = response.data;
+            labels.value = response.data.result;
         }
         catch (error) {
             console.error('Error fetching labels:', error);
@@ -30,7 +30,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
     const updateLabel = async ({sprintLabelId, labelName, description}) => {
         try {
             const response = await axiosInstance.put(`/api/label?id=${sprintLabelId}`, {sprintLabelId, labelName, description});
-            labels.value = response.data;
+            labels.value = response.data.result;
         }
         catch (error) {
             console.error('Error updating label:', error);

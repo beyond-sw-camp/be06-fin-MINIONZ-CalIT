@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { computed, inject, ref } from 'vue';
 import { useUserStore} from "@/stores/user/useUserStore";
-import { useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
+import { useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 import { timeInputUtils } from '@/utils/timeInputUtils';

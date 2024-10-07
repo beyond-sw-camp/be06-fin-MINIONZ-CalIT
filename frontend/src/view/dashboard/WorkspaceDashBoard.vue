@@ -4,13 +4,13 @@ import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
 import BurndownChart from "@/view/dashboard/component/BurndownChart.vue";
 
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
-import { useDashboardStore } from "@/stores/workspace/useDashboardStore";
+import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import { useWorkspaceDashboardStore } from "@/stores/workspace/useWorkspaceDashboardStore";
 import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const dashboardStore = useDashboardStore();
+const dashboardStore = useWorkspaceDashboardStore();
 const workspace = computed(() => useWorkspaceStore().workspace);
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');

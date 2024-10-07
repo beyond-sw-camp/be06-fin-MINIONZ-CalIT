@@ -1,6 +1,6 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
+import { useSprintStore} from "@/stores/scrum/useSprintStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import ScrumList from "@/common/component/Board/ScrumList.vue";
 

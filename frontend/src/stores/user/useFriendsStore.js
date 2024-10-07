@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import axios from "axios";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useFriendsStore = defineStore('friendsStore', () => {
@@ -7,9 +7,9 @@ export const useFriendsStore = defineStore('friendsStore', () => {
 
     const getUserList = async (loginId) => {
         try {
-            const response = await axios.get(`/api/search/containeduser?loginId=${loginId}` );
+            const response = await axiosInstance.get(`/api/search/containeduser?loginId=${loginId}` );
             console.log('API response:', response);
-            friends.value = response.data;
+            friends.value = response.data.result;
         } catch (error) {
             console.error('Error fetching friends:', error);
         }
@@ -17,8 +17,8 @@ export const useFriendsStore = defineStore('friendsStore', () => {
 
     const getFriendsList = async ({workspaceId, userId, name }) => {
         try {
-            const response = await axios.get(`/api/friends/search?workspaceId=${workspaceId}&id=${userId}&name=${name}`);
-            friends.value = response.data;
+            const response = await axiosInstance.get(`/api/friends/search?workspaceId=${workspaceId}&id=${userId}&name=${name}`);
+            friends.value = response.data.result;
         } catch (error) {
             console.error('Error fetching friends:', error);
         }

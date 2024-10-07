@@ -2,7 +2,7 @@
 import {onMounted} from "vue";
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
+import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
 import { setPersona } from "@/utils/personaUtils";
 
 const workspaceStore = useWorkspaceStore();
