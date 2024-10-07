@@ -159,8 +159,13 @@ public enum BaseResponseStatus {
      * 7000: 알림
      */
     ALARM_CREATE_SUCCESS(true, 7001, "알림 전송에 성공했습니다. "),
-    ALARM_CREATE_FAIL(false, 7002, "알림 전송에 실패했습니다. ");
+    ALARM_CREATE_FAIL(false, 7002, "알림 전송에 실패했습니다. "),
 
+    /**
+     * 8000: 검색
+     */
+    SEARCH_USER_SUCCESS(true, 8001, "유저 검색에 성공했습니다. "),
+    SEARCH_USER_FAIL(false, 8002, "유저 검색에 실패했습니다. ");
     private final boolean isSuccess;
     private final int code;
     private final String message;
