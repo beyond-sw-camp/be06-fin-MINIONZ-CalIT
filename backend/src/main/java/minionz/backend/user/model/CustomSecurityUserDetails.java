@@ -44,6 +44,7 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         authorities.addAll(workspaceParticipations.stream()
+                .filter(participate -> participate.getIsValid())
                 .map(participate -> {
                     String rolePrefix = participate.getIsManager() ? "ROLE_WORKSPACE_ADMIN_" : "ROLE_WORKSPACE_MEMBER_";
                     String roleName = rolePrefix + participate.getWorkspace().getWorkspaceId();
