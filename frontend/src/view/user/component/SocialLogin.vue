@@ -4,15 +4,15 @@ import kakao from '@/assets/icon/social/kakao.png';
 
 
 const sendGoogleRequest = async () => {
-    window.location.href = 'https://calit.kro.kr/api/oauth2/authorization/google';
+    window.location.href = 'https://calit.kro.kr/oauth/oauth2/authorization/google';
 };
 
 const sendNaverRequest = async () => {
-     window.location.href = 'https://calit.kro.kr/api/oauth2/authorization/naver';
+     window.location.href = 'https://calit.kro.kr/oauth/oauth2/authorization/naver';
 };
 
 const sendKakaoRequest = async () => {
-  window.location.href = 'https://calit.kro.kr/api/oauth2/authorization/kakao';
+  window.location.href = 'https://calit.kro.kr/oauth/oauth2/authorization/kakao';
 };
 </script>
 
