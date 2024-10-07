@@ -3,10 +3,7 @@ import { inject, ref, onMounted, defineExpose } from 'vue';
 import { useRoute } from 'vue-router';
 import { VTextField } from 'vuetify/components';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
-// import { timeInputUtils } from '@/utils/timeInputUtils';
-// import SearchLabels from '@/common/component/search/SearchLabels.vue';
-import SearchFriends from '@/common/component/search/SearchFriends.vue';
+import { useFriendsStore } from "@/stores/user/useFriendsStore";
 import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
@@ -16,10 +13,11 @@ contentsTitle.value = '스프린트 추가하기';
 contentsDescription.value = '스프린트를 추가해보세요!';
 
 const route = useRoute();
-const workSpaceId = route.params.workspaceId;
+const workspaceId = route.params.workspaceId;
 
 const sprintStore = useSprintStore();
-const workspaceStore = useWorkspaceStore();
+const friend = useFriendsStore();
+// const workspaceStore = useWorkspaceStore();
 
 const sprintTitle = ref('');
 const sprintContent = ref('');
@@ -31,7 +29,7 @@ const availableParticipants = ref([]);
 
 const addSprint = () => {
   sprintStore.addSprint({
-    workspaceId: workSpaceId,
+    workspaceId: workspaceId,
     sprintTitle: sprintTitle.value,
     sprintContents: sprintContent.value,
     labels: selectedLabels.value,
@@ -39,7 +37,7 @@ const addSprint = () => {
     startDate: startData.value,
     endDate: endData.value,
   });
-  router.push(`/workspace/${workSpaceId}/scrum/sprint/list`)
+  router.push(`/workspace/${workspaceId}/scrum/sprint/list`)
 };
 
 const adjustTime = () => {
@@ -54,11 +52,7 @@ const adjustTime = () => {
 };
 
 const fetchParticipants = async () => {
-  await workspaceStore.getAllWorkspace();
-  const workspace = workspaceStore.workspace.value?.find(ws => ws.workspaceId === workSpaceId);
-  if (workspace) {
-    availableParticipants.value = workspace.participants;
-  }
+  await friend.getFriendsList(workspaceId).userName
 };
 
 onMounted(fetchParticipants);
@@ -100,9 +94,10 @@ defineExpose({
             />
           </div>
           <div>
-            <SearchFriends
+            <VSelect
                 v-model="participants"
-                :availableParticipants="availableParticipants"
+                :items="availableParticipants"
+                label="참여자 선택"
             />
           </div>
           <div>

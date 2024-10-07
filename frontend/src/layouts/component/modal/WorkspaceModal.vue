@@ -4,19 +4,20 @@ import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
 import { setPersona } from "@/utils/personaUtils";
 import { axiosInstance } from '@/utils/axiosInstance';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 
+const workspaceStore = useWorkspaceStore();
 const workspace = ref([]);
-const workspaceId = ref('');
 
 const getAllWorkspace = async () => {
   try {
     const response = await axiosInstance.get('/api/workspace/my/all');
     workspace.value = response.data.result;
     if (workspace.value.length > 0) {
-      workspaceId.value = workspace.value[0].workspaceId;
+      workspaceStore.setWorkspaceId(workspace.value[0].workspaceId);
     }
     console.log('Response data:', response.data.result);
-    console.log('workspace Id value:', workspaceId.value);
+    console.log('workspace Id value:', workspaceStore.workspaceId);
   } catch (error) {
     console.error('Failed to fetch all workspaces', error);
   }
@@ -49,7 +50,8 @@ onMounted(async () => {
           </li>
           <li v-for="(workspaceItem, index) in workspace" :key="index">
             <div class="workspace-item">
-              <router-link :to="'/workspace/' + workspaceItem.workspaceId + '/dashboard'">
+              <router-link :to="'/workspace/' + workspaceItem.workspaceId + '/dashboard'"
+                           @click.native="workspaceStore.setWorkspaceId(workspaceItem.workspaceId)">
                 <img :src="setPersona(workspaceItem.avatar)" alt="workspace">
                 <p>{{ workspaceItem.workspaceName }}</p>
               </router-link>

@@ -1,5 +1,6 @@
 import '@/assets/style/styles.css'
 import 'vuetify/styles';
+import 'notyf/notyf.min.css';
 
 import { createApp } from 'vue'
 import {createPinia} from "pinia";
