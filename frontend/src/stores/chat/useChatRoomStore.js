@@ -1,7 +1,6 @@
-import {ref} from "vue";
-import axios from "axios";
-import {defineStore} from "pinia";
-// import {chatRoomList, chatRoomList } from '@/static/chatData';
+import { ref } from "vue";
+import { axiosInstance } from "@/utils/axiosInstance";
+import { defineStore } from "pinia";
 
 export const useChatRoomStore = defineStore('chatRoomStore', () => {
     const chatRoom = ref([]);
@@ -20,7 +19,7 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
 
         const newChatRoomId = ref(0);
         try {
-            const response = await axios.post('/api/chat/room', {
+            const response = await axiosInstance.post('/api/chat/room', {
                 chatroomName,
                 participants
             });
@@ -44,7 +43,7 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
     // [GET] 채팅 방 목록 조회
     const fetchChatRooms = async (workspaceId) => {
         try {
-            const response = await axios.get(`/api/chat/${workspaceId}/roomList`);
+            const response = await axiosInstance.get(`/api/chat/${workspaceId}/roomList`);
             chatRoom.value = response.data;
         } catch (error) {
             console.error('Error fetching chat rooms:', error);
@@ -54,7 +53,7 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
     // [PATCH] 채팅 방 수정
     const updateChatRoom = async ({chatroomId, newRoomName}) => {
         try {
-            const response = await axios.patch(`/api/chat/room/${chatroomId}/edit`, {
+            const response = await axiosInstance.patch(`/api/chat/room/${chatroomId}/edit`, {
                 newRoomName
             });
 
@@ -75,7 +74,7 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
     // [DELETE] 채팅 방 나가기  /chat/{chatroomId}/exit
     const exitChatRoom = async (chatroomId) => {
         try {
-            const response = await axios.delete(`/api/chat/${chatroomId}/exit`);
+            const response = await axiosInstance.delete(`/api/chat/${chatroomId}/exit`);
 
             if (response.data.success) {
                 chatRoom.value = chatRoom.value.filter(room => room.chatroomId !== chatroomId);

@@ -1,10 +1,11 @@
 <script setup>
 import space6 from '@/assets/icon/persona/space6.svg';
 import { defineProps } from 'vue';
-import { chat } from '@/static/chatData';
+import { useChatMessageStore } from "@/stores/chat/useChatMessageStore";
 // import { ref } from "vue";
 
-const message= chat.filter((item) => item.messageType === 'TEXT');
+const chatMessageStore = useChatMessageStore();
+const message= chatMessageStore().message().filter((item) => item.messageType === 'TEXT');
 
 defineProps({
   // message: {

@@ -4,32 +4,45 @@ import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
 import BurndownChart from "@/view/dashboard/component/BurndownChart.vue";
 
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
-import { useDashboardStore } from "@/stores/workspace/useDashboardStore";
+import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import { useWorkspaceDashboardStore } from "@/stores/workspace/useWorkspaceDashboardStore";
+import {useRoute} from "vue-router";
 
-const workspaceId = useWorkspaceStore().workspaceId;
-const dashboardStore = useDashboardStore();
-const workspace = computed(() => workspaceId);
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+const dashboardStore = useWorkspaceDashboardStore();
+const workspace = computed(() => useWorkspaceStore().workspace);
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = workspace.value ? `${useWorkspaceStore().workspaceName} Dashboard` : 'Dashboard';
+contentsTitle.value = 'Dashboard';
 contentsDescription.value = '워크스페이스의 할일을 살펴보세요!';
 
 onMounted(async () => {
-  await dashboardStore.getWorkspaceDashboard(workspaceId);
+  await useWorkspaceStore().setWorkspaceId(workspaceId);
+  if (workspaceId) {
+    await dashboardStore.getWorkspaceDashboard(workspaceId);
+  } else {
+    console.error('workspaceId is not set');
+  }
 });
 </script>
 
 <template>
   <div class="dashboard">
+    <div v-if="dashboardStore.workspaceDashboardData && dashboardStore.workspaceDashboardData.progress && dashboardStore.workspaceDashboardData.progress.sprintCount > 0">
     <TaskOverview
-        v-if="workspace.value && workspace.value.progress"
-        :completion-rate="workspace.value.progress.successtaskCount / workspace.value.progress.alltaskCount * 100"
-        :tasks-completed="workspace.value.progress.successtaskCount"
-        :total-tasks="workspace.value.progress.alltaskCount"
-        :work-space-count="workspace.value.progress.sprintCount"/>
+        v-if="workspace && workspace.progress"
+        :completion-rate="workspace.progress.successtaskCount / workspace.progress.alltaskCount * 100"
+        :tasks-completed="workspace.progress.successtaskCount"
+        :total-tasks="workspace.progress.alltaskCount"
+        :work-space-count="workspace.progress.sprintCount"/>
     <BurndownChart />
-    <MeetingList :meetings="workspace.value.upcomingMeetings"/>
+    <MeetingList v-if="workspace && workspace.upcomingMeetings" :meetings="workspace.upcomingMeetings"/>
+  </div>
+    <div v-else class="initial-wrap">
+      <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
+      <router-link :to="`/workspace/${workspaceId}/scrum/sprint/create`">스프린트 추가하기</router-link>
+    </div>
   </div>
 </template>
 
@@ -39,5 +52,24 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.initial-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
+  a{
+    padding: 10px 20px;
+    background-color: #93AAFD;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    &:hover{
+      background-color: #6F8FFC;
+    }
+  }
 }
 </style>

@@ -1,23 +1,21 @@
-// 1차 완성
-
 import { ref } from "vue";
-import axios from "axios";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
-// import { issueData } from "@/static/issueData";
+
 export const useIssueStore = defineStore('issueStore', () => {
     const issues = ref([]);
     const getIssues = async () => {
         try {
-            const response = await axios.get('/api/issues');
-            issues.value = response.data;
+            const response = await axiosInstance.get('/api/issues');
+            issues.value = response.data.result;
         } catch (error) {
             console.error('Error fetching issues:', error);
         }
     };
     const addIssue = async (issue) => {
         try {
-            const response = await axios.post('/api/issues', issue);
-            issues.value.push(response.data);
+            const response = await axiosInstance.post('/api/issues', issue);
+            issues.value.push(response.data.result);
         } catch (error) {
             console.error('Error adding issue:', error);
         }
@@ -25,7 +23,7 @@ export const useIssueStore = defineStore('issueStore', () => {
 
     // const updateIssue = async (index, updatedIssue) => {
     //     try {
-    //         const response = await axios.put(`/api/issues/${updatedIssue.id}`, updatedIssue);
+    //         const response = await axiosInstance.put(`/api/issues/${updatedIssue.id}`, updatedIssue);
     //         issues.value[index] = response.data;
     //     } catch (error) {
     //         console.error('Error updating issue:', error);
@@ -34,7 +32,7 @@ export const useIssueStore = defineStore('issueStore', () => {
     //
     // const deleteIssue = async (index) => {
     //     try {
-    //         await axios.delete(`/api/issues/${issues.value[index].id}`);
+    //         await axiosInstance.delete(`/api/issues/${issues.value[index].id}`);
     //         issues.value.splice(index, 1);
     //     } catch (error) {
     //         console.error('Error deleting issue:', error);

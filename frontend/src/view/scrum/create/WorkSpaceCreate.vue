@@ -1,7 +1,7 @@
 <script setup>
-import {inject, ref} from 'vue';
-import {useWorkspaceStore} from '@/stores/workspace/space/useWorkspaceStore';
-import {useFriendsStore} from '@/stores/friends/useFriendsStore';
+import { inject, ref } from 'vue';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
 import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
@@ -13,7 +13,6 @@ contentsDescription.value = 'WorkSpace를 추가해보세요!';
 const workspaceStore = useWorkspaceStore();
 const friendStore = useFriendsStore();
 const workspaceName = ref('');
-// const participants = ref([]);
 const participantsInput = ref('');
 const filteredUsers = ref([]);
 const selectedUsers = ref([]);

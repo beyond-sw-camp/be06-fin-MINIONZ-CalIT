@@ -1,7 +1,7 @@
 <script setup>
 import {useRoute} from 'vue-router';
 import {inject, onMounted, ref} from 'vue';
-import { useSprintStore } from '@/stores/workspace/scrum/useSprintStore';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
 
 const route = useRoute();
 // const workspaceId = route.params.workspaceId;

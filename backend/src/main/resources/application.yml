@@ -88,14 +88,14 @@ spring:
     consumer:
       bootstrap-servers: ${KAFKA_SERVER}
 
-#logging:
-#  level:
-#    org.hibernate.SQL: debug
-#    org.hibernate.orm.jdbc.bind: trace
-#    org.springframework.security:
-#    org.apache.kafka: OFF
-#    kafka: OFF
-#    org.springframework.kafka: OFF
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+    org.springframework.security:
+    org.apache.kafka: OFF
+    kafka: OFF
+    org.springframework.kafka: OFF
 
 cloud:
   aws:

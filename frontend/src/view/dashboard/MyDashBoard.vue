@@ -3,8 +3,8 @@ import {inject, onMounted} from 'vue';
 import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import PriorityTask from "@/view/dashboard/component/PriorityTask.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
-import {useMypageStore} from "@/stores/my/useMypageStore";
-import {useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
+import {useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
+import {useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,7 +12,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Dashboard';
 contentsDescription.value = '나의 할 일을 살펴보세요!';
 
-const mypageStore = useMypageStore();
+const mypageStore = useMyDashboardStore();
 const workspaceStore = useWorkspaceStore();
 
 onMounted(async () => {

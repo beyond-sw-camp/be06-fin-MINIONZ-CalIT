@@ -1,8 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { useTaskStore } from '@/stores/workspace/scrum/useTaskStore';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import Multiselect from 'vue-multiselect';
-import { useFriendsStore} from "@/stores/friends/useFriendsStore";
+import { useFriendsStore} from "@/stores/user/useFriendsStore";
 import {useRoute} from "vue-router";
 
 const route = useRoute();

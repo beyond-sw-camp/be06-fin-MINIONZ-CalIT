@@ -1,6 +1,6 @@
 <script setup>
 import {inject} from "vue";
-import { useDashboardStore} from "@/stores/workspace/useDashboardStore";
+import { useWorkspaceDashboardStore} from "@/stores/workspace/useWorkspaceDashboardStore";
 import MonthlyComponent from "@/view/schedule/monthly/component/MonthlyComponent.vue";
 import {useRoute} from "vue-router";
 
@@ -10,7 +10,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Workspace  Monthly Schedule';
 contentsDescription.value = '워크스페이스의 이달 일정을 살펴보세요!';
 
-const dashboardStore = useDashboardStore();
+const dashboardStore = useWorkspaceDashboardStore();
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;

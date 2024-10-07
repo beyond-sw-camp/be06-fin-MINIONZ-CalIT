@@ -1,7 +1,7 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import { useIssueStore } from '@/stores/workspace/scrum/useIssueStore';
-import { useFriendsStore } from '@/stores/friends/useFriendsStore';
+import { useIssueStore } from '@/stores/scrum/useIssueStore';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');

@@ -1,6 +1,6 @@
 <script setup>
 import {inject, ref} from "vue";
-import { useMypageStore} from "@/stores/my/useMypageStore";
+import { useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
 import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vue";
 import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyScheduleComponent.vue";
 import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTask.vue";
@@ -12,7 +12,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Space Weekly';
 contentsDescription.value = '나의 이번주 일정을 살펴보세요!';
 
-const mypageStore = useMypageStore();
+const mypageStore = useMyDashboardStore();
 const selectedWeek = ref(mypageStore.getMyWeekly());
 const updateSelectedWeek = (week) => {
   selectedWeek.value = week;

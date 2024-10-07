@@ -1,7 +1,7 @@
 <script setup>
 import { inject, ref} from 'vue';
-import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
-import { useSprintLabelStore} from "@/stores/workspace/scrum/useSprintLabelStore";
+import { useSprintStore} from "@/stores/scrum/useSprintStore";
+import { useSprintLabelStore} from "@/stores/scrum/useSprintLabelStore";
 import Multiselect from "vue-multiselect";
 import {timeInputUtils} from "@/utils/timeInputUtils";
 
