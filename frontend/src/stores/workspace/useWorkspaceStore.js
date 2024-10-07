@@ -1,9 +1,10 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from "pinia";
+import { useAlarmStore } from "@/stores/alarm/useAlarmStore";
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
-
+    const alarmStore = useAlarmStore();
     // const ATOKEN = sessionStorage.getItem('ATOKEN');
     const workspace = ref([]);
     const workspaceId = ref(null);
@@ -73,6 +74,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         try {
             const response = await axiosInstance.patch(`/api/workspace/accept/${workspaceId}`);
             workspace.value = response.data;
+            await alarmStore.deleteAlarm(workspaceId);
         } catch (error) {
             console.error('Failed to accept workspace', error);
         }
@@ -82,6 +84,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         try {
             const response = await axiosInstance.delete(`/api/workspace/reject/${workspaceId}`);
             workspace.value = response.data;
+            await alarmStore.deleteAlarm(workspaceId);
         } catch (error) {
             console.error('Failed to reject workspace', error);
         }

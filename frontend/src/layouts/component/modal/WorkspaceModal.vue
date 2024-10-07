@@ -65,6 +65,8 @@ onMounted(async () => {
   top: 50px;
   right: 10px;
   width: 200px;
+  max-height: 500px;
+  overflow: auto;
 }
 
 .modal-wrap {
