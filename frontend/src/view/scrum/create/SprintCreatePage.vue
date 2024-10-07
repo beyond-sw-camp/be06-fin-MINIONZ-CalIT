@@ -42,7 +42,7 @@ const addSprint = () => {
 
 const adjustTime = () => {
   if (startData.value && endData.value) {
-    const { start, end } = timeInputUtils(startData.value, endData.value);
+    const { start, end } = timeInputUtils.adjustTime(startData.value, endData.value);
     startData.value = start;
     endData.value = end;
   }

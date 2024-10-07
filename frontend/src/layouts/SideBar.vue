@@ -1,25 +1,23 @@
 <script setup>
-import { computed, defineProps } from 'vue';
+import { computed } from 'vue';
+import {useRoute} from "vue-router";
 import { useUserStore } from '@/stores/user/useUserStore';
 import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
-// import {useRoute} from "vue-router";
 
-const props = defineProps({
-  isPersonalMenu: Boolean
-});
+const route = useRoute();
+const isPersonalMenu = computed(() => route.path.startsWith('/my'));
 
 const workspaceStore = useWorkspaceStore();
-// const route = useRoute();
-// const workspaceId = route.params.workspaceId;
+
 const workspaceName = computed(() => {
-  if (props.isPersonalMenu) {
+  if (isPersonalMenu.value) {
     return 'My Space';
   } else {
-    const workspace = workspaceStore.workspace.find(ws => ws.id === workspaceStore.workspaceId);
+    const workspace = workspaceStore.workspace.find(ws => ws.id === route.params.workspaceId);
     return workspace ? workspace.workspaceName : 'Workspace';
   }
 });
@@ -41,7 +39,7 @@ const logout = () => {
     </div>
     <div class="menu-wrap">
       <div>
-        <div v-if="props.isPersonalMenu">
+        <div v-if="isPersonalMenu">
           <PersonalMenu></PersonalMenu>
         </div>
         <div v-else>
