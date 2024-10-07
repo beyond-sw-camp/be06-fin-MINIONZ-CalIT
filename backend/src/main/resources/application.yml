@@ -5,10 +5,10 @@ address:
   domains: ${DOMAIN_ADDRESS}
 springdoc:
   swagger-ui:
-    path: /swagger-ui
+    path: /api/swagger-ui
     disable-swagger-default-url: true
   api-docs:
-    path: /docs
+    path: /api/docs
 spring:
   profiles:
     include: oauth
