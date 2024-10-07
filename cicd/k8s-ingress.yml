@@ -31,3 +31,10 @@ spec:
                 name: backend-svc-vname
                 port:
                   number: 8080
+          - path: /oauth(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-svc-sticky-vname
+                port:
+                  number: 8080
