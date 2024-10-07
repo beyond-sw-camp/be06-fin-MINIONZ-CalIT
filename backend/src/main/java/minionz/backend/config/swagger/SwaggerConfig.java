@@ -15,8 +15,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .components(new Components())
-                .info(apiInfo())
-                .servers(List.of(new Server().url("/api"))); // 기본 경로 설정
+                .info(apiInfo());
 
     }
 
