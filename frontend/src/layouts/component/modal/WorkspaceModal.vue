@@ -8,7 +8,7 @@ import { setPersona } from "@/utils/personaUtils";
 const workspaceStore = useWorkspaceStore();
 
 onMounted(async () => {
-  await workspaceStore.getAllWorkspace()
+  await workspaceStore.getAllWorkspace();
 })
 </script>
 
