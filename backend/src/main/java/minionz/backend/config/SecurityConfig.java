@@ -3,12 +3,9 @@ package minionz.backend.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import minionz.backend.config.filter.JwtAccessDeniedHandler;
-import minionz.backend.config.filter.JwtFilter;
-import minionz.backend.config.filter.OAuth2AuthenticationSuccessHandler;
+import minionz.backend.config.filter.*;
 import minionz.backend.user.CustomOauth2UserService;
 import minionz.backend.utils.JwtUtil;
-import minionz.backend.config.filter.LoginFilter;
 import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +43,7 @@ public class SecurityConfig {
   private final JwtAccessDeniedHandler accessDeniedHandler;
   private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
   private final CustomOauth2UserService customOauth2UserService;
+  private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
@@ -76,6 +74,7 @@ public class SecurityConfig {
 //     .permitAll());
     http.oauth2Login((config) -> {
       config.successHandler(oAuth2AuthenticationSuccessHandler);
+      config.failureHandler(oAuth2AuthenticationFailureHandler);
       config.userInfoEndpoint((endpoint) -> endpoint.userService(customOauth2UserService));
     });
 
