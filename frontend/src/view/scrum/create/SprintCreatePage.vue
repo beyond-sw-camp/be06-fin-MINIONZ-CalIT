@@ -5,7 +5,7 @@ import { VTextField } from 'vuetify/components';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import { timeInputUtils } from '@/utils/timeInputUtils';
-import SearchLabels from '@/common/component/search/SearchLabels.vue';
+// import SearchLabels from '@/common/component/search/SearchLabels.vue';
 import SearchFriends from '@/common/component/search/SearchFriends.vue';
 
 const contentsTitle = inject('contentsTitle');
@@ -42,7 +42,7 @@ const addSprint = () => {
 
 const adjustTime = () => {
   if (startData.value && endData.value) {
-    const { start, end } = timeInputUtils(startData.value, endData.value);
+    const { start, end } = timeInputUtils.adjustTime(startData.value, endData.value);
     startData.value = start;
     endData.value = end;
   }
@@ -119,13 +119,13 @@ watch([startData, endData], adjustTime);
                 @change="adjustTime"
             />
           </div>
-          <div>
-            <label>라벨 추가하기</label>
-            <SearchLabels
-                v-model="selectedLabels"
-                :workspace-id="workSpaceId"
-            />
-          </div>
+<!--          <div>-->
+<!--            <label>라벨 추가하기</label>-->
+<!--            <SearchLabels-->
+<!--                v-model="selectedLabels"-->
+<!--                :workspace-id="workSpaceId"-->
+<!--            />-->
+<!--          </div>-->
         </div>
       </div>
       <div class="button-wrap">
