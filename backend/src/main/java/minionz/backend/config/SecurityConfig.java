@@ -118,10 +118,10 @@ public class SecurityConfig {
                         .requestMatchers("/issue/**")
                         .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context, response))
                         // 회의 관련 요청
-                        .requestMatchers(HttpMethod.DELETE, "/meeting/**")
-                        .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context, response))
-                        .requestMatchers("/meeting/**")
-                        .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context, response))
+//                        .requestMatchers(HttpMethod.DELETE, "/meeting/**")
+//                        .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context, response))
+//                        .requestMatchers("/meeting/**")
+//                        .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context, response))
                         // 라벨 관련 요청
                         .requestMatchers("/label/**")
                         .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context, response))

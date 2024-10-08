@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.common.BaseEntity;
 import minionz.backend.scrum.label.model.NoteLabel;
-import minionz.backend.scrum.task.model.Task;
+import minionz.backend.scrum.label_select.model.NoteLabelSelect;
 import minionz.backend.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.backend.scrum.sprint.model.Sprint;
+import minionz.backend.scrum.task.model.Task;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +40,10 @@ public class Meeting extends BaseEntity {
     // Meeting : NoteLabel = 1 : N
     @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<NoteLabel> noteLabels =new ArrayList<>();
+
+    // Sprint : SprintLabelSelect = 1 : N
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
+    private List<NoteLabelSelect> noteLabelSelects = new ArrayList<>();
 
     // Meeting : Sprint = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
