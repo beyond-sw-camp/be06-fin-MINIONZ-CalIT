@@ -1,5 +1,7 @@
 package minionz.backend.config.filter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,10 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import minionz.backend.utils.JwtUtil;
 import minionz.backend.user.model.CustomOauth2UserDetails;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -25,10 +30,23 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         CustomOauth2UserDetails oAuth2Member = (CustomOauth2UserDetails) authentication.getPrincipal();
         Long id = oAuth2Member.getUser().getUserId();
         String userName = oAuth2Member.getUsername();
-        String role = oAuth2Member.getUser().getRole();
-        String email = oAuth2Member.getUser().getEmail();
-        String token = jwtUtil.createToken(email , id, role, userName);
-        log.info(id + " " + role + " " + userName);
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rolesJson = "[]";
+
+        try {
+            rolesJson = objectMapper.writeValueAsString(roles);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }        String email = oAuth2Member.getUser().getEmail();
+        String token = jwtUtil.createToken(email , id, rolesJson, userName);
+        log.info(id + " " + rolesJson + " " + userName);
         Cookie aToken = new Cookie("ATOKEN", token);
         aToken.setHttpOnly(true);
         aToken.setSecure(true);
