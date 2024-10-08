@@ -44,18 +44,20 @@ if (userId) {
       <li v-for="alarm in alarmStore.alarms" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
-          <div>
+          <div class="notification-info">
             <p class="alarm-title">{{ alarm.title }}</p>
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
         <div class="right-side accept-bundle" v-if="alarm.type === 1">
-          <button @click="workspaceStore.acceptWorkspace(alarm.idx)">
-            수락
-          </button>
-          <button @click="workspaceStore.rejectWorkspace(alarm.idx)">
-            거절
-          </button>
+          <div class="btn-bundle">
+            <button @click="workspaceStore.acceptWorkspace(alarm.idx)" class="btn-accept">
+              수락
+            </button>
+            <button @click="workspaceStore.rejectWorkspace(alarm.idx)" class="btn-reject">
+              거절
+            </button>
+          </div>
           <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
         </div>
         <div class="right-side normal-alarm" v-else>
@@ -124,6 +126,12 @@ hr {
   margin: 10px 0;
 }
 
+.notification-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 ul {
   text-decoration: none;
   padding: 0;
@@ -185,5 +193,28 @@ button {
   height: 16px;
   display: block;
   color: #6b7280;
+}
+
+.btn-bundle {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 10px;
+  width: 60px;
+  .btn-accept{
+    background-color: #C6D2FD;
+    color: #28303F;
+    padding: 5px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  .btn-reject{
+    border: #cccccc;
+    padding: 5px;
+    color: #28303F;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 }
 </style>
