@@ -1,7 +1,6 @@
 package minionz.backend.scrum.meeting;
 
 import minionz.backend.scrum.meeting.model.Meeting;
-import minionz.backend.scrum.sprint.model.Sprint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
