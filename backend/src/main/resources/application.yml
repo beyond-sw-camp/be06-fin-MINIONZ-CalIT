@@ -4,7 +4,7 @@ server:
 address:
   domains: ${DOMAIN_ADDRESS}
 gemini:
-  api-key: ${OPENAI_API_KEY}
+  api-key: ${GEMINI_API_KEY}
 springdoc:
   swagger-ui:
     path: /swagger-ui
