@@ -1,7 +1,7 @@
 <script setup>
 import { inject, ref} from 'vue';
-import { useSprintStore} from "@/stores/scrum/useSprintStore";
-import { useSprintLabelStore} from "@/stores/scrum/useSprintLabelStore";
+import { useTaskStore } from "@/stores/scrum/useTaskStore";
+import { useTaskLabelStore } from "@/stores/scrum/useTaskLabelStore";
 import Multiselect from "vue-multiselect";
 import {timeInputUtils} from "@/utils/timeInputUtils";
 
@@ -11,21 +11,20 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = '스프린트 추가하기';
 contentsDescription.value = '스프린트를 추가해보세요!';
 
-const sprintStore = useSprintStore();
-const sprintLabelStore = useSprintLabelStore();
-const sprintName = ref('');
-// const sprintManager = ref('');
+const taskStore = useTaskStore();
+const taskLabelStore = useTaskLabelStore();
+const taskName = ref('');
 const participants = ref('');
 const selectedLabels = ref([]);
 const startTime = ref('');
 const endTime = ref('');
 
-const addSprint = () => {
-  sprintStore.addSprint({
-    sprintName: sprintName.value,
+const addTask = () => {
+  taskStore.addTask({
+    taskName: taskName.value,
     participants: participants.value,
   });
-  sprintName.value = '';
+  taskName.value = '';
   participants.value = '';
 };
 
@@ -44,17 +43,17 @@ const adjustTime = () => {
       <div class="input-wrap">
         <div>
           <div>
-            <label for="sprintName">Sprint 이름</label>
-            <input type="text" id="sprintName" v-model="sprintName" placeholder="Sprint 이름을 입력하세요">
+            <label for="taskName">Task 이름</label>
+            <input type="text" id="taskName" v-model="taskName" placeholder="Task 이름을 입력하세요">
           </div>
           <div>
-            <label for="sprintContent">Sprint 내용</label>
-            <input type="text" id="sprintContent" placeholder="Sprint 내용을 입력하세요" class="input-field">
+            <label for="taskContent">Task 내용</label>
+            <input type="text" id="taskContent" placeholder="Task 내용을 입력하세요" class="input-field">
           </div>
           <!--          <div>-->
           <!--            <label>스프린트 매니저</label>-->
           <!--            <multiselect-->
-          <!--                v-model="sprintManager"-->
+          <!--                v-model="TaskManager"-->
           <!--                :options="filteredUsers"-->
           <!--                placeholder="담당자를 선택해주세요"-->
           <!--                label="name"-->
@@ -62,8 +61,8 @@ const adjustTime = () => {
           <!--            ></multiselect>-->
           <!--          </div>-->
           <div>
-            <label for="sprintParticipation">참여자 추가</label>
-            <input type="text" id="sprintParticipation" placeholder="참여자를 검색해주세요" class="input-field">
+            <label for="taskParticipation">참여자 추가</label>
+            <input type="text" id="taskParticipation" placeholder="참여자를 검색해주세요" class="input-field">
             <ul>
               <li v-for="participant in participants" :key="participant">{{ participant }}</li>
             </ul>
@@ -80,7 +79,7 @@ const adjustTime = () => {
             <label>label 추가하기</label>
             <multiselect
                 v-model="selectedLabels"
-                :options="sprintLabelStore.getSprintLabel()"
+                :options="taskLabelStore.getTaskLabel()"
                 placeholder="label을 추가해주세요"
                 label="labelName"
                 track-by="labelId"
@@ -90,7 +89,7 @@ const adjustTime = () => {
         </div>
       </div>
       <div class="button-wrap">
-        <button @click="addSprint" class="add-workspace-btn">Sprint 추가</button>
+        <button @click="addTask" class="add-workspace-btn">Task 추가</button>
       </div>
     </div>
   </div>

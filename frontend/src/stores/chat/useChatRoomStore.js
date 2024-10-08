@@ -44,7 +44,7 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
     const fetchChatRooms = async (workspaceId) => {
         try {
             const response = await axiosInstance.get(`/api/chat/${workspaceId}/roomList`);
-            chatRoom.value = response.data;
+            chatRoom.value = response.data.result;
         } catch (error) {
             console.error('Error fetching chat rooms:', error);
         }

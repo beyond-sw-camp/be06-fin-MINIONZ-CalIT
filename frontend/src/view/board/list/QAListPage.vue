@@ -1,7 +1,6 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import { useQAStore} from "@/stores/board/useQAStore";
-import { workspaceData } from "@/static/workspaceData";
+import { useQAStore } from "@/stores/board/useQAStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import BoardList from "@/common/component/Board/BoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
@@ -9,20 +8,19 @@ import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} QA Board List` : 'QA Board List';
+contentsTitle.value = 'QA Board List';
 contentsDescription.value = 'QA 목록을 확인하세요!';
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const  qaStore = useQAStore();
+const qaStore = useQAStore();
 
-const totalPages = computed(() => Math.ceil((qaStore().value?.length || 0) / itemsPerPage));
+const totalPages = computed(() => Math.ceil((qaStore.getPostList().value?.length || 0) / itemsPerPage));
 
 const prevPage = () => {
   if (currentPage.value > 1) {

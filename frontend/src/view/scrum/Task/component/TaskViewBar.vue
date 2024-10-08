@@ -1,10 +1,13 @@
 <script setup>
-import { ref, watch } from 'vue';
-import {useRoute, useRouter} from 'vue-router';
+import { ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useSprintStore } from "@/stores/scrum/useSprintStore";
+import { VSelect } from "vuetify/components";
 
 const route = useRoute();
 const router = useRouter();
 const showAvatarGroup = ref(true);
+const workspaceId = route.params.workspaceId;
 
 watch(
     () => route.path,
@@ -14,18 +17,7 @@ watch(
     { immediate: true}
 )
 
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
-import user4 from '@/assets/icon/persona/user4.svg';
-
 const currentView = ref('board');
-const avatars = ref([
-  { src: user1, alt: 'User 1' },
-  { src: user2, alt: 'User 2' },
-  { src: user3, alt: 'User 3' },
-  { src: user4, alt: 'User 4' }
-]);
 
 const setView = (view) => {
   currentView.value = view;
@@ -34,10 +26,19 @@ const setView = (view) => {
 };
 
 const to = ref('kanban');
+
+const sprintStore = useSprintStore();
+const sprintOptions = ref([]);
+
+onMounted(async () => {
+  await sprintStore.getSprintList(workspaceId);
+  sprintOptions.value = sprintStore.sprints;
+});
 </script>
 
 <template>
   <div class="view-toggle-bar">
+    <VSelect :items="sprintOptions" item-text="sprintTitle" item-value="id" label="Select Sprint" @change="(sprintId) => console.log(sprintId)"/>
     <div class="view-toggle-buttons">
       <router-link
           :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/scrum/task/${currentView}` : to"
@@ -63,10 +64,10 @@ const to = ref('kanban');
       </router-link>
     </div>
 
-    <div v-if="showAvatarGroup" class="avatar-group">
-      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" />
-      <button class="add-avatar-btn">+</button>
-    </div>
+<!--    <div v-if="showAvatarGroup" class="avatar-group">-->
+<!--      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" />-->
+<!--      <button class="add-avatar-btn">+</button>-->
+<!--    </div>-->
   </div>
 </template>
 

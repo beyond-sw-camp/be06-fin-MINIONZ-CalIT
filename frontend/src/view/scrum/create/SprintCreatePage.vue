@@ -25,7 +25,6 @@ const participants = ref([]);
 const startDate = ref('');
 const endDate = ref('');
 const availableLabels = ref([]);
-// const selectedLabels = ref([]);
 const availableParticipants = ref([]);
 
 const addSprint = () => {
@@ -33,7 +32,7 @@ const addSprint = () => {
     workspaceId: workspaceId,
     sprintTitle: sprintTitle.value,
     sprintContents: sprintContent.value,
-    labels: '',
+    labels:[],
     participants: participants.value,
     startDate: startDate.value,
     endDate: endDate.value,

@@ -236,7 +236,7 @@ const routes = [
                                 component: () => import('@/view/scrum/meeting/MeetingListPage.vue')
                             },
                             {
-                                path: 'detail/:id',
+                                path: 'detail/:meetingId',
                                 name: 'BoardMeetingDetail',
                                 component: () => import('@/view/scrum/meeting/MeetingDetailPage.vue')
                             },
