@@ -1,20 +1,20 @@
 <script setup>
 import { ref, defineProps } from 'vue';
-import meeting from '@/assets/icon/schedule/meeting.svg';
+import issue from '@/assets/icon/schedule/meeting.svg';
 
-const props = defineProps(['meetings']);
-const scheduleItems = ref(props.meetings.map(meeting => ({
-  title: meeting.title,
-  time: new Date(meeting.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-  icon: meeting
-})));
+const props = defineProps(['issues']);
+const scheduleItems = ref(Array.isArray(props.issues) ? props.issues.map(issue => ({
+  title: issue.title,
+  time: new Date(issue.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  icon: issue
+})) : []);
 </script>
 
 <template>
   <div class="weekly-schedule">
     <p class="weekly-schedule-title">Weekly Schedule</p>
     <div v-for="(item, index) in scheduleItems" :key="index" class="schedule-item">
-      <img :src="meeting" alt="icon" class="schedule-icon" />
+      <img :src="issue" alt="icon" class="schedule-icon" />
       <div class="schedule-info">
         <div class="schedule-title">{{ item.title }}</div>
         <div class="schedule-time">{{ item.time }}</div>
