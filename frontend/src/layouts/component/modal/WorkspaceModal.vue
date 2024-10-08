@@ -51,7 +51,7 @@ onMounted(async () => {
           <li v-for="(workspaceItem, index) in workspace" :key="index">
             <div class="workspace-item">
               <router-link :to="'/workspace/' + workspaceItem.workspaceId + '/dashboard'"
-                           @click.native="workspaceStore.setWorkspaceId(workspaceItem.workspaceId)">
+                           @click="workspaceStore.setWorkspaceId(workspaceItem.workspaceId)">
                 <img :src="setPersona(workspaceItem.avatar)" alt="workspace">
                 <p>{{ workspaceItem.workspaceName }}</p>
               </router-link>
