@@ -3,7 +3,7 @@ server:
   forward-headers-strategy: framework
 address:
   domains: ${DOMAIN_ADDRESS}
-openai:
+gemini:
   api-key: ${OPENAI_API_KEY}
 springdoc:
   swagger-ui:
