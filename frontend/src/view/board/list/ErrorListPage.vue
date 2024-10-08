@@ -1,10 +1,10 @@
 <script setup>
-import { computed, inject, onMounted, ref } from 'vue';
-import { useErrorStore } from "@/stores/board/useErrorStore";
+import {computed, inject, onMounted, ref} from 'vue';
+import {useErrorStore} from '@/stores/board/useErrorStore';
 import Pagination from '@/common/component/PaginationComponent.vue';
-import BoardList from "@/common/component/Board/BoardList.vue";
-import SearchComponent from "@/common/component/SearchComponent.vue";
-import { useRoute } from "vue-router";
+import BoardList from '@/common/component/Board/BoardList.vue';
+import SearchComponent from '@/common/component/SearchComponent.vue';
+import {useRoute} from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -70,5 +70,4 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-
 </style>
