@@ -1,17 +1,16 @@
 <script setup>
 import {ref, computed, onMounted, defineProps, defineEmits} from 'vue';
 import {useRoute} from "vue-router";
-import {formatUtil, getWeekDaysUtil} from '@/utils/dateUtils';
-import {meetingData} from '@/static/meetingData';
+import { formatUtil, getWeekDaysUtil } from '@/utils/dateUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import {getWeekRange} from "@/utils/timeUtils";
+import { getWeekRange } from "@/utils/timeUtils";
 
 const props = defineProps({
   selectedWeek: {
     type: Array,
     required: true
-  }
+  },
 });
 
 const emit = defineEmits(['update:selectedWeek']);
@@ -75,15 +74,23 @@ const nextWeek = () => {
   emit('update:selectedWeek', [nextDate]);
 };
 
-const events = ref(meetingData.map(meeting => ({
-  id: meeting.id,
-  date: new Date(meeting.startDate),
-  title: meeting.title,
-  startDate: meeting.startDate,
-  endDate: meeting.endDate,
-  contents: meeting.contents,
-  participants: meeting.participants
-})));
+const events = ref([]);
+
+onMounted(async () => {
+  if (Array.isArray(props.data)) {
+    events.value = await Promise.all(props.data.map(async (meeting) => ({
+      id: meeting.id,
+      date: new Date(meeting.startDate),
+      title: meeting.title,
+      startDate: meeting.startDate,
+      endDate: meeting.endDate,
+      contents: meeting.contents,
+      participants: meeting.participants
+    })));
+  } else {``
+    events.value = [];
+  }
+});
 
 const eventsForDay = (day) => {
   return events.value.filter(event => formatUtil(event.date, 'yyyy-MM-dd') === formatUtil(day, 'yyyy-MM-dd'));

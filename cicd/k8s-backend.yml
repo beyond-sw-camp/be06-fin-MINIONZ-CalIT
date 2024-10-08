@@ -144,7 +144,7 @@ spec:
                   key: S3_BUCKET
             - name: GEMINI_API_KEY
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: calit-backend-secrets
                   key: GEMINI_API_KEY
       terminationGracePeriodSeconds: 10
@@ -320,7 +320,7 @@ spec:
                   key: S3_BUCKET
             - name: GEMINI_API_KEY
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: calit-backend-secrets
                   key: GEMINI_API_KEY
       terminationGracePeriodSeconds: 10

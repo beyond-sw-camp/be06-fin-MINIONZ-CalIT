@@ -1,12 +1,10 @@
 <script setup>
-import { inject, ref, onMounted, defineExpose } from 'vue';
+import { inject, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { VTextField } from 'vuetify/components';
+import { VTextField, VSelect } from 'vuetify/components';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
-// import { timeInputUtils } from '@/utils/timeInputUtils';
-// import SearchLabels from '@/common/component/search/SearchLabels.vue';
-import SearchFriends from '@/common/component/search/SearchFriends.vue';
+import { useSprintLabelStore } from '@/stores/scrum/useSprintLabelStore';
+import { useFriendsStore } from "@/stores/user/useFriendsStore";
 import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
@@ -16,66 +14,52 @@ contentsTitle.value = '스프린트 추가하기';
 contentsDescription.value = '스프린트를 추가해보세요!';
 
 const route = useRoute();
-const workSpaceId = route.params.workspaceId;
+const workspaceId = route.params.workspaceId;
 
 const sprintStore = useSprintStore();
-const workspaceStore = useWorkspaceStore();
+const friend = useFriendsStore();
 
 const sprintTitle = ref('');
 const sprintContent = ref('');
 const participants = ref([]);
-const selectedLabels = ref([]);
-const startData = ref('');
-const endData = ref('');
+const startDate = ref('');
+const endDate = ref('');
+const availableLabels = ref([]);
+// const selectedLabels = ref([]);
 const availableParticipants = ref([]);
 
 const addSprint = () => {
   sprintStore.addSprint({
-    workspaceId: workSpaceId,
+    workspaceId: workspaceId,
     sprintTitle: sprintTitle.value,
     sprintContents: sprintContent.value,
-    labels: selectedLabels.value,
+    labels: '',
     participants: participants.value,
-    startDate: startData.value,
-    endDate: endData.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
   });
-  router.push(`/workspace/${workSpaceId}/scrum/sprint/list`)
-};
-
-const adjustTime = () => {
-  if (startData.value && endData.value) {
-    const start = startData.value;
-    const end = endData.value;
-    if (start !== startData.value || end !== endData.value) {
-      startData.value = start;
-      endData.value = end;
-    }
-  }
+  router.push(`/workspace/${workspaceId}/scrum/sprint/list`)
 };
 
 const fetchParticipants = async () => {
-  await workspaceStore.getAllWorkspace();
-  const workspace = workspaceStore.workspace.value?.find(ws => ws.workspaceId === workSpaceId);
-  if (workspace) {
-    availableParticipants.value = workspace.participants;
+  await friend.getFriendsList(workspaceId);
+  if (friend.friends) {
+    availableParticipants.value = friend.friends.map(friend => friend.userName);
+  } else {
+    availableParticipants.value = [];
   }
 };
 
-onMounted(fetchParticipants);
+const fetchLabels = async () => {
+  const labelStore = useSprintLabelStore();
+  await labelStore.getSprintLabel(workspaceId);
+  availableLabels.value = labelStore.labels;
+};
 
-defineExpose({
-  sprintTitle,
-  sprintContent,
-  participants,
-  selectedLabels,
-  startData,
-  endData,
-  addSprint,
-  adjustTime,
-  availableParticipants
+onMounted(() => {
+  fetchParticipants();
+  fetchLabels();
 });
-
-// watch([startData, endData], adjustTime);
 </script>
 
 <template>
@@ -100,15 +84,18 @@ defineExpose({
             />
           </div>
           <div>
-            <SearchFriends
+            <label for="participants">참여자 선택</label>
+            <VSelect
                 v-model="participants"
-                :availableParticipants="availableParticipants"
+                :items="availableParticipants"
+                label="참여자 선택"
+                multiple
             />
           </div>
           <div>
             <label>시작 날짜</label>
             <VTextField
-                v-model="startData"
+                v-model="startDate"
                 label="시작 날짜"
                 type="datetime-local"
             />
@@ -116,18 +103,20 @@ defineExpose({
           <div>
             <label>종료 날짜</label>
             <VTextField
-                v-model="endData"
+                v-model="endDate"
                 label="종료 날짜"
                 type="datetime-local"
             />
           </div>
-<!--          <div>-->
-<!--            <label>라벨 추가하기</label>-->
-<!--            <SearchLabels-->
-<!--                v-model="selectedLabels"-->
-<!--                :workspace-id="workSpaceId"-->
-<!--            />-->
-<!--          </div>-->
+          <div>
+            <label>라벨 선택</label>
+            <VSelect
+                v-model="selectedLabels"
+                :items="availableLabels"
+                label="라벨 선택"
+                multiple
+                />
+          </div>
         </div>
       </div>
       <div class="button-wrap">
@@ -136,68 +125,6 @@ defineExpose({
     </div>
   </div>
 </template>
-
-<style scoped>
-.form-container {
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: 500;
-  margin: 0;
-}
-
-hr {
-  border: 1px solid #dfe5f1;
-  width: 100%;
-  margin: 10px 0;
-}
-
-label {
-  display: block;
-  font-weight: 400;
-  margin-top: 15px;
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.workspace-wrap {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.input-field {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-.add-workspace-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.add-workspace-btn:hover {
-  background-color: #93AAFD;
-}
-</style>
 
 <style scoped>
 .form-container {

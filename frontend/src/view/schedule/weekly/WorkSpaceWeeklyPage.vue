@@ -2,8 +2,8 @@
 import {inject, ref} from "vue";
 import { useWorkspaceDashboardStore } from "@/stores/workspace/useWorkspaceDashboardStore"
 import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vue";
-import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyScheduleComponent.vue";
-import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTask.vue";
+import WeeklyScheduleComponent from "@/view/schedule/weekly/component/WeeklyIssues.vue";
+import WeeklyTask from "@/view/schedule/weekly/component/WeeklyTasks.vue";
 import MiniCalendar from "@/view/schedule/weekly/component/MiniCalendar.vue";
 
 const contentsTitle = inject('contentsTitle');
