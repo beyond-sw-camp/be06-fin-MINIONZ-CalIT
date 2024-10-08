@@ -2,29 +2,16 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = "minionz/calit-frontend:latest"
-        IS_FRONTEND_CHANGED = 'false'
         PREV_DEPLOYMENT = ""
-        PREV_SERVICE = ""
+        PREV_FRONTEND_SERVICE = ""
+        PREV_BACKEND_SERVICE = ""
+        PREV_BACKEND_STICKY_SERVICE = ""
         PREV_INGRESS = ""
         DISCORD_WEBHOOK = credentials("DISCORD_WEBHOOK")
     }
 
     stages {
-        stage('Check for Frontend Changes') {
-            steps {
-                script {
-                    def changedFiles = sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim().split('\n')
-                    IS_FRONTEND_CHANGED = changedFiles.any { it.contains("frontend") }.toString()
-                    echo "Frontend changes: ${IS_FRONTEND_CHANGED}"
-                }
-            }
-        }
-
         stage('Build') {
-            when {
-                expression { IS_FRONTEND_CHANGED == 'true' }
-            }
-
             steps {
                 echo "Add Permission"
                 sh 'chmod +x /var/lib/jenkins/workspace/minionz_calit_frontend/frontend'
@@ -37,10 +24,6 @@ pipeline {
         }
 
         stage('Docker Build & Push') {
-            when {
-                expression { IS_FRONTEND_CHANGED == 'true' }
-            }
-
             steps {
                 script {
                     withCredentials([
@@ -60,10 +43,6 @@ pipeline {
         }
 
         stage('SSH Transfer and Kubernetes Deployment') {
-            when {
-                expression { IS_FRONTEND_CHANGED == 'true' }
-            }
-
             steps {
                 script {
                     sshPublisher(
