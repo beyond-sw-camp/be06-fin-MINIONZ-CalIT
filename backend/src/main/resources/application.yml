@@ -3,6 +3,8 @@ server:
   forward-headers-strategy: framework
 address:
   domains: ${DOMAIN_ADDRESS}
+gemini:
+  api-key: ${GEMINI_API_KEY}
 springdoc:
   swagger-ui:
     path: /swagger-ui

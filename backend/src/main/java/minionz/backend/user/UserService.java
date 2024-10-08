@@ -1,15 +1,17 @@
 package minionz.backend.user;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import minionz.backend.user.model.CustomSecurityUserDetails;
 import minionz.backend.user.model.EmailVerify;
 import minionz.backend.user.model.User;
 import minionz.backend.user.model.request.CreateUserRequest;
-import minionz.backend.user.model.request.EmailVerifyRequest;
-import minionz.backend.user.model.request.LoginUserRequest;
-import minionz.backend.user.model.request.UuidRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletResponse;
+import minionz.backend.utils.JwtUtil;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.UUID;
 
 @Service
@@ -19,6 +21,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmailVerifyService emailVerifyService;
     private final EmailVerifyRepository emailVerifyRepository;
+    private final JwtUtil jwtUtil;
 
     public boolean signupUser(CreateUserRequest createUserRequest) {
         User user = userRepository.findByLoginId(createUserRequest.getLoginId());
@@ -77,7 +80,7 @@ public class UserService {
             return null;
         }
 
-        if (bCryptPasswordEncoder.matches(loginuser.getPassword(),password)) {
+        if (bCryptPasswordEncoder.matches(loginuser.getPassword(), password)) {
             return null;
         }
 
@@ -93,5 +96,20 @@ public class UserService {
         }
 
         return user;
+    }
+
+    @Transactional
+    public void sendNewToken(CustomSecurityUserDetails userDetails, HttpServletResponse response) {
+        User user = userRepository.findByLoginId(userDetails.getLoginId());
+
+        String token = jwtUtil.createToken(user);
+        Cookie aToken = new Cookie("ATOKEN", token);
+        aToken.setHttpOnly(true);
+        aToken.setSecure(true);
+        aToken.setPath("/");
+        aToken.setMaxAge(60 * 60 * 100);
+        response.addCookie(aToken);
+
+        response.addHeader("Authorization", "Bearer " + token);
     }
 }
