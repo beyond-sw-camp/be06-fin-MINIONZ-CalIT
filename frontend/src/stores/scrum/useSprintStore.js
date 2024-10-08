@@ -5,9 +5,9 @@ import { defineStore } from 'pinia';
 export const useSprintStore = defineStore('sprintStore', () => {
     const sprints = ref([]);
 
-    const addSprint = async({workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate}) => {
+    const addSprint = async({workspaceId, sprintTitle, sprintContents, labels, participants, startDate, endDate}) => {
         try{
-            const response = await axiosInstance.post(`/api/sprint/${workspaceId}`, {workspaceId, sprintTitle, sprintContents, labels, participants, startData, endDate});
+            const response = await axiosInstance.post(`/api/sprint/${workspaceId}`, {workspaceId, sprintTitle, sprintContents, labels, participants, startDate, endDate});
             sprints.value.push(response.data.result);
         }
         catch (error){

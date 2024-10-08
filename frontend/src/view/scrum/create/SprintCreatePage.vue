@@ -1,9 +1,10 @@
 <script setup>
-import {inject, ref, onMounted} from 'vue';
-import {useRoute} from 'vue-router';
-import {VTextField, VSelect} from 'vuetify/components';
-import {useSprintStore} from '@/stores/scrum/useSprintStore';
-import {useFriendsStore} from "@/stores/user/useFriendsStore";
+import { inject, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { VTextField, VSelect } from 'vuetify/components';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { useSprintLabelStore } from '@/stores/scrum/useSprintLabelStore';
+import { useFriendsStore } from "@/stores/user/useFriendsStore";
 import router from "@/router";
 
 const contentsTitle = inject('contentsTitle');
@@ -21,9 +22,10 @@ const friend = useFriendsStore();
 const sprintTitle = ref('');
 const sprintContent = ref('');
 const participants = ref([]);
-const selectedLabels = ref([]);
-const startData = ref('');
-const endData = ref('');
+const startDate = ref('');
+const endDate = ref('');
+const availableLabels = ref([]);
+// const selectedLabels = ref([]);
 const availableParticipants = ref([]);
 
 const addSprint = () => {
@@ -31,10 +33,10 @@ const addSprint = () => {
     workspaceId: workspaceId,
     sprintTitle: sprintTitle.value,
     sprintContents: sprintContent.value,
-    labels: selectedLabels.value,
+    labels: '',
     participants: participants.value,
-    startDate: startData.value,
-    endDate: endData.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
   });
   router.push(`/workspace/${workspaceId}/scrum/sprint/list`)
 };
@@ -48,7 +50,16 @@ const fetchParticipants = async () => {
   }
 };
 
-onMounted(fetchParticipants);
+const fetchLabels = async () => {
+  const labelStore = useSprintLabelStore();
+  await labelStore.getSprintLabel(workspaceId);
+  availableLabels.value = labelStore.labels;
+};
+
+onMounted(() => {
+  fetchParticipants();
+  fetchLabels();
+});
 </script>
 
 <template>
@@ -78,12 +89,13 @@ onMounted(fetchParticipants);
                 v-model="participants"
                 :items="availableParticipants"
                 label="참여자 선택"
+                multiple
             />
           </div>
           <div>
             <label>시작 날짜</label>
             <VTextField
-                v-model="startData"
+                v-model="startDate"
                 label="시작 날짜"
                 type="datetime-local"
             />
@@ -91,10 +103,19 @@ onMounted(fetchParticipants);
           <div>
             <label>종료 날짜</label>
             <VTextField
-                v-model="endData"
+                v-model="endDate"
                 label="종료 날짜"
                 type="datetime-local"
             />
+          </div>
+          <div>
+            <label>라벨 선택</label>
+            <VSelect
+                v-model="selectedLabels"
+                :items="availableLabels"
+                label="라벨 선택"
+                multiple
+                />
           </div>
         </div>
       </div>
