@@ -10,6 +10,9 @@ springdoc:
     path: /swagger-ui
     disable-swagger-default-url: true
 spring:
+#  batch:
+#    job:
+#      name: reminderJob
   profiles:
     include: oauth
   datasource:
