@@ -6,6 +6,7 @@ import minionz.backend.board.error_board.model.ErrorBoard;
 import minionz.backend.board.error_comment.model.ErrorComment;
 import minionz.backend.board.qa_board.model.QaBoard;
 import minionz.backend.board.qa_comment.model.QaComment;
+import minionz.backend.chat.chat_bot.model.ChatBot;
 import minionz.backend.chat.chat_participation.model.ChatParticipation;
 import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.task_participation.model.TaskParticipation;
@@ -43,6 +44,10 @@ public class User {
     private String provider; // google
     private String providerId; // google 유저 고유 ID
     private Integer persona;
+
+    // ChatBot 1 : 1
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ChatBot> chatBots = new ArrayList<>();
 
     // ChatParticipation 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

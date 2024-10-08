@@ -1,12 +1,19 @@
 package minionz.backend.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
+import minionz.backend.user.model.CustomSecurityUserDetails;
+import minionz.backend.user.model.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtil {
@@ -56,4 +63,34 @@ public class JwtUtil {
                 .signWith(secretKey)
                 .compact();
     }
+
+    public String createToken(User user){
+        CustomSecurityUserDetails customUserDetails = new CustomSecurityUserDetails(user);
+
+        Collection<? extends GrantedAuthority> authorities = customUserDetails.getAuthorities();
+
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rolesJson = "[]";
+
+        try {
+            rolesJson = objectMapper.writeValueAsString(roles);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return Jwts.builder()
+                .claim("loginId", user.getLoginId())
+                .claim("idx", user.getUserId())
+                .claim("role", rolesJson)
+                .claim("userName", user.getUserName())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 100000))
+                .signWith(secretKey)
+                .compact();
+    }
+    
 }
