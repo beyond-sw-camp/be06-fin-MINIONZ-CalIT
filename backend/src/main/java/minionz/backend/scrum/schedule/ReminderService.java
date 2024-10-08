@@ -53,7 +53,7 @@ public class ReminderService {
             }
 
             if (task.getEndDate().minusHours(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendScheduledEventsToClients(task.getTaskParticipations().stream().map(taskParticipation -> taskParticipation.getUser().getUserId()).toList(), 10L, task.getTaskId());
+                alarmService.sendScheduledEventsToClients(task.getTaskParticipations().stream().map(taskParticipation -> taskParticipation.getUser().getUserId()).toList(), 8L, task.getTaskId());
             }
         }
     }
@@ -66,11 +66,11 @@ public class ReminderService {
 
         for (Sprint sprint : upcomingSprints) {
             if (sprint.getEndDate().minusDays(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendScheduledEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 9L, sprint.getSprintId());
+                alarmService.sendScheduledEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 10L, sprint.getSprintId());
             }
 
             if (sprint.getEndDate().minusDays(2).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
-                alarmService.sendScheduledEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 8L, sprint.getSprintId());
+                alarmService.sendScheduledEventsToClients(sprint.getSprintParticipations().stream().map(sprintParticipation -> sprintParticipation.getUser().getUserId()).toList(), 9L, sprint.getSprintId());
             }
         }
     }

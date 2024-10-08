@@ -25,7 +25,7 @@ public class AlarmController {
   // 클라이언트 연결
   @GetMapping("/connect/{receiverId}")
   public SseEmitter connect(@PathVariable Long receiverId) {
-
+    System.out.println("연결 성공");
     return alarmService.addEmitter(receiverId);
   }
 
