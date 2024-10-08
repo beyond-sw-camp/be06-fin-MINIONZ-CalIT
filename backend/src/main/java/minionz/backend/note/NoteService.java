@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.note.model.Note;
+import minionz.backend.note.model.response.GetNoteAllResponse;
 import minionz.backend.note.model.response.GetNoteResponse;
 import minionz.backend.scrum.meeting.MeetingRepository;
 import minionz.backend.scrum.meeting.model.Meeting;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +52,19 @@ public class NoteService {
             // 변경된 내용 저장
             noteRepository.save(note);
         }
+    }
+
+    public Page<GetNoteAllResponse> readAll(int page, int size)  {
+
+
+       Page<Note> result = noteRepository.findAll(PageRequest.of(page,size));
+        Page<GetNoteAllResponse> getNoteAllResponses = result.map(note-> {
+
+            return GetNoteAllResponse.builder()
+                    .noteContent(note.getNoteContents())
+                    .build();
+        });
+        return getNoteAllResponses;
     }
 
 }

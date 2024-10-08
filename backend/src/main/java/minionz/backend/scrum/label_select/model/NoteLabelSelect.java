@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.note.model.Note;
 import minionz.backend.scrum.label.model.NoteLabel;
+import minionz.backend.scrum.meeting.model.Meeting;
 
 
 @Getter
@@ -22,8 +23,9 @@ public class NoteLabelSelect {
     @JoinColumn(name = "note_label_id")
     private NoteLabel noteLabel;
 
+
     // NoteLabelSelect : Note = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "note_id")
-    private Note note;
+    @JoinColumn(name = "meeting_id")
+    private Meeting meeting;
 }

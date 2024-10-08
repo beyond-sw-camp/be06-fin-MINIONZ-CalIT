@@ -9,4 +9,5 @@ public class Participant {
     private Long id;
     private String userName;
     private Boolean isManager;
+    private Integer persona;
 }
