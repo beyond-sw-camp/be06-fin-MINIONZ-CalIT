@@ -19,7 +19,7 @@ watchEffect(async () => {
     workspaceName.value = 'My Space';
   } else {
     try {
-      const response = await axiosInstance.get(`/api/workspace/${route.params.workspaceId}`);
+      const response = await axiosInstance.get(`/api/workspace/my/all`);
       workspaceName.value = response.data.workspaceName || 'Workspace';
     } catch (error) {
       console.error('Failed to fetch workspace name', error);

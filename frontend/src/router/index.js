@@ -341,7 +341,7 @@ router.beforeEach(async (to, from, next) => {
 
     if (to.params.workspaceId) {
         try {
-            const response = await axiosInstance.get(`/api/workspace/${to.params.workspaceId}`, { withCredentials: true });
+            const response = await axiosInstance.get(`/api/workspace/my/all`);
             if (response.data && response.data.result) proceed();
         } catch (error) {
             console.error('Failed to fetch workspace details', error);

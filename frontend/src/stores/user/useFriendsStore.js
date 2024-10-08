@@ -17,7 +17,7 @@ export const useFriendsStore = defineStore('friendsStore', () => {
 
     const getFriendsList = async (workspaceId) => {
         try {
-            const response = await axiosInstance.get(`/api/search?workspaceuser=${workspaceId}`);
+            const response = await axiosInstance.get(`/api/search/workspaceuser?workspaceId=${workspaceId}`);
             friends.value = response.data.result;
         } catch (error) {
             console.error('Error fetching friends:', error);

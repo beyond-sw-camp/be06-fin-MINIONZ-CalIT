@@ -3,7 +3,7 @@ import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from "pinia";
 import { useAlarmStore } from "@/stores/alarm/useAlarmStore";
 
-export const useWorkspaceStore = defineStore('workspaceStore', async (id) => {
+export const useWorkspaceStore = defineStore('workspaceStore', () => {
     const alarmStore = useAlarmStore();
     const workspace = ref([]);
     const workspaceId = ref(null);
@@ -27,6 +27,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', async (id) => {
     const getAllWorkspace = async () => {
         try {
             const response = await axiosInstance.get('/api/workspace/my/all', {withCredentials: true});
+            workspace.value = response.data.result;
             return response.data.result;
         } catch (error) {
             console.error('Failed to fetch workspace', error);
@@ -59,26 +60,15 @@ export const useWorkspaceStore = defineStore('workspaceStore', async (id) => {
     }
 
     // api 아님 라우터에서 받은 정보 셋팅해주는 함수
-    let allWorkspaces = [];
-    try {
-        allWorkspaces = await getAllWorkspace();
-        workspace.value = allWorkspaces;
-    } catch (error) {
-        console.error('Failed to fetch all workspaces', error);
-    }
-
-    let selectedWorkspace = null;
-    if (allWorkspaces.length > 0) {
-        selectedWorkspace = allWorkspaces.find(ws => ws.workspaceId === id);
+    const setWorkspaceId = async (id) => {
+        await getAllWorkspace();
+        workspaceId.value = id;
+        const selectedWorkspace = workspace.value.find(ws => ws.workspaceId === id);
         if (selectedWorkspace) {
             workspaceName.value = selectedWorkspace.workspaceName;
         } else {
-            console.error(`Workspace with id ${id} not found`);
             workspaceName.value = '';
         }
-    } else {
-        console.error('No workspaces available');
-        workspaceName.value = '';
     }
 
     // 워크스페이스 수락
@@ -110,7 +100,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', async (id) => {
         getAllWorkspace,
         updateWorkspace,
         deleteWorkspace,
-        allWorkspaces,
+        setWorkspaceId,
         acceptWorkspace,
         rejectWorkspace
     };

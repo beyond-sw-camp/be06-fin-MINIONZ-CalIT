@@ -2,12 +2,16 @@
 import {inject, ref} from 'vue';
 import {useFriendsStore} from '@/stores/user/useFriendsStore';
 import {axiosInstance} from "@/utils/axiosInstance";
+import { Notyf } from 'notyf';
+import {useRouter} from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
 contentsTitle.value = 'WorkSpace 추가하기';
 contentsDescription.value = 'WorkSpace를 추가해보세요!';
+const notyf = new Notyf();
+const router = useRouter();
 
 const friendStore = useFriendsStore();
 const workspaceName = ref('');
@@ -50,9 +54,12 @@ const addWorkspace = async ({workspaceName, participants}) => {
     console.log('Sending request to API with:', {workspaceName, participants});
     const response = await axiosInstance.post('/api/workspace', {workspaceName, participants});
     console.log('API response:', response.data);
+    notyf.success('WorkSpace가 추가되었습니다.');
+    await router.push('/my/dashboard');
     return response.data;
   } catch (error) {
     console.error('Failed to add workspace', error);
+    notyf.error('WorkSpace 추가에 실패했습니다.');
     throw error;
   }
 }
