@@ -9,7 +9,10 @@ import minionz.backend.scrum.schedule.response.ReadMonthlyResponse;
 import minionz.backend.scrum.schedule.response.ReadWeeklyResponse;
 import minionz.backend.user.model.CustomSecurityUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/schedule")

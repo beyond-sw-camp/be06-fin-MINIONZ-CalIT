@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import minionz.backend.common.BaseEntity;
 import minionz.backend.scrum.label_select.model.SprintLabelSelect;
-import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.meeting.model.Meeting;
-
 import minionz.backend.scrum.sprint_participation.model.SprintParticipation;
+import minionz.backend.scrum.task.model.Task;
 import minionz.backend.scrum.workspace.model.Workspace;
 
 import java.time.LocalDateTime;

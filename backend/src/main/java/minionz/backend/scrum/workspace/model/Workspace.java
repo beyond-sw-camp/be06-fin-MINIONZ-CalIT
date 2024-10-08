@@ -2,15 +2,13 @@ package minionz.backend.scrum.workspace.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import minionz.backend.board.error_board.model.ErrorBoard;
 import minionz.backend.board.qa_board.model.QaBoard;
 import minionz.backend.scrum.issue.model.Issue;
 import minionz.backend.scrum.label.model.NoteLabel;
-import minionz.backend.scrum.label.model.TaskLabel;
-
-import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.label.model.SprintLabel;
+import minionz.backend.scrum.label.model.TaskLabel;
+import minionz.backend.scrum.sprint.model.Sprint;
 import minionz.backend.scrum.workspace_participation.model.WorkspaceParticipation;
 
 import java.util.ArrayList;

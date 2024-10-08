@@ -2,7 +2,6 @@ package minionz.backend.scrum.task.model.request;
 
 import lombok.Builder;
 import lombok.Getter;
-import minionz.backend.scrum.sprint.model.response.Participant;
 import minionz.backend.scrum.task.model.TaskLevel;
 
 import java.time.LocalDateTime;

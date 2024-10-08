@@ -2,7 +2,6 @@ package minionz.backend.scrum.schedule.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import minionz.backend.scrum.sprint.model.response.Participant;
 
 @Builder
 @Getter

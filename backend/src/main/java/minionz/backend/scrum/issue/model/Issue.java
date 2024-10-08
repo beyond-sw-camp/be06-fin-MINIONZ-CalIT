@@ -7,7 +7,6 @@ import minionz.backend.scrum.workspace.model.Workspace;
 import minionz.backend.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter

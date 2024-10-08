@@ -1,6 +1,7 @@
 package minionz.backend.scrum.workspace.model.response;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder

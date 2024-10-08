@@ -2,8 +2,8 @@ package minionz.backend.scrum.workspace_participation.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import minionz.backend.user.model.User;
 import minionz.backend.scrum.workspace.model.Workspace;
+import minionz.backend.user.model.User;
 
 @Getter
 @Setter
