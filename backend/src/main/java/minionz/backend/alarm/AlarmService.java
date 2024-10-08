@@ -17,11 +17,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.data.domain.Sort;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
 public class AlarmService {
 
+    private final Map<Long, Boolean> emitterStatus = new ConcurrentHashMap<>();
     private final Map<Long, List<Alarm>> pendingAlarms = new HashMap<>();
     private final Map<String, SseEmitter> emitters = new HashMap<>();
     private final UserRepository userRepository;
@@ -96,11 +98,13 @@ public class AlarmService {
         userAlarmRepository.save(userAlarm);
 
         // 연결된 경우
-        if (emitter != null) {
+        if (emitter != null && emitterStatus.getOrDefault(receiver.getUserId(), false)) {
             try {
                 emitter.send(SseEmitter.event().name("message").data(jsonData));
+                System.out.println("알람 전송 완료");
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
+                emitterStatus.remove(receiver.getUserId()); // 상태도 제거
             }
         } else {
             // 연결되지 않은 경우, 알림 저장
@@ -138,6 +142,8 @@ public class AlarmService {
     public SseEmitter addEmitter(Long receiverId) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emitters.put(String.valueOf(receiverId), emitter);
+        emitterStatus.put(receiverId, true); // 상태를 true로 초기화
+
 
         // 기존 보관된 알림 확인
         List<Alarm> alarms = pendingAlarms.get(receiverId);
@@ -148,13 +154,20 @@ public class AlarmService {
                     emitter.send(SseEmitter.event().name("message").data(message));
                 } catch (IOException e) {
                     emitters.remove(receiverId);
+                    emitterStatus.remove(receiverId); // 상태 제거
                 }
             });
             pendingAlarms.remove(receiverId); // 보낸 후 보관 목록에서 제거
         }
 
-        emitter.onCompletion(() -> emitters.remove(receiverId));
-        emitter.onTimeout(() -> emitters.remove(receiverId));
+        emitter.onCompletion(() -> {
+            emitters.remove(receiverId);
+            emitterStatus.remove(receiverId); // 상태 제거
+        });
+        emitter.onTimeout(() -> {
+            emitters.remove(receiverId);
+            emitterStatus.remove(receiverId); // 상태 제거
+        });
         return emitter;
     }
 
