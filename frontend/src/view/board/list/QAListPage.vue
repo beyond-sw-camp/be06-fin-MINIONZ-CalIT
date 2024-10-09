@@ -49,17 +49,23 @@ const deleteItem = (item) => {
 
 <template>
   <div class="board-list-container">
-    <div class="header">
-      <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
+    <div v-if="qaStore.getPostList().value && qaStore.getPostList().value.length > 0">
+      <div class="header">
+        <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
+      </div>
+      <BoardList :items="qaStore" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
+      <Pagination
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          @prev-page="prevPage"
+          @next-page="nextPage"
+          @go-to-page="goToPage"
+      />
+  </div>
+    <div v-else>
+      <p>QA를 추가하고 관리를 시작해보세요!</p>
+      <router-link :to="`/workspace/${workspaceId}/board/qa/create`">QA 추가하기</router-link>
     </div>
-    <BoardList :items="qaStore" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
-    <Pagination
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-        @prev-page="prevPage"
-        @next-page="nextPage"
-        @go-to-page="goToPage"
-    />
   </div>
 </template>
 

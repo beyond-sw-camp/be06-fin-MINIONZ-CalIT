@@ -1,13 +1,24 @@
 <script setup>
-import pdfIcon from "@/assets/icon/chatIcon/pdf.svg";
-import imgIcon from "@/assets/icon/chatIcon/img.svg";
-import docsIcon from "@/assets/icon/chatIcon/docs.svg";
-import codeIcon from "@/assets/icon/chatIcon/code.svg";
+import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import pdfIcon from '@/assets/icon/chatIcon/pdf.svg';
+import imgIcon from '@/assets/icon/chatIcon/img.svg';
+import docsIcon from '@/assets/icon/chatIcon/docs.svg';
+import codeIcon from '@/assets/icon/chatIcon/code.svg';
 import downloadIcon from '@/assets/icon/chatIcon/download.svg';
-import { chat } from '@/static/chatData';
-// import { ref } from "vue";
+import { useChatMessageStore } from '@/stores/chat/useChatMessageStore';
 
-const files= chat.filter((item) => item.messageType === 'FILE').map(item => item.file);
+const route = useRoute();
+const chatroomId = route.params.chatroomId;
+const chatMessageStore = useChatMessageStore();
+let files = [];
+
+const fetchFiles = async () => {
+  const chat = route.path.endsWith('/chat') ? [] : (await chatMessageStore.fetchChatMessages(chatroomId))?.file || [];
+  files = chat.filter((item) => item.messageType === 'FILE').map(item => item.file);
+};
+
+onMounted(fetchFiles);
 
 const getFileIcon = (fileType) => {
   switch (fileType) {
@@ -24,8 +35,6 @@ const getFileIcon = (fileType) => {
       return pdfIcon;
   }
 };
-
-// const totalFiles = files.length;
 </script>
 
 <template>

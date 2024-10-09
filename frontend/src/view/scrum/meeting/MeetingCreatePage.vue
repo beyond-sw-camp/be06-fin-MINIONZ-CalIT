@@ -1,12 +1,12 @@
 <script setup>
-import {useRoute} from 'vue-router';
-import {computed, inject, ref } from 'vue';
-import {useUserStore} from "@/stores/user/useUserStore";
-import {useMeetingStore} from "@/stores/scrum/useMeetingStore";
+import { useRoute } from 'vue-router';
+import { inject, ref } from 'vue';
+// import {useUserStore} from "@/stores/user/useUserStore";
+import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 import { timeInputUtils } from '@/utils/timeInputUtils';
 import { setPersona } from "@/utils/personaUtils";
+import router from "@/router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -16,10 +16,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Meeting Create';
 contentsDescription.value = '회의를 만들어 보세요!';
 
-const userStore = useUserStore();
 const meetingStore = useMeetingStore();
-const userId = userStore.user.value.id;
-const loggedInUser = computed(() => userStore.user.value);
 const meetingTitle = ref('회의 제목');
 const meetingDescription = ref('회의 상세 설명');
 const startTime = ref('');
@@ -50,7 +47,8 @@ const addMeeting = () => {
 };
 
 const addNote = () => {
-  isQuillVisible.value = true;
+  addMeeting();
+  router.push(`/workspace/${workspaceId}/scrum/meeting/edit`);
 };
 
 const rightSideOn = (id) => {
@@ -97,18 +95,18 @@ const rightSideOn = (id) => {
           </div>
 
         </div>
-        <div class="author-section">
-          <div class="author">
-          <span class="column">
-            <i class="user-editor column-icon"></i>
-            작성자
-          </span>
-            <div class="user-profile">
-              <img :src="setPersona(userId)" alt="작성자">
-              <span>{{ loggedInUser?.userName }}</span>
-            </div>
-          </div>
-        </div>
+<!--        <div class="author-section">-->
+<!--          <div class="author">-->
+<!--          <span class="column">-->
+<!--            <i class="user-editor column-icon"></i>-->
+<!--            작성자-->
+<!--          </span>-->
+<!--            <div class="user-profile">-->
+<!--              <img :src="setPersona(userId)" alt="작성자">-->
+<!--              <span>{{ loggedInUser?.userName }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
 
         <div class="author-section">
           <div class="participants">
@@ -119,7 +117,7 @@ const rightSideOn = (id) => {
             <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
             <div class="users-list">
               <div class="user-profile" v-for="participant in participants" :key="participant.id">
-                <img :src="participant.avatar" alt="참여자">
+                <img :src="setPersona(participant.persona)" alt="참여자">
                 <span>{{ participant.username }}</span>
               </div>
             </div>

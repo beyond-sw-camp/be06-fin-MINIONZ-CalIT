@@ -1,18 +1,18 @@
 <script setup>
-import {ref, defineProps, onMounted, onBeforeUnmount} from 'vue';
-import {useChatMessageStore} from '@/stores/chat/useChatMessageStore';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useChatMessageStore } from '@/stores/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
 import SockJS from 'sockjs-client';
-import {Stomp} from '@stomp/stompjs';
+import { Stomp } from '@stomp/stompjs';
+import { useUserStore } from "@/stores/user/useUserStore";
+import { useRoute } from "vue-router";
 
-const props = defineProps({
-  chatroomId: Number,
-  userId: Number,
-  userName: String,
-});
+const userStore = useUserStore();
+const userId = userStore.user.value.idx;
+const userName = userStore.user.value.userName;
 
 const newMessage = ref('');
 const messages = ref([]);
@@ -20,10 +20,16 @@ const stompClient = ref(null);
 const fileInput = ref(null);
 
 const chatMessageStore = useChatMessageStore();
+const route = useRoute();
+const chatroomId = route.params.chatroomId;
+
 
 onMounted(async () => {
   // Fetch initial chat messages
-  messages.value = await chatMessageStore.fetchChatMessages(props.chatroomId);
+  messages.value = await chatMessageStore.fetchChatMessages(chatroomId);
+  console.log(chatroomId);
+  console.log('Initial messages:', messages.value);
+  console.log(chatMessageStore.fetchChatMessages(chatroomId));
 
   // WebSocket 연결 설정
   const socket = new SockJS('http://localhost:8080/chat');
@@ -33,13 +39,13 @@ onMounted(async () => {
   stompClient.value.connect({}, (frame) => {
     console.log('Connected: ' + frame);
 
-    stompClient.value.subscribe(`/sub/room/${props.chatroomId}`, (messageOutput) => {
+    stompClient.value.subscribe(`/sub/room/${chatroomId}`, (messageOutput) => {
       console.log('messageOutput: ' + messageOutput);
 
       const receivedMessage = JSON.parse(messageOutput.body);
       if (receivedMessage) {
         messages.value.push(receivedMessage);
-        chatMessageStore.addMessage(receivedMessage); // Store에 메시지 추가
+        chatMessageStore.sendMessage(receivedMessage); // Store에 메시지 추가
       }
     });
   }, (error) => {
@@ -55,18 +61,28 @@ onBeforeUnmount(() => {
 });
 
 const sendMessage = async () => {
-  if (stompClient.value && stompClient.value.connected && newMessage.value.trim() !== '') {
-    const messagePayload = {
-      chatRoomId: props.chatroomId,
-      userId: props.userId,
-      userName: props.userName,
-      messageContents: newMessage.value,
-    };
-    stompClient.value.send(`/pub/room/${props.chatroomId}/send`, {}, JSON.stringify(messagePayload));
-    newMessage.value = ''; // 메시지 전송 후 입력 필드 초기화
-  } else {
-    console.error('STOMP client is not connected or message is empty');
+  if (!stompClient.value || !stompClient.value.connected) {
+    console.error('STOMP client is not connected');
+    return;
   }
+
+  if (newMessage.value.trim() === '') {
+    console.error('Message is empty');
+    return;
+  }
+
+  const messagePayload = {
+    chatRoomId: chatroomId,
+    userId: userId,
+    userName: userName,
+    messageContents: newMessage.value,
+  };
+
+  console.log('Sending message:', messagePayload); // 디버깅 로그 추가
+
+  stompClient.value.send(`/pub/room/${chatroomId}/send`, {}, JSON.stringify(messagePayload));
+  console.log('Message sent:', newMessage.value); // 디버깅 로그 추가
+  newMessage.value = ''; // 메시지 전송 후 입력 필드 초기화
 };
 
 const triggerFileInput = () => {
@@ -78,7 +94,7 @@ const triggerFileInput = () => {
   <div class="chat-container">
     <div class="chat-header">
       <img :src="space3" alt="img">
-      <p>{{ props.userName }}</p>
+      <p>{{ userName }}</p>
     </div>
 
     <div class="chat-messages">
@@ -87,8 +103,9 @@ const triggerFileInput = () => {
             v-for="(message, index) in messages"
             :key="index"
             :message="message"
-            :isOwnMessage="message.userId === props.userId"
-        />
+            :isOwnMessage="message.senderId === userId"
+            :created-at="message.createdAt"
+            :message-contents="message.messageContents"/>
       </div>
     </div>
 

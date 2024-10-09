@@ -16,12 +16,12 @@ contentsTitle.value = 'Error List';
 contentsDescription.value = 'Error 목록을 확인하세요!';
 
 const errorStore = useErrorStore();
-const postList = computed(() => errorStore.postList);
+const postList = computed(() => errorStore.getPostList(currentPage, itemsPerPage).value);
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const totalPages = computed(() => Math.ceil((postList.value.length || 0) / itemsPerPage));
+const totalPages = computed(() => Math.ceil((postList.value?.length || 0) / itemsPerPage));
 
 const prevPage = () => {
   if (currentPage.value > 1) {

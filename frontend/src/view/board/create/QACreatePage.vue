@@ -15,10 +15,6 @@ const rightSideVisible = ref(false);
 const activeComponentId = ref('');
 const participants = ref([]);
 
-// const updateParticipants = (newParticipants) => {
-//   participants.value = newParticipants;
-// };
-
 const rightSideOn = (componentId) => {
   activeComponentId.value = componentId;
   rightSideVisible.value = true;

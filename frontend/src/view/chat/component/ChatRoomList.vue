@@ -4,17 +4,16 @@ import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
 import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
+import {setPersona} from "@/utils/personaUtils";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
 const chatRoomStore = useChatRoomStore();
+
 const chatRoom = computed(() => chatRoomStore.chatRoom);
-onMounted(() => {
-  console.log('Fetching chat rooms for workspace:', workspaceId);
-  chatRoomStore.fetchChatRooms(workspaceId).then(() => {
-    console.log('Chat rooms fetched:', chatRoomStore.chatRoom);
-  });
+onMounted(async () => {
+  await chatRoomStore.fetchChatRooms(workspaceId);
 });
 
 const showModal = ref(false);
@@ -32,13 +31,13 @@ const closeModal = async () => {
   <div class="message-list-container">
     <div class="message-header">
       <p>Messages
-        <span class="badge">{{ chatRoom }}</span>
+        <span class="badge">2</span>
       </p>
       <button class="new-message-button" @click="openModal">+</button>
     </div>
-    <div class="message-list" v-if="chatRoom.value && chatRoom.value.length">
-      <router-link :to="`/workspace/${workspaceId}/chat/` + room.chatroomId" class="message-item" v-for="(room) in chatRoom.value" :key="room.id">
-        <img :src="room.profilePic" alt="profile" class="profile-pic"/>
+    <div class="message-list" v-if="chatRoom && chatRoom.length">
+      <router-link :to="`/workspace/${workspaceId}/chat/` + room.chatroomId" class="message-item" v-for="(room) in chatRoom" :key="room.id">
+        <img :src="setPersona(2)" alt="profile" class="profile-pic"/>
         <div class="message-info">
           <div class="message-item-top">
             <span class="user-name">{{ room.chatRoomName }}</span>

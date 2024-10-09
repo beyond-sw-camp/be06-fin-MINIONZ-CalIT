@@ -4,6 +4,8 @@ import { defineStore } from 'pinia';
 
 export const useSprintStore = defineStore('sprintStore', () => {
     const sprints = ref([]);
+    const sprintId = ref(null);
+    const sprintTitle = ref('');
 
     const addSprint = async({workspaceId, sprintTitle, sprintContents, labels, participants, startDate, endDate}) => {
         try{
@@ -65,6 +67,17 @@ export const useSprintStore = defineStore('sprintStore', () => {
         }
     }
 
+    const setSprintId = async (id) => {
+        await getSprintList();
+        sprintId.value = id;
+        const selectedSprint = sprints.value.find(sp => sp.sprintId === id);
+        if (selectedSprint) {
+            sprintTitle.value = selectedSprint.sprintTitle;
+        } else {
+            sprintTitle.value = '';
+        }
+    }
+
     return {
         sprints,
         addSprint,
@@ -72,6 +85,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
         getSprintList,
         updateSprint,
         updateSprintState,
-        deleteSprint
+        deleteSprint,
+        setSprintId
     }
 });

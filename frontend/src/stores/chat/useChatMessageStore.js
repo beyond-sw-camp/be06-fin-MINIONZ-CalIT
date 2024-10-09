@@ -1,6 +1,6 @@
-import { axiosInstance } from "@/utils/axiosInstance";
-import { defineStore} from "pinia";
-import { setPersona } from "@/utils/personaUtils";
+import {axiosInstance} from "@/utils/axiosInstance";
+import {defineStore} from "pinia";
+// import {setPersona} from "@/utils/personaUtils";
 
 export const useChatMessageStore = defineStore('chatMessage', () => {
     //[MESSAGE] 채팅 보내기 /room/{chatRoomId}/send
@@ -43,11 +43,7 @@ export const useChatMessageStore = defineStore('chatMessage', () => {
     const fetchChatMessages = async (chatroomId) => {
         try {
             const response = await axiosInstance.get(`/api/message/${chatroomId}`);
-            const messages = response.data.result.map(message => {
-                const persona = setPersona(message.persona);
-                return {...message, persona};
-            });
-            return messages;
+            return response.data.result;
         } catch (error) {
             console.error(error);
             return null;

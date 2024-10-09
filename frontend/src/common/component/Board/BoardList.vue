@@ -19,10 +19,6 @@ defineProps({
   <table class="board-table">
     <thead>
     <tr>
-<!--      <th>-->
-<!--        <input type="checkbox" id="check-all"/>-->
-<!--        <label for="check-all" class="check-box"></label>-->
-<!--      </th>-->
       <th>게시글 제목</th>
       <th>작성자</th>
       <th>{{thcolumn}}</th>
@@ -32,10 +28,6 @@ defineProps({
     </thead>
     <tbody>
     <tr v-for="(item, index) in items" :key="index">
-<!--      <td>-->
-<!--        <input type="checkbox" id="check"/>-->
-<!--        <label for="check" class="check-box"></label>-->
-<!--      </td>-->
       <td class="title">
         <router-link :to="`/workspace/${workspace}/scrum/board/${boardType}/detail/${index}`">
         {{ item.title }}

@@ -4,10 +4,6 @@ import { useRoute } from 'vue-router';
 import MeetingCard from "@/view/scrum/meeting/component/MeetingCard.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
-// const user2 = require('@/assets/icon/persona/user2.svg');
-// const user3 = require('@/assets/icon/persona/user3.svg');
-// const user4 = require('@/assets/icon/persona/user4.svg');
-// const user5 = require('@/assets/icon/persona/user5.svg');
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -41,7 +37,7 @@ const meetingData = meetingStore.getMeetingList(workspaceId);
     </div>
     <div v-else class="initial-wrap">
       <p>회의를 추가하고 일정 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/scrum/meeting/list`">회의 추가하기</router-link>
+      <router-link :to="`/workspace/${workspaceId}/scrum/meeting/create`">회의 추가하기</router-link>
     </div>
   </div>
 </template>

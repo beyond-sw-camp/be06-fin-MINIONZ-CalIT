@@ -2,7 +2,7 @@
 import {inject, onMounted} from 'vue';
 import TaskColumn from './component/KanbanColumn.vue';
 import { useTaskStore } from "@/stores/scrum/useTaskStore";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');

@@ -61,7 +61,7 @@ onMounted(() => {
 
     <div v-else class="initial-wrap">
       <p>스프린트를 추가하고 스크럼 관리를 시작해보세요!</p>
-      <router-link :to='`/workspace/${workSpaceId}/scrum/sprint/list`'>스프린트 추가하기</router-link>
+      <router-link :to='`/workspace/${workSpaceId}/scrum/sprint/create`'>스프린트 추가하기</router-link>
     </div>
   </div>
 </template>

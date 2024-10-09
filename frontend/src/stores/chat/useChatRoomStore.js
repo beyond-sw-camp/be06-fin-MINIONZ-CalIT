@@ -1,36 +1,35 @@
 import { ref } from "vue";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from "pinia";
+import {useRoute} from "vue-router";
 
 export const useChatRoomStore = defineStore('chatRoomStore', () => {
+    const route = useRoute();
     const chatRoom = ref([]);
     const newChatRoomId = ref(0);
-
+    const chatroomId = ref(null);
 
     // [POST] 그룹 채팅 방 생성 /chat/room
-    const addChatRoom = async ({chatroomName, participants}) => {
+    const addChatRoom = async ({ chatRoomName, participants }) => {
         if (!Array.isArray(participants) || participants.length === 0) {
             throw new Error('Invalid data: participants are required.');
         }
-
-        if (!chatroomName) {
-            chatroomName = participants.join(', ');
+        if (!chatRoomName) {
+            chatRoomName = participants.join(', ');
         }
-
-        const newChatRoomId = ref(0);
         try {
             const response = await axiosInstance.post('/api/chat/room', {
-                chatroomName,
+                chatRoomName,
                 participants
             });
-
             if (response.data.success) {
-                newChatRoomId.value = response.data.chatroomId;
                 chatRoom.value.push({
-                    chatroomId: newChatRoomId.value,
-                    chatRoomName: chatroomName,
-                    participants: participants
+                    chatRoomId: response.data.result.chatRoomId,
+                    chatRoomName,
+                    participants
                 });
+                newChatRoomId.value = response.data.result.chatRoomId;
+                console.log('New chat room created:', response.data.result);
             } else {
                 throw new Error('Failed to create chat room');
             }
@@ -44,7 +43,7 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
     const fetchChatRooms = async (workspaceId) => {
         try {
             const response = await axiosInstance.get(`/api/chat/${workspaceId}/roomList`);
-            chatRoom.value = response.data.result;
+            chatRoom.value = response.data.result || [];
         } catch (error) {
             console.error('Error fetching chat rooms:', error);
         }
@@ -86,12 +85,19 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
         }
     };
 
+    const setChatroomId = (id) => {
+        newChatRoomId.value = id;
+        chatroomId.value = id;
+        route.params.chatroomId = id;
+    }
+
     return {
         chatRoom,
         newChatRoomId,
         addChatRoom,
         fetchChatRooms,
         updateChatRoom,
-        exitChatRoom
+        exitChatRoom,
+        setChatroomId
     }
 })
