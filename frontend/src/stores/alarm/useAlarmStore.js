@@ -15,10 +15,11 @@ export const useAlarmStore = defineStore('alarmStore', () => {
         }
     };
 
-    const deleteAlarm = async (alarmId) => {
+    const deleteAlarm = async (userAlarmId) => {
         try {
-            await axiosInstance.delete(`/api/alarm/${alarmId}`);
-            alarms.value = alarms.value.filter(alarm => alarm.id !== alarmId);
+            console.log("alarmId : " + userAlarmId);
+            await axiosInstance.delete(`/api/alarm/delete/${userAlarmId}`);
+            alarms.value = alarms.value.filter(alarm => alarm.status !== 1);
         }
         catch (error) {
             console.error(error);

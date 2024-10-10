@@ -1,13 +1,12 @@
 <script setup>
-import { getTimeDifference } from "@/utils/timeUtils";
+import {getTimeDifference} from "@/utils/timeUtils";
 import notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
-import { onMounted } from "vue";
-import { useUserStore } from "@/stores/user/useUserStore";
-import { useAlarmStore } from "@/stores/alarm/useAlarmStore";
-import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import {onMounted} from "vue";
+import {useAlarmStore} from "@/stores/alarm/useAlarmStore";
+import {useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
 
 const alarmStore = useAlarmStore();
 const workspaceStore = useWorkspaceStore();
@@ -18,19 +17,21 @@ onMounted(async () => {
   await alarmStore.getAlarmData();
 });
 
-const userStore = useUserStore();
-console.log('User Store:', userStore);
-const userId = userStore.user;
-console.log('User ID:', userId);
+const handleReject = (alarm) => {
+  workspaceStore.rejectWorkspace(alarm.idx);
+  alarmStore.deleteAlarm(alarm.userAlarmId);
+  alarmStore.getAlarmData();
+};
 
-if (userId) {
-  const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
-  eventSource.onmessage = function (event) {
-    document.getElementById("message").textContent = 'Received event: ' + event.data;
-    console.log('테스트 클라이언트 이벤트:' + event.data);
-  };
-} else {
-  console.error('박성준 바보');
+const handleAccept = (alarm) => {
+  workspaceStore.acceptWorkspace(alarm.idx);
+  alarmStore.deleteAlarm(alarm.userAlarmId);
+  alarmStore.getAlarmData();
+};
+
+const handleRead = (alarm) => {
+  alarmStore.deleteAlarm(alarm.userAlarmId);
+  alarmStore.getAlarmData();
 }
 </script>
 
@@ -51,17 +52,17 @@ if (userId) {
         </div>
         <div class="right-side accept-bundle" v-if="alarm.type === 1">
           <div class="btn-bundle">
-            <button @click="workspaceStore.acceptWorkspace(alarm.idx)" class="btn-accept">
+            <button @click="handleAccept(alarm)" class="btn-accept">
               수락
             </button>
-            <button @click="workspaceStore.rejectWorkspace(alarm.idx)" class="btn-reject">
+            <button @click="handleReject(alarm)" class="btn-reject">
               거절
             </button>
           </div>
           <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
         </div>
         <div class="right-side normal-alarm" v-else>
-          <button @click="alarmStore.deleteAlarm(alarm.id)">
+          <button @click="handleRead(alarm)">
             <i class="delete-icon"></i>
           </button>
         </div>
@@ -200,7 +201,8 @@ button {
   justify-content: flex-end;
   font-size: 10px;
   width: 60px;
-  .btn-accept{
+
+  .btn-accept {
     background-color: #C6D2FD;
     color: #28303F;
     padding: 5px;
@@ -209,7 +211,8 @@ button {
     cursor: pointer;
     margin-right: 5px;
   }
-  .btn-reject{
+
+  .btn-reject {
     border: #cccccc;
     padding: 5px;
     color: #28303F;
