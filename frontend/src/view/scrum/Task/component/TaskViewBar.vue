@@ -2,7 +2,6 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSprintStore } from "@/stores/scrum/useSprintStore";
-import { VSelect } from "vuetify/components";
 
 const route = useRoute();
 const router = useRouter();
@@ -38,7 +37,9 @@ onMounted(async () => {
 
 <template>
   <div class="view-toggle-bar">
-    <VSelect :items="sprintOptions" item-text="sprintTitle" item-value="id" label="Select Sprint" @change="(sprintId) => console.log(sprintId)"/>
+    <select v-model="to" class="input-field">
+      <option v-for="sprint in sprintOptions" :key="sprint.id" :value="`/workspace/scrum/sprint/${sprint.id}/task/${currentView}`">{{ sprint.title }}</option>
+    </select>
     <div class="view-toggle-buttons">
       <router-link
           :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/scrum/task/${currentView}` : to"
@@ -72,6 +73,14 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.input-field {
+  width: 200px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 i{
   width: 24px;
   display: block;

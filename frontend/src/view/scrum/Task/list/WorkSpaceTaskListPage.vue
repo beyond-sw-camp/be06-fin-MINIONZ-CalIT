@@ -1,8 +1,9 @@
 <script setup>
-import {inject, onMounted} from 'vue';
-import {useRoute} from 'vue-router';
+import {computed, inject, onMounted} from 'vue';
+import { useRoute } from 'vue-router';
 import { useTaskStore } from "@/stores/scrum/useTaskStore";
 import ListContainer from './component/ListContainer.vue';
+import { useSprintStore } from "@/stores/scrum/useSprintStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -13,11 +14,11 @@ contentsDescription.value = '워크스페이스의 태스크를 살펴보세요!
 const taskStore = useTaskStore();
 
 const route = useRoute();
-const sprintId = route.params.sprintId;
+const sprintId = computed(() => useSprintStore().sprintId);
 const workspaceId = route.params.workspaceId;
 
 onMounted(() => {
-  taskStore.getTaskList(sprintId);
+  taskStore.getTaskList(sprintId.value);
 });
 </script>
 

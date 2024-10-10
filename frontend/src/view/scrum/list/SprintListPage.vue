@@ -2,7 +2,7 @@
 import {computed, inject, onMounted, ref} from 'vue';
 import { useSprintStore } from "@/stores/scrum/useSprintStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import ScrumList from "@/common/component/Board/ScrumList.vue";
+import SprintList from "@/common/component/Board/SprintList.vue";
 import {useRoute} from "vue-router";
 
 const sprintStore = useSprintStore();
@@ -34,21 +34,16 @@ const goToPage = (page) => {
   currentPage.value = page;
 };
 
-onMounted(() => {
-  sprintStore.getSprintList(workSpaceId);
+onMounted(async() => {
+  await sprintStore.getSprintList(workSpaceId);
 });
 </script>
 
 <template>
   <div class="board-list-container">
     <div v-if="sprintStore.sprints && sprintStore.sprints.length > 0">
-      <ScrumList
+      <SprintList
           :items="sprintStore.sprints"
-          firstColumn="스프린트 명"
-          secondColumn="label"
-          thirdColumn="status"
-          fourthColumn="priority"
-          fifthColumn="taskNumber"
           board-type="sprint"/>
       <Pagination
           :currentPage="currentPage"

@@ -9,6 +9,7 @@ import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { useUserStore } from "@/stores/user/useUserStore";
 import { useRoute } from "vue-router";
+import {getTimeDifference} from "@/utils/timeUtils";
 
 const userStore = useUserStore();
 const userId = userStore.user.value.idx;
@@ -44,7 +45,7 @@ onMounted(async () => {
 
       const receivedMessage = JSON.parse(messageOutput.body);
       if (receivedMessage) {
-        messages.value.push(receivedMessage);
+        messages.value.unshift(receivedMessage);
         chatMessageStore.sendMessage(receivedMessage); // Store에 메시지 추가
       }
     });
@@ -104,7 +105,7 @@ const triggerFileInput = () => {
             :key="index"
             :message="message"
             :isOwnMessage="message.senderId === userId"
-            :created-at="message.createdAt"
+            :created-at="getTimeDifference(message.createdAt)"
             :message-contents="message.messageContents"/>
       </div>
     </div>

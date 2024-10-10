@@ -39,7 +39,7 @@ defineProps({
     <tbody>
     <tr v-for="(item, index) in items" :key="index">
       <td class="title">
-        <router-link :to="`/workspace/${workspace}/scrum/${boardType}/detail/${index}`">
+        <router-link :to="`/workspace/${workspace}/scrum/${boardType}/detail/${item.sprintId}`">
           {{ item.title }}
         </router-link>
       </td>

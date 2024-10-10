@@ -172,7 +172,7 @@ const routes = [
                                 component: () => import('@/view/scrum/create/SprintCreatePage.vue')
                             },
                             {
-                                path: 'detail/:id',
+                                path: 'detail/:sprintId',
                                 name: 'WorkspaceSprintDetail',
                                 component: () => import('@/view/scrum/detail/SprintDetailPage.vue')
                             }
