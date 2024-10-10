@@ -47,19 +47,21 @@ public class QaBoardController {
   // 게시글 전체 조회
   @GetMapping("/search-all")
   public BaseResponse<Page<GetQaBoardResponse>> readAllQaBoard(
+          @RequestParam Long workspaceId,
       @RequestParam int page,
       @RequestParam int size) throws BaseException {
-    Page<GetQaBoardResponse> response = qaBoardService.readAll(page, size);
+    Page<GetQaBoardResponse> response = qaBoardService.readAll(workspaceId,page, size);
     return new BaseResponse<>(BaseResponseStatus.QABOARD_SEARCH_SUCCESS, response);
   }
 
   // 단어별 조회
   @GetMapping("/search-keyword")
   public BaseResponse<Page<GetQaBoardResponse>> readKeyword(
+          @RequestParam Long workspaceId,
       @RequestParam int page,
       @RequestParam int size,
       @RequestParam String keyword) throws BaseException {
-    Page<GetQaBoardResponse> response = qaBoardService.readKeyword(keyword, page, size);
+    Page<GetQaBoardResponse> response = qaBoardService.readKeyword(workspaceId,keyword, page, size);
     return new BaseResponse<>(BaseResponseStatus.QABOARD_SEARCH_SUCCESS, response);
   }
 }

@@ -43,6 +43,7 @@ public class ErrorBoardService {
         Task task = taskRepository.findById(request.getTaskId())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.TASK_NOT_EXISTS));
 
+
         ErrorBoardCategory category = ErrorBoardCategory.valueOf(request.getCategory().toUpperCase());
         ErrorBoard errorBoard = ErrorBoard.builder()
                 .errorboardTitle(request.getErrboardTitle())
@@ -87,8 +88,10 @@ public class ErrorBoardService {
     }
 
     public GetErrorBoardResponse read(Long boardId) throws BaseException {
+
         ErrorBoard errorBoard = errorBoardRepository.findById(boardId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.ERRORBOARD_SERACH_FAIL));
+
 
         List<ErrorBoardImage> errorBoardImageList = errorBoard.getErrorBoardImageList();
         List<GetErrorBoardImageResponse> getErrorBoardImageResponseList = new ArrayList<>();
@@ -102,6 +105,7 @@ public class ErrorBoardService {
             getErrorBoardImageResponseList.add(getErrorBoardImageResponse);
         }
         return GetErrorBoardResponse.builder()
+                .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                 .userName(errorBoard.getUser().getUserName())
                 .errorBoardId(errorBoard.getErrorBoardId())
                 .errboardTitle(errorBoard.getErrorboardTitle())
@@ -116,9 +120,10 @@ public class ErrorBoardService {
                 .build();
     }
 
-    public Page<GetErrorBoardResponse> readAll(int page, int size)  {
+    public Page<GetErrorBoardResponse> readAll(Long workspaceId,int page, int size)  {
 
-        Page<ErrorBoard> result = errorBoardRepository.findAll(PageRequest.of(page, size));
+        Page<ErrorBoard> result = errorBoardRepository.findAllByWorkspaceId(workspaceId,PageRequest.of(page, size));
+
         Page<GetErrorBoardResponse> getErrorBoardResponses = result.map(errorBoard-> {
             List<ErrorBoardImage> errorBoardImages = errorBoard.getErrorBoardImageList();
             List<GetErrorBoardImageResponse> getErrorBoardImageResponseList = new ArrayList<>();
@@ -132,6 +137,7 @@ public class ErrorBoardService {
                 getErrorBoardImageResponseList.add(getErrorBoardImageResponse);
             }
             return GetErrorBoardResponse.builder()
+                    .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                     .userName(errorBoard.getUser().getUserName())
                     .errorBoardId(errorBoard.getErrorBoardId())
                     .errboardTitle(errorBoard.getErrorboardTitle())
@@ -147,9 +153,9 @@ public class ErrorBoardService {
         });
         return getErrorBoardResponses;
     }
-    public Page<GetErrorBoardResponse> readKeyword(String keyword, int page, int size) throws BaseException {
+    public Page<GetErrorBoardResponse> readKeyword(Long workspaceId,String keyword, int page, int size) throws BaseException {
 
-        Page<ErrorBoard> result = errorBoardRepository.findByKeyword(keyword, PageRequest.of(page, size))
+        Page<ErrorBoard> result = errorBoardRepository.findByKeyword(workspaceId,keyword, PageRequest.of(page, size))
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.ERRORBOARD_SERACH_FAIL));
         Page<GetErrorBoardResponse> getErrorBoardResponses = result.map(errorBoard-> {
             List<ErrorBoardImage> errorBoardImages = errorBoard.getErrorBoardImageList();
@@ -164,6 +170,7 @@ public class ErrorBoardService {
                 getErrorBoardImageResponseList.add(getErrorBoardImageResponse);
             }
             return GetErrorBoardResponse.builder()
+                    .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                     .userName(errorBoard.getUser().getUserName())
                     .errorBoardId(errorBoard.getErrorBoardId())
                     .errboardTitle(errorBoard.getErrorboardTitle())
@@ -179,7 +186,7 @@ public class ErrorBoardService {
         });
         return getErrorBoardResponses;
     }
-    public Page<GetErrorBoardResponse> readCategory(String categoryString, int page, int size) throws BaseException {
+    public Page<GetErrorBoardResponse> readCategory(Long workspaceId,String categoryString, int page, int size) throws BaseException {
 
         ErrorBoardCategory category;
         try {
@@ -189,7 +196,7 @@ public class ErrorBoardService {
             throw new BaseException(BaseResponseStatus.ERRORBOARD_SERACH_FAIL);
         }
 
-        Page<ErrorBoard> result = errorBoardRepository.findByCategory(category, PageRequest.of(page, size));
+        Page<ErrorBoard> result = errorBoardRepository.findByCategory(category,workspaceId, PageRequest.of(page, size));
 
 
         Page<GetErrorBoardResponse> getErrorBoardResponses = result.map(errorBoard -> {
@@ -209,6 +216,7 @@ public class ErrorBoardService {
 
             // GetErrorBoardResponse로 변환하여 리턴
             return GetErrorBoardResponse.builder()
+                    .workspaceId(errorBoard.getWorkSpace().getWorkspaceId())
                     .userName(errorBoard.getUser().getUserName())
                     .errorBoardId(errorBoard.getErrorBoardId())
                     .errboardTitle(errorBoard.getErrorboardTitle())
