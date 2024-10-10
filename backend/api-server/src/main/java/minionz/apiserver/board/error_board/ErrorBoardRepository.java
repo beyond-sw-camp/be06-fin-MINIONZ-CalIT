@@ -13,18 +13,18 @@ import java.util.Optional;
 @Repository
 public interface ErrorBoardRepository extends JpaRepository<ErrorBoard, Long> {
 
-    // 전체 조회
-    Page<ErrorBoard> findAll(Pageable pageable);
 
     Optional<ErrorBoard> findById(Long id);
 
-    // 검색어 기반으로 전체 조회
-    @Query("SELECT e FROM ErrorBoard e " +
-            "WHERE e.errorboardTitle LIKE %:keyword% " +
-            "OR e.errorboardContent LIKE %:keyword%")
-    Optional<Page<ErrorBoard>> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    // 전체 조회 (workspaceId 기준으로 필터링)
+    @Query("SELECT e FROM ErrorBoard e WHERE e.workSpace.workspaceId = :workspaceId")
+    Page<ErrorBoard> findAllByWorkspaceId(@Param("workspaceId") Long workspaceId, Pageable pageable);
 
-    // 카테고리별 조회
-    @Query("SELECT e FROM ErrorBoard e WHERE e.category = :category")
-    Page<ErrorBoard> findByCategory(@Param("category") ErrorBoardCategory category, Pageable pageable);
+    // 검색어 기반 조회 (workspaceId 기준으로 필터링)
+    @Query("SELECT e FROM ErrorBoard e WHERE (e.errorboardTitle LIKE %:keyword% OR e.errorboardContent LIKE %:keyword%) AND e.workSpace.workspaceId = :workspaceId")
+    Optional<Page<ErrorBoard>> findByKeyword(@Param("workspaceId") Long workspaceId,@Param("keyword") String keyword, Pageable pageable);
+
+    // 카테고리별 조회 (workspaceId 기준으로 필터링)
+    @Query("SELECT e FROM ErrorBoard e WHERE e.category = :category AND e.workSpace.workspaceId = :workspaceId")
+    Page<ErrorBoard> findByCategory(@Param("category") ErrorBoardCategory category, @Param("workspaceId") Long workspaceId, Pageable pageable);
 }

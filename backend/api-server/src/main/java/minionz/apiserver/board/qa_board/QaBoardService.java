@@ -121,9 +121,9 @@ public class QaBoardService {
                 .personaImage(qaBoard.getUser().getPersona())
                 .build();
     }
-    public Page<GetQaBoardResponse> readAll(int page, int size)  {
+    public Page<GetQaBoardResponse> readAll(Long workspaceId,int page, int size)  {
 
-        Page<QaBoard> result = qaBoardRepository.findAll(PageRequest.of(page, size));
+        Page<QaBoard> result = qaBoardRepository.findAllByWorkspaceId(workspaceId,PageRequest.of(page, size));
         Page<GetQaBoardResponse> getQaBoardResponses = result.map(qaBoard-> {
             List<QaBoardImage> qaBoardImages = qaBoard.getQaBoardImageList();
             List<GetQaBoardImageResponse> getQaBoardImageResponseList = new ArrayList<>();
@@ -137,6 +137,7 @@ public class QaBoardService {
                 getQaBoardImageResponseList.add(getQaBoardImageResponse);
             }
             return GetQaBoardResponse.builder()
+                    .workspaceId(qaBoard.getWorkSpace().getWorkspaceId())
                     .userName(qaBoard.getUser().getUserName())
                     .qaBoardId(qaBoard.getQaBoardId())
                     .qaboardTitle(qaBoard.getQaboardTitle())
@@ -153,9 +154,9 @@ public class QaBoardService {
         });
         return getQaBoardResponses;
     }
-    public Page<GetQaBoardResponse> readKeyword(String keyword, int page, int size) throws BaseException {
+    public Page<GetQaBoardResponse> readKeyword(Long workspaceId,String keyword, int page, int size) throws BaseException {
 
-        Page<QaBoard> result = qaBoardRepository.findByKeyword(keyword, PageRequest.of(page, size))
+        Page<QaBoard> result = qaBoardRepository.findByKeyword(keyword,workspaceId, PageRequest.of(page, size))
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.QABOARD_SERACH_FAIL));
         Page<GetQaBoardResponse> getQaBoardResponses = result.map(qaBoard-> {
             List<QaBoardImage> qaBoardImages = qaBoard.getQaBoardImageList();
