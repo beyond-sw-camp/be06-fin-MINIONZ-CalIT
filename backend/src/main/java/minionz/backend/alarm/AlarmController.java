@@ -43,4 +43,11 @@ public class AlarmController {
 
     return new BaseResponse<>(BaseResponseStatus.MY_ALARM_READ_SUCCESS, response);
   }
+
+  @DeleteMapping("/delete/{userAlarmId}")
+  public BaseResponse<List<ReadMyAlarmResponse>> updateAlarmStatus(@PathVariable Long userAlarmId) {
+    alarmService.updateAlarmStatus(userAlarmId);
+    List<ReadMyAlarmResponse> response = alarmService.getAlarmsByStatus();
+    return new BaseResponse<>(BaseResponseStatus.MY_ALARM_READ_SUCCESS, response);
+  }
 }
