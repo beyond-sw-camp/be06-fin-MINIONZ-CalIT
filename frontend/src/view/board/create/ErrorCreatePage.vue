@@ -1,7 +1,7 @@
 <script setup>
-import {inject, ref} from "vue";
+import { inject, ref } from "vue";
 import { useErrorStore } from "@/stores/board/useErrorStore";
-import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -11,12 +11,17 @@ contentsDescription.value = 'Error 게시글을 만들어 보세요!';
 
 const errorStore = useErrorStore();
 const errTitle = ref('');
-const errContent = ref('');
+const errContent = ref({ html: '', text: '' });
+const errLanguage = ref('');
+const tasks = ref([]);
+const selectedTask = ref(null);
 
 const savePost = () => {
   errorStore.writePost({
-    title: errTitle.value,
-    content: errContent.value,
+    errboardTitle: errTitle.value,
+    errboardContent: errContent.value.html,
+    category: errLanguage.value,
+    taskId: selectedTask.value,
   });
 };
 </script>
@@ -32,15 +37,29 @@ const savePost = () => {
         </span>
           <input v-model="errTitle" class="title-editor" placeholder="게시글 제목" />
         </div>
-        <!--      설명 추가하기-->
         <div class="language-section">
-        <span class="column">
-          <i class="languages column-icon"></i>
-          설명 추가하기
-        </span>
-          <input v-model="errContent" class="language-editor" placeholder="언어" />
+          <span class="column">
+            <i class="languages column-icon"></i>
+            언어 선택하기
+          </span>
+          <select class="title-editor">
+            <option>Python</option>
+            <option>Java</option>
+            <option>JavaScript</option>
+            <option>HTML</option>
+            <option>CSS</option>
+          </select>
         </div>
-        <QuillEditor/>
+        <div class="language-section">
+          <span class="column">
+            <i class="languages column-icon"></i>
+            태스크 연동하기
+          </span>
+          <select v-model="selectedTask" class="title-editor">
+            <option v-for="task in tasks" :key="task.id" :value="task.id">{{ task.name }}</option>
+          </select>
+        </div>
+        <QuillEditor v-model:html="errContent.html" v-model:text="errContent.text"/>
       </div>
     </div>
     <button class="save-button" @click="savePost">저장하기</button>
@@ -68,10 +87,6 @@ const savePost = () => {
   height: 100%;
   justify-content: space-between;
   box-sizing: border-box;
-  //height: 100%;
-  //overflow-y: auto;
-  //display: flex;
-  //flex-direction: column-reverse;
 }
 
 .error-input-wrap{
@@ -94,7 +109,7 @@ const savePost = () => {
 }
 
 .title-editor {
-  width: 100%;
+  width: calc(100% - 160px);
   height: 2rem;
   border: 1px solid #ddd;
   border-radius: 5px;

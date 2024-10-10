@@ -1,14 +1,14 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import Quill from "quill";
-import 'quill/dist/quill.bubble.css';
+import 'quill/dist/quill.snow.css';
 
 const editor = ref(null);
 
 onMounted(() => {
   if (editor.value) {
     new Quill(editor.value, {
-      theme: 'bubble',
+      theme: 'snow',
       placeholder: '내용을 입력하세요...',
       modules: {
         toolbar: {
@@ -43,7 +43,7 @@ onMounted(() => {
 <template>
   <!-- Quill 에디터 섹션 -->
   <div class="editor-section">
-        <span class="column">
+        <span class="column" style="margin-bottom: 10px">
           <i class="quill-editings column-icon"></i>
           글 작성하기
         </span>
@@ -52,6 +52,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.content-editor{
+  margin-top: 10px;
+}
+
 .editor-section {
   margin-top: 30px;
 }
@@ -80,6 +84,10 @@ onMounted(() => {
   display: none;
 }
 
+.ql-toolbar.ql-snow{
+  margin-top: 10px;
+}
+
 .ql-container {
   position: relative;
   overflow: visible;
@@ -92,5 +100,9 @@ onMounted(() => {
 
 .ql-bubble .ql-tooltip-arrow{
   display: none;
+}
+
+.ql-container.ql-snow{
+  border: none;
 }
 </style>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useSprintLabelStore } from '@/stores/scrum/useSprintLabelStore';
-import {labelColorPalette} from "@/utils/labelUtils";
+import { labelColorPalette } from "@/utils/labelUtils";
 
 const { getLabels, addLabel, deleteLabel } = useSprintLabelStore();
 
@@ -54,8 +54,6 @@ function addNewLabel() {
     <hr/>
     <div class="label-wrap">
       <div class="input-wrap">
-
-<!--        기존 라벨 선택-->
         <div>
           <div class="input-wrap-item">
             <label for="label-select">기존 라벨 선택</label>

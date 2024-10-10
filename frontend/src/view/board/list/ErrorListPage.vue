@@ -1,10 +1,10 @@
 <script setup>
-import {computed, inject, onMounted, ref} from 'vue';
-import {useErrorStore} from '@/stores/board/useErrorStore';
+import { computed, inject, onMounted, ref, watch } from 'vue';
+import { useErrorStore } from '@/stores/board/useErrorStore';
 import Pagination from '@/common/component/PaginationComponent.vue';
 import BoardList from '@/common/component/Board/BoardList.vue';
 import SearchComponent from '@/common/component/SearchComponent.vue';
-import {useRoute} from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -16,8 +16,7 @@ contentsTitle.value = 'Error List';
 contentsDescription.value = 'Error 목록을 확인하세요!';
 
 const errorStore = useErrorStore();
-const postList = computed(() => errorStore.getPostList(currentPage, itemsPerPage).value);
-
+const postList = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
@@ -48,8 +47,16 @@ const deleteItem = (item) => {
 };
 
 onMounted(async () => {
-  await errorStore.getPostList({page: currentPage.value - 1, size: itemsPerPage});
+  await fetchPostList();
 });
+
+watch(currentPage, async (newPage) => {
+  await fetchPostList(newPage);
+});
+
+const fetchPostList = async (page = currentPage.value) => {
+  postList.value = await errorStore.getPostList({ page: page - 1, size: itemsPerPage });
+};
 </script>
 
 <template>

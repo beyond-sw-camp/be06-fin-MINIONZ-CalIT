@@ -1,6 +1,6 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
-import { useRouter} from "vue-router";
+import { inject, ref, onMounted } from 'vue';
+import { useRouter } from "vue-router";
 import { useIssueStore } from '@/stores/scrum/useIssueStore';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
 
@@ -10,26 +10,51 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Issue 추가하기';
 contentsDescription.value = 'Issue를 추가해보세요!';
 
-const route = useRouter();
-const workspaceId = route.param.workspaceId;
+const router = useRouter();
+const workspaceId = router.currentRoute.value.params.workspaceId;
 
 const issueStore = useIssueStore();
 const friendStore = useFriendsStore();
-const issueName = ref('');
-const participants = ref('');
 
-const filteredUsers = computed(() => {
-  return friendStore.getFriendsList(workspaceId).filter(user => {
-    return user.includes(participants.value);
-  });
-});
+const issueName = ref('');
+const issueDescription = ref('');
+const issueManager = ref(null);
+const issueAssignee = ref(null);
+const issueReviewer = ref(null);
+const startDate = ref('');
+const endDate = ref('');
+const filteredFriends = ref([]);
+
+const fetchUsers = async () => {
+  try {
+    filteredFriends.value = await friendStore.getFriendsList(workspaceId);
+    console.log(filteredFriends.value);
+  } catch (error) {
+    console.error('Error fetching Friends:', error);
+    filteredFriends.value = [];
+  }
+};
 
 const addIssue = () => {
   issueStore.addIssue({
     issueName: issueName.value,
+    issueDescription: issueDescription.value,
+    issueManager: issueManager.value,
+    issueAssignee: issueAssignee.value,
+    issueReviewer: issueReviewer.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
   });
   issueName.value = '';
+  issueDescription.value = '';
+  issueManager.value = null;
+  issueAssignee.value = null;
+  issueReviewer.value = null;
+  startDate.value = '';
+  endDate.value = '';
 };
+
+onMounted(fetchUsers);
 </script>
 
 <template>
@@ -37,18 +62,44 @@ const addIssue = () => {
     <div class="issue-wrap">
       <div class="input-wrap">
         <div>
-          <div>
-            <label for="issueName">Issue 이름</label>
-            <input type="text" id="issueName" v-model="issueName" placeholder="Issue 이름을 입력하세요">
-          </div>
+          <label for="issueName">Issue 이름</label>
+          <input type="text" id="issueName" v-model="issueName" placeholder="Issue 이름을 입력하세요" class="input-field">
+        </div>
+        <div>
+          <label for="issueDescription">Issue 설명</label>
+          <input type="text" id="issueDescription" v-model="issueDescription" placeholder="Issue의 설명을 넣어주세요"
+                 class="input-field">
+        </div>
 
-          <div>
-            <label for="issueParticipation">참여자 추가</label>
-            <input type="text" id="issueParticipation" v-model="participants" placeholder="참여자를 검색해주세요" class="input-field">
-            <ul>
-              <li v-for="user in filteredUsers" :key="user">{{ user }}</li>
-            </ul>
-          </div>
+        <div>
+          <label for="issueManager">이슈 매니저 할당</label>
+          <select id="issueManager" v-model="issueManager" class="input-field">
+            <option v-for="user in filteredFriends" :key="user.id" :value="user">{{ user.name }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="issueAssignee">담당자 추가</label>
+          <select id="issueAssignee" v-model="issueAssignee" class="input-field">
+            <option v-for="user in filteredFriends" :key="user.id" :value="user">{{ user.name }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="issueReviewer">리뷰어 추가</label>
+          <select id="issueReviewer" v-model="issueReviewer" class="input-field">
+            <option v-for="user in filteredFriends" :key="user.id" :value="user">{{ user.name }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label>시작 날짜</label>
+          <input type="datetime-local" v-model="startDate" class="input-field">
+        </div>
+
+        <div>
+          <label>종료 날짜</label>
+          <input type="datetime-local" v-model="endDate" class="input-field">
         </div>
       </div>
       <div class="button-wrap">

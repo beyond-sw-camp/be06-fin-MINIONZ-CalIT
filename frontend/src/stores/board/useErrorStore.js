@@ -1,27 +1,29 @@
 import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from "pinia";
+import { ref } from "vue";
 
 export const useErrorStore = defineStore('errorStore', async () => {
+    const posts = ref([]);
 
     // [POST] 글 작성 /errboard/write?workspaceId=1
-    const writePost = async ({ workspaceId, files, errboardTitle, taskId, errboardContent, category }) => {
+    const writePost = async (data) => {
         try {
-            const response = await axiosInstance.post(`/errboard/write?workspaceId=${workspaceId}`, { files, errboardTitle, taskId, errboardContent, category });
-            return response.data.result;
-        } catch (error) {
-            return error.response.data;
-        }
-    };
-
-    // [GET] 글 목록 조회 /errboard/search-all
-    const getPostList = async ({page, size}) => {
-        try {
-            const response = await axiosInstance.get('/errboard/search-all', { params: { page, size } });
+            const response = await axiosInstance.post('/errboard/write', data);
             return response.data.result;
         } catch (error) {
             return error.response.data;
         }
     }
+
+    // [GET] 글 목록 조회 /errboard/search-all
+    const getPostList = async ({ page, size }) => {
+        try {
+            const response = await axiosInstance.get('/errboard/search-all', { params: { page, size } });
+            posts.value = response.data.result;
+        } catch (error) {
+            posts.value = [];
+        }
+    };
 
     // [GET] 글 상세 조회 /errboard/search
     const getPostDetail = async (boardId) => {
@@ -35,7 +37,7 @@ export const useErrorStore = defineStore('errorStore', async () => {
 
     const updatePost = async (data) => {
         try {
-            const response = await axiosInstance.post('/errorboard/update', data);
+            const response = await axiosInstance.post('/errboard/update', data);
             return response.data.result;
         } catch (error) {
             return error.response.data;
@@ -44,7 +46,7 @@ export const useErrorStore = defineStore('errorStore', async () => {
 
     const deletePost = async (id) => {
         try {
-            const response = await axiosInstance.post('/errorboard/delete', {id});
+            const response = await axiosInstance.post('/errboard/delete', {id});
             return response.data.result;
         } catch (error) {
             return error.response.data;
@@ -64,7 +66,7 @@ export const useErrorStore = defineStore('errorStore', async () => {
     // [GET]  댓글 조회 /errcomment/search
     const getCommentList = async (errorBoardId) => {
         try {
-            const response = await axiosInstance.get(`/errcomment/search`, errorBoardId);
+            const response = await axiosInstance.get(`/errcomment/search`, { params: { errorBoardId } });
             return response.data.result;
         } catch (error) {
             return error.response.data;

@@ -23,30 +23,26 @@ const addTask = () => {
     <hr/>
     <div class="task-wrap">
       <div class="input-wrap">
-    <!-- Task 이름 입력 필드 -->
-    <label for="task-name">Name Task</label>
-    <input
-        type="text"
-        id="task-name"
-        v-model="taskName"
-        placeholder="Name Task"
-        class="input-field"
-    />
+      <label for="task-name">Name Task</label>
+      <input
+          type="text"
+          id="task-name"
+          v-model="taskName"
+          placeholder="Name Task"
+          class="input-field"
+      />
 
-    <!-- 난이도 선택 드롭다운 -->
-    <label for="level">난이도</label>
-    <select
-        id="level"
-        v-model="selectedLevel"
-        class="input-field"
-    >
+      <label for="level">난이도</label>
+      <select
+          id="level"
+          v-model="selectedLevel"
+          class="input-field"
+      >
       <option disabled value="">Level</option>
       <option>Easy</option>
       <option>Medium</option>
       <option>Hard</option>
     </select>
-
-    <!-- 중요도 선택 드롭다운 -->
     <label for="priority">중요도</label>
     <select
         id="priority"
@@ -59,7 +55,6 @@ const addTask = () => {
       <option>High</option>
     </select>
   </div>
-    <!-- 추가 버튼 -->
     <button @click="addTask" class="add-task-btn">Add Task</button>
   </div>
   </div>
