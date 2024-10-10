@@ -38,4 +38,4 @@ out/
 .vscode/
 
 application-local.yml
-/Dockerfile
+/api-server/Dockerfile
