@@ -71,6 +71,9 @@ dependencies {
     implementation 'io.projectreactor:reactor-core'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 tasks.named('test') {

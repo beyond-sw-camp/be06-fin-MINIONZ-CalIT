@@ -5,6 +5,7 @@ import minionz.backend.common.exception.BaseException;
 import minionz.backend.common.responses.BaseResponseStatus;
 import minionz.backend.scrum.meeting.model.Meeting;
 import minionz.backend.scrum.meeting.model.request.CreateMeetingRequest;
+import minionz.backend.scrum.meeting.model.response.CreateMeetingResponse;
 import minionz.backend.scrum.meeting.model.response.ReadAllMeetingResponse;
 import minionz.backend.scrum.meeting.model.response.ReadMeetingResponse;
 import minionz.backend.scrum.meeting_participation.MeetingParticipationRepository;
@@ -29,7 +30,7 @@ public class MeetingService {
     private final MeetingParticipationRepository meetingParticipationRepository;
 
     @Transactional
-    public void createMeeting(User user, CreateMeetingRequest request, Long sprintId) {
+    public CreateMeetingResponse createMeeting(User user, CreateMeetingRequest request, Long sprintId) {
         Meeting meeting = meetingRepository.save(
                 Meeting
                         .builder()
@@ -49,6 +50,14 @@ public class MeetingService {
                         .user(User.builder().userId(participantId).build())
                         .build())
         );
+
+        return CreateMeetingResponse.builder()
+                .id(meeting.getMeetingId())
+                .title(meeting.getMeetingTitle())
+                .contents(meeting.getMeetingContents())
+                .endDate(meeting.getEndDate())
+                .startDate(meeting.getStartDate())
+                .build();
 
 //        TODO: 알람 보내야 합니다.
 
