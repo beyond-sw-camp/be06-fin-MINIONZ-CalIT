@@ -1,106 +1,125 @@
 <script setup>
-import { inject, ref} from 'vue';
-import { useSprintStore} from "@/stores/scrum/useSprintStore";
-import { useSprintLabelStore} from "@/stores/scrum/useSprintLabelStore";
-import Multiselect from "vue-multiselect";
-import {timeInputUtils} from "@/utils/timeInputUtils";
+import {computed, inject, ref, watch} from 'vue';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
+import Multiselect from 'vue-multiselect';
+import { useFriendsStore} from "@/stores/user/useFriendsStore";
+import {useRoute} from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
+contentsTitle.value = 'Work Space Task 추가하기';
+contentsDescription.value = 'Work Space Task를 추가해보세요!';
 
-contentsTitle.value = '스프린트 추가하기';
-contentsDescription.value = '스프린트를 추가해보세요!';
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
 
-const sprintStore = useSprintStore();
-const sprintLabelStore = useSprintLabelStore();
-const sprintName = ref('');
-// const sprintManager = ref('');
-const participants = ref('');
-const selectedLabels = ref([]);
+const taskStore = useTaskStore();
+const taskName = ref('');
+const taskContent = ref('');
+const selectedLevel = ref('');
+const selectedPriority = ref('');
+const taskSearch = ref('');
+const selectedTasks = ref([]);
+const assignees = ref('');
+const reviewers = ref('');
 const startTime = ref('');
 const endTime = ref('');
+const friendStore = useFriendsStore();
+const filteredUsers = computed(() => {
+  return friendStore.getFilteredUsers(workspaceId, taskSearch.value);
+});
 
-const addSprint = () => {
-  sprintStore.addSprint({
-    sprintName: sprintName.value,
-    participants: participants.value,
+const addTask = () => {
+  taskStore.addTask({
+    taskName: taskName.value,
+    taskContent: taskContent.value,
+    assignees: assignees.value,
+    reviewers: reviewers.value,
+    level: selectedLevel.value,
+    priority: selectedPriority.value
   });
-  sprintName.value = '';
-  participants.value = '';
+  taskName.value = '';
+  selectedLevel.value = '';
+  selectedPriority.value = '';
 };
 
-const adjustTime = () => {
-  if (startTime.value && endTime.value) {
-    const { start, end } = timeInputUtils(startTime.value, endTime.value);
-    startTime.value = start;
-    endTime.value = end;
+watch(taskSearch, (newTask) => {
+  if (newTask && !selectedTasks.value.includes(newTask)) {
+    selectedTasks.value.push(newTask);
   }
-};
+});
 </script>
 
 <template>
   <div class="form-container">
-    <div class="workspace-wrap">
+    <div class="task-wrap">
       <div class="input-wrap">
         <div>
-          <div>
-            <label for="sprintName">Sprint 이름</label>
-            <input type="text" id="sprintName" v-model="sprintName" placeholder="Sprint 이름을 입력하세요">
-          </div>
-          <div>
-            <label for="sprintContent">Sprint 내용</label>
-            <input type="text" id="sprintContent" placeholder="Sprint 내용을 입력하세요" class="input-field">
-          </div>
-          <!--          <div>-->
-          <!--            <label>스프린트 매니저</label>-->
-          <!--            <multiselect-->
-          <!--                v-model="sprintManager"-->
-          <!--                :options="filteredUsers"-->
-          <!--                placeholder="담당자를 선택해주세요"-->
-          <!--                label="name"-->
-          <!--                track-by="id"-->
-          <!--            ></multiselect>-->
-          <!--          </div>-->
-          <div>
-            <label for="sprintParticipation">참여자 추가</label>
-            <input type="text" id="sprintParticipation" placeholder="참여자를 검색해주세요" class="input-field">
-            <ul>
-              <li v-for="participant in participants" :key="participant">{{ participant }}</li>
-            </ul>
-          </div>
-          <div>
-            <label>시작 날짜</label>
-            <input v-model="startTime" type="date" id="startDate" class="input-field" @change="adjustTime">
-          </div>
-          <div>
-            <label>종료 날짜</label>
-            <input v-model="endTime" type="date" id="endDate" class="input-field" @change="adjustTime">
-          </div>
-          <div>
-            <label>label 추가하기</label>
-            <multiselect
-                v-model="selectedLabels"
-                :options="sprintLabelStore.getSprintLabel()"
-                placeholder="label을 추가해주세요"
-                label="labelName"
-                track-by="labelId"
-                multiple="multiple"
-            ></multiselect>
-          </div>
+          <label for="task-name">Task 제목</label>
+          <input type="text" id="task-name" v-model="taskName" placeholder="Task 제목을 적어주세요" class="input-field"/>
+        </div>
+        <div>
+          <label for="task-content">Task 내용</label>
+          <textarea id="task-content" v-model="taskContent" placeholder="Task 내용을 적어주세요" class="input-field" style="margin:0"/>
+        </div>
+        <div>
+          <label>담당자</label>
+          <multiselect
+              v-model="assignees"
+              :options="filteredUsers"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="담당자를 선택해주세요"
+              label="name"
+              track-by="id"
+          />
+        </div>
+        <div>
+          <label>보고자</label>
+          <multiselect
+              v-model="reviewers"
+              :options="filteredUsers"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="보고자를 선택해주세요"
+              label="name"
+              track-by="id"
+          />
+        </div>
+        <div class="time-wrap">
+          <label>시작 날짜</label>
+          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <span>~ 종료 날짜</span>
+          <input v-model="endTime" type="datetime-local" class="time-editor" />
+        </div>
+        <div>
+          <label for="level">난이도</label>
+          <multiselect
+              v-model="selectedLevel"
+              :options="['Easy', 'Medium', 'Hard']"
+              placeholder="Level"
+          />
+        </div>
+        <div>
+          <label for="priority">중요도</label>
+          <multiselect
+              v-model="selectedPriority"
+              :options="['Low', 'Medium', 'High']"
+              placeholder="Priority"
+          />
         </div>
       </div>
-      <div class="button-wrap">
-        <button @click="addSprint" class="add-workspace-btn">Sprint 추가</button>
-      </div>
+      <button @click="addTask" class="add-task-btn">Task 연동하기</button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .form-container {
-  width: 100%;
-  padding: 20px;
   box-sizing: border-box;
+  padding: 30px;
 }
 
 h2 {
@@ -123,7 +142,7 @@ label {
   margin-bottom: 5px;
 }
 
-.workspace-wrap {
+.task-wrap {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -141,7 +160,7 @@ label {
   font-size: 1rem;
 }
 
-.add-workspace-btn {
+.add-task-btn {
   background-color: #C6D2FD;
   color: #28303F;
   padding: 10px;
@@ -153,7 +172,29 @@ label {
   margin-top: 20px;
 }
 
-.add-workspace-btn:hover {
+.add-task-btn:hover {
   background-color: #93AAFD;
+}
+
+.multiselect__select {
+  top: 10px;
+}
+
+.multiselect .input-field {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.time-wrap{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.time-editor{
+  border: none;
+  width: 200px;
 }
 </style>

@@ -1,15 +1,25 @@
 import { ref } from 'vue';
 import { axiosInstance } from "@/utils/axiosInstance";
-import { defineStore} from "pinia";
+import { defineStore } from "pinia";
 
 export const useTaskStore = defineStore('taskStore', () => {
     const taskData = ref([]);
+
     const addTask = async ({sprintId, startDate, endDate, title, contents, difficulty, priority, labels, participants}) => {
         try {
             const response = await axiosInstance.post(`api/task/${sprintId}`, {startDate, endDate, title, contents, difficulty, priority, labels, participants});
             taskData.value.push(response.data.result);
         } catch (error) {
             console.error('Error adding task:', error);
+        }
+    };
+
+    const updateTaskStatus = async ({sprintId, taskId}) => {
+        try {
+            const response = await axiosInstance.put(`api/task/${sprintId}/status/${taskId}`, {taskId, status});
+            taskData.value = response.data.result;
+        } catch (error) {
+            console.error('Error updating task status:', error);
         }
     };
 
@@ -40,15 +50,6 @@ export const useTaskStore = defineStore('taskStore', () => {
         }
     };
 
-    const updateTaskStatus = async ({sprintId, taskId}) => {
-        try {
-            const response = await axiosInstance.put(`api/task/${sprintId}/status/${taskId}`, {taskId, status});
-            taskData.value = response.data.result;
-        } catch (error) {
-            console.error('Error updating task status:', error);
-        }
-    };
-
     const deleteTask = async ({sprintId, taskId}) => {
         try {
             await axiosInstance.delete(`api/task/${sprintId}/${taskId}`);
@@ -58,9 +59,9 @@ export const useTaskStore = defineStore('taskStore', () => {
         }
     }
 
-    const getAllTask = async (workspaceId) => {
+    const getMyTask = async () => {
         try {
-            const response = await axiosInstance.get(`/api/sprint/all/${workspaceId}`);
+            const response = await axiosInstance.get(`/api/sprint/my/all`);
             taskData.value = response.data.result;
         } catch (error) {
             console.error('Error getting task list:', error);
@@ -80,6 +81,6 @@ export const useTaskStore = defineStore('taskStore', () => {
         updateTask,
         updateTaskStatus,
         deleteTask,
-        getAllTask,
+        getMyTask,
     }
 })

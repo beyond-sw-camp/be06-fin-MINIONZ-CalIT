@@ -3,7 +3,7 @@ import { ref, defineProps } from 'vue';
 import taskImg from '@/assets/icon/schedule/task.svg';
 
 const props = defineProps(['tasks']);
-const taskWeek = ref(props.tasks.map(task => ({
+const taskWeek = ref((props.tasks || []).map(task => ({
   title: task.title,
   details: task.label,
   icon: task

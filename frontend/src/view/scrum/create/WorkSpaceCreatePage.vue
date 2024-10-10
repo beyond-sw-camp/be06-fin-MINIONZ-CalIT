@@ -20,15 +20,11 @@ const filteredUsers = ref([]);
 const selectedUsers = ref([]);
 
 const searchUsers = async () => {
-  console.log('Searching users with participants:', participantsInput.value);
   if (participantsInput.value) {
     try {
       await friendStore.getUserList(participantsInput.value);
-      console.log('Fetched friends from store:', friendStore.friends.value);
-      filteredUsers.value = friendStore.friends;
-      console.log('Fetched users:', filteredUsers.value);
+      filteredUsers.value = [...filteredUsers.value, ...friendStore.users];
     } catch (error) {
-      console.error('Error fetching users:', error);
       filteredUsers.value = [];
     }
   } else {
@@ -51,14 +47,11 @@ const isSelected = (user) => {
 
 const addWorkspace = async ({workspaceName, participants}) => {
   try {
-    console.log('Sending request to API with:', {workspaceName, participants});
     const response = await axiosInstance.post('/api/workspace', {workspaceName, participants});
-    console.log('API response:', response.data);
     notyf.success('WorkSpace가 추가되었습니다.');
     await router.push('/my/dashboard');
     return response.data;
   } catch (error) {
-    console.error('Failed to add workspace', error);
     notyf.error('WorkSpace 추가에 실패했습니다.');
     throw error;
   }
@@ -81,9 +74,9 @@ const addWorkspace = async ({workspaceName, participants}) => {
             <input type="text" id="workspaceParticipation" v-model="participantsInput" placeholder="아이디를 검색해주세요"
                    class="input-field" @keyup.enter="searchUsers">
             <ul v-if="filteredUsers && filteredUsers.length">
-              <li v-for="user in filteredUsers" :key="user.id" @click="toggleUserSelection(user)"
-                  :class="{ selected: isSelected(user) }">
-                {{ typeof user === 'string' ? user : user.userName }}
+              <li v-for="user in filteredUsers" :key="user.searchUserIdx" @click="toggleUserSelection(user)" :class="{ selected: isSelected(user) }" :style="{ order: isSelected(user) ? -1 : 0 }">
+                <img :src="user.persona" alt="persona">
+                <span class="participant-name">{{ typeof user === 'string' ? user : user.userName }}</span>
               </li>
             </ul>
             <p v-else-if="filteredUsers === null">검색된 사용자가 없습니다.</p>
@@ -99,7 +92,12 @@ const addWorkspace = async ({workspaceName, participants}) => {
 </template>
 
 <style scoped>
-ul, il {
+ul{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ul, li {
   list-style: none;
   padding: 0;
   margin: 0;

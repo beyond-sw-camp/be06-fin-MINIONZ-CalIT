@@ -1,19 +1,18 @@
 <script setup>
 import space6 from '@/assets/icon/persona/space6.svg';
 import { defineProps } from 'vue';
-import { useChatMessageStore } from "@/stores/chat/useChatMessageStore";
-// import { ref } from "vue";
-
-const chatMessageStore = useChatMessageStore();
-const message= chatMessageStore().message().filter((item) => item.messageType === 'TEXT');
 
 defineProps({
-  // message: {
-  //   type: Object,
-  //   required: true,
-  // },
   isOwnMessage: {
     type: Boolean,
+    required: true,
+  },
+  messageContents: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: String,
     required: true,
   },
 });
@@ -24,9 +23,9 @@ defineProps({
     <img v-if="!isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
     <div class="message-content">
       <div class="message-bubble">
-        <p>{{ message.messageContents || 'No message' }}</p>
+        <p>{{ messageContents || 'No message' }}</p>
       </div>
-      <span class="timestamp">{{ message.createdAt || 'No time' }}</span>
+      <span class="timestamp">{{ createdAt || 'No time' }}</span>
     </div>
     <img v-if="isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
   </div>

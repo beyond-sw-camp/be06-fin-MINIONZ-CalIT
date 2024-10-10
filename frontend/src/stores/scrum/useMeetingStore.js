@@ -1,9 +1,10 @@
 import { ref } from 'vue';
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useMeetingStore = defineStore('meetingStore', () => {
     const meetings =  ref([]);
+    const meetingId = ref(null);
 
     const addMeeting = async ({sprintId, startDate, endDate, meetingTitle, meetingContents, participants }) => {
         try {
@@ -65,13 +66,19 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         }
     }
 
+    const setMeetingId = (id) => {
+        meetingId.value = id
+    }
+
     return {
         meetings,
+        meetingId,
         addMeeting,
         getMeeting,
         getMeetingList,
         updateMeeting,
         deleteMeeting,
-        alertMeeting
+        alertMeeting,
+        setMeetingId
     }
 })

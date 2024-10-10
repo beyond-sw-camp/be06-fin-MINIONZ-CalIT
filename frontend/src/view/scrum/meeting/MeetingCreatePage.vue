@@ -1,24 +1,22 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { computed, inject, ref } from 'vue';
-import { useUserStore} from "@/stores/user/useUserStore";
-import { useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
+import { inject, ref } from 'vue';
+// import {useUserStore} from "@/stores/user/useUserStore";
+import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 import { timeInputUtils } from '@/utils/timeInputUtils';
+import { setPersona } from "@/utils/personaUtils";
+import router from "@/router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspaceStore = useWorkspaceStore();
-const workspace = computed(() => workspaceStore.setWorkspaceId(workspaceId));
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Create';
+contentsTitle.value = 'Meeting Create';
 contentsDescription.value = '회의를 만들어 보세요!';
 
-const userStore = useUserStore();
-const loggedInUser = computed(() => userStore.getUserInfo());
+const meetingStore = useMeetingStore();
 const meetingTitle = ref('회의 제목');
 const meetingDescription = ref('회의 상세 설명');
 const startTime = ref('');
@@ -31,18 +29,26 @@ const participants = ref([]);
 
 const adjustTime = () => {
   if (startTime.value && endTime.value) {
-    const { start, end } = timeInputUtils(startTime.value, endTime.value);
+    const {start, end} = timeInputUtils.adjustTime(startTime.value, endTime.value);
     startTime.value = start;
     endTime.value = end;
   }
 };
 
-const addNote = () => {
-  isQuillVisible.value = true;
+const addMeeting = () => {
+  meetingStore.addMeeting({
+    workspaceId: workspaceId,
+    meetingTitle: meetingTitle.value,
+    meetingDescription: meetingDescription.value,
+    participants: participants.value,
+    startTime: startTime.value,
+    endTime: endTime.value,
+  });
 };
-const saveNote = () => {
-  console.log('Meeting title:', meetingTitle.value);
-  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가해야함
+
+const addNote = () => {
+  addMeeting();
+  router.push(`/workspace/${workspaceId}/scrum/meeting/edit`);
 };
 
 const rightSideOn = (id) => {
@@ -61,102 +67,98 @@ const rightSideOn = (id) => {
   <div class="meeting-wrap">
     <div class="meeting-note-container">
       <div class="meeting-input-wrap">
-      <div class="meeting-title-container">
+        <div class="meeting-title-container">
         <span class="column">
           <i class="meeting-title column-icon"></i>
           회의 제목
         </span>
-        <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목" />
-      </div>
-      <!--      설명 추가하기-->
-      <div class="issue-section">
+          <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목"/>
+        </div>
+        <div class="issue-section">
         <span class="column">
           <i class="meeting-description column-icon"></i>
           설명 추가하기
         </span>
-        <input v-model="meetingDescription" class="description-editor" placeholder="회의록 상세" />
-      </div>
+          <input v-model="meetingDescription" class="description-editor" placeholder="회의록 상세"/>
+        </div>
 
-      <!--     시간 추가하기-->
-      <div class="issue-section">
+        <div class="issue-section">
         <span class="column">
           <i class="meeting-time column-icon"></i>
           회의 시간
         </span>
-        <div class="meeting-time-input">
-          <span>시작 시간</span>
-          <input v-model="startTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
-          <span>~ 종료 시간</span>
-          <input v-model="endTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
-        </div>
-
-      </div>
-      <!-- 작성자 및 회의 참가자 표시 -->
-      <div class="author-section">
-        <div class="author">
-          <span class="column">
-            <i class="user-editor column-icon"></i>
-            작성자
-          </span>
-          <div class="user-profile">
-            <img :src="loggedInUser?.persona" alt="작성자">
-            <span>{{ loggedInUser?.username }}</span>
+          <div class="meeting-time-input">
+            <span>시작 시간</span>
+            <input v-model="startTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
+            <span>~ 종료 시간</span>
+            <input v-model="endTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
           </div>
-        </div>
-      </div>
 
-      <div class="author-section">
-        <div class="participants">
+        </div>
+<!--        <div class="author-section">-->
+<!--          <div class="author">-->
+<!--          <span class="column">-->
+<!--            <i class="user-editor column-icon"></i>-->
+<!--            작성자-->
+<!--          </span>-->
+<!--            <div class="user-profile">-->
+<!--              <img :src="setPersona(userId)" alt="작성자">-->
+<!--              <span>{{ loggedInUser?.userName }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+        <div class="author-section">
+          <div class="participants">
           <span class="column">
             <i class="user-multiple column-icon"></i>
             회의 참여자
           </span>
-          <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
-          <div class="users-list">
-            <div class="user-profile" v-for="participant in participants" :key="participant.id">
-              <img :src="participant.persona" alt="참여자">
-              <span>{{ participant.username }}</span>
+            <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
+            <div class="users-list">
+              <div class="user-profile" v-for="participant in participants" :key="participant.id">
+                <img :src="setPersona(participant.persona)" alt="참여자">
+                <span>{{ participant.username }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="issue-section">
+        <div class="issue-section">
         <span class="column">
           <i class="label-add column-icon"></i>
           라벨 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('label')">라벨 추가하기</button>
-        <button class="label-button">Frontend</button>
-      </div>
+          <button class="issue-button" @click="rightSideOn('label')">라벨 추가하기</button>
+          <button class="label-button">Frontend</button>
+        </div>
 
-      <!-- 태스크 추가하기 -->
-      <div class="issue-section">
+        <!-- 태스크 추가하기 -->
+        <div class="issue-section">
         <span class="column">
           <i class="task-add column-icon"></i>
           태스크 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('task')">태스크 추가하기</button>
-        <span class="issue-id">User_001</span>
-      </div>
+          <button class="issue-button" @click="rightSideOn('task')">태스크 추가하기</button>
+          <span class="issue-id">User_001</span>
+        </div>
 
-      <!-- 이슈 추가하기 -->
-      <div class="issue-section">
+        <!-- 이슈 추가하기 -->
+        <div class="issue-section">
         <span class="column">
           <i class="issue-add column-icon"></i>
           이슈 추가하기
         </span>
-        <button class="issue-button" @click="rightSideOn('issue')">이슈 추가하기</button>
-        <span class="issue-id">User_001</span>
-      </div>
+          <button class="issue-button" @click="rightSideOn('issue')">이슈 추가하기</button>
+          <span class="issue-id">User_001</span>
+        </div>
       </div>
 
       <div class="btn-sector">
-        <button class="save-button" @click="addNote">회의 저장하기</button>
+        <button class="save-button" @click="addMeeting">회의 저장하기</button>
         <button class="save-button btn-ver2" @click="addNote">회의록 추가하기</button>
       </div>
       <div v-show="isQuillVisible" class="quill-wrap">
         <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
-        <button class="save-button" @click="saveNote">저장하기</button>
       </div>
     </div>
     <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
@@ -164,7 +166,7 @@ const rightSideOn = (id) => {
 </template>
 
 <style scoped>
-.meeting-wrap{
+.meeting-wrap {
   display: flex;
   gap: 1rem;
   height: 70vh;
@@ -180,13 +182,13 @@ const rightSideOn = (id) => {
   justify-content: space-between;
 }
 
-.meeting-input-wrap{
+.meeting-input-wrap {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.meeting-title-container{
+.meeting-title-container {
   display: flex;
 }
 
@@ -194,7 +196,7 @@ const rightSideOn = (id) => {
   background-image: url("@/assets/icon/boardIcon/userMultiple.svg");
 }
 
-.column{
+.column {
   display: flex;
   align-items: center;
   width: 10rem;
@@ -206,7 +208,7 @@ const rightSideOn = (id) => {
   flex-direction: column;
 }
 
-.issue-section{
+.issue-section {
   display: flex;
 }
 
@@ -215,19 +217,19 @@ const rightSideOn = (id) => {
   align-items: center;
 }
 
-.meeting-title{
+.meeting-title {
   background-image: url("@/assets/icon/boardIcon/titleEdit.svg");
 }
 
-.meeting-description{
+.meeting-description {
   background-image: url("@/assets/icon/boardIcon/quillDescription.svg");
 }
 
-.meeting-time{
+.meeting-time {
   background-image: url("@/assets/icon/boardIcon/calendar.svg");
 }
 
-.meeting-time-input{
+.meeting-time-input {
   display: flex;
   gap: 10px;
 }
@@ -249,7 +251,7 @@ const rightSideOn = (id) => {
   height: 30px;
 }
 
-.label-add{
+.label-add {
   background-image: url("@/assets/icon/boardIcon/labelIcon.svg");
 }
 
@@ -272,7 +274,7 @@ const rightSideOn = (id) => {
   margin-right: 10px;
 }
 
-.issue-id{
+.issue-id {
   color: #28303F;
   background-color: #F3F6FF;
   padding: 5px 10px;
@@ -280,11 +282,11 @@ const rightSideOn = (id) => {
   font-size: 12px;
 }
 
-.issue-add{
+.issue-add {
   background-image: url("@/assets/icon/boardIcon/issueAdd.svg");
 }
 
-.task-add{
+.task-add {
   background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
 }
 
@@ -323,30 +325,30 @@ const rightSideOn = (id) => {
   //margin-left: auto;
 }
 
-.btn-ver2{
+.btn-ver2 {
   color: #e0e8ff;
   background-color: #666daf;
 }
 
-.user-profile{
+.user-profile {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.users-list{
+.users-list {
   display: flex;
   gap: 10px;
 }
 
-.btn-sector{
+.btn-sector {
   display: flex;
   gap: 10px;
   width: 100%;
   justify-content: flex-end;
 }
 
-.time-editor{
+.time-editor {
   border: none;
 }
 

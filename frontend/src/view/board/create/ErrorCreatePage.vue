@@ -1,6 +1,6 @@
 <script setup>
 import {inject, ref} from "vue";
-import { useErrorStore} from "@/stores/board/useErrorStore";
+import { useErrorStore } from "@/stores/board/useErrorStore";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
 const contentsTitle = inject('contentsTitle');

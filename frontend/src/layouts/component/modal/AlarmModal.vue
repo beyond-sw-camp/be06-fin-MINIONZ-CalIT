@@ -20,7 +20,7 @@ onMounted(async () => {
 
 const userStore = useUserStore();
 console.log('User Store:', userStore);
-const userId = userStore.user?.idx;
+const userId = userStore.user;
 console.log('User ID:', userId);
 
 if (userId) {
@@ -30,7 +30,7 @@ if (userId) {
     console.log('테스트 클라이언트 이벤트:' + event.data);
   };
 } else {
-  console.error('User ID is undefined');
+  console.error('박성준 바보');
 }
 </script>
 

@@ -3,7 +3,9 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useSprintStore = defineStore('sprintStore', () => {
+    const sprint = ref([]);
     const sprints = ref([]);
+    const sprintId = ref(null);
 
     const addSprint = async({workspaceId, sprintTitle, sprintContents, labels, participants, startDate, endDate}) => {
         try{
@@ -18,7 +20,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
     const getSprint = async(sprintId) => {
         try {
             const response  = await axiosInstance.get(`/api/sprint/${sprintId}`);
-            sprints.value = response.data.result;
+            sprint.value = response.data.result;
         }
         catch (error) {
             console.log('Error getting Sprint', error)
@@ -65,13 +67,27 @@ export const useSprintStore = defineStore('sprintStore', () => {
         }
     }
 
+    const setSprintId = async (id) => {
+        await getSprintList();
+        sprintId.value = id;
+        const selectedSprint = sprints.value.find(sprint => sprint.sprintId === id);
+        if (selectedSprint) {
+            sprint.value = selectedSprint;
+        } else {
+            sprint.value = null;
+        }
+    }
+
     return {
+        sprint,
         sprints,
+        sprintId,
         addSprint,
         getSprint,
         getSprintList,
         updateSprint,
         updateSprintState,
-        deleteSprint
+        deleteSprint,
+        setSprintId
     }
 });

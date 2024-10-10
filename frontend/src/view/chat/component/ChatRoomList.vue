@@ -1,42 +1,43 @@
 <script setup>
-import {onMounted, ref} from 'vue';
-import {getTimeDifference} from '@/utils/timeUtils';
+import { onMounted, ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { getTimeDifference } from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
 import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
-import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import {setPersona} from "@/utils/personaUtils";
 
-const { chatRoom, fetchChatRooms } = useChatRoomStore();
-onMounted(() => {
-  fetchChatRooms();
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const chatRoomStore = useChatRoomStore();
+
+const chatRoom = computed(() => chatRoomStore.chatRoom);
+onMounted(async () => {
+  await chatRoomStore.fetchChatRooms(workspaceId);
 });
-
-const workspaceId = useWorkspaceStore().workspaceId;
 
 const showModal = ref(false);
 
-const openModal = () => {
+const openModal = async () => {
   showModal.value = true;
 };
 
-const closeModal = () => {
+const closeModal = async () => {
   showModal.value = false;
 };
-
-
-// const totalMessages = 12;
 </script>
 
 <template>
   <div class="message-list-container">
     <div class="message-header">
       <p>Messages
-        <span class="badge">{{ chatRoom.filter(room => room.unreadMessages > 0).length }}</span>
+        <span class="badge">2</span>
       </p>
       <button class="new-message-button" @click="openModal">+</button>
     </div>
-    <div class="message-list">
+    <div class="message-list" v-if="chatRoom && chatRoom.length">
       <router-link :to="`/workspace/${workspaceId}/chat/` + room.chatroomId" class="message-item" v-for="(room) in chatRoom" :key="room.id">
-        <img :src="room.profilePic" alt="profile" class="profile-pic"/>
+        <img :src="setPersona(2)" alt="profile" class="profile-pic"/>
         <div class="message-info">
           <div class="message-item-top">
             <span class="user-name">{{ room.chatRoomName }}</span>
@@ -53,33 +54,8 @@ const closeModal = () => {
   </div>
 </template>
 
-<!--<template>-->
-<!--  <div class="message-list-container">-->
-<!--    <div class="message-header">-->
-<!--      <p>Messages <span class="badge">{{ totalMessages }}</span></p>-->
-<!--      <button class="new-message-button" @click="openModal">+</button>-->
-<!--    </div>-->
-<!--    <div class="message-list">-->
-<!--      <div class="message-item" v-for="(message, index) in chatRoomList" :key="index">-->
-<!--        <img :src="user1" alt="profile" class="profile-pic"/>-->
-<!--        <div class="message-info">-->
-<!--          <div class="message-item-top">-->
-<!--            <span class="user-name">{{ message.name }}</span>-->
-<!--          </div>-->
-<!--          <p class="message-text">{{ message.text }}</p>-->
-<!--        </div>-->
-<!--        <div class="message-item-right">-->
-<!--          <span class="message-time">{{ message.time }}</span>-->
-<!--          <span v-if="message.unreadCount" class="unread-count">{{ message.unreadCount }}</span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <FriendsModal v-if="showModal" @close="closeModal" />-->
-<!--  </div>-->
-<!--</template>-->
-
 <style scoped>
-a{
+a {
   text-decoration: none;
   color: #28303F;
 }
@@ -94,7 +70,6 @@ a{
   padding: 0 20px;
   height: 100%;
   overflow: auto;
-  //margin-top: 70px;
   background-color: #fff;
 }
 
@@ -102,16 +77,13 @@ a{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  //margin-bottom: 10px;
   background-color: #FFF;
   position: sticky;
   top: 0;
   height: 60px;
-  //box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  /* font-size: 20px; */
   font-weight: 500;
   border-bottom: 1px solid #e0e0e0;
 
@@ -128,7 +100,6 @@ a{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  //margin-bottom: 10px;
 }
 
 .new-message-button {
@@ -147,7 +118,6 @@ a{
 .message-item {
   display: flex;
   align-items: center;
-  /* padding: 10px 0; */
   border-bottom: 1px solid #f0f0f0;
   height: 72px;
 }
@@ -181,7 +151,6 @@ a{
 }
 
 .message-text {
-  //margin: 5px 0 0;
   font-size: 12px;
   color: #595959;
 }

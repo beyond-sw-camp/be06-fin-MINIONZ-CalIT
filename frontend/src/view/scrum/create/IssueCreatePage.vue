@@ -1,5 +1,6 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
+import { useRouter} from "vue-router";
 import { useIssueStore } from '@/stores/scrum/useIssueStore';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
 
@@ -9,13 +10,16 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Issue 추가하기';
 contentsDescription.value = 'Issue를 추가해보세요!';
 
+const route = useRouter();
+const workspaceId = route.param.workspaceId;
+
 const issueStore = useIssueStore();
 const friendStore = useFriendsStore();
 const issueName = ref('');
 const participants = ref('');
 
 const filteredUsers = computed(() => {
-  return friendStore.getUserList().filter(user => {
+  return friendStore.getFriendsList(workspaceId).filter(user => {
     return user.includes(participants.value);
   });
 });

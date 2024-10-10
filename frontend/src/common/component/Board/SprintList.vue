@@ -1,57 +1,44 @@
 <script setup>
-import {computed, defineProps} from 'vue';
-import {workspaceData} from "@/static/workspaceData";
-import {useRoute} from "vue-router";
+import { defineProps } from 'vue';
+import {useRoute, useRouter} from "vue-router";
 
-
+const router = useRouter();
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
 
 defineProps({
   items: Array,
-  firstColumn: String,
-  secondColumn: String,
-  thirdColumn: String,
-  fourthColumn: String,
-  fifthColumn: String,
-  endDate: String,
-  boardType: String,
 });
+
+const navigateToDetail = (index) => {
+
+  router.push(`/workspace/${workspaceId}/scrum/sprint/detail/${index}`);
+};
 </script>
 
 <template>
   <table class="board-table">
     <thead>
     <tr>
-      <!--      <th>-->
-      <!--        <input type="checkbox" id="check-all"/>-->
-      <!--        <label for="check-all" class="check-box"></label>-->
-      <!--      </th>-->
-      <th>{{firstColumn}}</th>
-      <!--      <th>작성자</th>-->
-      <th>{{secondColumn}}</th>
-      <th>{{thirdColumn}}</th>
-      <th>{{fourthColumn}}</th>
-      <th>{{fifthColumn}}</th>
-      <th>{{endDate}}</th>
+      <th>스프린트 이름</th>
+      <th>라벨</th>
+      <th>상태</th>
+      <th>시작일</th>
+      <th>마감일</th>
       <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr v-for="(item, index) in items" :key="index">
-      <!--      <td>-->
-      <!--        <input type="checkbox" id="check"/>-->
-      <!--        <label for="check" class="check-box"></label>-->
-      <!--      </td>-->
+    <tr v-for="(item, index) in items" :key="index" @click="navigateToDetail(index)">
       <td class="title">
-        <router-link :to="`/workspace/${workspace}/scrum/${boardType}/detail/${index}`">
-          {{ item.title }}
-        </router-link>
+        {{ item.title }}
       </td>
-      <td >
-        <span class="label">
+      <td>
+        <span v-if="item.label" class="label">
           {{ item.label }}
+        </span>
+        <span v-else>
+          None
         </span>
       </td>
       <td>
@@ -60,15 +47,15 @@ defineProps({
         </span>
         </td>
       <td>
-        <span class="priority">
-          {{ item.priority }}
+        <span>
+          {{ item.startDate }}
         </span>
         </td>
       <td>
-        <span class="taskNum">
-          {{ item.taskNumber}}
+        <span>
+          {{ item.endDate}}
         </span>
-        </td>
+      </td>
     </tr>
     </tbody>
   </table>

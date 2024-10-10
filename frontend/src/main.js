@@ -11,7 +11,6 @@ import vuetify from './plugins/vuetify';
 const app = createApp(App);
 const pinia = createPinia();
 
-
 router.onError((error) => {
     console.error('Router error:', error);
 });

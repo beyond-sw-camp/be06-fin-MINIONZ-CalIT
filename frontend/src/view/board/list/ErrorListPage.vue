@@ -1,10 +1,10 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
-import {useErrorStore} from "@/stores/board/useErrorStore";
+import {computed, inject, onMounted, ref} from 'vue';
+import {useErrorStore} from '@/stores/board/useErrorStore';
 import Pagination from '@/common/component/PaginationComponent.vue';
-import BoardList from "@/common/component/Board/BoardList.vue";
-import SearchComponent from "@/common/component/SearchComponent.vue";
-import {useRoute} from "vue-router";
+import BoardList from '@/common/component/Board/BoardList.vue';
+import SearchComponent from '@/common/component/SearchComponent.vue';
+import {useRoute} from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -16,11 +16,12 @@ contentsTitle.value = 'Error List';
 contentsDescription.value = 'Error 목록을 확인하세요!';
 
 const errorStore = useErrorStore();
+const postList = computed(() => errorStore.getPostList(currentPage, itemsPerPage).value);
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const totalPages = computed(() => Math.ceil((errorStore().value?.length || 0) / itemsPerPage));
+const totalPages = computed(() => Math.ceil((postList.value?.length || 0) / itemsPerPage));
 
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -45,14 +46,19 @@ const editItem = (item) => {
 const deleteItem = (item) => {
   console.log('Deleting:', item);
 };
+
+onMounted(async () => {
+  await errorStore.getPostList({page: currentPage.value - 1, size: itemsPerPage});
+});
 </script>
 
 <template>
   <div class="board-list-container">
     <div class="header">
-      <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/error/create`" />
+      <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/error/create`"/>
     </div>
-    <BoardList :items="errorStore" thcolumn="언어" column="language" board-type="error" @edit-item="editItem" @delete-item="deleteItem" />
+    <BoardList :items="postList" thcolumn="언어" column="language" board-type="error" @edit-item="editItem"
+               @delete-item="deleteItem"/>
     <Pagination
         :currentPage="currentPage"
         :totalPages="totalPages"
@@ -64,5 +70,4 @@ const deleteItem = (item) => {
 </template>
 
 <style scoped>
-
 </style>

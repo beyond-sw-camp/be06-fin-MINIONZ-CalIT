@@ -3,13 +3,14 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useFriendsStore = defineStore('friendsStore', () => {
+    const users = ref([]);
     const friends = ref([]);
 
     const getUserList = async (loginId) => {
         try {
             const response = await axiosInstance.get(`/api/search/containeduser?loginId=${loginId}` );
             console.log('API response:', response);
-            friends.value = response.data.result;
+            users.value = response.data.result;
         } catch (error) {
             console.error('Error fetching friends:', error);
         }

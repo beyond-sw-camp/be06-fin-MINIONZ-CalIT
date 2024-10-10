@@ -1,19 +1,16 @@
 <script setup>
 import {computed, inject, ref} from 'vue';
-import {mySprintData} from "@/static/mySprintData";
-// import { useSprintStore} from "@/stores/workspace/scrum/useSprintStore";
-// import { useWorkspaceStore} from "@/stores/workspace/space/useWorkspaceStore";
+import { useRoute } from "vue-router";
+import { useSprintLabelStore } from "@/stores/scrum/useSprintLabelStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import ScrumList from "@/common/component/Board/ScrumList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
-import {useRoute} from "vue-router";
+
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-// const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
-// const workspace = useWorkspaceStore();
-// const sprintStore = useSprintStore();
-const sprintStore = mySprintData
+
+const sprintLabelStore = useSprintLabelStore();
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -24,7 +21,7 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 
 // const totalPages = computed(() => Math.ceil((sprintListData.value?.length || 0) / itemsPerPage));
-const totalPages = computed(() => Math.ceil((sprintStore?.length || 0) / itemsPerPage));
+const totalPages = computed(() => Math.ceil((sprintLabelStore.sprints?.length || 0) / itemsPerPage));
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
@@ -49,7 +46,7 @@ const goToPage = (page) => {
     </div>
     <!--    <BoardList :items="sprintStore.sprints" thcolumn="스프린트 명" column="sprintTitle" board-type="sprint" @edit-item="editItem" @delete-item="deleteItem" />-->
     <ScrumList
-        :items="sprintStore"
+        :items="sprintLabelStore.sprints"
         firstColumn="스프린트 명"
         secondColumn="label"
         thirdColumn="status"
@@ -67,5 +64,24 @@ const goToPage = (page) => {
 </template>
 
 <style scoped>
+.initial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
 
+  a {
+    padding: 10px 20px;
+    background-color: #93AAFD;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #6F8FFC;
+    }
+  }
+}
 </style>

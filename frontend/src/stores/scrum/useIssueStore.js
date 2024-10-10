@@ -4,23 +4,33 @@ import { defineStore } from 'pinia';
 
 export const useIssueStore = defineStore('issueStore', () => {
     const issues = ref([]);
-    const getIssues = async () => {
+
+    const addIssue = async (workspaceId) => {
         try {
-            const response = await axiosInstance.get('/api/issues');
-            issues.value = response.data.result;
-        } catch (error) {
-            console.error('Error fetching issues:', error);
-        }
-    };
-    const addIssue = async (issue) => {
-        try {
-            const response = await axiosInstance.post('/api/issues', issue);
+            const response = await axiosInstance.post(`/api/issue/${workspaceId}`);
             issues.value.push(response.data.result);
         } catch (error) {
             console.error('Error adding issue:', error);
         }
     };
 
+    const getIssueList = async (workspaceId) => {
+        try {
+            const response = await axiosInstance.get(`/api/issue/${workspaceId}/list`);
+            issues.value = response.data.result;
+        } catch (error) {
+            console.error('Error fetching issues:', error);
+        }
+    };
+
+    const getIssue = async ({workspaceId, issueId}) => {
+        try {
+            const response = await axiosInstance.get(`/api/issue/${workspaceId}/detail/${issueId}`);
+            issues.value = response.data.result;
+        } catch (error) {
+            console.error('Error fetching issues:', error);
+        }
+    };
     // const updateIssue = async (index, updatedIssue) => {
     //     try {
     //         const response = await axiosInstance.put(`/api/issues/${updatedIssue.id}`, updatedIssue);
@@ -41,9 +51,8 @@ export const useIssueStore = defineStore('issueStore', () => {
 
     return {
         issues,
-        getIssues,
         addIssue,
-        // updateIssue,
-        // deleteIssue
+        getIssue,
+        getIssueList
     };
 });

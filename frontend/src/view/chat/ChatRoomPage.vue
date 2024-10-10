@@ -6,7 +6,7 @@ import FileList from "@/view/chat/component/FileList.vue";
 
 <template>
   <div class="chat-room">
-    <ChatRoomComponent :chatroomId = "1" :userId="123" :userName="최승은" />
+    <ChatRoomComponent/>
     <div class="chat-sidebar">
       <ChatRoomList/>
       <FileList/>
