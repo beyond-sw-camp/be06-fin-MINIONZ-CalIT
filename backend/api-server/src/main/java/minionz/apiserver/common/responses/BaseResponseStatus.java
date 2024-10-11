@@ -74,6 +74,7 @@ public enum BaseResponseStatus {
     WORKSPACE_DENY_SUCCESS(true, 4028, "워크스페이스 초대를 거절했습니다."),
     NOTE_LABEL_CREATE_SUCCESS(true,4029,"회의록 라벨 생성에 성공했습니다."),
     NOTE_LABEL_SEARCH_SUCCESS(true,4030,"회의록 라벨 조회에 성공했습니다."),
+    TASK_READ_ALL_BY_STATUS_SUCCESS(true, 4031, "태스크 목록을 상태 별 조회에 성공했습니다."),
 
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
