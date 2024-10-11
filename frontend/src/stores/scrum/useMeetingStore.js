@@ -6,9 +6,10 @@ export const useMeetingStore = defineStore('meetingStore', () => {
     const meetings =  ref([]);
     const meetingId = ref(null);
 
-    const addMeeting = async ({sprintId, startDate, endDate, meetingTitle, meetingContents, participants }) => {
+    const addMeeting = async (data, sprintId) => {
         try {
-            const response = await axiosInstance.post(`api/${sprintId}/meeting`, {startDate, endDate, meetingTitle, meetingContents, participants});
+
+            const response = await axiosInstance.post(`/api/meeting/${sprintId}`, data);
             meetings.value.push(response.data.result);
         }
         catch (error) {

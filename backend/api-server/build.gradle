@@ -1,0 +1,46 @@
+plugins {
+
+}
+
+
+dependencies {
+    implementation project(':common')
+    //기본
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+    //email 로그인 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    //amazon s3
+    implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
+    //kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    //swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    //JWT TOKEN 로그인
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    // webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    //swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    // chatbot
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'io.projectreactor:reactor-core'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+}
+
+bootJar {
+    archiveFileName = "api-server.jar"
+}
+
