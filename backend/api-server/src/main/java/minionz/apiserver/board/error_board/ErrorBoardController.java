@@ -39,42 +39,43 @@ public class ErrorBoardController {
   // 게시글 하나 조회
   @GetMapping("/search")
   public BaseResponse<GetErrorBoardResponse> search(
-
-      @RequestParam Long boardId) throws BaseException {
+          @RequestParam Long boardId) throws BaseException {
 
     GetErrorBoardResponse response = errBoardService.read(boardId);
-    return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
+    return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response );
   }
 
   // 게시글 전체 조회
   @GetMapping("/search-all")
   public BaseResponse<Page<GetErrorBoardResponse>> readAllErrorBoard(
-
+          @RequestParam Long workspaceId,
       @RequestParam int page,
       @RequestParam int size) throws BaseException {
 
-    Page<GetErrorBoardResponse> response = errBoardService.readAll(page, size);
+    Page<GetErrorBoardResponse> response = errBoardService.readAll(workspaceId,page, size);
     return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
   }
 
   // 단어별 조회
   @GetMapping("/search-keyword")
   public BaseResponse<Page<GetErrorBoardResponse>> readKeyword(
+          @RequestParam Long workspaceId,
       @RequestParam int page,
       @RequestParam int size,
       @RequestParam String keyword) throws BaseException {
 
-    Page<GetErrorBoardResponse> response = errBoardService.readKeyword(keyword, page, size);
+    Page<GetErrorBoardResponse> response = errBoardService.readKeyword(workspaceId,keyword, page, size);
     return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
   }
 
   // 카테고리별 조회
   @GetMapping("/search-category")
   public BaseResponse<Page<GetErrorBoardResponse>> readCategory(
+          @RequestParam Long workspaceId,
       @RequestParam int page,
       @RequestParam int size,
       @RequestParam String category) throws BaseException {
-    Page<GetErrorBoardResponse> response = errBoardService.readCategory(category, page, size);
+    Page<GetErrorBoardResponse> response = errBoardService.readCategory(workspaceId,category, page, size);
     return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_SEARCH_SUCCESS, response);
   }
 }
