@@ -2,6 +2,8 @@ package minionz.apiserver.chat.message;
 
 import minionz.common.chat.message.model.Message;
 import minionz.common.chat.message.model.MessageStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -28,7 +30,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findLatestMessagesByChatRoomId(Long chatRoomId);
 
     @Query("SELECT m FROM Message m WHERE m.chatParticipation.chatRoom.chatRoomId = :chatRoomId AND m.deletedAt IS NULL ORDER BY m.createdAt ASC")
-    List<Message> findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(Long chatRoomId);
+    Page<Message> findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(Long chatRoomId, Pageable pageable);
 
     @Query("SELECT m FROM Message m WHERE m.messageId = :messageId")
     Message findMessageById(Long messageId);

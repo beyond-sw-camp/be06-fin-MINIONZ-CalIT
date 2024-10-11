@@ -10,7 +10,7 @@ const props = defineProps({
 });
 
 const meetingBackgroundColors = computed(() => {
-  return props.meetings.map((meeting) => getBackgroundColor(meeting.date));
+  return props.meetings.map(meeting => getBackgroundColor(meeting.startDate));
 });
 </script>
 
@@ -25,13 +25,10 @@ const meetingBackgroundColors = computed(() => {
       >
         <div class="head">
           <h4>{{ meeting.title }}</h4>
-          <p>{{ meeting.project }}</p>
+          <p>{{ meeting.workspaceName }}</p>
         </div>
-        <div
-          class="time"
-          :style="{ backgroundColor: meetingBackgroundColors[index] }"
-        >
-          <span>{{ meeting.date }}</span>
+        <div class="time" :style="{ backgroundColor: meetingBackgroundColors[index] }">
+          <span>{{ meeting.startDate }}</span>
         </div>
       </div>
     </div>

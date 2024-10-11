@@ -194,6 +194,7 @@ public class SprintService {
                         .id(participant.getUser().getUserId())
                         .userName(participant.getUser().getUserName())
                         .isManager(participant.getIsManager())
+                        .persona(participant.getUser().getPersona())
                         .build()
         ).toList();
     }

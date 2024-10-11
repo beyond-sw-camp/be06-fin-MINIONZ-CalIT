@@ -16,6 +16,10 @@ import minionz.common.chat.message.model.Message;
 import minionz.common.chat.message.model.MessageStatus;
 import minionz.common.chat.message.model.MessageType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -43,9 +47,20 @@ public class MessageService {
         ChatParticipation participation = chatParticipationRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, senderId);
 
         // 파일 업로드 처리
+
+        FileInfo file = null;
+
+
         List<String> fileUrls = null;
         if (files != null) {
             fileUrls = cloudFileUpload.multipleUpload(files);
+            file = FileInfo.builder()
+                    .fileName(files[0].getOriginalFilename())
+                    .fileUrl(fileUrls.get(0))
+                    .fileSize(""+files[0].getSize())
+                    .fileType(files[0].getContentType())
+                    .build();
+            request.setFile(file);
         }
 
         Message message = Message.builder()
@@ -65,7 +80,6 @@ public class MessageService {
 
         // Kafka 로 메시지 전송
         String topic = "chat-room-" + chatRoomId.toString();
-        request.setFiles(fileUrls);
 
         try {
             String messageStr = objectMapper.writeValueAsString(request);
@@ -116,15 +130,18 @@ public class MessageService {
         }
     }
 
-    public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId) throws BaseException {
-        List<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(chatRoomId);
+    public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId, Integer page, Integer size) throws BaseException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Page<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(chatRoomId, pageable);
+
         if (messages.isEmpty()) {
             throw new BaseException(BaseResponseStatus.MESSAGE_NOT_FOUND);
         }
+
         return messages.stream()
                 .map(message -> ReadMessageResponse.builder()
                         .messageId(message.getMessageId())
-                        .senderId(userId)
+                        .senderId(message.getUserId())
                         .userName(message.getChatParticipation().getUser().getUserName())
                         .messageContents(message.getMessageContents())
                         .createdAt(message.getCreatedAt())
@@ -148,8 +165,8 @@ public class MessageService {
         if (!unreadMessages.isEmpty()) {
             for (Message message : unreadMessages) {
                 message.setMessageStatus(MessageStatus.READ);
-                }
             }
+        }
 
         try {
             messageRepository.saveAll(unreadMessages);
