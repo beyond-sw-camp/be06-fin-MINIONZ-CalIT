@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from 'vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import { setPersona } from "@/utils/personaUtils";
+import { setPersona } from '@/utils/personaUtils';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 
@@ -16,11 +16,13 @@ const getAllWorkspace = async () => {
     if (workspace.value.length > 0) {
       workspaceStore.setWorkspaceId(workspace.value[0].workspaceId);
     }
-    console.log('Response data:', response.data.result);
-    console.log('workspace Id value:', workspaceStore.workspaceId);
   } catch (error) {
     console.error('Failed to fetch all workspaces', error);
   }
+};
+
+const handleWorkspaceClick = (workspaceItem) => {
+  workspaceStore.setNowWorkspace(workspaceItem);
 };
 
 onMounted(async () => {
@@ -35,24 +37,26 @@ onMounted(async () => {
         <div>
           <p>Workspace List</p>
         </div>
-        <hr>
+        <hr />
       </div>
       <div class="workspace-modal-body">
         <ul>
           <li>
             <div class="workspace-item">
               <router-link to="/my/dashboard">
-                <img :src="user1" alt="user">
+                <img :src="user1" alt="user" />
                 <p>My Space</p>
               </router-link>
             </div>
-            <hr>
+            <hr />
           </li>
           <li v-for="(workspaceItem, index) in workspace" :key="index">
             <div class="workspace-item">
-              <router-link :to="'/workspace/' + workspaceItem.workspaceId + '/dashboard'"
-                           @click="workspaceStore.setWorkspaceId(workspaceItem.workspaceId)">
-                <img :src="setPersona(workspaceItem.avatar)" alt="workspace">
+              <router-link
+                :to="'/workspace/' + workspaceItem.workspaceId + '/dashboard'"
+                @click="handleWorkspaceClick(workspaceItem)"
+              >
+                <img :src="setPersona(workspaceItem.avatar)" alt="workspace" />
                 <p>{{ workspaceItem.workspaceName }}</p>
               </router-link>
             </div>
@@ -60,10 +64,10 @@ onMounted(async () => {
         </ul>
       </div>
       <div class="workspace-modal-footer">
-        <hr>
+        <hr />
         <div>
           <router-link to="/my/create">
-            <img :src="plus" class="plus" alt="plus-btn">
+            <img :src="plus" class="plus" alt="plus-btn" />
             <p>Add Workspace</p>
           </router-link>
         </div>
@@ -74,7 +78,7 @@ onMounted(async () => {
 
 <style scoped>
 .workspace-modal {
-  background-color: #F3F6FF;
+  background-color: #f3f6ff;
   padding: 16px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -93,7 +97,7 @@ onMounted(async () => {
 .workspace-modal-header {
   position: absolute;
   z-index: 1;
-  background-color: #F3F6FF;
+  background-color: #f3f6ff;
   top: 0;
   width: 100%;
 }
@@ -134,10 +138,10 @@ ul {
     display: flex;
     align-items: center;
     border-radius: 10px;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
 
     &:hover {
-      background-color: #C6D2FD;
+      background-color: #c6d2fd;
       color: white;
     }
   }
@@ -160,6 +164,6 @@ a {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 </style>
