@@ -47,12 +47,17 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
         }
     };
 
+    const addLabel = (label) => {
+        labels.value.push(label);
+    }
+
     return {
         labels,
         labelColors,
         addSprintLabel,
         getSprintLabel,
         updateLabel,
-        deleteLabel
+        deleteLabel,
+        addLabel
     }
 });

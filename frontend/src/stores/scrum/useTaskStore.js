@@ -105,6 +105,8 @@ export const useTaskStore = defineStore('taskStore', () => {
     try {
       const response = await axiosInstance.get(`/api/sprint/my/all`);
       taskData.value = response.data.result;
+
+      return response.data.result;
     } catch (error) {
       console.error('Error getting task list:', error);
     }
