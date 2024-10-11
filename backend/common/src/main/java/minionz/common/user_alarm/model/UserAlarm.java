@@ -17,7 +17,7 @@ public class UserAlarm extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userAlarmId;
 
-    private Integer alarmStatus;
+    private Long alarmStatus;
     private String category;
 
     // UserAlarm : User = N : 1
