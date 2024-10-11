@@ -12,7 +12,7 @@ public class ReadMyAlarmResponse {
     private String content;
     private Long idx;
     private Long type;
-    private long status;
+    private Long status;
     private LocalDateTime time;
     private Long userAlarmId;
 }
