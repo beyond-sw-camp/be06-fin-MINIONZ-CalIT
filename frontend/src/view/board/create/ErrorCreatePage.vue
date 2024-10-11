@@ -2,12 +2,16 @@
 import { inject, ref } from "vue";
 import { useErrorStore } from "@/stores/board/useErrorStore";
 import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
+import {useRoute} from "vue-router";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 
 contentsTitle.value = 'Error 게시글 쓰기';
 contentsDescription.value = 'Error 게시글을 만들어 보세요!';
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
 
 const errorStore = useErrorStore();
 const errTitle = ref('');
@@ -18,6 +22,7 @@ const selectedTask = ref(null);
 
 const savePost = () => {
   errorStore.writePost({
+    workspaceId: workspaceId,
     errboardTitle: errTitle.value,
     errboardContent: errContent.value.html,
     category: errLanguage.value,
@@ -42,7 +47,7 @@ const savePost = () => {
             <i class="languages column-icon"></i>
             언어 선택하기
           </span>
-          <select class="title-editor">
+          <select v-model="errLanguage" class="title-editor">
             <option>Python</option>
             <option>Java</option>
             <option>JavaScript</option>
@@ -79,7 +84,6 @@ const savePost = () => {
 }
 
 .error-note-container {
-  //padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -151,7 +155,6 @@ const savePost = () => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  //margin-top: 20px;
   width: 150px;
   margin-left: auto;
 }

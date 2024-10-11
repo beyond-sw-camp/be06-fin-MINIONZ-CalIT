@@ -75,6 +75,12 @@ const workspaceId = route.params.workspaceId;
             <p class="outfit">Meeting</p>
           </router-link>
         </li>
+        <li>
+          <router-link :to="`/workspace/${workspaceId}/scrum/label`">
+            <i class="icon-label"/>
+            <p class="outfit">Labels</p>
+          </router-link>
+        </li>
       </ul>
     </li>
     <hr>
@@ -175,6 +181,9 @@ i {
 }
 .icon-meeting {
   background-image: url("@/assets/icon/menu/meeting.svg");
+}
+.icon-label {
+  background-image: url("@/assets/icon/menu/label.svg");
 }
 .icon-chat {
   background-image: url("@/assets/icon/menu/chat.svg");

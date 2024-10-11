@@ -1,34 +1,63 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
+import { useSprintStore } from "@/stores/scrum/useSprintStore";
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
-import Multiselect from 'vue-multiselect';
-import { useFriendsStore} from "@/stores/user/useFriendsStore";
-import {useRoute} from "vue-router";
+import { useFriendsStore } from "@/stores/user/useFriendsStore";
+import { useRoute } from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
+const sprintId = ref('');
 
 const taskStore = useTaskStore();
+const friendStore = useFriendsStore();
+const sprintStore = useSprintStore();
+
 const taskName = ref('');
 const taskContent = ref('');
 const selectedLevel = ref('');
 const selectedPriority = ref('');
 const userSearch = ref('');
-const selectedTasks = ref([]);
+// const selectedTasks = ref([]);
 const assignees = ref([]);
 const reviewers = ref([]);
 const startTime = ref('');
 const endTime = ref('');
-const friendStore = useFriendsStore();
-const filteredUsers = computed(() => {
-  return friendStore.getFilteredUsers(workspaceId, userSearch.value);
+
+const filteredFriends = ref([]);
+// const selectedFriend = ref(null);
+
+const sprintList = computed(() => {
+  return sprintStore.getSprintList(workspaceId);
 });
 
-const filteredTasks = computed(() => {
-  const tasks = taskStore.getTaskTitle();
-  if (!tasks) return [];
-  return tasks.filter(task => task.title.toLowerCase().includes(String(userSearch.value).toLowerCase()));
-});
+const searchFriends = async () => {
+  try {
+    await friendStore.getFriendsList(workspaceId);
+    filteredFriends.value = friendStore.friends.filter(friend =>
+        friend.userName.toLowerCase().includes(userSearch.value.toLowerCase())
+    );
+  } catch (error) {
+    console.error('Error fetching Friends:', error);
+    filteredFriends.value = [];
+  }
+};
+
+const toggleFriendSelection = (friend) => {
+  if (!assignees.value.includes(friend)) {
+    assignees.value.push(friend);
+  }
+};
+
+const removeFriendSelection = (friend) => {
+  assignees.value = assignees.value.filter(f => f !== friend);
+};
+
+// const filteredTasks = computed(() => {
+//   if (!sprintId.value) return [];
+//   const tasks = taskStore.getTaskList(sprintId.value);
+//   return tasks.filter(task => !selectedTasks.value.includes(task));
+// });
 
 const addTask = () => {
   taskStore.addTask({
@@ -44,9 +73,9 @@ const addTask = () => {
   selectedPriority.value = '';
 };
 
-watch(userSearch, (newTask) => {
-  if (newTask && !selectedTasks.value.includes(newTask)) {
-    selectedTasks.value.push(newTask);
+watch(userSearch, (newSearch) => {
+  if (newSearch) {
+    searchFriends();
   }
 });
 </script>
@@ -59,25 +88,12 @@ watch(userSearch, (newTask) => {
     <div class="task-wrap">
       <div class="input-wrap">
         <div>
-          <div>
-            <label for="task-select">기존 Task 선택</label>
-            <multiselect
-                v-model="userSearch"
-                :options="filteredTasks"
-                :searchable="true"
-                :close-on-select="true"
-                :show-labels="false"
-                placeholder="기존 Task 연동하기"
-                label="title"
-                track-by="id"
-            />
-          </div>
-          <div v-if="selectedTasks && selectedTasks.value && selectedTasks.value.length > 0">
-            <p>연동할 Tasks</p>
-            <ul>
-              <li v-for="task in selectedTasks" :key="task.id">{{ task.title }}</li>
-            </ul>
-          </div>
+          <label for="sprint-select">Sprint 선택</label>
+          <select v-model="sprintId" @change="taskStore.getTaskList(sprintId.value)" class="input-field">
+            <option v-for="sprint in sprintList" :key="sprint.id" :value="sprint.id">
+              {{ sprint.title }}
+            </option>
+          </select>
         </div>
         <div>
           <label for="task-name">Task 제목</label>
@@ -88,53 +104,52 @@ watch(userSearch, (newTask) => {
           <textarea id="task-content" v-model="taskContent" placeholder="Task 내용을 적어주세요" class="input-field" style="margin:0"/>
         </div>
         <div>
-          <label>담당자</label>
-          <multiselect
-              v-model="assignees"
-              :options="filteredUsers"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="담당자를 선택해주세요"
-              label="name"
-              track-by="id"
-          />
+          <label for="taskAssignee">담당자</label>
+          <input type="text" v-model="userSearch" placeholder="담당자 검색" class="input-field"/>
+          <div class="search-results" v-if="filteredFriends.length">
+            <div v-for="friend in filteredFriends" :key="friend.id" @click="toggleFriendSelection(friend)">
+              <img :src="friend.avatar" alt="avatar" class="persona"/>
+              {{ friend.userName }}
+            </div>
+          </div>
+          <ul class="participants-list">
+            <li v-for="assignee in assignees" :key="assignee.id" class="participants-item">
+              <div class="participants-item-info">
+                <img :src="assignee.avatar" alt="avatar" class="persona"/>
+                {{ assignee.userName }}
+              </div>
+              <button @click="removeFriendSelection(assignee)" class="del-btn">삭제</button>
+            </li>
+          </ul>
         </div>
         <div>
-          <label>보고자</label>
-          <multiselect
-              v-model="reviewers"
-              :options="filteredUsers"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="보고자를 선택해주세요"
-              label="name"
-              track-by="id"
-          />
+          <label for="taskReviewer">보고자</label>
+          <select id="taskReviewer" v-model="reviewers" class="input-field">
+            <option v-for="user in filteredFriends" :key="user.id" :value="user">{{ user.userName }}</option>
+          </select>
         </div>
         <div class="time-wrap">
           <label>시작 날짜</label>
-          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <input v-model="startTime" type="datetime-local" class="time-editor"/>
           <span>~ 종료 날짜</span>
-          <input v-model="endTime" type="datetime-local" class="time-editor" />
+          <input v-model="endTime" type="datetime-local" class="time-editor"/>
         </div>
         <label for="level">난이도</label>
         <div>
           <label for="level">난이도</label>
-          <multiselect
-              v-model="selectedLevel"
-              :options="['Easy', 'Medium', 'Hard']"
-              placeholder="Level"
-          />
+          <select v-model="selectedLevel" class="input-field">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
         </div>
         <div>
           <label for="priority">중요도</label>
-          <multiselect
-              v-model="selectedPriority"
-              :options="['Low', 'Medium', 'High']"
-              placeholder="Priority"
-          />
+          <select v-model="selectedPriority" class="input-field">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
         </div>
       </div>
       <button @click="addTask" class="add-task-btn">Task 연동하기</button>
@@ -212,14 +227,14 @@ label {
   margin-bottom: 0;
 }
 
-.time-wrap{
+.time-wrap {
   display: flex;
   gap: 10px;
   justify-content: center;
   flex-direction: column;
 }
 
-.time-editor{
+.time-editor {
   border: none;
   width: 200px;
 }

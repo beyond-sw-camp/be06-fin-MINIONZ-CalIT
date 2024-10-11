@@ -1,13 +1,12 @@
 <script setup>
-import {computed, ref, watchEffect} from 'vue';
-import {useRoute} from "vue-router";
-import {useUserStore} from '@/stores/user/useUserStore';
-// import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { computed, ref, watchEffect } from 'vue';
+import { useRoute } from "vue-router";
+import { useUserStore } from '@/stores/user/useUserStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 const route = useRoute();
 const isPersonalMenu = computed(() => route.path.startsWith('/my'));

@@ -54,27 +54,56 @@ watch(currentPage, async (newPage) => {
   await fetchPostList(newPage);
 });
 
-const fetchPostList = async (page = currentPage.value) => {
-  postList.value = await errorStore.getPostList({ page: page - 1, size: itemsPerPage });
+const fetchPostList = async () => {
+  await errorStore.getPostList({ page: currentPage.value, size: itemsPerPage });
+  postList.value = errorStore.posts || [];
 };
 </script>
 
 <template>
   <div class="board-list-container">
-    <div class="header">
-      <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/error/create`"/>
+    <div v-if="postList.value && postList.value.length > 0">
+      <div class="header">
+        <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/error/create`"/>
+      </div>
+      <BoardList :items="postList" thcolumn="언어" column="language" board-type="error" @edit-item="editItem"
+                 @delete-item="deleteItem"/>
+      <Pagination
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          @prev-page="prevPage"
+          @next-page="nextPage"
+          @go-to-page="goToPage"
+      />
     </div>
-    <BoardList :items="postList" thcolumn="언어" column="language" board-type="error" @edit-item="editItem"
-               @delete-item="deleteItem"/>
-    <Pagination
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-        @prev-page="prevPage"
-        @next-page="nextPage"
-        @go-to-page="goToPage"
-    />
+    <div v-else>
+      <div class="initial-wrap">
+        <p>Error를 추가하고 관리를 시작해보세요!</p>
+        <router-link :to="`/workspace/${workspaceId}/scrum/board/error/create`">Error 추가하기</router-link>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.initial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
+
+  a {
+    padding: 10px 20px;
+    background-color: #93AAFD;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #6F8FFC;
+    }
+  }
+}
 </style>

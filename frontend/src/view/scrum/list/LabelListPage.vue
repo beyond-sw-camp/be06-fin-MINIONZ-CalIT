@@ -1,65 +1,40 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
-import { useRoute } from "vue-router";
-import { useSprintLabelStore } from "@/stores/scrum/useSprintLabelStore";
-import Pagination from '@/common/component/PaginationComponent.vue';
-import ScrumList from "@/common/component/Board/ScrumList.vue";
-import SearchComponent from "@/common/component/SearchComponent.vue";
+import {ref, computed, onMounted} from 'vue';
+import LabelViewBar from '@/view/scrum/list/component/LabelViewBar.vue';
+import {useSprintStore} from "@/stores/scrum/useSprintStore";
+import {useTaskStore} from "@/stores/scrum/useTaskStore";
+import {useMeetingStore} from "@/stores/scrum/useMeetingStore";
 
+const currentView = ref('sprint');
 
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
+const sprintStore = useSprintStore();
+const taskStore = useTaskStore();
+const meetingStore = useMeetingStore();
 
-const sprintLabelStore = useSprintLabelStore();
-
-const contentsTitle = inject('contentsTitle');
-const contentsDescription = inject('contentsDescription');
-contentsTitle.value =  'Sprint List';
-contentsDescription.value = 'sprint 목록을 확인하세요!';
-
-const currentPage = ref(1);
-const itemsPerPage = 10;
-
-// const totalPages = computed(() => Math.ceil((sprintListData.value?.length || 0) / itemsPerPage));
-const totalPages = computed(() => Math.ceil((sprintLabelStore.sprints?.length || 0) / itemsPerPage));
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
+const items = computed(() => {
+  if (currentView.value === 'sprint') {
+    return sprintStore.sprints;
+  } else if (currentView.value === 'task') {
+    return taskStore.tasks;
+  } else if (currentView.value === 'meeting') {
+    return meetingStore.meetings;
   }
-};
+  return [];
+});
 
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
-};
-
-const goToPage = (page) => {
-  currentPage.value = page;
-};
+onMounted(async () => {
+  await sprintStore.getSprintList();
+  await taskStore.getTaskList();
+  await meetingStore.getMeetingList();
+});
 </script>
 
 <template>
   <div class="board-list-container">
-    <div class="header">
-      <SearchComponent :link="`/workspace/${workspaceId}/scrum/sprint/create`" />
+    <LabelViewBar :currentView="currentView" @view-change="currentView = $event"/>
+    <div v-for="item in items" :key="item.id">
+      {{ item.name }}
     </div>
-    <!--    <BoardList :items="sprintStore.sprints" thcolumn="스프린트 명" column="sprintTitle" board-type="sprint" @edit-item="editItem" @delete-item="deleteItem" />-->
-    <ScrumList
-        :items="sprintLabelStore.sprints"
-        firstColumn="스프린트 명"
-        secondColumn="label"
-        thirdColumn="status"
-        fourthColumn="priority"
-        fifthColumn="taskNumber"
-        board-type="sprint"/>
-    <Pagination
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-        @prev-page="prevPage"
-        @next-page="nextPage"
-        @go-to-page="goToPage"
-    />
   </div>
 </template>
 
@@ -83,5 +58,98 @@ const goToPage = (page) => {
       background-color: #6F8FFC;
     }
   }
+}
+
+.label-form-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f8fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #D7DBEC;
+  margin: 30px;
+}
+
+.label-preview {
+  margin-bottom: 20px;
+}
+
+.label-box {
+  padding: 5px 15px;
+  background-color: #c5def5;
+  border-radius: 15px;
+  color: #000;
+  font-weight: bold;
+}
+
+.label-inputs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+}
+
+.input-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid #d1d5da;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.color-group {
+  display: flex;
+  align-items: flex-start;
+}
+
+.color-selector {
+  display: flex;
+  align-items: center;
+}
+
+.color-randomizer {
+  background-color: #f1f8ff;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+input[type="text"]#labelColor {
+  width: 100px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-button {
+  background-color: transparent;
+  border: 1px solid #d1d5da;
+  color: #333;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>

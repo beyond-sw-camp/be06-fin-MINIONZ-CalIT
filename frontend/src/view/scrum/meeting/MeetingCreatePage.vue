@@ -1,7 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { inject, ref } from 'vue';
-// import {useUserStore} from "@/stores/user/useUserStore";
 import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
 import { timeInputUtils } from '@/utils/timeInputUtils';
@@ -23,8 +22,6 @@ const startTime = ref('');
 const endTime = ref('');
 const rightSideVisible = ref(false);
 const activeComponentId = ref('');
-const editor = ref(null);
-const isQuillVisible = ref(false);
 const participants = ref([]);
 
 const adjustTime = () => {
@@ -35,8 +32,8 @@ const adjustTime = () => {
   }
 };
 
-const addMeeting = () => {
-  meetingStore.addMeeting({
+const addMeeting = async () => {
+  const response = await meetingStore.addMeeting({
     workspaceId: workspaceId,
     meetingTitle: meetingTitle.value,
     meetingDescription: meetingDescription.value,
@@ -44,11 +41,13 @@ const addMeeting = () => {
     startTime: startTime.value,
     endTime: endTime.value,
   });
+  return response;
 };
 
-const addNote = () => {
-  addMeeting();
-  router.push(`/workspace/${workspaceId}/scrum/meeting/edit`);
+const addNote = async () => {
+  const response = await addMeeting();
+  const meetingId = response.data.result.id;
+  await router.push(`/workspace/${workspaceId}/scrum/meeting/edit/${meetingId}`);
 };
 
 const rightSideOn = (id) => {
@@ -56,10 +55,12 @@ const rightSideOn = (id) => {
   if (meetingNoteContainer) {
     meetingNoteContainer.style.transition = 'width 0.5s ease';
     meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
+  } else {
+    console.error('meeting-note-container not found');
   }
   console.log('Add issue button clicked');
-  activeComponentId.value = id;
   rightSideVisible.value = !rightSideVisible.value;
+  activeComponentId.value = id;
 };
 </script>
 
@@ -95,18 +96,6 @@ const rightSideOn = (id) => {
           </div>
 
         </div>
-<!--        <div class="author-section">-->
-<!--          <div class="author">-->
-<!--          <span class="column">-->
-<!--            <i class="user-editor column-icon"></i>-->
-<!--            작성자-->
-<!--          </span>-->
-<!--            <div class="user-profile">-->
-<!--              <img :src="setPersona(userId)" alt="작성자">-->
-<!--              <span>{{ loggedInUser?.userName }}</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
 
         <div class="author-section">
           <div class="participants">
@@ -115,8 +104,8 @@ const rightSideOn = (id) => {
             회의 참여자
           </span>
             <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
-            <div class="users-list">
-              <div class="user-profile" v-for="participant in participants" :key="participant.id">
+            <div class="users-list" v-if="participants.value && participants.value.length > 0">
+              <div class="user-profile" v-for="participant in participants.value" :key="participant.id">
                 <img :src="setPersona(participant.persona)" alt="참여자">
                 <span>{{ participant.username }}</span>
               </div>
@@ -156,9 +145,6 @@ const rightSideOn = (id) => {
       <div class="btn-sector">
         <button class="save-button" @click="addMeeting">회의 저장하기</button>
         <button class="save-button btn-ver2" @click="addNote">회의록 추가하기</button>
-      </div>
-      <div v-show="isQuillVisible" class="quill-wrap">
-        <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
       </div>
     </div>
     <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
@@ -300,9 +286,7 @@ const rightSideOn = (id) => {
   border: 0;
   font-weight: 400;
   width: 80%;
-  //margin-left: 15px;
 }
-
 
 .content-editor {
   min-height: 500px;
@@ -320,9 +304,7 @@ const rightSideOn = (id) => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  //margin-top: 20px;
   width: 150px;
-  //margin-left: auto;
 }
 
 .btn-ver2 {

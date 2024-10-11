@@ -1,8 +1,10 @@
 <script setup>
 import {inject, ref} from "vue";
 import { useQAStore  } from "@/stores/board/useQAStore";
+import { useTaskStore} from "@/stores/scrum/useTaskStore";
+// import { useSprintStore } from "@/stores/scrum/useSprintStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
+import QuillEditor from "@/common/component/Editor/QuillEditor.vue";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -11,9 +13,13 @@ contentsTitle.value = 'QA 게시글 만들기';
 contentsDescription.value = 'QA 게시글을 만들어 보세요!';
 
 const qaStore = useQAStore();
+const taskStore = useTaskStore();
+// const sprintStore = useSprintStore();
 const rightSideVisible = ref(false);
 const activeComponentId = ref('');
 const participants = ref([]);
+
+const sprintId = 1;
 
 const rightSideOn = (componentId) => {
   activeComponentId.value = componentId;
@@ -55,7 +61,7 @@ const rightSideOn = (componentId) => {
               <i class="task-add column-icon"></i>
               태스크 추가하기
             </span>
-            <button class="issue-button" @click="rightSideOn('task'); qaStore.updateTaskId('newTaskId')">태스크 연동하기</button>
+            <button class="issue-button" @click="rightSideOn('task'); taskStore.getTaskList(sprintId)">태스크 연동하기</button>
             <span class="issue-id">{{ qaStore.taskId }}</span>
           </div>
           <QuillEditor/>
