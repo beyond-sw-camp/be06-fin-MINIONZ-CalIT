@@ -10,10 +10,12 @@ import minionz.apiserver.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.apiserver.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.apiserver.scrum.task.model.response.ReadTaskResponse;
 import minionz.apiserver.user.model.CustomSecurityUserDetails;
+import minionz.common.scrum.task.model.TaskStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,6 +65,21 @@ public class TaskController {
 
     return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
   }
+
+  @GetMapping("/{sprintId}/all/status")
+  public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatus(@PathVariable Long sprintId) {
+
+    List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
+
+    try {
+      response = taskService.readAllTaskByStatus(sprintId);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
+    }
+
+    return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+  }
+
 
   @GetMapping("/my/all")
   public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
