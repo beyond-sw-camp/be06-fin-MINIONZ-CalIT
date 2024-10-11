@@ -24,8 +24,8 @@ public class AlarmController {
 
   // 클라이언트 연결
   @GetMapping("/connect/{receiverId}")
-  public SseEmitter connect(@PathVariable Long receiverId) {
-    System.out.println("연결 성공");
+  public SseEmitter connect(@PathVariable Long receiverId) throws JsonProcessingException {
+
     return alarmService.addEmitter(receiverId);
   }
 
@@ -33,7 +33,7 @@ public class AlarmController {
   @PostMapping("/send")
   public void sendEventToClient(@RequestBody AlarmRequest alarmRequest) throws JsonProcessingException {
     alarmService.sendEventsToClients(alarmRequest.getReceiverIds(), alarmRequest.getSenderId(),
-        alarmRequest.getAlarmId(), alarmRequest.getType());
+            alarmRequest.getAlarmId(), alarmRequest.getType());
   }
 
   @GetMapping("/my")
@@ -41,6 +41,13 @@ public class AlarmController {
 
     List<ReadMyAlarmResponse> response = alarmService.readMyAlarms(customUserDetails.getUser());
 
+    return new BaseResponse<>(BaseResponseStatus.MY_ALARM_READ_SUCCESS, response);
+  }
+
+  @DeleteMapping("/delete/{userAlarmId}")
+  public BaseResponse<List<ReadMyAlarmResponse>> updateAlarmStatus(@PathVariable Long userAlarmId) {
+    alarmService.updateAlarmStatus(userAlarmId);
+    List<ReadMyAlarmResponse> response = alarmService.getAlarmsByStatus();
     return new BaseResponse<>(BaseResponseStatus.MY_ALARM_READ_SUCCESS, response);
   }
 }

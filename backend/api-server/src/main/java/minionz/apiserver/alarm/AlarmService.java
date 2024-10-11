@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class AlarmService {
 
-    private final Map<Long, Boolean> emitterStatus = new ConcurrentHashMap<>();
     private final Map<Long, List<Alarm>> pendingAlarms = new HashMap<>();
     private final Map<String, SseEmitter> emitters = new HashMap<>();
     private final UserRepository userRepository;
@@ -90,25 +89,18 @@ public class AlarmService {
                 .receiver(receiver)
                 .sender(sender)
                 .alarm(sendAlarm)
-                .alarmStatus(1) // 전송됨
+                .alarmStatus(0) // 전송됨
                 .type(type)
                 .build();
         userAlarmRepository.save(userAlarm);
 
-        userAlarmRepository.save(UserAlarm.builder().receiver(receiver).sender(sender).alarm(sendAlarm).alarmStatus(1).type(type).build());
-
         // 연결된 경우
-        if (emitter != null && emitterStatus.getOrDefault(receiver.getUserId(), false)) {
+        if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("message").data(jsonData));
-                System.out.println("알람 전송 완료");
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
-                emitterStatus.remove(receiver.getUserId()); // 상태도 제거
             }
-        } else {
-            // 연결되지 않은 경우, 알림 저장
-            pendingAlarms.computeIfAbsent(receiver.getUserId(), k -> new ArrayList<>()).add(sendAlarm);
         }
     }
 
@@ -120,71 +112,86 @@ public class AlarmService {
                 .receiver(receiver)
                 .sender(null)
                 .alarm(sendAlarm)
-                .alarmStatus(1) // 전송됨
+                .alarmStatus(0) // 읽음 안읽음
                 .type(type)
                 .build();
         userAlarmRepository.save(userAlarm);
 
-        // 연결된 경우
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("message").data("AlarmContents : " + sendAlarm.getAlarmContents() + ",type : " + type));
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
             }
-        } else {
-            // 연결되지 않은 경우, 알림 저장
-            pendingAlarms.computeIfAbsent(receiver.getUserId(), k -> new ArrayList<>()).add(sendAlarm);
         }
     }
 
 
-    public SseEmitter addEmitter(Long receiverId) {
+    public SseEmitter addEmitter(Long receiverId) throws JsonProcessingException {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emitters.put(String.valueOf(receiverId), emitter);
-        emitterStatus.put(receiverId, true); // 상태를 true로 초기화
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> alarmData = new HashMap<>();
+        alarmData.put("AlarmTitle", "Calit");
+        alarmData.put("AlarmContents", "접속을 환영합니다.");
+        alarmData.put("idx", String.valueOf(receiverId));
 
+        String jsonData = objectMapper.writeValueAsString(alarmData);
 
-        // 기존 보관된 알림 확인
-        List<Alarm> alarms = pendingAlarms.get(receiverId);
-        if (alarms != null) {
-            alarms.forEach(alarm -> {
-                try {
-                    String message = alarmRepository.findById(alarm.getAlarmId()).get().getAlarmContents();
-                    emitter.send(SseEmitter.event().name("message").data(message));
-                } catch (IOException e) {
-                    emitters.remove(receiverId);
-                    emitterStatus.remove(receiverId); // 상태 제거
-                }
-            });
-            pendingAlarms.remove(receiverId); // 보낸 후 보관 목록에서 제거
+        try {
+            emitter.send(jsonData); // 클라이언트에게 연결 성공 메시지 전송
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 오류 처리 (필요시)
         }
 
-        emitter.onCompletion(() -> {
-            emitters.remove(receiverId);
-            emitterStatus.remove(receiverId); // 상태 제거
-        });
-        emitter.onTimeout(() -> {
-            emitters.remove(receiverId);
-            emitterStatus.remove(receiverId); // 상태 제거
-        });
+        emitter.onCompletion(() -> emitters.remove(receiverId));
+        emitter.onTimeout(() -> emitters.remove(receiverId));
         return emitter;
     }
 
     public List<ReadMyAlarmResponse> readMyAlarms(User user){
         List<UserAlarm> alarms = userAlarmRepository.findByReceiver(user, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        List<ReadMyAlarmResponse> response =  alarms.stream().map(
-               userAlarm -> ReadMyAlarmResponse
-                       .builder()
-                       .idx(userAlarm.getType())
-                       .type(userAlarm.getAlarm().getAlarmId())
-                       .title(userAlarm.getAlarm().getAlarmTitle())
-                       .content(userAlarm.getAlarm().getAlarmContents())
-                       .time(userAlarm.getCreatedAt())
-                       .build()
-       ).toList();
+        List<ReadMyAlarmResponse> response =  alarms.stream().filter(
+                        userAlarm -> userAlarm.getAlarmStatus() != 1)
+                .map(userAlarm -> ReadMyAlarmResponse
+                        .builder()
+                        .idx(userAlarm.getType())
+                        .type(userAlarm.getAlarm().getAlarmId())
+                        .title(userAlarm.getAlarm().getAlarmTitle())
+                        .content(userAlarm.getAlarm().getAlarmContents())
+                        .time(userAlarm.getCreatedAt())
+                        .status(userAlarm.getAlarmStatus())
+                        .userAlarmId(userAlarm.getUserAlarmId())
+                        .build()
+                ).toList();
 
         return response;
     }
+
+    public void updateAlarmStatus(Long userAlarmId) {
+        UserAlarm alarm = userAlarmRepository.findByUserAlarmId(userAlarmId);
+        alarm.setAlarmStatus(1);
+        userAlarmRepository.save(alarm);
+    }
+
+    // 상태가 0인 알람만 반환하는 메서드
+    public List<ReadMyAlarmResponse> getAlarmsByStatus() {
+        List<UserAlarm> alarms = userAlarmRepository.findByAlarmStatus(0);
+        List<ReadMyAlarmResponse> response =  alarms.stream().map(
+                userAlarm -> ReadMyAlarmResponse
+                        .builder()
+                        .idx(userAlarm.getType())
+                        .type(userAlarm.getAlarm().getAlarmId())
+                        .title(userAlarm.getAlarm().getAlarmTitle())
+                        .content(userAlarm.getAlarm().getAlarmContents())
+                        .time(userAlarm.getCreatedAt())
+                        .status(userAlarm.getAlarmStatus())
+                        .build()
+        ).toList();
+        return response;
+    }
+
+
 }
