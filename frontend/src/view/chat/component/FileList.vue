@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import pdfIcon from '@/assets/icon/chatIcon/pdf.svg';
 import imgIcon from '@/assets/icon/chatIcon/img.svg';
@@ -11,23 +11,35 @@ import { useChatMessageStore } from '@/stores/chat/useChatMessageStore';
 const route = useRoute();
 const chatroomId = route.params.chatroomId;
 const chatMessageStore = useChatMessageStore();
-let files = [];
+const files = ref([]);
+
+// 파일 크기 변환 함수
+const formatFileSize = (size) => {
+  if (size === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(size) / Math.log(k));
+  return parseFloat((size / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
 const fetchFiles = async () => {
-  const chat = route.path.endsWith('/chat') ? [] : (await chatMessageStore.fetchChatMessages(chatroomId))?.file || [];
-  files = chat.filter((item) => item.messageType === 'FILE').map(item => item.file);
+  const chatMessages = await chatMessageStore.fetchChatMessages(chatroomId);
+  if (chatMessages) {
+    files.value = chatMessages.filter((message) => message.messageType === 'FILE').map((message) => message.file);
+  }
 };
 
 onMounted(fetchFiles);
 
 const getFileIcon = (fileType) => {
   switch (fileType) {
-    case 'PDF':
+    case 'application/pdf':
       return pdfIcon;
-    case 'PNG':
-    case 'JPG':
+    case 'image/png':
+    case 'image/jpeg':
+    case 'image/jpg':
       return imgIcon;
-    case 'docx':
+    case 'application.document':
       return docsIcon;
     case 'code':
       return codeIcon;
@@ -50,12 +62,12 @@ const getFileIcon = (fileType) => {
           </div>
           <div class="file-details">
             <span class="file-name">{{ file.fileName }}</span>
-            <span class="file-type">{{ file.fileType }} · {{ file.fileSize }}</span>
+            <span class="file-type">{{ file.fileType }} · {{ formatFileSize(file.fileSize) }}</span>
           </div>
         </div>
-        <button class="download-button">
+        <a :href="file.fileUrl" target="_blank" class="download-button">
           <img :src="downloadIcon" alt="download icon"/>
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -127,6 +139,10 @@ const getFileIcon = (fileType) => {
 .file-name {
   font-weight: 400;
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }
 
 .file-type {
