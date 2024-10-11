@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const router = useRouter();
@@ -27,34 +28,46 @@ const setView = (view) => {
 const to = ref('kanban');
 
 const sprintStore = useSprintStore();
+const taskStore = useTaskStore();
 const sprintOptions = ref([]);
+const taskLists = ref([]);
+const selectedSprintId = ref(null);
 
 onMounted(async () => {
   await sprintStore.getSprintList(workspaceId);
   sprintOptions.value = sprintStore.sprints;
+
+  if (sprintOptions.value.length > 0) {
+    selectedSprintId.value = sprintOptions.value[0].sprintId;
+    await getTasks(selectedSprintId.value);
+  }
+});
+
+const getTasks = async (sprintId) => {
+  taskLists.value = await taskStore.getTaskList(sprintId);
+};
+
+watch(selectedSprintId, async (newSprintId) => {
+  if (newSprintId) {
+    taskLists.value = await taskStore.getTaskList(newSprintId);
+  }
 });
 </script>
 
 <template>
   <div class="view-toggle-bar">
-    <select v-model="to" class="input-field">
+    <select v-model="selectedSprintId" class="input-field">
       <option
         v-for="sprint in sprintOptions"
-        :key="sprint.id"
-        :value="`/workspace/scrum/sprint/${sprint.id}/task/${currentView}`"
+        :key="sprint.sprintId"
+        :value="sprint.sprintId"
       >
         {{ sprint.title }}
       </option>
     </select>
     <div class="view-toggle-buttons">
       <router-link
-        :to="
-          to.startsWith('my')
-            ? `/my/task/${currentView}`
-            : to.startsWith('workspace')
-            ? `/workspace/scrum/task/${currentView}`
-            : to
-        "
+        :to="'kanban'"
         :class="{ active: currentView === 'kanban' }"
         @click="setView('kanban')"
       >
@@ -63,13 +76,7 @@ onMounted(async () => {
       </router-link>
       <div class="v-line" />
       <router-link
-        :to="
-          to.startsWith('my')
-            ? `/my/task/${currentView}`
-            : to.startsWith('workspace')
-            ? `/workspace/task/${currentView}`
-            : to
-        "
+        :to="'list'"
         :class="{ active: currentView === 'list' }"
         @click="setView('list')"
       >

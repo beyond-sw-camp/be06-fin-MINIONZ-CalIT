@@ -1,22 +1,18 @@
 <script setup>
 import ListItem from './ListItem.vue';
-import { computed, defineProps, ref, watch } from 'vue';
+import { computed, defineProps, watch } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
-// import { getTaskCountBackgroundColor, getTaskCountColor } from '@/utils/taskUtils';
+import {
+  getTaskCountBackgroundColor,
+  getTaskCountColor,
+} from '@/utils/taskUtils';
 
 const props = defineProps({
   data: {
-    type: Array,
-    required: true
-  }
+    type: Object,
+    required: true,
+  },
 });
-
-const getTaskCountBackgroundColor = (status) => {
-  return getTaskCountBackgroundColor(status);
-}
-const getTaskCountColor = (status) => {
-  return getTaskCountColor(status);
-}
 
 const taskCountBgStyle = computed(() => {
   return getTaskCountBackgroundColor(props.data.status);
@@ -26,26 +22,43 @@ const taskCountColorStyle = computed(() => {
   return getTaskCountColor(props.data.status);
 });
 
-const tasks = ref([...props.data.tasks]);
+const status = computed(() => Object.keys(props.data)[0]);
+const tasks = computed(() => Object.values(props.data)[0]);
 
-watch(() => props.data.tasks, (newTasks) => {
-  tasks.value = [...newTasks];
-});
+watch(
+  () => props.data.tasks,
+  (newTasks) => {
+    tasks.value = [...newTasks];
+  }
+);
 </script>
 
 <template>
   <div class="task-column">
     <div class="column-header">
       <div class="column-title">
-        <p>{{ data.status }}</p>
-        <span class="task-count" :style="{ backgroundColor: taskCountBgStyle, color: taskCountColorStyle }">{{ tasks.length }}</span>
+        <p>{{ status }}</p>
+        <span
+          class="task-count"
+          :style="{
+            backgroundColor: taskCountBgStyle,
+            color: taskCountColorStyle,
+          }"
+          >{{ tasks.length }}</span
+        >
       </div>
       <div class="add-task-card">
         <span class="plus">+</span> <span class="add-text">Add Task</span>
       </div>
     </div>
-    <VueDraggableNext :list="tasks" item-key="id" group="tasks" draggable=".task-card" handle=".task-card">
-      <ListItem v-for="(task) in tasks" :key="task.id" :task="task"/>
+    <VueDraggableNext
+      :list="tasks"
+      item-key="id"
+      group="tasks"
+      draggable=".task-card"
+      handle=".task-card"
+    >
+      <ListItem v-for="task in tasks" :key="task.id" :task="task" />
     </VueDraggableNext>
   </div>
 </template>
@@ -63,15 +76,15 @@ watch(() => props.data.tasks, (newTasks) => {
   margin: 0 0 10px 5px;
 }
 
-.column-title{
+.column-title {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 p {
-font-size: 14px;
-font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .task-count {
