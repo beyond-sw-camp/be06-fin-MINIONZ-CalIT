@@ -1,8 +1,8 @@
 <script setup>
-import {inject} from "vue";
-import { useWorkspaceDashboardStore} from "@/stores/workspace/useWorkspaceDashboardStore";
-import MonthlyComponent from "@/view/schedule/monthly/component/MonthlyComponent.vue";
-import {useRoute} from "vue-router";
+import { inject } from 'vue';
+import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
+import MonthlyComponent from '@/view/schedule/monthly/component/MonthlyComponent.vue';
+import { useRoute } from 'vue-router';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -18,12 +18,12 @@ const workspaceId = route.params.workspaceId;
 
 <template>
   <div class="monthly">
-    <MonthlyComponent :data="dashboardStore.getWorkspaceMonthly(workspaceId)"/>
+    <MonthlyComponent :data="dashboardStore.getWorkspaceMonthly(workspaceId)" />
   </div>
 </template>
 
 <style scoped>
-.monthly{
+.monthly {
   padding: 20px;
 }
 </style>

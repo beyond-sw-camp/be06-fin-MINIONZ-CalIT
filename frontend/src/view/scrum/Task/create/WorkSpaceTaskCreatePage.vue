@@ -1,9 +1,10 @@
 <script setup>
-import { inject, ref, watch, onMounted } from 'vue';
+import { inject, ref, watch, onMounted } from 'vue'; // toRaw 추가
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import Multiselect from 'vue-multiselect';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
 import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -20,13 +21,14 @@ const selectedLevel = ref('');
 const selectedPriority = ref('');
 const taskSearch = ref('');
 const selectedTasks = ref([]);
-const reviewers = ref([]);
 const startTime = ref('');
-const activeComponentId = ref('');
 const endTime = ref('');
-const rightSideVisible = ref(false);
+const selectedSprintId = ref(null);
+const selectedSprint = ref(null);
+const sprintOptions = ref([]);
 
 const friend = useFriendsStore();
+const sprintStore = useSprintStore();
 
 const availableParticipants = ref([]);
 
@@ -41,38 +43,38 @@ const fetchParticipants = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   fetchParticipants();
+  await sprintStore.getSprintList(workspaceId);
+  sprintOptions.value = sprintStore.sprints;
 });
 
-const rightSideOn = (id) => {
-  const meetingNoteContainer = document.querySelector(
-    '.meeting-note-container'
-  );
-  if (meetingNoteContainer) {
-    meetingNoteContainer.style.transition = 'width 0.5s ease';
-    meetingNoteContainer.style.width = rightSideVisible.value
-      ? '100%'
-      : 'calc(100% - 300px)';
+watch(selectedSprint, (newSprint) => {
+  if (newSprint) {
+    selectedSprintId.value = newSprint.sprintId; // 선택된 sprintId를 저장
+  } else {
+    selectedSprintId.value = null; // 선택이 해제되면 null로 초기화
   }
-
-  activeComponentId.value = id;
-  rightSideVisible.value = !rightSideVisible.value;
-};
+});
 
 const addTask = () => {
-  taskStore.addTask({
-    startDate: startTime.value,
-    endDate: endTime.value,
+  const postTask = {
+    sprintId: selectedSprintId.value,
     title: taskName.value,
     contents: taskContent.value,
-    participants: reviewers.value,
+    startDate: startTime.value,
+    endDate: endTime.value,
     difficulty: selectedLevel.value,
     priority: selectedPriority.value,
-  });
+    labels: [], // 추가할 라벨 데이터
+    participants: [], // 참여자 추가 (이 부분은 상황에 맞게 처리 필요)
+  };
+
+  taskStore.addTask(postTask, selectedSprintId.value); // 선택된 스프린트 ID로 전달
   taskName.value = '';
   selectedLevel.value = '';
   selectedPriority.value = '';
+  selectedSprintId.value = null;
 };
 
 watch(taskSearch, (newTask) => {
@@ -86,6 +88,19 @@ watch(taskSearch, (newTask) => {
   <div class="form-container">
     <div class="task-wrap">
       <div class="input-wrap">
+        <div>
+          <label>스프린트 선택하기</label>
+          <multiselect
+            v-model="selectedSprint"
+            :options="sprintOptions"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            placeholder="스프린트를 선택해주세요"
+            label="title"
+            track-by="sprintId"
+          />
+        </div>
         <div>
           <label for="task-name">Task 제목</label>
           <input
@@ -133,7 +148,7 @@ watch(taskSearch, (newTask) => {
           <label for="level">난이도</label>
           <multiselect
             v-model="selectedLevel"
-            :options="['Easy', 'Medium', 'Hard']"
+            :options="['LOW', 'MED', 'HIGH']"
             placeholder="Level"
           />
         </div>
@@ -141,7 +156,7 @@ watch(taskSearch, (newTask) => {
           <label for="priority">중요도</label>
           <multiselect
             v-model="selectedPriority"
-            :options="['Low', 'Medium', 'High']"
+            :options="['LOW', 'MED', 'HIGH']"
             placeholder="Priority"
           />
         </div>

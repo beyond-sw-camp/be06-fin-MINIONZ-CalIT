@@ -5,8 +5,8 @@ import { getBackgroundColor } from '@/utils/meetingBgUtils';
 const props = defineProps({
   meetings: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const meetingBackgroundColors = computed(() => {
@@ -17,8 +17,12 @@ const meetingBackgroundColors = computed(() => {
 <template>
   <div class="meeting-list">
     <h3>Upcoming Meetings</h3>
-    <div class="meeting-card-area">
-      <div class="meeting-card" v-for="(meeting, index) in meetings" :key="meeting.id">
+    <div class="meeting-card-area" v-if="props.meetings.length > 0">
+      <div
+        class="meeting-card"
+        v-for="(meeting, index) in meetings"
+        :key="meeting.id"
+      >
         <div class="head">
           <h4>{{ meeting.title }}</h4>
           <p>{{ meeting.workspaceName }}</p>
@@ -28,6 +32,7 @@ const meetingBackgroundColors = computed(() => {
         </div>
       </div>
     </div>
+    <div v-else>다가오는 회의가 없습니다!</div>
   </div>
 </template>
 
