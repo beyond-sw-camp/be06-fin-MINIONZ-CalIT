@@ -1,9 +1,8 @@
 <script setup>
-import {computed, inject, onMounted} from 'vue';
+import { inject, ref, watch, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { useTaskStore } from "@/stores/scrum/useTaskStore";
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import ListContainer from './component/ListContainer.vue';
-import { useSprintStore } from "@/stores/scrum/useSprintStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -11,25 +10,47 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Workspace Kanban';
 contentsDescription.value = '워크스페이스의 태스크를 살펴보세요!';
 
-const taskStore = useTaskStore();
-
 const route = useRoute();
-const sprintId = computed(() => useSprintStore().sprintId);
 const workspaceId = route.params.workspaceId;
 
+const taskStore = useTaskStore();
+const tasksByStatus = ref(null);
+
 onMounted(() => {
-  taskStore.getTaskList(sprintId.value);
+  tasksByStatus.value = taskStore.taskList;
+});
+
+// watch로 taskList의 변화를 감지하고 처리
+watch(
+  () => taskStore.taskList,
+  (newTaskList) => {
+    tasksByStatus.value = newTaskList; // taskList가 변경되면 상태별로 업데이트
+  },
+  { immediate: true }
+);
+
+// tasksByStatus 배열 중 값이 있는지 확인하는 computed property
+const hasTasks = computed(() => {
+  return tasksByStatus.value.some(
+    (statusObject) => Object.values(statusObject)[0].length > 0
+  );
 });
 </script>
 
 <template>
   <div class="list">
-    <div v-if="taskStore && taskStore.taskData && taskStore.taskData.length > 0">
-      <ListContainer  v-for="task in taskStore.taskData" :key="task.id" :data="task"/>
+    <div v-if="hasTasks">
+      <ListContainer
+        v-for="task in tasksByStatus"
+        :key="task.key"
+        :data="task"
+      />
     </div>
     <div v-else class="initial-wrap">
       <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`">태스크 추가하기</router-link>
+      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`"
+        >태스크 추가하기</router-link
+      >
     </div>
   </div>
 </template>
@@ -53,13 +74,13 @@ onMounted(() => {
 
   a {
     padding: 10px 20px;
-    background-color: #93AAFD;
+    background-color: #93aafd;
     color: white;
     border-radius: 5px;
     text-decoration: none;
 
     &:hover {
-      background-color: #6F8FFC;
+      background-color: #6f8ffc;
     }
   }
 }

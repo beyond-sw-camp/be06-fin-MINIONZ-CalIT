@@ -1,41 +1,24 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
-import { useRoute } from 'vue-router';
 
 export const useTaskStore = defineStore('taskStore', () => {
   const taskData = ref([]);
-  const route = useRoute();
+  const taskList = ref([]);
 
-  const addTask = async ({
-    startDate,
-    endDate,
-    title,
-    contents,
-    difficulty,
-    priority,
-    labels,
-    participants,
-  }) => {
+  const addTask = async (data, sprintId) => {
     try {
-      const sprintId = route.params.sprintId;
-      const response = await axiosInstance.post(`/api/task/${sprintId}`, {
-        startDate,
-        endDate,
-        title,
-        contents,
-        difficulty,
-        priority,
-        labels,
-        participants,
-      });
-      taskData.value.push(response.data.result);
+      // sprintId와 함께 데이터를 서버에 전송
+      const response = await axiosInstance.post(`/api/task/${sprintId}`, data);
+
+      console.log(response.data.result);
+      // taskData.value.push(response.data.result); // 필요시 추가
     } catch (error) {
       console.error('Error adding task:', error);
     }
   };
 
-  const updateTaskStatus = async ({ sprintId, taskId }) => {
+  const updateTaskStatus = async ({ sprintId, taskId, status }) => {
     try {
       const response = await axiosInstance.put(
         `/api/task/${sprintId}/status/${taskId}`,
@@ -60,8 +43,11 @@ export const useTaskStore = defineStore('taskStore', () => {
 
   const getTaskList = async (sprintId) => {
     try {
-      const response = await axiosInstance.get(`/api/task/${sprintId}/all`);
-      taskData.value = response.data.result;
+      const response = await axiosInstance.get(
+        `/api/task/${sprintId}/all/status`
+      );
+      taskList.value = response.data.result;
+      return response.data.result;
     } catch (error) {
       console.error('Error getting task list:', error);
     }
@@ -124,5 +110,6 @@ export const useTaskStore = defineStore('taskStore', () => {
     updateTaskStatus,
     deleteTask,
     getMyTask,
+    taskList,
   };
 });
