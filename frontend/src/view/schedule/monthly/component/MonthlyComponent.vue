@@ -1,10 +1,10 @@
 <script setup>
-import {ref, onMounted} from 'vue';
-import {useRoute} from "vue-router";
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
-import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import {useCalendar} from '@/utils/calendarUtils';
-import {formatUtil} from "@/utils/dateUtils";
+import ScheduleModal from '@/view/schedule/component/ScheduleModal.vue';
+import { useCalendar } from '@/utils/calendarUtils';
+import { formatUtil } from '@/utils/dateUtils';
 
 onMounted(() => {
   const container = document.querySelector('.calendar-container');
@@ -26,7 +26,7 @@ const props = ref({
   participants: [],
   top: 0,
   left: 0,
-  meeting: []
+  meeting: [],
 });
 
 const show = (event, eventData) => {
@@ -37,7 +37,7 @@ const show = (event, eventData) => {
     contents: eventData.contents,
     participants: eventData.participants,
     top: event.clientY,
-    left: event.clientX
+    left: event.clientX,
   };
   isVisible.value = true;
   console.log(event.clientY, event.clientX);
@@ -52,24 +52,26 @@ const {
   startBlankDays,
   goToToday,
   prevMonth,
-  nextMonth
+  nextMonth,
 } = useCalendar();
 
 const events = ref([]);
 
 const setEvents = (meetings) => {
-  events.value = meetings.map(meeting => ({
+  events.value = meetings.map((meeting) => ({
     id: meeting.id,
     date: new Date(meeting.startDate),
     title: meeting.title,
     startDate: meeting.startDate,
     endDate: meeting.endDate,
     contents: meeting.contents,
-    participants: meeting.participants
+    participants: meeting.participants,
   }));
 };
 const eventsForDay = (day) => {
-  return events.value.filter(event => formatUtil(event.date, 'd') === String(day));
+  return events.value.filter(
+    (event) => formatUtil(event.date, 'd') === String(day)
+  );
 };
 </script>
 
@@ -86,30 +88,30 @@ const eventsForDay = (day) => {
       </div>
       <div class="calendar-tab">
         <router-link
-            v-if="workspaceId"
-            :to="`/workspace/${workspaceId}/schedule/monthly`"
-            class="on">Month
+          v-if="workspaceId"
+          :to="`/workspace/${workspaceId}/schedule/monthly`"
+          class="on"
+          >Month
         </router-link>
         <router-link
-            v-if="workspaceId"
-            :to="`/workspace/${workspaceId}/schedule/weekly`"
-            class="off">Week
+          v-if="workspaceId"
+          :to="`/workspace/${workspaceId}/schedule/weekly`"
+          class="off"
+          >Week
         </router-link>
-        <router-link
-            v-if="!workspaceId"
-            :to="`/my/schedule/monthly`"
-            class="on">My Month
+        <router-link v-if="!workspaceId" :to="`/my/schedule/monthly`" class="on"
+          >My Month
         </router-link>
-        <router-link
-            v-if="!workspaceId"
-            :to="`/my/schedule/weekly`"
-            class="off">My Week
+        <router-link v-if="!workspaceId" :to="`/my/schedule/weekly`" class="off"
+          >My Week
         </router-link>
       </div>
     </div>
 
     <div class="calendar-grid header">
-      <div v-for="(day, index) in weekDays" :key="index" class="day-header">{{ day }}</div>
+      <div v-for="(day, index) in weekDays" :key="index" class="day-header">
+        {{ day }}
+      </div>
     </div>
 
     <div class="calendar-grid">
@@ -118,10 +120,10 @@ const eventsForDay = (day) => {
         <div class="day-number">{{ day }}</div>
         <div class="events">
           <button
-              v-for="event in eventsForDay(day)"
-              :key="event.id"
-              class="event"
-              @click="show($event, event)"
+            v-for="event in eventsForDay(day)"
+            :key="event.id"
+            class="event"
+            @click="show($event, event)"
           >
             {{ event.title }}
           </button>
@@ -129,15 +131,16 @@ const eventsForDay = (day) => {
       </div>
     </div>
     <ScheduleModal
-        v-if="isVisible"
-        :title="props.value.title"
-        :contents="props.value.contents"
-        :start-date="props.value.startDate"
-        :end-date="props.value.endDate"
-        :participants="props.value.participants"
-        :top="props.value.top"
-        :left="props.value.left"
-        @close="isVisible = false"/>
+      v-if="isVisible"
+      :title="props.value.title"
+      :contents="props.value.contents"
+      :start-date="props.value.startDate"
+      :end-date="props.value.endDate"
+      :participants="props.value.participants"
+      :top="props.value.top"
+      :left="props.value.left"
+      @close="isVisible = false"
+    />
   </div>
 </template>
 
@@ -211,7 +214,7 @@ const eventsForDay = (day) => {
   padding: 10px;
   background-color: rgba(224, 232, 255, 0.3);
   font-size: 16px;
-  color: #28303F;
+  color: #28303f;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
 }
 
@@ -242,7 +245,7 @@ const eventsForDay = (day) => {
 .event {
   border: 2px solid #2196f3;
   background-color: rgba(33, 150, 243, 0.1);
-  color: #28303F;
+  color: #28303f;
   border-radius: 5px;
   padding: 5px;
   font-size: 13px;

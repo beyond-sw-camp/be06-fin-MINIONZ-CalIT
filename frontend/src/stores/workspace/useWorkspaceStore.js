@@ -108,18 +108,6 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
       console.error('Failed to accept workspace', error);
     }
   };
-  // 워크스페이스 수락
-  const acceptWorkspace = async (workspaceId) => {
-    try {
-      const response = await axiosInstance.patch(
-        `/api/workspace/accept/${workspaceId}`
-      );
-      workspace.value = response.data;
-      await alarmStore.deleteAlarm(workspaceId);
-    } catch (error) {
-      console.error('Failed to accept workspace', error);
-    }
-  };
 
   const rejectWorkspace = async (workspaceId) => {
     try {
