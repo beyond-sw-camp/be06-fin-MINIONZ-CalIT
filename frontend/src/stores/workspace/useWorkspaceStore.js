@@ -76,7 +76,6 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         try {
             const response = await axiosInstance.patch(`/api/workspace/accept/${workspaceId}`);
             workspace.value = response.data;
-            await alarmStore.deleteAlarm(workspaceId);
         } catch (error) {
             console.error('Failed to accept workspace', error);
         }
