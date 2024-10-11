@@ -1,5 +1,5 @@
 FROM openjdk:17-alpine
-COPY ./build/libs/backend-0.0.1-SNAPSHOT.jar /minionz/backend.jar
+COPY ./build/libs/api-server.jar /minionz/backend.jar
 
 # ARG 선언
 ARG AWS_ACCESSKEY
