@@ -89,7 +89,7 @@ public class AlarmService {
                 .receiver(receiver)
                 .sender(sender)
                 .alarm(sendAlarm)
-                .alarmStatus(0) // 전송됨
+                .alarmStatus(0L) // 전송됨
                 .type(type)
                 .build();
         userAlarmRepository.save(userAlarm);
@@ -112,7 +112,7 @@ public class AlarmService {
                 .receiver(receiver)
                 .sender(null)
                 .alarm(sendAlarm)
-                .alarmStatus(0) // 읽음 안읽음
+                .alarmStatus(0L) // 읽음 안읽음
                 .type(type)
                 .build();
         userAlarmRepository.save(userAlarm);
@@ -172,7 +172,7 @@ public class AlarmService {
 
     public void updateAlarmStatus(Long userAlarmId) {
         UserAlarm alarm = userAlarmRepository.findByUserAlarmId(userAlarmId);
-        alarm.setAlarmStatus(1);
+        alarm.setAlarmStatus(1L);
         userAlarmRepository.save(alarm);
     }
 
