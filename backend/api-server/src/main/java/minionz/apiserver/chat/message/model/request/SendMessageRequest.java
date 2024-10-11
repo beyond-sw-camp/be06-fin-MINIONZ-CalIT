@@ -12,7 +12,7 @@ import java.util.List;
 public class SendMessageRequest {
 
     private String messageContents;
-    private List<String> files;
+    private FileInfo file;
     private Long chatRoomId;
     private Long userId;
     private String userName;
