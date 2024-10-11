@@ -1,10 +1,10 @@
 <script setup>
-import {useRoute} from 'vue-router';
-import {inject, onMounted, ref} from 'vue';
+import { useRoute } from 'vue-router';
+import { inject, onMounted, ref } from 'vue';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 
 const route = useRoute();
-// const workspaceId = route.params.workspaceId;
+
 const sprintId = route.params.sprintId;
 
 const contentsTitle = inject('contentsTitle');
@@ -36,7 +36,7 @@ onMounted(async () => {
           <i class="sprint-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor">{{ sprint.value.sprintContents}}</p>
+        <p class="description-editor">{{ sprint.value.sprintContents }}</p>
       </div>
       <div class="author-section">
         <div class="participants">
@@ -45,12 +45,16 @@ onMounted(async () => {
             스프린트 참여자
           </span>
           <div class="users-list">
-            <div class="user-profile" v-for="participant in sprint.value.participants" :key="participant.id">
-              <img :src="participant.avatar" alt="참여자">
+            <div
+              class="user-profile"
+              v-for="participant in sprint.value.participants"
+              :key="participant.id"
+            >
+              <img :src="participant.avatar" alt="참여자" />
               <span>{{ participant.name }}</span>
             </div>
           </div>
-      </div>
+        </div>
       </div>
       <div class="issue-section">
         <span class="column">
@@ -58,7 +62,13 @@ onMounted(async () => {
           라벨
         </span>
         <div class="label-list">
-          <button class="label-button" v-for="label in sprint.value.labels" :key="label.id">{{ label.name }}</button>
+          <button
+            class="label-button"
+            v-for="label in sprint.value.labels"
+            :key="label.id"
+          >
+            {{ label.name }}
+          </button>
         </div>
       </div>
     </div>
@@ -66,7 +76,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-a{
+a {
   text-decoration: none;
   text-align: center;
 }
@@ -88,7 +98,7 @@ a{
 }
 
 .user-multiple {
-  background-image: url("@/assets/icon/boardIcon/userMultiple.svg");
+  background-image: url('@/assets/icon/boardIcon/userMultiple.svg');
 }
 
 .column {
@@ -107,17 +117,18 @@ a{
   display: flex;
 }
 
-.author, .participants {
+.author,
+.participants {
   display: flex;
   align-items: center;
 }
 
 .sprint-title {
-  background-image: url("@/assets/icon/boardIcon/titleEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/titleEdit.svg');
 }
 
 .sprint-description {
-  background-image: url("@/assets/icon/boardIcon/quillDescription.svg");
+  background-image: url('@/assets/icon/boardIcon/quillDescription.svg');
 }
 
 .column-icon {
@@ -128,22 +139,23 @@ a{
 }
 
 .user-editor {
-  background-image: url("@/assets/icon/boardIcon/userEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/userEdit.svg');
 }
 
-.author img, .participants img {
+.author img,
+.participants img {
   border-radius: 50%;
   width: 30px;
   height: 30px;
 }
 
 .label-add {
-  background-image: url("@/assets/icon/boardIcon/labelIcon.svg");
+  background-image: url('@/assets/icon/boardIcon/labelIcon.svg');
 }
 
 .label-button {
-  background-color: #FBDBEA;
-  color: #DB2777;
+  background-color: #fbdbea;
+  color: #db2777;
   border: none;
   padding: 5px 10px;
   border-radius: 15px;
@@ -161,19 +173,19 @@ a{
 }
 
 .issue-id {
-  color: #28303F;
-  background-color: #F3F6FF;
+  color: #28303f;
+  background-color: #f3f6ff;
   padding: 5px 10px;
   border-radius: 15px;
   font-size: 12px;
 }
 
 .issue-add {
-  background-image: url("@/assets/icon/boardIcon/issueAdd.svg");
+  background-image: url('@/assets/icon/boardIcon/issueAdd.svg');
 }
 
 .task-add {
-  background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
+  background-image: url('@/assets/icon/boardIcon/taskAdd.svg');
 }
 
 .title-editor {
@@ -194,7 +206,7 @@ a{
   padding: 10px;
   background-color: white;
   margin-top: 10px;
-  border-top: 1px solid #28303F;
+  border-top: 1px solid #28303f;
   position: relative;
 }
 
@@ -222,16 +234,19 @@ a{
   gap: 10px;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: transform 0.5s, opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   transform: translateX(100%);
   opacity: 0;
 }
 
-.fade-enter-to, .fade-leave {
+.fade-enter-to,
+.fade-leave {
   transform: translateX(0);
   opacity: 1;
 }

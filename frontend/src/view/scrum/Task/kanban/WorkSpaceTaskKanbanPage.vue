@@ -1,8 +1,8 @@
 <script setup>
-import {inject, onMounted} from 'vue';
+import { inject, onMounted } from 'vue';
 import TaskColumn from './component/KanbanColumn.vue';
-import { useTaskStore } from "@/stores/scrum/useTaskStore";
-import { useRoute } from "vue-router";
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
+import { useRoute } from 'vue-router';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -18,17 +18,21 @@ const taskStore = useTaskStore();
 
 onMounted(() => {
   taskStore.getTaskList(sprintId);
-})
+});
 </script>
 
 <template>
   <div class="kanban-board">
-    <div v-if="taskStore && taskStore.taskData && taskStore.taskData.length > 0">
-      <TaskColumn v-for="task in tasks" :key="task.id" :data="task"/>
+    <div
+      v-if="taskStore && taskStore.taskData && taskStore.taskData.length > 0"
+    >
+      <TaskColumn v-for="task in tasks" :key="task.id" :data="task" />
     </div>
     <div v-else class="initial-wrap">
       <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`">태스크 추가하기</router-link>
+      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`"
+        >태스크 추가하기</router-link
+      >
     </div>
   </div>
 </template>
@@ -44,13 +48,13 @@ onMounted(() => {
 
   a {
     padding: 10px 20px;
-    background-color: #93AAFD;
+    background-color: #93aafd;
     color: white;
     border-radius: 5px;
     text-decoration: none;
 
     &:hover {
-      background-color: #6F8FFC;
+      background-color: #6f8ffc;
     }
   }
 }

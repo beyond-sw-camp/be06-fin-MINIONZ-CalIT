@@ -7,75 +7,54 @@ plugins {
 group = 'minionz'
 version = '0.0.1-SNAPSHOT'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    repositories {
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        //jpa + mariadb
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.mariadb.jdbc:mariadb-java-client'
+        //lombok
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+        annotationProcessor('org.projectlombok:lombok')
+
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+bootRun {
+    enabled = false
 }
 
-repositories {
-    maven { url 'https://jitpack.io' }
-    mavenCentral()
+bootJar {
+    enabled = false
 }
 
-dependencies {
-    //기본
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    //jpa + mariadb
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.mariadb.jdbc:mariadb-java-client'
-    //batch
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
-    //email 로그인 인증
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    //lombok
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-    annotationProcessor('org.projectlombok:lombok')
-    //security
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
-    //amazon s3
-    implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
-    //kafka
-    implementation 'org.springframework.kafka:spring-kafka'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    //swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    //JWT TOKEN 로그인
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-    // webSocket
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    //SSE
-    implementation("org.infinispan:infinispan-core:12.0.1.Final")
-    implementation("org.infinispan:infinispan-commons:12.0.1.Final")
-    implementation("org.infinispan:infinispan-marshaller-protostuff:12.0.1.Final")
-    implementation("org.jboss.marshalling:jboss-marshalling-osgi:2.0.10.Final")
-    //swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    // chatbot
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
-    implementation 'io.projectreactor:reactor-core'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-    //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
+bootBuildImage {
+    enabled = false
 }
