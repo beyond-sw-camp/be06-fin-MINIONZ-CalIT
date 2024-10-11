@@ -27,10 +27,11 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         }
     }
 
-    const getMeetingList = async ({workspaceId, meetingId}) => {
+    const getMeetingList = async (workspaceId) => {
         try {
-            const response = await axiosInstance.get(`api/meeting/${workspaceId}/${meetingId}`);
-            meetings.value = response.data.result;
+            const response = await axiosInstance.get(`/api/meeting/${workspaceId}/search-all?page=0&size=10`);
+            meetings.value = response.data.result.content;
+            return response.data.result.content;
         }
         catch (error) {
             console.error(error);
