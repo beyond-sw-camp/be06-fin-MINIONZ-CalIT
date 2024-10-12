@@ -1,5 +1,5 @@
 <script setup>
-import {inject} from 'vue';
+import {inject, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import MeetingCard from "@/view/scrum/meeting/component/MeetingCard.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
@@ -14,17 +14,20 @@ contentsTitle.value = 'Meeting';
 contentsDescription.value = '워크스페이스의 회의 내역을 살펴보세요!';
 
 const meetingStore = useMeetingStore();
-const meetingData = meetingStore.getMeetingList(workspaceId);
+
+onMounted(() => {
+    meetingStore.getMeetingList(workspaceId);
+});
 </script>
 
 <template>
   <div class="meeting-container">
-    <div v-if="meetingData && meetingData.length > 0">
+    <div v-if="meetingStore.meetings && meetingStore.meetings.length > 0">
       <SearchComponent :link="`/workspace/${workspaceId}/scrum/meeting/create`"/>
       <div class="meeting-card-container">
         <!--  TODO 유저랑 연동시킬 것-->
         <MeetingCard
-            v-for="meeting in meetingData"
+            v-for="meeting in meetingStore.meetings"
             :key="meeting.id"
             :id="meeting.id"
             :title="meeting.title"

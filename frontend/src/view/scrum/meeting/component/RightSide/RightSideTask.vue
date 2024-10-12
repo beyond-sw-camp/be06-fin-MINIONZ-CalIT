@@ -9,7 +9,7 @@ const addTask = () => {
   console.log({
     taskName: taskName.value,
     level: selectedLevel.value,
-    priority: selectedPriority.value
+    priority: selectedPriority.value,
   });
   taskName.value = '';
   selectedLevel.value = '';
@@ -20,16 +20,23 @@ const addTask = () => {
 <template>
   <div class="form-container">
     <h2>Task 추가하기</h2>
-    <hr/>
+    <hr />
     <div class="task-wrap">
       <div class="input-wrap">
+<<<<<<< HEAD
       <label for="task-name">Name Task</label>
       <input
+=======
+        <!-- Task 이름 입력 필드 -->
+        <label for="task-name">Name Task</label>
+        <input
+>>>>>>> 6901ea1cc599d34edd505880ca216b8eb9a914bd
           type="text"
           id="task-name"
           v-model="taskName"
           placeholder="Name Task"
           class="input-field"
+<<<<<<< HEAD
       />
 
       <label for="level">난이도</label>
@@ -57,6 +64,31 @@ const addTask = () => {
   </div>
     <button @click="addTask" class="add-task-btn">Add Task</button>
   </div>
+=======
+        />
+
+        <!-- 난이도 선택 드롭다운 -->
+        <label for="level">난이도</label>
+        <select id="level" v-model="selectedLevel" class="input-field">
+          <option disabled value="">Level</option>
+          <option>Easy</option>
+          <option>Medium</option>
+          <option>Hard</option>
+        </select>
+
+        <!-- 중요도 선택 드롭다운 -->
+        <label for="priority">중요도</label>
+        <select id="priority" v-model="selectedPriority" class="input-field">
+          <option disabled value="">Priority</option>
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
+      </div>
+      <!-- 추가 버튼 -->
+      <button @click="addTask" class="add-task-btn">Add Task</button>
+    </div>
+>>>>>>> 6901ea1cc599d34edd505880ca216b8eb9a914bd
   </div>
 </template>
 
@@ -78,7 +110,7 @@ h2 {
   margin: 0;
 }
 
-hr{
+hr {
   border: 1px solid #dfe5f1;
   width: 100%;
   margin: 10px 0;
@@ -91,7 +123,7 @@ label {
   font-size: 16px;
 }
 
-.task-wrap{
+.task-wrap {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -110,8 +142,8 @@ label {
 }
 
 .add-task-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -121,6 +153,6 @@ label {
 }
 
 .add-task-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 </style>

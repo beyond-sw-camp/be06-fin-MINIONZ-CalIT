@@ -2,50 +2,36 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = "minionz/calit-backend:latest"
-        IS_BACKEND_CHANGED = 'false'
         PREV_DEPLOYMENT = ""
-        PREV_SERVICE = ""
+        PREV_STICKY_DEPLOYMENT = ""
+        PREV_BACKEND_SERVICE = ""
+        PREV_BACKEND_STICKY_SERVICE = ""
+        PREV_FRONTEND_SERVICE = ""
         PREV_INGRESS = ""
         DISCORD_WEBHOOK = credentials("DISCORD_WEBHOOK")
     }
 
     stages {
-        stage('Check for Backend Changes') {
-            steps {
-                script {
-                    def changedFiles = sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim().split('\n')
-                    IS_BACKEND_CHANGED = changedFiles.any { it.contains("backend") }.toString()
-                    echo "Backend changes: ${IS_BACKEND_CHANGED}"
-                }
-            }
-        }
-
-        stage('Build') {
-            when {
-                expression { IS_BACKEND_CHANGED == 'true' }
-            }
+         stage('Build') {
             steps {
                 echo "Add Permission"
-                sh 'chmod +x /var/lib/jenkins/workspace/minionz_calit_backend/backend/gradlew'
+                sh 'chmod +x /var/lib/jenkins/workspace/minionz_calit_backend/backend/api-server/gradlew'
                 echo "Gradle Build"
                 sh '''
-                    cd /var/lib/jenkins/workspace/minionz_calit_backend/backend
+                    cd /var/lib/jenkins/workspace/minionz_calit_backend/backend/api-server
                     ./gradlew bootJar
                 '''
             }
         }
 
         stage('Docker Build & Push') {
-            when {
-                expression { IS_BACKEND_CHANGED == 'true' }
-            }
             steps {
                 script {
                     withCredentials([
                         usernamePassword(credentialsId: 'minionztest', usernameVariable: 'DOCKERID', passwordVariable: 'DOCKERPW')
                     ]) {
                         echo "Docker Build"
-                        sh "docker build --tag minionz/calit-backend:2.${BUILD_ID} ./backend"
+                        sh "docker build --tag minionz/calit-backend:2.${BUILD_ID} ./backend/api-server"
 
                         echo "Docker Login"
                         sh "docker login -u $DOCKERID -p $DOCKERPW"
@@ -58,9 +44,6 @@ pipeline {
         }
 
         stage('SSH Transfer and Kubernetes Deployment') {
-            when {
-                expression { IS_BACKEND_CHANGED == 'true' }
-            }
             steps {
                 script {
                     sshPublisher(
@@ -79,6 +62,7 @@ pipeline {
                                     sshTransfer(
                                         execCommand: '''
                                             PREV_DEPLOYMENT=$(kubectl get deployment | grep calit-backend-v | awk '{print $1}' | sort | head -1)
+                                            PREV_STICKY_DEPLOYMENT=$(kubectl get deployment | grep calit-backend-sticky-v | awk '{print $1}' | sort | head -1)
                                             PREV_BACKEND_SERVICE=$(kubectl get service | grep backend-svc-v | awk '{print $1}' | sort | head -1)
                                             PREV_BACKEND_STICKY_SERVICE=$(kubectl get service | grep backend-svc-sticky-v | awk '{print $1}' | sort | head -1)
                                             PREV_FRONTEND_SERVICE=$(kubectl get service | grep frontend-svc-v | awk '{print $1}' | sort | head -1)
@@ -101,6 +85,7 @@ pipeline {
 
                                             if [ -n "$PREV_DEPLOYMENT" ]; then
                                                 kubectl delete deployment "$PREV_DEPLOYMENT"
+                                                kubectl delete deployment "$PREV_STICKY_DEPLOYMENT"
                                                 kubectl delete service "$PREV_BACKEND_SERVICE"
                                                 kubectl delete service "$PREV_BACKEND_STICKY_SERVICE"
                                                 kubectl delete ingress "$PREV_INGRESS"

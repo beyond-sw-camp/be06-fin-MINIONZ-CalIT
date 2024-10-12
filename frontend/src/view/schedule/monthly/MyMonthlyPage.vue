@@ -1,5 +1,5 @@
 <script setup>
-import {inject} from "vue";
+import { inject } from "vue";
 import { useMyDashboardStore } from "@/stores/myspace/useMyDashboardStore";
 import MonthlyComponent from "@/view/schedule/monthly/component/MonthlyComponent.vue";
 

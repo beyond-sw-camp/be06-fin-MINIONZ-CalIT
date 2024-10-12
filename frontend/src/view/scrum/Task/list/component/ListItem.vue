@@ -1,11 +1,12 @@
 <script setup>
 import { defineProps } from 'vue';
+import { setPersona } from '@/utils/personaUtils';
 
 defineProps({
   task: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 });
 </script>
 
@@ -16,21 +17,28 @@ defineProps({
         <div class="task-status-indicator"></div>
         <span>{{ task.title }}</span>
       </div>
-
     </div>
     <div class="list-items">
       <div class="labels">
-        <span v-for="label in task.labels" :key="label" class="label">{{ label }}</span>
+        <span v-for="label in task.labels" :key="label" class="label">{{
+          label
+        }}</span>
       </div>
       <div class="list-item-bundle">
         <div class="task-meta">
           <div class="avatars">
-            <img v-for="avatar in task.avatars" :key="avatar" :src="avatar" class="avatar" alt="users"/>
+            <img
+              v-for="user in task.participants"
+              :key="user.id"
+              :src="setPersona(user.persona)"
+              class="avatar"
+              alt="users"
+            />
           </div>
         </div>
         <div class="list-item-end">
           <span class="task-id">{{ task.taskNumber }}</span>
-          <span class="due-date">{{ task.dueDate }}</span>
+          <span class="due-date">{{ task.endDate }}</span>
         </div>
       </div>
     </div>
@@ -98,20 +106,20 @@ defineProps({
   margin-right: 5px;
 }
 
-.list-items{
+.list-items {
   display: flex;
   justify-content: space-between;
   width: 70%;
   align-items: center;
 }
 
-.list-item-bundle{
+.list-item-bundle {
   width: 30%;
   display: flex;
   justify-content: space-between;
 }
 
-.list-item-end{
+.list-item-end {
   width: 30%;
   display: flex;
   justify-content: space-between;

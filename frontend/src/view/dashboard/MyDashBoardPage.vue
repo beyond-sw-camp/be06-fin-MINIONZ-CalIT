@@ -1,9 +1,9 @@
 <script setup>
-import {inject, onMounted, ref} from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import TaskOverview from "@/view/dashboard/component/TaskOverview.vue";
 import PriorityTask from "@/view/dashboard/component/PriorityTask.vue";
 import MeetingList from "@/view/dashboard/component/MeetingList.vue";
-import {useMyDashboardStore} from "@/stores/myspace/useMyDashboardStore";
+import { useMyDashboardStore } from "@/stores/myspace/useMyDashboardStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -22,20 +22,21 @@ onMounted(async () => {
 
 <template>
   <div class="dashboard">
-    <div
-        v-if="mySprintData && mySprintData.progress && mySprintData.priorityTasks.length > 0 && mySprintData.upcomingMeetings.length > 0">
-      <TaskOverview
-          v-if="mySprintData && mySprintData.progress && mySprintData.progress.successTaskCount !== undefined && mySprintData.progress.allTaskCount !== undefined"
-          :completion-rate="mySprintData.progress.successTaskCount / mySprintData.progress.allTaskCount * 100"
-          :tasks-completed="mySprintData.progress.successTaskCount"
-          :total-tasks="mySprintData.progress.allTaskCount"
-          :work-space-count="mySprintData.progress.workspaceCount"/>
-      <PriorityTask :tasks="mySprintData.priorityTasks"/>
-      <MeetingList :meetings="mySprintData.upcomingMeetings"/>
+    <div v-if="mySprintData && mySprintData.progress">
+      <div>
+        <TaskOverview
+          :completion-rate="mySprintData.progress.successTaskCount === 0 ? 0 : (mySprintData.progress.successTaskCount / mySprintData.progress.allTaskCount) * 100"
+          :tasks-completed="mySprintData.progress.successTaskCount" :total-tasks="mySprintData.progress.allTaskCount"
+          :work-space-count="mySprintData.progress.workspaceCount" />
+        <PriorityTask :tasks="mySprintData.priorityTasks" />
+        <MeetingList :meetings="mySprintData.upcomingMeetings" />
+      </div>
     </div>
-    <div v-else class="initial-wrap">
-      <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
-      <router-link to="/my/create">워크스페이스 추가하기</router-link>
+    <div v-else>
+      <div class="initial-wrap">
+        <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
+        <router-link to="/my/create">워크스페이스 추가하기</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -55,17 +56,17 @@ onMounted(async () => {
   justify-content: center;
   height: 500px;
   gap: 20px;
+}
 
-  a {
-    padding: 10px 20px;
-    background-color: #93AAFD;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
+.initial-wrap a {
+  padding: 10px 20px;
+  background-color: #93AAFD;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
 
-    &:hover {
-      background-color: #6F8FFC;
-    }
-  }
+.initial-wrap a:hover {
+  background-color: #6F8FFC;
 }
 </style>

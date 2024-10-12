@@ -5,29 +5,34 @@ import { getBackgroundColor } from '@/utils/meetingBgUtils';
 const props = defineProps({
   meetings: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const meetingBackgroundColors = computed(() => {
-  return props.meetings.map(meeting => getBackgroundColor(meeting.date));
+  return props.meetings.map(meeting => getBackgroundColor(meeting.startDate));
 });
 </script>
 
 <template>
   <div class="meeting-list">
     <h3>Upcoming Meetings</h3>
-    <div class="meeting-card-area">
-      <div class="meeting-card" v-for="(meeting, index) in meetings" :key="meeting.id">
+    <div class="meeting-card-area" v-if="props.meetings.length > 0">
+      <div
+        class="meeting-card"
+        v-for="(meeting, index) in meetings"
+        :key="meeting.id"
+      >
         <div class="head">
           <h4>{{ meeting.title }}</h4>
-          <p>{{ meeting.project }}</p>
+          <p>{{ meeting.workspaceName }}</p>
         </div>
         <div class="time" :style="{ backgroundColor: meetingBackgroundColors[index] }">
-          <span>{{ meeting.date }}</span>
+          <span>{{ meeting.startDate }}</span>
         </div>
       </div>
     </div>
+    <div v-else>다가오는 회의가 없습니다!</div>
   </div>
 </template>
 
