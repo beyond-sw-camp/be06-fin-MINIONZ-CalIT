@@ -53,17 +53,17 @@ onMounted(async () => {
   justify-content: center;
   height: 500px;
   gap: 20px;
+}
 
-  a {
-    padding: 10px 20px;
-    background-color: #93AAFD;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
+.initial-wrap a {
+  padding: 10px 20px;
+  background-color: #93AAFD;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
 
-    &:hover {
-      background-color: #6F8FFC;
-    }
-  }
+.initial-wrap a:hover {
+  background-color: #6F8FFC;
 }
 </style>
