@@ -1,6 +1,6 @@
 <script setup>
 import {useRoute} from 'vue-router';
-import {computed, inject, onMounted, ref} from 'vue';
+import {inject, onMounted, ref} from 'vue';
 import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
@@ -19,11 +19,21 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
 const meetingStore = useMeetingStore();
 const editor = ref(null);
 const showEditor = ref(false);
-const participants = computed(() => meetingStore.meetings.find(meeting => meeting.id === workspaceId).participants);
+const meeting = ref({
+    id: 0,
+    title: "",
+    contents: "",
+    startDate: "",
+    endDate: "",
+    participants: [
 
-onMounted(() => {
-  meetingStore.getMeeting({workspaceId, meetingId});
-})
+    ],
+    createdAt: ""
+});
+
+onMounted(async () => {
+    meeting.value = await meetingStore.getMeeting({ workspaceId, meetingId });
+});
 </script>
 
 <template>
@@ -34,14 +44,14 @@ onMounted(() => {
           <i class="meeting-title column-icon"></i>
           회의록 제목
         </span>
-        <p class="title-editor"> 회의록 제목</p>
+        <p class="title-editor"> {{meeting.title}}</p>
       </div>
       <div class="issue-section">
         <span class="column">
           <i class="meeting-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor">회의록 상세"</p>
+        <p class="description-editor">{{meeting.contents}}</p>
       </div>
 <!--      <div class="author-section">-->
 <!--        <div class="author">-->
@@ -63,7 +73,7 @@ onMounted(() => {
             회의 참여자
           </span>
           <div class="users-list">
-            <div v-for="(participant, index) in participants" :key="index" class="user-profile">
+            <div v-for="(participant, index) in meeting.participants" :key="index" class="user-profile">
               <img :src="participant.image" :alt="`참여자 ${index + 1}`">
               <span>{{ participant.name }}</span>
             </div>
