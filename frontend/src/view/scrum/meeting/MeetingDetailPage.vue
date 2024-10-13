@@ -17,7 +17,6 @@ contentsTitle.value = 'Meeting Detail';
 contentsDescription.value = '회의 정보를 확인해보세요!';
 
 const meetingStore = useMeetingStore();
-const editor = ref(null);
 const showEditor = ref(false);
 const meeting = ref({
     id: 0,
@@ -88,7 +87,7 @@ onMounted(async () => {
         <button class="label-button">Frontend</button>
       </div>
       <div class="save-button" @click="showEditor = !showEditor">회의록 작성하기</div>
-      <QuillEditor v-if="showEditor" ref="editor" class="content-editor" v-model="editor"/>
+      <QuillEditor v-if="showEditor" class="content-editor"/>
     </div>
   </div>
 </template>

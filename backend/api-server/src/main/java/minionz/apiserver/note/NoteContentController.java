@@ -26,6 +26,7 @@ public class NoteContentController {
         NoteMessage noteMessage = new NoteMessage();
 //        noteMessage.setNoteId(note.getNoteId());
         noteMessage.setNoteContents(note.getNoteContents());
+        noteMessage.setSenderLoginId(note.getSenderLoginId());
 //        noteMessage.setSender(note.getMeetingParticipations().toString());
 
         noteProducer.sendNoteUpdate(noteMessage);
