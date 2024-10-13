@@ -6,6 +6,7 @@ import minionz.apiserver.alarm.AlarmService;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import minionz.apiserver.scrum.label_select.TaskLabelSelectRepository;
+import minionz.apiserver.scrum.workspace.WorkspaceRepository;
 import minionz.common.scrum.label.model.TaskLabel;
 import minionz.common.scrum.label_select.model.TaskLabelSelect;
 import minionz.apiserver.scrum.sprint.model.response.Label;
@@ -24,19 +25,20 @@ import minionz.common.scrum.task.TaskRepository;
 import minionz.common.scrum.task.model.TaskStatus;
 import minionz.common.scrum.task_participation.model.TaskParticipation;
 import minionz.common.scrum.task.model.Task;
+import minionz.common.scrum.workspace.model.Workspace;
 import minionz.common.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final WorkspaceRepository workspaceRepository;
     private final TaskLabelSelectRepository taskLabelSelectRepository;
     private final SprintParticipationRepository sprintParticipationRepository;
     private final TaskParticipationRepository taskParticipationRepository;
@@ -66,17 +68,17 @@ public class TaskService {
         SprintParticipation sprintParticipation = sprintParticipationRepository.findBySprintAndUser(Sprint.builder().sprintId(request.getSprintId()).build(), user);
         alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId() );
 
-//        if (sprintParticipation.getIsManager()) {
-//            request.getParticipants().forEach(participantId ->
-//                    taskParticipationRepository.save(TaskParticipation
-//                            .builder()
-//                            .task(task)
-//                            .user(User.builder().userId(participantId).build())
-//                            .build())
-//            );
-//        } else {
-//            throw new BaseException(BaseResponseStatus.TASK_LABEL_SELECT_FAIL);
-//        }
+        if (sprintParticipation.getIsManager()) {
+            request.getParticipants().forEach(participantId ->
+                    taskParticipationRepository.save(TaskParticipation
+                            .builder()
+                            .task(task)
+                            .user(User.builder().userId(participantId).build())
+                            .build())
+            );
+        } else {
+            throw new BaseException(BaseResponseStatus.TASK_LABEL_SELECT_FAIL);
+        }
 
         //      TODO: 태스크 라벨이 존재하는지 검증하는 유효성 테스트 필요
         request.getLabels().forEach(labelId ->
@@ -144,26 +146,13 @@ public class TaskService {
 
         return response;
     }
+    public List<ReadAllTaskResponse> readAllWorkspaceTask(Long workspaceId) {
+        List<Task> result = taskRepository.findAllByWorkspaceWorkspaceId(workspaceId);
 
 
-    public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId) {
-        // 스프린트 ID로 모든 Task 가져오기
-        List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
-
-        // 스프린트 정보 가져오기
-        Optional<Sprint> sprint = sprintRepository.findById(sprintId);
-        String workspaceName = sprint.get().getWorkspace().getWorkspaceName();
-
-        // 상태별로 기본 빈 리스트를 미리 준비
-        Map<TaskStatus, List<ReadAllTaskResponse>> groupedByStatus = new HashMap<>();
-        groupedByStatus.put(TaskStatus.NO_STATUS, new ArrayList<>());
-        groupedByStatus.put(TaskStatus.TODO, new ArrayList<>());
-        groupedByStatus.put(TaskStatus.IN_PROGRESS, new ArrayList<>());
-        groupedByStatus.put(TaskStatus.DONE, new ArrayList<>());
-
-        // Task들을 ReadAllTaskResponse로 변환하고 상태별로 그룹화
-        result.stream()
-                .map(task -> ReadAllTaskResponse.builder()
+        List<ReadAllTaskResponse> response = result.stream().map(
+                task -> ReadAllTaskResponse
+                        .builder()
                         .id(task.getTaskId())
                         .status(task.getStatus())
                         .title(task.getTaskTitle())
@@ -173,21 +162,12 @@ public class TaskService {
                         .taskNumber(task.getTaskNumber())
                         .participants(findParticipants(task))
                         .priority(task.getPriority())
-                        .workspaceName(workspaceName)
+
                         .build()
-                )
-                .forEach(response -> {
-                    // TaskStatus 타입 그대로 유지
-                    TaskStatus statusKey = Optional.ofNullable(response.getStatus()).orElse(TaskStatus.NO_STATUS);
-                    groupedByStatus.get(statusKey).add(response); // 상태에 해당하는 리스트에 추가
-                });
+        ).toList();
 
-        // Map을 List로 변환하여 반환
-        return groupedByStatus.entrySet().stream()
-                .map(entry -> Map.of(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        return response;
     }
-
 
     public List<ReadAllTaskResponse> readAllMyTask(User user) {
 
@@ -262,7 +242,6 @@ public class TaskService {
                 participant -> Participant.builder()
                         .id(participant.getUser().getUserId())
                         .userName(participant.getUser().getUserName())
-                        .persona(participant.getUser().getPersona())
                         .isManager(true)
                         .build()
         ).toList();
