@@ -63,7 +63,7 @@ public class ScheduleController {
       return new BaseResponse<>(e.getStatus());
     }
 
-    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_MONTHLY_READ_SUCCESS, response);
+    return new BaseResponse<>(BaseResponseStatus.WORKSPACE_WEEKLY_READ_SUCCESS, response);
   }
 
   @GetMapping("/my/weekly")
