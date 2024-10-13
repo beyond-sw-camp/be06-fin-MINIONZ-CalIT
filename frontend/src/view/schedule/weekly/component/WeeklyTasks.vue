@@ -3,22 +3,21 @@ import { ref, defineProps } from 'vue';
 import taskImg from '@/assets/icon/schedule/task.svg';
 
 const props = defineProps({ tasks: { type: Array, default: () => [] } });
-const taskWeek = ref((props.tasks || []).map(task => ({
-  title: task.title,
-  details: task.label,
-  icon: task
-})));
+const taskWeek = ref(
+  (props.tasks || []).map((task) => ({
+    title: task.title,
+    details: task.label,
+    icon: task,
+  }))
+);
 </script>
 
 <template>
   <div class="imminent-tasks">
     <p class="imminent-tasks-title">Imminent Tasks</p>
-    <div v-if="taskWeek.length === 0" class="no-tasks">
-      task가 없습니다
-    </div>
+    <div v-if="taskWeek.length === 0" class="no-tasks">task가 없습니다</div>
     <div v-else>
-      <p class="imminent-tasks-title">Imminent tasks</p>
-      <div v-for="(task, index) in taskWeek" :key="index" class="task-item">
+      <div v-for="(task, index) in tasks" :key="index" class="task-item">
         <img :src="taskImg" alt="icon" class="task-icon" />
         <div class="task-info">
           <div class="task-title">{{ task.title }}</div>
