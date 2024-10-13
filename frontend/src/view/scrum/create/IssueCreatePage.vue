@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, ref } from 'vue';
+import { onMounted, inject, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useIssueStore } from '@/stores/scrum/useIssueStore';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
@@ -17,12 +17,18 @@ const issueStore = useIssueStore();
 const friendStore = useFriendsStore();
 const issueName = ref('');
 const participants = ref('');
+const availableParticipants = ref([]);
 
-const filteredUsers = computed(() => {
-  return friendStore.getFriendsList(workspaceId).filter((user) => {
-    return user.includes(participants.value);
-  });
-});
+const fetchParticipants = async () => {
+  await friendStore.getFriendsList(workspaceId);
+  if (friendStore.friends) {
+    availableParticipants.value = friendStore.friends.map(
+      (friend) => friend.userName
+    );
+  } else {
+    availableParticipants.value = [];
+  }
+};
 
 const addIssue = () => {
   issueStore.addIssue({
@@ -30,6 +36,10 @@ const addIssue = () => {
   });
   issueName.value = '';
 };
+
+onMounted(() => {
+  fetchParticipants();
+});
 </script>
 
 <template>
@@ -57,7 +67,9 @@ const addIssue = () => {
               class="input-field"
             />
             <ul>
-              <li v-for="user in filteredUsers" :key="user">{{ user }}</li>
+              <li v-for="user in availableParticipants" :key="user">
+                {{ user }}
+              </li>
             </ul>
           </div>
         </div>
