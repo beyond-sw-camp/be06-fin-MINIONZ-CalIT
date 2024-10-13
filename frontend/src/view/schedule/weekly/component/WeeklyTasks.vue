@@ -12,12 +12,18 @@ const taskWeek = ref((props.tasks || []).map(task => ({
 
 <template>
   <div class="imminent-tasks">
-    <p class="imminent-tasks-title">Imminent tasks</p>
-    <div v-for="(task, index) in taskWeek" :key="index" class="task-item">
-      <img :src="taskImg" alt="icon" class="task-icon" />
-      <div class="task-info">
-        <div class="task-title">{{ task.title }}</div>
-        <div class="task-details">{{ task.details }}</div>
+    <p class="imminent-tasks-title">Imminent Tasks</p>
+    <div v-if="taskWeek.length === 0" class="no-tasks">
+      task가 없습니다
+    </div>
+    <div v-else>
+      <p class="imminent-tasks-title">Imminent tasks</p>
+      <div v-for="(task, index) in taskWeek" :key="index" class="task-item">
+        <img :src="taskImg" alt="icon" class="task-icon" />
+        <div class="task-info">
+          <div class="task-title">{{ task.title }}</div>
+          <div class="task-details">{{ task.details }}</div>
+        </div>
       </div>
     </div>
   </div>

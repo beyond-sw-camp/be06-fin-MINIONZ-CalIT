@@ -10,8 +10,7 @@ export const useMyDashboardStore = defineStore('mypageStore', () => {
         mySprintData.value = response.data.result;
     };
 
-    const getMyMonthly = async () => {
-        const { startDate, endDate } = monthlySettingUtils;
+    const getMyMonthly = async ({ startDate, endDate }) => {
         const response = await axiosInstance.get(`/api/schedule/my/monthly?startDate=${startDate}&endDate=${endDate}`);
         mySprintData.value = response.data.result;
     }
