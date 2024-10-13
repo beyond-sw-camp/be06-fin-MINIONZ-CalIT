@@ -3,11 +3,18 @@ import { ref, defineProps } from 'vue';
 import issue from '@/assets/icon/schedule/meeting.svg';
 
 const props = defineProps({ issues: { type: Array, default: () => [] } });
-const scheduleItems = ref(Array.isArray(props.issues) ? props.issues.map(issue => ({
-  title: issue.title,
-  time: new Date(issue.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-  icon: issue
-})) : []);
+const scheduleItems = ref(
+  Array.isArray(props.issues)
+    ? props.issues.map((issue) => ({
+        title: issue.title,
+        time: new Date(issue.startDate).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        icon: issue,
+      }))
+    : []
+);
 </script>
 
 <template>
@@ -17,7 +24,7 @@ const scheduleItems = ref(Array.isArray(props.issues) ? props.issues.map(issue =
       issue가 없습니다
     </div>
     <div v-else>
-      <div v-for="(item, index) in scheduleItems" :key="index" class="schedule-item">
+      <div v-for="(item, index) in issues" :key="index" class="schedule-item">
         <img :src="issue" alt="icon" class="schedule-icon" />
         <div class="schedule-info">
           <div class="schedule-title">{{ item.title }}</div>
