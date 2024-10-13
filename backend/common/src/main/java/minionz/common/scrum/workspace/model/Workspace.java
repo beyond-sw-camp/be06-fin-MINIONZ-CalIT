@@ -7,6 +7,7 @@ import minionz.common.scrum.label.model.NoteLabel;
 import minionz.common.scrum.label.model.SprintLabel;
 import minionz.common.scrum.label.model.TaskLabel;
 import minionz.common.scrum.sprint.model.Sprint;
+import minionz.common.scrum.task.model.Task;
 import minionz.common.scrum.workspace_participation.model.WorkspaceParticipation;
 import minionz.common.board.error_board.model.ErrorBoard;
 import minionz.common.board.qa_board.model.QaBoard;
@@ -31,6 +32,11 @@ public class Workspace {
     // Workspace : Sprint = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
     private List<Sprint> sprints = new ArrayList<>();
+
+    // Workspace : Task = 1 : N
+    @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
+    private List<Task> tasks = new ArrayList<>();
+
 
     // Workspace : WorkspaceParticipation = 1 : N
     @OneToMany(mappedBy = "workspace", fetch = FetchType.LAZY)
