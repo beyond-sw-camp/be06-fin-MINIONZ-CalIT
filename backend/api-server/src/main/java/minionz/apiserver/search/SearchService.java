@@ -33,6 +33,7 @@ public class SearchService {
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
                 .map(user -> searchUserResponse.builder()
+                        .persona(user.getPersona())
                         .searchUserIdx(user.getUserId())
                         .userName(user.getUserName())
                         .email(user.getEmail())
@@ -49,7 +50,6 @@ public class SearchService {
                         .userName(user.getUserName())
                         .loginId(user.getLoginId())
                         .email(user.getEmail())
-                        .persona(user.getPersona())
                         .build())
                 .collect(Collectors.toList());
     }

@@ -10,12 +10,10 @@ import minionz.apiserver.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.apiserver.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.apiserver.scrum.task.model.response.ReadTaskResponse;
 import minionz.apiserver.user.model.CustomSecurityUserDetails;
-import minionz.common.scrum.task.model.TaskStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,17 +24,17 @@ public class TaskController {
 
   @PostMapping("/{sprintId}")
   public BaseResponse<BaseResponseStatus> createTask(
-      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
+          @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
     try {
       taskService.createTask(customUserDetails.getUser(), request);
     } catch (BaseException e) {
       return new BaseResponse<>(e.getStatus());
     } catch (JsonProcessingException e) {
-        throw new RuntimeException(e);
+      throw new RuntimeException(e);
     }
 
-      return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
+    return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
   }
 
   @GetMapping("/{sprintId}/{taskId}")
@@ -66,24 +64,25 @@ public class TaskController {
     return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
   }
 
-  @GetMapping("/{sprintId}/all/status")
-  public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatus(@PathVariable Long sprintId) {
+  @GetMapping("/{workspaceId}/workspaceall")
+  public BaseResponse<List<ReadAllTaskResponse>> readAllWorkspaceTask(@PathVariable Long workspaceId) {
 
-    List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
+    List<ReadAllTaskResponse> response;
 
     try {
-      response = taskService.readAllTaskByStatus(sprintId);
+      response = taskService.readAllWorkspaceTask(workspaceId);
     } catch (BaseException e) {
       return new BaseResponse<>(e.getStatus());
     }
 
-    return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+    return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALLWORKSPACE_SUCCESS, response);
   }
+
 
 
   @GetMapping("/my/all")
   public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
-      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+          @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
     List<ReadAllTaskResponse> response;
 
@@ -98,7 +97,7 @@ public class TaskController {
 
   @PatchMapping("/{sprintId}/status/{taskId}")
   public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId,
-      @RequestBody UpdateTaskStatusRequest request) {
+                                                           @RequestBody UpdateTaskStatusRequest request) {
 
     try {
       taskService.updateTaskStatus(taskId, request);
