@@ -24,17 +24,17 @@ public class TaskController {
 
   @PostMapping("/{sprintId}")
   public BaseResponse<BaseResponseStatus> createTask(
-          @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
     try {
       taskService.createTask(customUserDetails.getUser(), request);
     } catch (BaseException e) {
       return new BaseResponse<>(e.getStatus());
     } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
+        throw new RuntimeException(e);
     }
 
-    return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
+      return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
   }
 
   @GetMapping("/{sprintId}/{taskId}")
@@ -82,7 +82,7 @@ public class TaskController {
 
   @GetMapping("/my/all")
   public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
-          @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
     List<ReadAllTaskResponse> response;
 
@@ -97,7 +97,7 @@ public class TaskController {
 
   @PatchMapping("/{sprintId}/status/{taskId}")
   public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId,
-                                                           @RequestBody UpdateTaskStatusRequest request) {
+      @RequestBody UpdateTaskStatusRequest request) {
 
     try {
       taskService.updateTaskStatus(taskId, request);

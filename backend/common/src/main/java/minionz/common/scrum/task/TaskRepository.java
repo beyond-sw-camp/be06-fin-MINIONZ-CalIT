@@ -16,6 +16,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllBySprintSprintId(Long sprintId);
 
+
+    List<Task> findAllByWorkspaceWorkspaceId(Long workspaceId);
+
     @Query("SELECT t FROM Task t " +
             "JOIN FETCH TaskParticipation tp ON t = tp.task " +
             "JOIN FETCH Sprint s ON t.sprint = s " +
