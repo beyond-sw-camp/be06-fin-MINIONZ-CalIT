@@ -7,6 +7,7 @@ export const useFriendsStore = defineStore('friendsStore', () => {
     const participantsName = ref([]);
     const filteredUsers = ref([]);
     const selectedParticipants = ref([]);
+    const selectedQAParticipants = ref([]);
     const getUserList = async (loginId) => {
         try {
             const response = await axiosInstance.get(
@@ -42,6 +43,12 @@ export const useFriendsStore = defineStore('friendsStore', () => {
         selectedParticipants.value.push(participant);
     }
 
+    const addQAParticipant = (participant) => {
+        selectedQAParticipants.value.push(participant);
+ 
+    }
+
+
     const removeParticipant = () => {
 
     }
@@ -56,6 +63,8 @@ export const useFriendsStore = defineStore('friendsStore', () => {
         removeParticipant,
         filterUsers,
         addParticipant,
-        selectedParticipants
+        selectedParticipants,
+        selectedQAParticipants,
+        addQAParticipant
     };
 });

@@ -62,13 +62,32 @@ const deleteItem = (item) => {
           @go-to-page="goToPage"
       />
   </div>
-    <div v-else>
+    <div v-else class="initial-wrap">
       <p>QA를 추가하고 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/board/qa/create`">QA 추가하기</router-link>
+      <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/create`">QA 추가하기</router-link>
     </div>
   </div>
 </template>
 
 <style scoped>
+.initial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
 
+  a {
+    padding: 10px 20px;
+    background-color: #93AAFD;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #6F8FFC;
+    }
+  }
+}
 </style>
