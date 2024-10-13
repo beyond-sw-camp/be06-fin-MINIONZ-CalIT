@@ -1,47 +1,43 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from '@/view/schedule/component/ScheduleModal.vue';
 import { useCalendar } from '@/utils/calendarUtils';
 import { formatUtil } from '@/utils/dateUtils';
 
+const emit = defineEmits(['prevMonth', 'nextMonth']);
+
 onMounted(() => {
   const container = document.querySelector('.calendar-container');
   if (container) {
     new PerfectScrollbar(container);
   }
-  if (props.value.meetings) setEvents(props.value.meetings);
 });
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
 const isVisible = ref(false);
-const props = ref({
+
+const eventData = ref({
   title: '',
   startDate: '',
   endDate: '',
   contents: '',
-  participants: [],
-  top: 0,
-  left: 0,
-  meeting: [],
+  participants: '',
 });
 
-const show = (event, eventData) => {
-  props.value = {
-    title: eventData.title,
-    startDate: eventData.startDate,
-    endDate: eventData.endDate,
-    contents: eventData.contents,
-    participants: eventData.participants,
-    top: event.clientY,
-    left: event.clientX,
+const show = (event, data) => {
+  eventData.value = {
+    title: data.title,
+    startDate: data.startDate,
+    endDate: data.endDate,
+    contents: data.contents,
+    participants: data.participants,
   };
   isVisible.value = true;
-  console.log(event.clientY, event.clientX);
-  console.log(props.value);
+  console.log(eventData.value);
 };
 
 const {
@@ -51,27 +47,22 @@ const {
   daysInMonth,
   startBlankDays,
   goToToday,
-  prevMonth,
-  nextMonth,
 } = useCalendar();
 
 const events = ref([]);
 
-const setEvents = (meetings) => {
-  events.value = meetings.map((meeting) => ({
-    id: meeting.id,
-    date: new Date(meeting.startDate),
-    title: meeting.title,
-    startDate: meeting.startDate,
-    endDate: meeting.endDate,
-    contents: meeting.contents,
-    participants: meeting.participants,
-  }));
-};
 const eventsForDay = (day) => {
   return events.value.filter(
-    (event) => formatUtil(event.date, 'd') === String(day)
+      (event) => formatUtil(event.date, 'd') === String(day)
   );
+};
+
+const handlePrevMonth = () => {
+  emit('prevMonth');
+};
+
+const handleNextMonth = () => {
+  emit('nextMonth');
 };
 </script>
 
@@ -82,28 +73,28 @@ const eventsForDay = (day) => {
         <button @click="goToToday">Today</button>
       </div>
       <div class="calendar-nav">
-        <button @click="prevMonth">&lt;</button>
+        <button @click="handlePrevMonth">&lt;</button>
         <span>{{ currentYear }}년 {{ currentMonth + 1 }}월</span>
-        <button @click="nextMonth">&gt;</button>
+        <button @click="handleNextMonth">&gt;</button>
       </div>
       <div class="calendar-tab">
         <router-link
-          v-if="workspaceId"
-          :to="`/workspace/${workspaceId}/schedule/monthly`"
-          class="on"
-          >Month
+            v-if="workspaceId"
+            :to="`/workspace/${workspaceId}/schedule/monthly`"
+            class="on"
+        >Month
         </router-link>
         <router-link
-          v-if="workspaceId"
-          :to="`/workspace/${workspaceId}/schedule/weekly`"
-          class="off"
-          >Week
+            v-if="workspaceId"
+            :to="`/workspace/${workspaceId}/schedule/weekly`"
+            class="off"
+        >Week
         </router-link>
         <router-link v-if="!workspaceId" :to="`/my/schedule/monthly`" class="on"
-          >My Month
+        >My Month
         </router-link>
         <router-link v-if="!workspaceId" :to="`/my/schedule/weekly`" class="off"
-          >My Week
+        >My Week
         </router-link>
       </div>
     </div>
@@ -120,10 +111,10 @@ const eventsForDay = (day) => {
         <div class="day-number">{{ day }}</div>
         <div class="events">
           <button
-            v-for="event in eventsForDay(day)"
-            :key="event.id"
-            class="event"
-            @click="show($event, event)"
+              v-for="event in eventsForDay(day)"
+              :key="event.id"
+              class="event"
+              @click="show($event, event)"
           >
             {{ event.title }}
           </button>
@@ -131,15 +122,13 @@ const eventsForDay = (day) => {
       </div>
     </div>
     <ScheduleModal
-      v-if="isVisible"
-      :title="props.value.title"
-      :contents="props.value.contents"
-      :start-date="props.value.startDate"
-      :end-date="props.value.endDate"
-      :participants="props.value.participants"
-      :top="props.value.top"
-      :left="props.value.left"
-      @close="isVisible = false"
+        v-if="isVisible"
+        :title="eventData.title"
+        :contents="eventData.contents"
+        :start-date="eventData.startDate"
+        :end-date="eventData.endDate"
+        :participants="eventData.participants"
+        @close="isVisible = false"
     />
   </div>
 </template>
