@@ -1,6 +1,6 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
-import { useRouter} from "vue-router";
+import { onMounted, inject, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useIssueStore } from '@/stores/scrum/useIssueStore';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
 
@@ -10,19 +10,25 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Issue 추가하기';
 contentsDescription.value = 'Issue를 추가해보세요!';
 
-const route = useRouter();
-const workspaceId = route.param.workspaceId;
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
 
 const issueStore = useIssueStore();
 const friendStore = useFriendsStore();
 const issueName = ref('');
 const participants = ref('');
+const availableParticipants = ref([]);
 
-const filteredUsers = computed(() => {
-  return friendStore.getFriendsList(workspaceId).filter(user => {
-    return user.includes(participants.value);
-  });
-});
+const fetchParticipants = async () => {
+  await friendStore.getFriendsList(workspaceId);
+  if (friendStore.friends) {
+    availableParticipants.value = friendStore.friends.map(
+      (friend) => friend.userName
+    );
+  } else {
+    availableParticipants.value = [];
+  }
+};
 
 const addIssue = () => {
   issueStore.addIssue({
@@ -30,6 +36,10 @@ const addIssue = () => {
   });
   issueName.value = '';
 };
+
+onMounted(() => {
+  fetchParticipants();
+});
 </script>
 
 <template>
@@ -39,14 +49,27 @@ const addIssue = () => {
         <div>
           <div>
             <label for="issueName">Issue 이름</label>
-            <input type="text" id="issueName" v-model="issueName" placeholder="Issue 이름을 입력하세요">
+            <input
+              type="text"
+              id="issueName"
+              v-model="issueName"
+              placeholder="Issue 이름을 입력하세요"
+            />
           </div>
 
           <div>
             <label for="issueParticipation">참여자 추가</label>
-            <input type="text" id="issueParticipation" v-model="participants" placeholder="참여자를 검색해주세요" class="input-field">
+            <input
+              type="text"
+              id="issueParticipation"
+              v-model="participants"
+              placeholder="참여자를 검색해주세요"
+              class="input-field"
+            />
             <ul>
-              <li v-for="user in filteredUsers" :key="user">{{ user }}</li>
+              <li v-for="user in availableParticipants" :key="user">
+                {{ user }}
+              </li>
             </ul>
           </div>
         </div>
@@ -104,8 +127,8 @@ label {
 }
 
 .add-issue-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -116,6 +139,6 @@ label {
 }
 
 .add-issue-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 </style>
