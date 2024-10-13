@@ -13,11 +13,16 @@ const scheduleItems = ref(Array.isArray(props.issues) ? props.issues.map(issue =
 <template>
   <div class="weekly-schedule">
     <p class="weekly-schedule-title">Weekly Schedule</p>
-    <div v-for="(item, index) in scheduleItems" :key="index" class="schedule-item">
-      <img :src="issue" alt="icon" class="schedule-icon" />
-      <div class="schedule-info">
-        <div class="schedule-title">{{ item.title }}</div>
-        <div class="schedule-time">{{ item.time }}</div>
+    <div v-if="scheduleItems.length === 0" class="no-issues">
+      issue가 없습니다
+    </div>
+    <div v-else>
+      <div v-for="(item, index) in scheduleItems" :key="index" class="schedule-item">
+        <img :src="issue" alt="icon" class="schedule-icon" />
+        <div class="schedule-info">
+          <div class="schedule-title">{{ item.title }}</div>
+          <div class="schedule-time">{{ item.time }}</div>
+        </div>
       </div>
     </div>
   </div>

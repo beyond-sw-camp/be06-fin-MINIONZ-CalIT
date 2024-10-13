@@ -7,8 +7,6 @@ const props = defineProps({
   endDate: String,
   contents: String,
   participants: String,
-  top: Number,
-  left: Number
 });
 
 const emit = defineEmits(['close']);
@@ -18,7 +16,7 @@ function handleClose() {
 </script>
 
 <template>
-  <div class="meeting-card" :style="{ top: `calc(${props.top}px + 30px)`, left: `calc(${props.left}px - 100px)` }">
+  <div class="meeting-card">
     <div class="icon-bundle">
       <i class="edit-icon"></i>
       <i class="delete-icon"></i>
@@ -65,6 +63,8 @@ function handleClose() {
   font-family: 'Arial', sans-serif;
   position: absolute;
   z-index: 100;
+  top: 50%;
+  left: 50%;
 }
 
 .icon-bundle {
