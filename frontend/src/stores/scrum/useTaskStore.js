@@ -52,6 +52,16 @@ export const useTaskStore = defineStore('taskStore', () => {
       console.error('Error getting task list:', error);
     }
   };
+  const getWorkspaceTaskList = async (workspaceId) => {
+    try {
+      const response = await axiosInstance.get(`/api/task/${workspaceId}/workspaceall`);
+      console.log('API 응답:', response); // 응답 전체 확인
+      return response.data.result; // 응답 데이터 반환
+    } catch (error) {
+      console.error('Error getting task list:', error);
+      return []; // 오류 시 빈 배열 반환
+    }
+  };
 
   const updateTask = async ({
     taskId,
@@ -113,5 +123,6 @@ export const useTaskStore = defineStore('taskStore', () => {
     deleteTask,
     getMyTask,
     taskList,
+    getWorkspaceTaskList
   };
 });
