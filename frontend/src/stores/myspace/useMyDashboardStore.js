@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
-import { weeklySettingUtils, monthlySettingUtils } from "@/utils/dateSettingUtils";
+import { weeklySettingUtils } from "@/utils/dateSettingUtils";
 
 export const useMyDashboardStore = defineStore('mypageStore', () => {
     const mySprintData = ref([]);

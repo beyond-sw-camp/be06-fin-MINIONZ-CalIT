@@ -1,10 +1,7 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
-import {
-  weeklySettingUtils,
-  monthlySettingUtils,
-} from '@/utils/dateSettingUtils';
+import { weeklySettingUtils } from '@/utils/dateSettingUtils';
 
 export const useWorkspaceDashboardStore = defineStore(
   'workspaceDashboardStore',
@@ -22,8 +19,7 @@ export const useWorkspaceDashboardStore = defineStore(
       workspaceSprintData.value = response.data.result;
     };
 
-    const getWorkspaceMonthly = async (workspaceId) => {
-      const { startDate, endDate } = monthlySettingUtils();
+    const getWorkspaceMonthly = async ({workspaceId, startDate, endDate}) => {
       const response = await axiosInstance.get(
         `/api/schedule/${workspaceId}/monthly?startDate=${startDate}&endDate=${endDate}`,
         { withCredentials: true }
