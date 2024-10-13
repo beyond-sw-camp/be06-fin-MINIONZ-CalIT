@@ -1,10 +1,21 @@
 <script setup>
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted, defineEmits, defineProps } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from '@/view/schedule/component/ScheduleModal.vue';
 import { useCalendar } from '@/utils/calendarUtils';
 import { formatUtil } from '@/utils/dateUtils';
+
+const props = defineProps({
+  startDate: {
+    type: String,
+    default: ''
+  },
+  endDate: {
+    type: String,
+    default: ''
+  }
+});
 
 const emit = defineEmits(['prevMonth', 'nextMonth']);
 
@@ -30,11 +41,11 @@ const eventData = ref({
 
 const show = (event, data) => {
   eventData.value = {
-    title: data.title,
-    startDate: data.startDate,
-    endDate: data.endDate,
-    contents: data.contents,
-    participants: data.participants,
+    title: data.title || '',
+    startDate: data.startDate || '',
+    endDate: data.endDate || '',
+    contents: data.contents || '',
+    participants: data.participants || '',
   };
   isVisible.value = true;
   console.log(eventData.value);
