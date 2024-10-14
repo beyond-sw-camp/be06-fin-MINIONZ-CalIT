@@ -6,12 +6,14 @@ import 'quill/dist/quill.snow.css';
 import {Stomp} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import {useUserStore} from "@/stores/user/useUserStore";
+import {useRoute} from 'vue-router'; // URL 정보를 가져오기 위한 Vue Router
 
 // Vue refs for Quill editor and WebSocket client
 let quillEditor = null; // Quill 인스턴스를 저장할 변수
 let stompClient = null;
 let editorChangeFromRemote = false;
 const userStore = useUserStore();
+const route = useRoute(); // 현재 라우트를 가져옴
 const toolbar = [
     [{'size': []}],
     ['bold', 'italic', 'underline', 'strike'],
@@ -24,8 +26,8 @@ const toolbar = [
     ['clean']
 ]
 
-// Note information - should be dynamically set
-const meetingId = 1; // Placeholder, should be set dynamically
+// URL에서 meetingId 가져오기
+const meetingId = route.params.meetingId || route.params.id || route.params[route.params.length - 1];  // URL 마지막 값을 meetingId로 사용
 
 // WebSocket 연결 설정
 function connectWebSocket() {
@@ -50,7 +52,6 @@ function connectWebSocket() {
 
 onMounted(() => {
     // Quill 에디터 초기화
-
     quillEditor = new Quill("#editor-container", {
         modules: {'toolbar': toolbar},
         theme: "snow"
@@ -61,7 +62,7 @@ onMounted(() => {
         if (source === 'user' && !editorChangeFromRemote) {
             const noteMessage = {
                 noteContents: delta,
-                meetingId: meetingId,
+                meetingId: meetingId, // URL에서 가져온 meetingId 사용
                 senderLoginId: userStore.user.value.loginId
             };
             stompClient.send(`/app/note/edit/${meetingId}`, {}, JSON.stringify(noteMessage));
@@ -70,9 +71,9 @@ onMounted(() => {
 
     // WebSocket 연결 설정
     connectWebSocket();
-
 });
 </script>
+
 <template>
   <!-- Quill 에디터 섹션 -->
     <div id="editor-container"></div>
