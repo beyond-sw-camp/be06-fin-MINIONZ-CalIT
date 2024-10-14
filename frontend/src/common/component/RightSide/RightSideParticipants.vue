@@ -19,7 +19,6 @@ const saveParticipantsToUserList = () => {
     <hr/>
     <div class="participants-wrap">
       <SearchFriends @update-selected-participants="updateSelectedParticipants" />
-      <!-- 저장 버튼 -->
       <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
     </div>
   </div>

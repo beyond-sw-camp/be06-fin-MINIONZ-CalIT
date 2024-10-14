@@ -2,6 +2,7 @@
 import { inject, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { VTextField, VSelect } from 'vuetify/components';
+// import { useUserStore } from "@/stores/user/useUserStore";
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useSprintLabelStore } from '@/stores/scrum/useSprintLabelStore';
 import { useFriendsStore } from "@/stores/user/useFriendsStore";
@@ -18,6 +19,7 @@ const workspaceId = route.params.workspaceId;
 
 const sprintStore = useSprintStore();
 const friend = useFriendsStore();
+// const userStore = useUserStore();
 
 const sprintTitle = ref('');
 const sprintContent = ref('');
@@ -25,7 +27,6 @@ const participants = ref([]);
 const startDate = ref('');
 const endDate = ref('');
 const availableLabels = ref([]);
-// const selectedLabels = ref([]);
 const availableParticipants = ref([]);
 
 const addSprint = () => {
@@ -33,8 +34,8 @@ const addSprint = () => {
     workspaceId: workspaceId,
     sprintTitle: sprintTitle.value,
     sprintContents: sprintContent.value,
-    labels: '',
-    participants: participants.value,
+    labels:[],
+    participants: participants.value.map(participant => participant.searchUserIdx),
     startDate: startDate.value,
     endDate: endDate.value,
   });
