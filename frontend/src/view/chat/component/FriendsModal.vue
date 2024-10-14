@@ -1,39 +1,66 @@
 <script setup>
-import {ref} from 'vue';
-import router from "@/router";
-import {useChatRoomStore} from "@/stores/chat/useChatRoomStore";
-import { useParticipants } from '@/stores/user/useParticipantsStore';
-import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
+import { ref } from 'vue';
+import router from '@/router';
+import { useRoute } from 'vue-router';
+import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import { Notyf } from "notyf";
+import {setPersona} from "@/utils/personaUtils";
 
 const chatRoomStore = useChatRoomStore();
-console.log('chatRoomStore:', chatRoomStore);
-const workspaceId = useWorkspaceStore().workspaceId;
+const friendStore = useFriendsStore();
+const notyf = new Notyf();
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
 const isModalOpen = ref(true);
 const chattingRoomName = ref('');
-// const participantInput = ref('');
-const { participants, addParticipant, removeParticipant, filteredUsers, participantsName, saveParticipants, userList } = useParticipants();
+const selectedFriend = ref(null);
+const filteredFriends = ref([]);
+const selectedFriends = ref([]);
 
 const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const saveParticipantsToUserList = async () => {
-  console.log('Before saving participants:', participants.value);
-  if (saveParticipants) {
-    console.log('Before Saving Chat Room Name:', chattingRoomName.value);// 여기 값안옴
-    console.log('After Saving Chat Room Name:', chattingRoomName.value); // 여기 값 안옴
-    console.log('Participants:', participants.value);
-    const newChatRoomId = chatRoomStore.addChatRoom({ chatroomName: chattingRoomName.value, participants: [...participants.value] }).value;
-    console.log('newChatRoomId:', newChatRoomId);
-    saveParticipants(userList);
-    await router.push(`/workspace/${workspaceId}/chat/${newChatRoomId}`);
-    closeModal();
-  } else {
-    console.warn("saveParticipants is not defined");
+const searchFriends = async () => {
+  try {
+    await friendStore.getFriendsList(workspaceId);
+    filteredFriends.value = friendStore.friends;
+  } catch (error) {
+    console.error('Error fetching Friends:', error);
+    filteredFriends.value = [];
   }
-  console.warn("saveParticipants is not working");
 };
 
+const toggleFriendSelection = () => {
+  if (selectedFriend.value && !selectedFriends.value.includes(selectedFriend.value)) {
+    selectedFriends.value.push(selectedFriend.value);
+  }
+};
+
+const removeFriendSelection = (friend) => {
+  selectedFriends.value = selectedFriends.value.filter(f => f !== friend);
+};
+
+const addChatRoom = async () => {
+  try {
+    const response = await chatRoomStore.addChatRoom({
+      chattingRoomName: chattingRoomName.value,
+      participants: selectedFriends.value.map(friend => friend.searchUserIdx),
+    });
+    const chatRoomId = response?.chatRoomId;
+    notyf.success('채팅방이 추가되었습니다.');
+    await router.push(`/workspace/${workspaceId}/chat/${chatRoomId}`);
+    return response;
+  } catch (error) {
+    notyf.error('채팅방 추가에 실패했습니다.');
+    throw error;
+  }
+};
+
+searchFriends();
 </script>
 
 <template>
@@ -43,62 +70,57 @@ const saveParticipantsToUserList = async () => {
         <p>Add Chat Room</p>
         <button @click="closeModal" class="close-btn">✕</button>
       </div>
-    <div class="modal-container">
-      <div class="modal-body">
-        <div class="input-wrap">
-          <label for="chatroom-name">채팅방 이름 설정</label>
-          <input
-              type="text"
-              id="chatroom-name"
-              v-model="chattingRoomName"
-              placeholder="채팅방 이름을 입력하세요"
-              class="input-field"
-          />
-        </div>
-
-        <div class="add-participants">
-          <div class="add-participants-input">
-            <label for="participants-name">참여자 검색</label>
+      <div class="modal-container">
+        <div class="modal-body">
+          <div class="input-wrap">
+            <label for="chatroom-name">채팅방 이름 설정</label>
             <input
                 type="text"
-                id="participants-name"
-                v-model="participantsName"
-                placeholder="참여자를 추가하세요"
+                id="chatroom-name"
+                v-model="chattingRoomName"
+                placeholder="채팅방 이름을 입력하세요"
                 class="input-field"
             />
           </div>
-          <div v-if="participantsName" class="search-results">
-            <div v-for="user in filteredUsers"
-                 :key="user.id"
-                 @click="() => { addParticipant(user); participantsName = ''; }"
-            >
-              <img :src="user.persona" alt="persona">
-              <span class="participant-name">{{ user.username }}</span>
+
+          <div class="add-participants">
+            <div class="add-participants-input">
+              <label for="participants-name">참여자 검색</label>
+              <select id="participants-name" v-model="selectedFriend" class="input-field">
+                <option v-for="friend in filteredFriends" :key="friend.searchFriendsIdx" :value="friend">
+                  {{ friend.userName || '채팅할 사용자를 추가해주세요' }}
+                </option>
+              </select>
+              <button @click="toggleFriendSelection" class="participants-btn">추가</button>
             </div>
-          </div>
-        </div>
-        <div class="participants-list">
-          <div v-for="(participant) in participants" :key="participant.id" class="participants-item">
-            <div class="participants-item-info">
-              <img :src="participant.persona" alt="persona" class="persona">
-              <span>{{ participant.username }}</span>
-            </div>
-            <button @click="removeParticipant(participant.id)" class="del-btn participants-btn">삭제</button>
+            <ul v-if="selectedFriends && selectedFriends.length" class="participants-list">
+              <li v-for="friend in selectedFriends" :key="friend.searchFriendsIdx" class="participants-item">
+                <div class="participants-item-info">
+                  <img :src="setPersona(1)" alt="persona" class="persona">
+                  <span>{{ friend.userName }}</span>
+                </div>
+                <button @click="removeFriendSelection(friend)" class="del-btn participants-btn">삭제</button>
+              </li>
+            </ul>
           </div>
         </div>
 
+        <div class="modal-footer">
+          <button @click="addChatRoom" class="save-btn participants-btn">저장하기</button>
+          <button @click="closeModal" class="cancel-btn">취소하기</button>
+        </div>
       </div>
-
-      <div class="modal-footer">
-        <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
-        <button @click="closeModal" class="cancel-btn">취소하기</button>
-      </div>
-    </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -141,7 +163,7 @@ const saveParticipantsToUserList = async () => {
   cursor: pointer;
 }
 
-.modal-container{
+.modal-container {
   height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
@@ -165,14 +187,12 @@ const saveParticipantsToUserList = async () => {
   display: flex;
   align-items: center;
   flex-direction: column;
-  //margin-bottom: 20px;
   position: relative;
 }
 
 .participant-name {
   flex-grow: 1;
 }
-
 
 .modal-footer {
   display: flex;
@@ -189,19 +209,19 @@ const saveParticipantsToUserList = async () => {
   cursor: pointer;
 }
 
-label{
+label {
   margin-bottom: 10px;
 }
 
-.add-participants-input{
+.add-participants-input {
   width: 100%;
 }
 
-.participants-list{
-  max-height: 200px;
+.participants-list {
+  max-height: 150px;
   overflow-y: auto;
+  width: 100%;
 }
-
 
 .participants-btn {
   background-color: #C6D2FD;
@@ -218,36 +238,37 @@ label{
   background-color: #93AAFD;
 }
 
-.del-btn{
+.del-btn {
   width: 60px;
 }
 
-.input-btn-wrap{
+.input-btn-wrap {
   display: flex;
   gap: 10px;
 }
 
-.participants-item{
+.participants-item {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 10px;
-  border:  1px solid #ccc;
+  border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
   justify-content: space-between;
-  img{
+
+  img {
     width: 36px;
   }
 }
 
-.participants-item-info{
+.participants-item-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.search-results{
+.search-results {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -256,7 +277,8 @@ label{
   position: absolute;
   top: 60px;
   background-color: #fff;
-  div{
+
+  div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -264,10 +286,12 @@ label{
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
-    img{
+
+    img {
       width: 36px;
     }
-    &:hover{
+
+    &:hover {
       background-color: #e0e8ff;
       border: 1px solid #C6D2FD;
     }
@@ -280,5 +304,12 @@ label{
   cursor: pointer;
   width: 100%;
   border-radius: 5px;
+}
+
+.persona {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 </style>

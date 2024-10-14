@@ -19,7 +19,7 @@ defineProps({
         <div class="task-header">
           <div class="titles">
             <h4>{{ task.title }}</h4>
-            <p>{{ task.description }}</p>
+            <p>{{ task.workspaceName }}</p>
           </div>
           <div class="priority">
             <p :class="priorityClass(task.priority)">{{ task.priority }}</p>
@@ -40,7 +40,7 @@ defineProps({
           </div>
         </div>
         <div class="task-footer">
-          <p>Due: {{ task.dueDate }}</p>
+          <p>Due: {{ task.endDate }}</p>
           <button>{{ task.actionText }}</button>
         </div>
       </div>

@@ -4,13 +4,21 @@ import LoginPage from "@/view/user/pages/LoginPage.vue";
 import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
+import SocialLoginSuccessPage from "@/view/user/pages/SocialLoginSuccessPage.vue";
+// import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
+import {axiosInstance} from "@/utils/axiosInstance";
 
 const routes = [
     {
         path: '/',
         name: 'Thumbnail',
         component: () => import('@/view/thumbnail/ThumbnailPage.vue')
+    },
+
+    {
+        path: '/social/login/success',
+        name: 'SocialLoginSuccess',
+        component: SocialLoginSuccessPage,
     },
 
     // user
@@ -65,12 +73,12 @@ const routes = [
             {
                 path: 'create',
                 name: 'WorkSpaceCreate',
-                component: () => import('@/view/scrum/create/WorkSpaceCreate.vue')
+                component: () => import('@/view/scrum/create/WorkSpaceCreatePage.vue')
             },
             {
                 path: 'dashboard',
                 name: 'MyDashboard',
-                component: () => import('@/view/dashboard/MyDashBoard.vue')
+                component: () => import('@/view/dashboard/MyDashBoardPage.vue')
             },
             {
                 path: 'schedule',
@@ -79,12 +87,12 @@ const routes = [
                     {
                         path: 'monthly',
                         name: 'MyMonthly',
-                        component: () => import('@/view/schedule/monthly/MyMonthly.vue')
+                        component: () => import('@/view/schedule/monthly/MyMonthlyPage.vue')
                     },
                     {
                         path: 'weekly',
                         name: 'myWeekly',
-                        component: () => import('@/view/schedule/weekly/MyWeekly.vue')
+                        component: () => import('@/view/schedule/weekly/MyWeeklyPage.vue')
                     }
                 ]
             },
@@ -96,12 +104,12 @@ const routes = [
                     {
                         path: 'kanban',
                         name: 'MyTaskKanban',
-                        component: () => import('@/view/scrum/Task/kanban/MyTaskKanban.vue')
+                        component: () => import('@/view/scrum/Task/kanban/MyTaskKanbanPage.vue')
                     },
                     {
                         path: 'list',
                         name: 'MyTaskList',
-                        component: () => import('@/view/scrum/Task/list/MyTaskList.vue')
+                        component: () => import('@/view/scrum/Task/list/MyTaskListPage.vue')
                     },
                 ]
             }
@@ -119,7 +127,7 @@ const routes = [
             {
                 path: 'dashboard',
                 name: 'WorkspaceDashboard',
-                component: () => import('@/view/dashboard/WorkspaceDashBoard.vue')
+                component: () => import('@/view/dashboard/WorkspaceDashBoardPage.vue')
             },
             // schedule
             {
@@ -129,12 +137,12 @@ const routes = [
                     {
                         path: 'monthly',
                         name: 'WorkspaceMonthly',
-                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthly.vue')
+                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthlyPage.vue')
                     },
                     {
                         path: 'weekly',
                         name: 'WorkspaceWeekly',
-                        component: () => import('@/view/schedule/weekly/WorkSpaceWeekly.vue')
+                        component: () => import('@/view/schedule/weekly/WorkSpaceWeeklyPage.vue')
                     }
                 ]
             },
@@ -147,7 +155,7 @@ const routes = [
                     {
                         path: 'label',
                         name: 'WorkspaceScrumLabel',
-                        component: () => import('@/view/scrum/list/LabelList.vue')
+                        component: () => import('@/view/scrum/list/LabelListPage.vue')
                     },
                     {
                         path: 'sprint',
@@ -156,17 +164,17 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'WorkspaceScrumSprintList',
-                                component: () => import('@/view/scrum/list/SprintList.vue')
+                                component: () => import('@/view/scrum/list/SprintListPage.vue')
                             },
                             {
                                 path: 'create',
                                 name: 'WorkspaceSprintCreate',
-                                component: () => import('@/view/scrum/create/SprintCreate.vue')
+                                component: () => import('@/view/scrum/create/SprintCreatePage.vue')
                             },
                             {
-                                path: 'detail/:id',
+                                path: 'detail/:sprintId',
                                 name: 'WorkspaceSprintDetail',
-                                component: () => import('@/view/scrum/detail/SprintDetail.vue')
+                                component: () => import('@/view/scrum/detail/SprintDetailPage.vue')
                             }
                         ]
                     },
@@ -178,22 +186,22 @@ const routes = [
                             {
                                 path: 'create',
                                 name: 'WorkspaceTaskCreate',
-                                component: () => import('@/view/scrum/Task/create/WorkSpaceTaskCreate.vue')
+                                component: () => import('@/view/scrum/Task/create/WorkSpaceTaskCreatePage.vue')
                             },
                             {
                                 path: 'kanban',
                                 name: 'WorkspaceTaskKanban',
-                                component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanban.vue')
+                                component: () => import('@/view/scrum/Task/kanban/WorkSpaceTaskKanbanPage.vue')
                             },
                             {
                                 path: 'list',
                                 name: 'WorkspaceTaskList',
-                                component: () => import('@/view/scrum/Task/list/WorkSpaceTaskList.vue')
+                                component: () => import('@/view/scrum/Task/list/WorkSpaceTaskListPage.vue')
                             },
                             {
                                 path: 'timeline',
                                 name: 'WorkspaceTaskTimeline',
-                                component: () => import('@/view/scrum/Task/timeline/TimeLine.vue')
+                                component: () => import('@/view/scrum/Task/timeline/TimeLinePage.vue')
                             },
                         ]
                     },
@@ -204,17 +212,17 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'WorkspaceIssueList',
-                                component: () => import('@/view/scrum/list/IssueList.vue')
+                                component: () => import('@/view/scrum/list/IssueListPage.vue')
                             },
                             {
                                 path: 'detail/:id',
                                 name: 'WorkspaceIssueDetail',
-                                component: () => import('@/view/scrum/detail/IssueDetail.vue')
+                                component: () => import('@/view/scrum/detail/IssueDetailPage.vue')
                             },
                             {
                                 path: 'create',
                                 name: 'WorkspaceIssueCreate',
-                                component: () => import('@/view/scrum/create/IssueCreate.vue')
+                                component: () => import('@/view/scrum/create/IssueCreatePage.vue')
                             }
                             ]
                     },
@@ -225,17 +233,22 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'BoardMeetingList',
-                                component: () => import('@/view/scrum/meeting/MeetingList.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingListPage.vue')
                             },
                             {
-                                path: 'detail/:id',
+                                path: 'detail/:meetingId',
                                 name: 'BoardMeetingDetail',
-                                component: () => import('@/view/scrum/meeting/MeetingDetail.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingDetailPage.vue')
                             },
                             {
                                 path: 'create',
                                 name: 'BoardMeetingCreate',
-                                component: () => import('@/view/scrum/meeting/MeetingCreate.vue')
+                                component: () => import('@/view/scrum/meeting/MeetingCreatePage.vue')
+                            },
+                            {
+                                path: 'edit/:meetingId',
+                                name: 'BoardMeetingEdit',
+                                component: () => import('@/view/scrum/meeting/MeetingEditPage.vue')
                             }
                         ]
                     },
@@ -250,17 +263,17 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'ErrorList',
-                                        component: () => import('@/view/board/list/ErrorList.vue')
+                                        component: () => import('@/view/board/list/ErrorListPage.vue')
                                     },
                                     {
                                         path: 'detail/:boardId',
                                         name: 'ErrorDetail',
-                                        component: () => import('@/view/board/detail/ErrorDetail.vue')
+                                        component: () => import('@/view/board/detail/ErrorDetailPage.vue')
                                     },
                                     {
                                         path: 'create',
                                         name: 'ErrorCreate',
-                                        component: () => import('@/view/board/create/ErrorCreate.vue')
+                                        component: () => import('@/view/board/create/ErrorCreatePage.vue')
                                     }
                                 ]
                             },
@@ -271,17 +284,17 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'QAList',
-                                        component: () => import('@/view/board/list/QAList.vue')
+                                        component: () => import('@/view/board/list/QAListPage.vue')
                                     },
                                     {
                                         path: 'detail/:id',
                                         name: 'QADetail',
-                                        component: () => import('@/view/board/detail/QADetail.vue')
+                                        component: () => import('@/view/board/detail/QADetailPage.vue')
                                     },
                                     {
                                         path: 'create',
                                         name: 'QACreate',
-                                        component: () => import('@/view/board/create/QACreate.vue')
+                                        component: () => import('@/view/board/create/QACreatePage.vue')
                                     }
                                 ]
                             }
@@ -295,7 +308,7 @@ const routes = [
                 component: () => import('@/view/chat/ChatInitialPage.vue'),
             },
             {
-                path: 'chat/:id',
+                path: 'chat/:chatroomId',
                 name: 'ChatRoom',
                 component: () => import('@/view/chat/ChatRoomPage.vue')
             }
@@ -308,8 +321,8 @@ const router = createRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
-    const workspaceStore = useWorkspaceStore();
+router.beforeEach(async (to, from, next) => {
+    // const workspaceStore = useWorkspaceStore();
     const isAuthenticated = !!sessionStorage.getItem('userInfo');
 
     const proceed = () => {
@@ -332,10 +345,13 @@ router.beforeEach((to, from, next) => {
     };
 
     if (to.params.workspaceId) {
-        workspaceStore.setWorkspaceId(to.params.workspaceId).then(proceed).catch(error => {
-            console.error(error);
+        try {
+            const response = await axiosInstance.get(`/api/workspace/my/all`);
+            if (response.data && response.data.result) proceed();
+        } catch (error) {
+            console.error('Failed to fetch workspace details', error);
             proceed();
-        });
+        }
     } else {
         proceed();
     }

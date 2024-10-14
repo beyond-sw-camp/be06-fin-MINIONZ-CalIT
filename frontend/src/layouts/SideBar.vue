@@ -1,21 +1,32 @@
 <script setup>
-import { computed, defineProps } from 'vue';
-import { useUserStore } from '@/stores/user/useUserStore';
-import { useWorkspaceStore } from '@/stores/workspace/space/useWorkspaceStore';
+import {computed, ref, watchEffect} from 'vue';
+import {useRoute} from "vue-router";
+import {useUserStore} from '@/stores/user/useUserStore';
+// import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
-// import {useRoute} from "vue-router";
+import {axiosInstance} from "@/utils/axiosInstance";
 
-const props = defineProps({
-  isPersonalMenu: Boolean
+const route = useRoute();
+const isPersonalMenu = computed(() => route.path.startsWith('/my'));
+
+const workspaceName = ref('Workspace');
+
+watchEffect(async () => {
+  if (isPersonalMenu.value) {
+    workspaceName.value = 'My Space';
+  } else {
+    try {
+      const response = await axiosInstance.get(`/api/workspace/my/all`);
+      workspaceName.value = response.data.workspaceName || 'Workspace';
+    } catch (error) {
+      console.error('Failed to fetch workspace name', error);
+      workspaceName.value = 'Workspace';
+    }
+  }
 });
-
-const workspaceStore = useWorkspaceStore();
-// const route = useRoute();
-// const workspaceId = route.params.workspaceId;
-const workspaceName = computed(() => props.isPersonalMenu ? 'My Space' : workspaceStore.workspaceName);
 
 const logout = () => {
   useUserStore().logout();
@@ -34,7 +45,7 @@ const logout = () => {
     </div>
     <div class="menu-wrap">
       <div>
-        <div v-if="props.isPersonalMenu">
+        <div v-if="isPersonalMenu">
           <PersonalMenu></PersonalMenu>
         </div>
         <div v-else>
@@ -53,86 +64,87 @@ const logout = () => {
 </template>
 
 <style scoped>
-  .sidebar_bg{
-    background-color: #F3F6FF;
-    width: 16.25rem;
-    padding: 1.25rem;
-    gap: 0.625rem;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    box-sizing: border-box;
-    position: fixed;
-    z-index: 100;
-  }
-  .logo_area{
-    display: flex;
-    width: 13.25rem;
-    height: 3.75rem;
-    align-items: center;
-    justify-content: center;
-    //background-color: #fff;
-    border-radius: 12px;
-    //box-shadow: inset 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
-  }
-  .user-info{
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    //justify-content: center;
-    font-size: 1.3rem;
-    padding: 0.5rem 0 0.5rem 1rem;
-    background-color: #fff;
-    //background: linear-gradient(45deg, #fff, #FEE6ED);
-    border-radius: 12px;
-    //border: 2px solid #dfe5f1;
-    box-shadow: inset 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
-    p{
-      margin: 0;
-    }
-    img{
-      width: 2.5rem;
-      border-radius: 50%;
-      box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
-    }
-  }
-  a{
-    padding: 0 1rem;
-    gap: 0.625rem;
-    text-decoration: none;
-    display: flex;
-    color: #000;
-    font-weight: 400;
-  }
-  .menu-wrap{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+.sidebar_bg {
+  background-color: #F3F6FF;
+  width: 16.25rem;
+  padding: 1.25rem;
+  gap: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 100;
+}
+
+.logo_area {
+  display: flex;
+  width: 13.25rem;
+  height: 3.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.user-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.3rem;
+  padding: 0.5rem 0 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: inset 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
+
+  p {
+    margin: 0;
   }
 
-  button{
-    background-color: transparent;
-    border: none;
+  img {
+    width: 2.5rem;
+    border-radius: 50%;
+    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.15);
   }
+}
 
-  .logout-wrap{
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-  }
+a {
+  padding: 0 1rem;
+  gap: 0.625rem;
+  text-decoration: none;
+  display: flex;
+  color: #000;
+  font-weight: 400;
+}
 
-  .logout-ico{
-    background: url(@/assets/icon/menu/logout.svg) no-repeat;
-    width: 24px;
-    height: 24px;
-    background-size: cover;
-    display: block;
-  }
+.menu-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
 
-  hr {
-    border: 1px solid #dfe5f1;
-    width: 100%;
-    margin: 10px 0;
-  }
+button {
+  background-color: transparent;
+  border: none;
+}
+
+.logout-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.logout-ico {
+  background: url(@/assets/icon/menu/logout.svg) no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  display: block;
+}
+
+hr {
+  border: 1px solid #dfe5f1;
+  width: 100%;
+  margin: 10px 0;
+}
 </style>

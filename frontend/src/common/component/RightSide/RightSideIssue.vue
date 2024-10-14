@@ -2,7 +2,7 @@
 import { ref} from 'vue';
 import SearchFriends from "@/common/component/search/SearchFriends.vue";
 
-import {useIssueStore} from "@/stores/workspace/scrum/useIssueStore";
+import {useIssueStore} from "@/stores/scrum/useIssueStore";
 
 const issueStore = useIssueStore();
 const issueName = ref('');

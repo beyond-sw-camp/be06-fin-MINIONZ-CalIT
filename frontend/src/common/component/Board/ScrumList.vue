@@ -1,12 +1,15 @@
 <script setup>
-import {computed, defineProps} from 'vue';
-import {workspaceData} from "@/static/workspaceData";
-import {useRoute} from "vue-router";
+import { computed, defineProps } from 'vue';
+import { useRoute } from "vue-router";
+import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
 
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+const workspace = computed(() => {
+  const workspaceStore = useWorkspaceStore();
+  return workspaceStore.workspace.value?.find(ws => ws.workspaceId === workspaceId);
+});
 
 defineProps({
   items: Array,
@@ -24,12 +27,7 @@ defineProps({
   <table class="board-table">
     <thead>
     <tr>
-      <!--      <th>-->
-      <!--        <input type="checkbox" id="check-all"/>-->
-      <!--        <label for="check-all" class="check-box"></label>-->
-      <!--      </th>-->
       <th>{{firstColumn}}</th>
-      <!--      <th>작성자</th>-->
       <th>{{secondColumn}}</th>
       <th>{{thirdColumn}}</th>
       <th>{{fourthColumn}}</th>
@@ -40,12 +38,8 @@ defineProps({
     </thead>
     <tbody>
     <tr v-for="(item, index) in items" :key="index">
-      <!--      <td>-->
-      <!--        <input type="checkbox" id="check"/>-->
-      <!--        <label for="check" class="check-box"></label>-->
-      <!--      </td>-->
       <td class="title">
-        <router-link :to="`/workspace/${workspace}/scrum/${boardType}/detail/${index}`">
+        <router-link :to="`/workspace/${workspace}/scrum/${boardType}/detail/${item.sprintId}`">
           {{ item.title }}
         </router-link>
       </td>

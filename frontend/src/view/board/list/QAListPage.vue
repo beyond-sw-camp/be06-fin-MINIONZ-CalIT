@@ -1,0 +1,93 @@
+<script setup>
+import {computed, inject, ref} from 'vue';
+import { useQAStore } from "@/stores/board/useQAStore";
+import Pagination from '@/common/component/PaginationComponent.vue';
+import BoardList from "@/common/component/Board/BoardList.vue";
+import SearchComponent from "@/common/component/SearchComponent.vue";
+import {useRoute} from "vue-router";
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const contentsTitle = inject('contentsTitle');
+const contentsDescription = inject('contentsDescription');
+
+contentsTitle.value = 'QA Board List';
+contentsDescription.value = 'QA 목록을 확인하세요!';
+
+const currentPage = ref(1);
+const itemsPerPage = 10;
+
+const qaStore = useQAStore();
+
+const totalPages = computed(() => Math.ceil((qaStore.getPostList().value?.length || 0) / itemsPerPage));
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const goToPage = (page) => {
+  currentPage.value = page;
+};
+
+const editItem = (item) => {
+  console.log('Editing:', item);
+};
+
+const deleteItem = (item) => {
+  console.log('Deleting:', item);
+};
+</script>
+
+<template>
+  <div class="board-list-container">
+    <div v-if="qaStore.getPostList().value && qaStore.getPostList().value.length > 0">
+      <div class="header">
+        <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
+      </div>
+      <BoardList :items="qaStore" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
+      <Pagination
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          @prev-page="prevPage"
+          @next-page="nextPage"
+          @go-to-page="goToPage"
+      />
+  </div>
+    <div v-else class="initial-wrap">
+      <p>QA를 추가하고 관리를 시작해보세요!</p>
+      <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/create`">QA 추가하기</router-link>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.initial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
+
+  a {
+    padding: 10px 20px;
+    background-color: #93AAFD;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #6F8FFC;
+    }
+  }
+}
+</style>

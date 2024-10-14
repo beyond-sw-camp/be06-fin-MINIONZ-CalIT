@@ -1,6 +1,10 @@
 <script setup>
 import { defineProps, computed } from 'vue';
-import {workspaceData} from "@/static/workspaceData";
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
 const props = defineProps({
   id: Number,
   title: String,
@@ -20,7 +24,7 @@ const labelClass = computed(() => {
 </script>
 
 <template>
-  <router-link :to="`/workspace/${workspaceData.workspaceId}/scrum/meeting/detail/${props.id}`" class="card">
+  <router-link :to="`/workspace/${workspaceId}/scrum/meeting/detail/${props.id}`" class="card">
     <div class="card-header">
       <p class="card-title">{{ title }}</p>
       <span :class="labelClass">{{ label }}</span>

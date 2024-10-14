@@ -14,7 +14,7 @@
 
 <br/>
 
-# 📆 시연사이트 바로가기
+# 📆 CalIT 바로가기
 https://calit.kro.kr
 
 <br>
@@ -76,8 +76,8 @@ https://calit.kro.kr
 <details>
   <summary><b>ERD 보기</b></summary>
   <div markdown="1">
-
-![MINIONZ ERD_v1](https://github.com/user-attachments/assets/e68c5e49-2ece-45c0-8b85-525d33f74a43)
+    
+![MINIONZ](https://github.com/user-attachments/assets/5e469a4c-b55e-4522-a055-cf86c6019274)
 
   </div>
 </details>
@@ -89,7 +89,7 @@ https://calit.kro.kr
   <summary><b>시스템 아키텍처 보기</b></summary>
   <div markdown="1">
 
-![MINIONZ_시스템 아키텍처](https://github.com/user-attachments/assets/a286a90d-fa97-4643-a794-3c617b807191)
+![CalIt 시스템 아키텍처_v1](https://github.com/user-attachments/assets/23248bec-3991-4626-a003-3daf5d836a67)
 
 
   </div>

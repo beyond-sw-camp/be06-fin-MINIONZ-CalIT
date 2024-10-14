@@ -15,22 +15,22 @@ export const useCalendar = () => {
         currentMonth.value = today.getMonth();
     };
 
-    const prevMonth = () => {
-        if (currentMonth.value === 0) {
-            currentMonth.value = 11;
-            currentYear.value--;
-        } else {
-            currentMonth.value--;
-        }
+    const prevMonth = (currentDate) => {
+        const date = new Date(currentDate);
+        date.setMonth(date.getMonth() - 1);
+        return {
+            startDate: new Date(date.getFullYear(), date.getMonth(), 1),
+            endDate: new Date(date.getFullYear(), date.getMonth() + 1, 0)
+        };
     };
 
-    const nextMonth = () => {
-        if (currentMonth.value === 11) {
-            currentMonth.value = 0;
-            currentYear.value++;
-        } else {
-            currentMonth.value++;
-        }
+    const nextMonth = (currentDate) => {
+        const date = new Date(currentDate);
+        date.setMonth(date.getMonth() + 1);
+        return {
+            startDate: new Date(date.getFullYear(), date.getMonth(), 1),
+            endDate: new Date(date.getFullYear(), date.getMonth() + 1, 0)
+        };
     };
 
     return {

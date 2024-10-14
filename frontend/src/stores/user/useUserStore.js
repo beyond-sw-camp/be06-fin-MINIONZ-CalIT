@@ -11,7 +11,7 @@ export const useUserStore = () => {
         token.value = newToken;
 
         if (newToken) {
-            console.log('Attempting to decode token:', newToken);
+
             const userInfo = extractUserInfoFromToken(newToken);
             if (userInfo) {
                 console.log('User info extracted successfully:', userInfo);

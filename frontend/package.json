@@ -30,6 +30,7 @@
     "vue-multiselect": "^3.1.0",
     "vue-router": "^4.4.3",
     "vue3-styled-component": "^2.0.3",
+    "vuetify": "^3.7.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {

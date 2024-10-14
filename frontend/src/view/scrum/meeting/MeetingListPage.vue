@@ -1,0 +1,79 @@
+<script setup>
+import {inject, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import MeetingCard from "@/view/scrum/meeting/component/MeetingCard.vue";
+import SearchComponent from "@/common/component/SearchComponent.vue";
+import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const contentsTitle = inject('contentsTitle');
+const contentsDescription = inject('contentsDescription');
+contentsTitle.value = 'Meeting';
+contentsDescription.value = '워크스페이스의 회의 내역을 살펴보세요!';
+
+const meetingStore = useMeetingStore();
+
+onMounted(() => {
+    meetingStore.getMeetingList(workspaceId);
+});
+</script>
+
+<template>
+  <div class="meeting-container">
+    <div v-if="meetingStore.meetings && meetingStore.meetings.length > 0">
+      <SearchComponent :link="`/workspace/${workspaceId}/scrum/meeting/create`"/>
+      <div class="meeting-card-container">
+        <!--  TODO 유저랑 연동시킬 것-->
+        <MeetingCard
+            v-for="meeting in meetingStore.meetings"
+            :key="meeting.id"
+            :id="meeting.id"
+            :title="meeting.title"
+            label="Front"
+            :contents="meeting.contents"
+            :participants="meeting.participants.map((participant) => participant.persona)"
+            :startDate="meeting.startDate"
+        />
+      </div>
+    </div>
+    <div v-else class="initial-wrap">
+      <p>회의를 추가하고 일정 관리를 시작해보세요!</p>
+      <router-link :to="`/workspace/${workspaceId}/scrum/meeting/create`">회의 추가하기</router-link>
+    </div>
+  </div>
+</template>
+
+<style>
+.meeting-container {
+  padding: 20px;
+}
+.meeting-card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.initial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
+
+  a {
+    padding: 10px 20px;
+    background-color: #93AAFD;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #6F8FFC;
+    }
+  }
+}
+</style>

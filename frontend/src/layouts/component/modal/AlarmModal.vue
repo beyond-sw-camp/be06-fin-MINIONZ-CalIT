@@ -1,13 +1,12 @@
 <script setup>
-import { getTimeDifference } from "@/utils/timeUtils";
+import {getTimeDifference} from "@/utils/timeUtils";
 import notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
-import { onMounted } from "vue";
-import { useUserStore } from "@/stores/user/useUserStore";
-import { useAlarmStore } from "@/stores/socket/useAlarmStore";
-import { useWorkspaceStore } from "@/stores/workspace/space/useWorkspaceStore";
+import {onMounted} from "vue";
+import {useAlarmStore} from "@/stores/alarm/useAlarmStore";
+import {useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
 
 const alarmStore = useAlarmStore();
 const workspaceStore = useWorkspaceStore();
@@ -18,19 +17,21 @@ onMounted(async () => {
   await alarmStore.getAlarmData();
 });
 
-const userStore = useUserStore();
-console.log('User Store:', userStore);
-const userId = userStore.user?.idx;
-console.log('User ID:', userId);
+const handleReject = (alarm) => {
+  workspaceStore.rejectWorkspace(alarm.idx);
+  alarmStore.deleteAlarm(alarm.userAlarmId);
+  alarmStore.getAlarmData();
+};
 
-if (userId) {
-  const eventSource = new EventSource(`/api/alarm/connect/${userId}`);
-  eventSource.onmessage = function (event) {
-    document.getElementById("message").textContent = 'Received event: ' + event.data;
-    console.log('테스트 클라이언트 이벤트:' + event.data);
-  };
-} else {
-  console.error('User ID is undefined');
+const handleAccept = (alarm) => {
+  workspaceStore.acceptWorkspace(alarm.idx);
+  alarmStore.deleteAlarm(alarm.userAlarmId);
+  alarmStore.getAlarmData();
+};
+
+const handleRead = (alarm) => {
+  alarmStore.deleteAlarm(alarm.userAlarmId);
+  alarmStore.getAlarmData();
 }
 </script>
 
@@ -44,22 +45,24 @@ if (userId) {
       <li v-for="alarm in alarmStore.alarms" :key="alarm.id">
         <div class="notification-item">
           <img :src="notification" alt="alam">
-          <div>
+          <div class="notification-info">
             <p class="alarm-title">{{ alarm.title }}</p>
             <p class="alarm-content">{{ alarm.content }}</p>
           </div>
         </div>
         <div class="right-side accept-bundle" v-if="alarm.type === 1">
-          <button @click="workspaceStore.acceptWorkspace(alarm.idx)">
-            수락
-          </button>
-          <button @click="workspaceStore.rejectWorkspace(alarm.idx)">
-            거절
-          </button>
+          <div class="btn-bundle">
+            <button @click="handleAccept(alarm)" class="btn-accept">
+              수락
+            </button>
+            <button @click="handleReject(alarm)" class="btn-reject">
+              거절
+            </button>
+          </div>
           <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
         </div>
         <div class="right-side normal-alarm" v-else>
-          <button @click="alarmStore.deleteAlarm(alarm.id)">
+          <button @click="handleRead(alarm)">
             <i class="delete-icon"></i>
           </button>
         </div>
@@ -124,6 +127,12 @@ hr {
   margin: 10px 0;
 }
 
+.notification-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 ul {
   text-decoration: none;
   padding: 0;
@@ -185,5 +194,30 @@ button {
   height: 16px;
   display: block;
   color: #6b7280;
+}
+
+.btn-bundle {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 10px;
+  width: 60px;
+
+  .btn-accept {
+    background-color: #C6D2FD;
+    color: #28303F;
+    padding: 5px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+
+  .btn-reject {
+    border: #cccccc;
+    padding: 5px;
+    color: #28303F;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 }
 </style>
