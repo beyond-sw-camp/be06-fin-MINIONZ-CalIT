@@ -2,10 +2,7 @@ package minionz.apiserver.user;
 
 import minionz.apiserver.common.responses.BaseResponse;
 import minionz.apiserver.common.responses.BaseResponseStatus;
-import minionz.apiserver.user.model.request.CheckIdRequest;
-import minionz.apiserver.user.model.request.CreateUserRequest;
-import minionz.apiserver.user.model.request.EmailVerifyRequest;
-import minionz.apiserver.user.model.request.UuidRequest;
+import minionz.apiserver.user.model.request.*;
 import minionz.apiserver.utils.JwtUtil;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,5 +52,14 @@ public class UserController {
       return new BaseResponse<>(BaseResponseStatus.USER_UUID_VALID);
     }
     return new BaseResponse<>(BaseResponseStatus.USER_UUID_INVALID);
+  }
+  @PostMapping("/social-redirect")
+  public BaseResponse<BaseResponseStatus> socialRedirect(@RequestBody SocialLoginIdRequest socialLoginIdRequest) {
+    boolean verify = userService.updateLoginId(socialLoginIdRequest);
+    if(verify) {
+      return new BaseResponse<>(BaseResponseStatus.USER_LOGINID_SUCCESS);
+    }
+    return new BaseResponse<>(BaseResponseStatus.USER_ID_DUPLICATE);
+
   }
 }

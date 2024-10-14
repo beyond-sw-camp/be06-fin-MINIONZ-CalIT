@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import minionz.apiserver.user.model.CustomSecurityUserDetails;
 import minionz.apiserver.user.model.EmailVerify;
 import minionz.apiserver.user.model.request.CreateUserRequest;
+import minionz.apiserver.user.model.request.SocialLoginIdRequest;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -112,5 +113,17 @@ public class UserService {
         response.addCookie(aToken);
 
         response.addHeader("Authorization", "Bearer " + token);
+    }
+
+    public boolean updateLoginId(SocialLoginIdRequest socialLoginIdRequest) {
+        boolean duplicate = userRepository.existsByLoginId(socialLoginIdRequest.getLoginId());
+        if(duplicate) {
+            return false;
+        } else {
+            User user = userRepository.findByEmail(socialLoginIdRequest.getEmail());
+            user.setLoginId(socialLoginIdRequest.getLoginId());
+            userRepository.save(user);
+            return true;
+        }
     }
 }
