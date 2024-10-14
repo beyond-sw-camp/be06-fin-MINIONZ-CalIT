@@ -42,7 +42,7 @@ onMounted(async () => {
   }
 
   // WebSocket 연결 설정
-  const socket = new SockJS('http://localhost:8080/chat');
+  const socket = new SockJS('/api/chat');
   stompClient.value = Stomp.over(socket);
 
   stompClient.value.connect(
