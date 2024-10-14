@@ -1,10 +1,10 @@
 <script setup>
-import { inject, ref } from "vue";
-import { useMyDashboardStore } from "@/stores/myspace/useMyDashboardStore";
-import WeeklyComponent from "@/view/schedule/weekly/component/WeeklyComponent.vue";
-import WeeklyIssues from "@/view/schedule/weekly/component/WeeklyIssues.vue";
-import WeeklyTasks from "@/view/schedule/weekly/component/WeeklyTasks.vue";
-import MiniCalendar from "@/view/schedule/weekly/component/MiniCalendar.vue";
+import { inject, ref } from 'vue';
+import { useMyDashboardStore } from '@/stores/myspace/useMyDashboardStore';
+import WeeklyComponent from '@/view/schedule/weekly/component/WeeklyComponent.vue';
+import WeeklyIssues from '@/view/schedule/weekly/component/WeeklyIssues.vue';
+import WeeklyTasks from '@/view/schedule/weekly/component/WeeklyTasks.vue';
+import MiniCalendar from '@/view/schedule/weekly/component/MiniCalendar.vue';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -16,7 +16,7 @@ const myWeek = ref({
   sprints: [],
   meetings: [],
   tasks: [],
-  issues: []
+  issues: [],
 });
 
 const mypageStore = useMyDashboardStore();
@@ -29,13 +29,24 @@ const updateSelectedWeek = (week) => {
 
 <template>
   <div class="weekly">
-    <WeeklyComponent :selected-week="selectedWeek" @update:selected-week="updateSelectedWeek"
-                     :sprints="myWeek.sprints" :meetings="myWeek.meetings"/>
+    <WeeklyComponent
+      :selected-week="selectedWeek"
+      @update:selected-week="updateSelectedWeek"
+      :sprints="myWeek.sprints"
+      :meetings="myWeek.meetings"
+    />
     <div class="week-data">
-      <MiniCalendar @update:selected-week="updateSelectedWeek"/>
+      <MiniCalendar @update:selected-week="updateSelectedWeek" />
       <div class="mini-lists">
-        <WeeklyIssues :selected-week="selectedWeek" :meetings="myWeeklyMeeting" :issues="myWeek.issues"/>
-        <WeeklyTasks :selected-week="selectedWeek" :tasks="myWeek.tasks"/>
+        <WeeklyIssues
+          :selected-week="selectedWeek"
+          :meetings="myWeeklyMeeting"
+          :issues="mypageStore.mySprintData.issues"
+        />
+        <WeeklyTasks
+          :selected-week="selectedWeek"
+          :tasks="mypageStore.mySprintData.tasks"
+        />
       </div>
     </div>
   </div>
