@@ -2,8 +2,8 @@
 import { computed, ref, watch } from 'vue';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import Multiselect from 'vue-multiselect';
-import { useFriendsStore} from "@/stores/user/useFriendsStore";
-import {useRoute} from "vue-router";
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -27,7 +27,9 @@ const filteredUsers = computed(() => {
 const filteredTasks = computed(() => {
   const tasks = taskStore.getTaskTitle();
   if (!tasks) return [];
-  return tasks.filter(task => task.title.toLowerCase().includes(String(userSearch.value).toLowerCase()));
+  return tasks.filter((task) =>
+    task.title.toLowerCase().includes(String(userSearch.value).toLowerCase())
+  );
 });
 
 const addTask = () => {
@@ -37,7 +39,7 @@ const addTask = () => {
     assignees: assignees.value,
     reviewers: reviewers.value,
     level: selectedLevel.value,
-    priority: selectedPriority.value
+    priority: selectedPriority.value,
   });
   taskName.value = '';
   selectedLevel.value = '';
@@ -54,7 +56,7 @@ watch(userSearch, (newTask) => {
 <template>
   <div class="form-container">
     <h2>Task 추가하기</h2>
-    <hr/>
+    <hr />
 
     <div class="task-wrap">
       <div class="input-wrap">
@@ -62,60 +64,84 @@ watch(userSearch, (newTask) => {
           <div>
             <label for="task-select">기존 Task 선택</label>
             <multiselect
-                v-model="userSearch"
-                :options="filteredTasks"
-                :searchable="true"
-                :close-on-select="true"
-                :show-labels="false"
-                placeholder="기존 Task 연동하기"
-                label="title"
-                track-by="id"
+              v-model="userSearch"
+              :options="filteredTasks"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="기존 Task 연동하기"
+              label="title"
+              track-by="id"
             />
           </div>
-          <div v-if="selectedTasks && selectedTasks.value && selectedTasks.value.length > 0">
+          <div
+            v-if="
+              selectedTasks &&
+              selectedTasks.value &&
+              selectedTasks.value.length > 0
+            "
+          >
             <p>연동할 Tasks</p>
             <ul>
-              <li v-for="task in selectedTasks" :key="task.id">{{ task.title }}</li>
+              <li v-for="task in selectedTasks" :key="task.id">
+                {{ task.title }}
+              </li>
             </ul>
           </div>
         </div>
         <div>
           <label for="task-name">Task 제목</label>
-          <input type="text" id="task-name" v-model="taskName" placeholder="Task 제목을 적어주세요" class="input-field"/>
+          <input
+            type="text"
+            id="task-name"
+            v-model="taskName"
+            placeholder="Task 제목을 적어주세요"
+            class="input-field"
+          />
         </div>
         <div>
           <label for="task-content">Task 내용</label>
-          <textarea id="task-content" v-model="taskContent" placeholder="Task 내용을 적어주세요" class="input-field" style="margin:0"/>
+          <textarea
+            id="task-content"
+            v-model="taskContent"
+            placeholder="Task 내용을 적어주세요"
+            class="input-field"
+            style="margin: 0"
+          />
         </div>
         <div>
           <label>담당자</label>
           <multiselect
-              v-model="assignees"
-              :options="filteredUsers"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="담당자를 선택해주세요"
-              label="name"
-              track-by="id"
+            v-model="assignees"
+            :options="filteredUsers"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            placeholder="담당자를 선택해주세요"
+            label="name"
+            track-by="id"
           />
         </div>
         <div>
           <label>보고자</label>
           <multiselect
-              v-model="reviewers"
-              :options="filteredUsers"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="보고자를 선택해주세요"
-              label="name"
-              track-by="id"
+            v-model="reviewers"
+            :options="filteredUsers"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            placeholder="보고자를 선택해주세요"
+            label="name"
+            track-by="id"
           />
         </div>
         <div class="time-wrap">
           <label>시작 날짜</label>
-          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <input
+            v-model="startTime"
+            type="datetime-local"
+            class="time-editor"
+          />
           <span>~ 종료 날짜</span>
           <input v-model="endTime" type="datetime-local" class="time-editor" />
         </div>
@@ -123,17 +149,17 @@ watch(userSearch, (newTask) => {
         <div>
           <label for="level">난이도</label>
           <multiselect
-              v-model="selectedLevel"
-              :options="['Easy', 'Medium', 'Hard']"
-              placeholder="Level"
+            v-model="selectedLevel"
+            :options="['Low', 'Med', 'High']"
+            placeholder="Level"
           />
         </div>
         <div>
           <label for="priority">중요도</label>
           <multiselect
-              v-model="selectedPriority"
-              :options="['Low', 'Medium', 'High']"
-              placeholder="Priority"
+            v-model="selectedPriority"
+            :options="['Low', 'Med', 'High']"
+            placeholder="Priority"
           />
         </div>
       </div>
@@ -187,8 +213,8 @@ label {
 }
 
 .add-task-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -199,7 +225,7 @@ label {
 }
 
 .add-task-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 
 .multiselect__select {
@@ -212,14 +238,14 @@ label {
   margin-bottom: 0;
 }
 
-.time-wrap{
+.time-wrap {
   display: flex;
   gap: 10px;
   justify-content: center;
   flex-direction: column;
 }
 
-.time-editor{
+.time-editor {
   border: none;
   width: 200px;
 }

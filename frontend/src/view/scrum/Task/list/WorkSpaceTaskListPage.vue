@@ -1,15 +1,8 @@
 <script setup>
-import { inject } from 'vue';
+import { inject, ref, watch, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import ListContainer from './component/ListContainer.vue';
-
-import user3 from "@/assets/icon/persona/user3.svg";
-import user2 from "@/assets/icon/persona/user2.svg";
-import user1 from "@/assets/icon/persona/user1.svg";
-import space1 from "@/assets/icon/persona/space1.svg";
-import space2 from "@/assets/icon/persona/space2.svg";
-import user4 from "@/assets/icon/persona/user4.svg";
-import user5 from "@/assets/icon/persona/user5.svg";
-import user6 from "@/assets/icon/persona/user6.svg";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -17,68 +10,78 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Workspace Kanban';
 contentsDescription.value = '워크스페이스의 태스크를 살펴보세요!';
 
-const tasks = [
-  {
-    id: 1,
-    status: 'No Status',
-    tasks: [
-      { id: 1, title: 'Model Answer', labels: ['Design', 'Backlog'], avatars: [user4], taskNumber: "001", dueDate: '2024-10-01' },
-      { id: 2, title: 'Create calendar, chat and email app pages', labels: ['Development', 'Backlog'], avatars: [user5, user6], taskNumber: "002",  dueDate: '2024-10-01' }
-    ]
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const taskStore = useTaskStore();
+const tasksByStatus = ref(null);
+
+onMounted(() => {
+  tasksByStatus.value = taskStore.taskList;
+});
+
+// watch로 taskList의 변화를 감지하고 처리
+watch(
+  () => taskStore.taskList,
+  (newTaskList) => {
+    tasksByStatus.value = newTaskList; // taskList가 변경되면 상태별로 업데이트
   },
-  {
-    id: 2,
-    status: 'To Do',
-    tasks: [
-      {id: 3, title: 'Model Answer', labels: ['Backend'], avatars: [user3], taskNumber: "003", dueDate: '2024-10-01'},
-      {
-        id: 4,
-        title: 'Add authentication pages',
-        labels: ['Frontend', 'To Do'],
-        avatars: [user2],
-        taskNumber: "004",
-        dueDate: '2024-10-01'
-      }
-    ]
-  },
-  {
-    id: 3,
-    status: 'In Progress',
-    tasks: [
-      {
-        id: 5,
-        title: 'Model Answer',
-        labels: ['DB'],
-        avatars: [user1, space1],
-        taskNumber: "005",
-        morePeople: 5,
-        dueDate: '2024-10-01'
-      }
-    ]
-  },
-  {
-    id: 4,
-    status: 'Done',
-    tasks: [
-      {id: 6, title: 'Model Answer', labels: ['User'], avatars: [space2], taskNumber: "002", dueDate: '2024-10-01'}
-    ]
-  }
-];
+  { immediate: true }
+);
+
+// tasksByStatus 배열 중 값이 있는지 확인하는 computed property
+const hasTasks = computed(() => {
+  return tasksByStatus.value.some(
+    (statusObject) => Object.values(statusObject)[0].length > 0
+  );
+});
 </script>
 
 <template>
   <div class="list">
-    <ListContainer  v-for="task in tasks" :key="task.id" :data="task"/>
+    <div v-if="hasTasks">
+      <ListContainer
+        v-for="task in tasksByStatus"
+        :key="task.key"
+        :data="task"
+      />
+    </div>
+    <div v-else class="initial-wrap">
+      <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
+      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`"
+        >태스크 추가하기</router-link
+      >
+    </div>
   </div>
 </template>
 
 <style scoped>
-
 .list {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
   padding: 0 20px;
+}
+
+.initial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  gap: 20px;
+
+  a {
+    padding: 10px 20px;
+    background-color: #93aafd;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #6f8ffc;
+    }
+  }
 }
 </style>

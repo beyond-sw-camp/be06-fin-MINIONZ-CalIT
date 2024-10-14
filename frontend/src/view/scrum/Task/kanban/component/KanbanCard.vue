@@ -1,11 +1,12 @@
 <script setup>
+import { setPersona } from '@/utils/personaUtils';
 import { defineProps } from 'vue';
 
 defineProps({
   task: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 });
 </script>
 
@@ -13,20 +14,28 @@ defineProps({
   <div class="task-card">
     <p>{{ task.title }}</p>
     <div class="labels">
-      <span v-for="label in task.labels" :key="label" class="label">{{ label }}</span>
+      <span v-for="label in task.labels" :key="label" class="label">{{
+        label
+      }}</span>
     </div>
     <div class="task-footer">
       <div class="avatars">
-        <img v-for="avatar in task.avatars" :key="avatar" :src="avatar" class="avatar" alt="users"/>
+        <img
+          v-for="user in task.participants"
+          :key="user.id"
+          :src="setPersona(user.persona)"
+          class="avatar"
+          alt="users"
+        />
       </div>
-      <span class="due-date">{{ task.dueDate }}</span>
+      <span class="due-date">{{ task.endDate }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
 .task-card {
-  background-color: #F7F8FA;
+  background-color: #f7f8fa;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
@@ -47,7 +56,7 @@ p {
   border-radius: 20px;
   margin-right: 5px;
   font-size: 12px;
-  color: #28303F;
+  color: #28303f;
 }
 
 .task-footer {

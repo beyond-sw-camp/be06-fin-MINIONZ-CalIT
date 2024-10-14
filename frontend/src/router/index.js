@@ -137,7 +137,7 @@ const routes = [
                     {
                         path: 'monthly',
                         name: 'WorkspaceMonthly',
-                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthly.vue')
+                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthlyPage.vue')
                     },
                     {
                         path: 'weekly',
@@ -172,7 +172,7 @@ const routes = [
                                 component: () => import('@/view/scrum/create/SprintCreatePage.vue')
                             },
                             {
-                                path: 'detail/:id',
+                                path: 'detail/:sprintId',
                                 name: 'WorkspaceSprintDetail',
                                 component: () => import('@/view/scrum/detail/SprintDetailPage.vue')
                             }
@@ -236,7 +236,7 @@ const routes = [
                                 component: () => import('@/view/scrum/meeting/MeetingListPage.vue')
                             },
                             {
-                                path: 'detail/:id',
+                                path: 'detail/:meetingId',
                                 name: 'BoardMeetingDetail',
                                 component: () => import('@/view/scrum/meeting/MeetingDetailPage.vue')
                             },
@@ -244,6 +244,11 @@ const routes = [
                                 path: 'create',
                                 name: 'BoardMeetingCreate',
                                 component: () => import('@/view/scrum/meeting/MeetingCreatePage.vue')
+                            },
+                            {
+                                path: 'edit/:meetingId',
+                                name: 'BoardMeetingEdit',
+                                component: () => import('@/view/scrum/meeting/MeetingEditPage.vue')
                             }
                         ]
                     },
@@ -303,7 +308,7 @@ const routes = [
                 component: () => import('@/view/chat/ChatInitialPage.vue'),
             },
             {
-                path: 'chat/:id',
+                path: 'chat/:chatroomId',
                 name: 'ChatRoom',
                 component: () => import('@/view/chat/ChatRoomPage.vue')
             }

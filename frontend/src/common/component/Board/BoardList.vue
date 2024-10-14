@@ -1,11 +1,7 @@
 <script setup>
-import {computed, defineProps} from 'vue';
-import {workspaceData} from "@/static/workspaceData";
-import {useRoute} from "vue-router";
+import { defineProps} from 'vue';
 
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+
 
 defineProps({
   items: Array,
@@ -19,10 +15,6 @@ defineProps({
   <table class="board-table">
     <thead>
     <tr>
-<!--      <th>-->
-<!--        <input type="checkbox" id="check-all"/>-->
-<!--        <label for="check-all" class="check-box"></label>-->
-<!--      </th>-->
       <th>게시글 제목</th>
       <th>작성자</th>
       <th>{{thcolumn}}</th>
@@ -32,18 +24,14 @@ defineProps({
     </thead>
     <tbody>
     <tr v-for="(item, index) in items" :key="index">
-<!--      <td>-->
-<!--        <input type="checkbox" id="check"/>-->
-<!--        <label for="check" class="check-box"></label>-->
-<!--      </td>-->
       <td class="title">
-        <router-link :to="`/workspace/${workspace}/scrum/board/${boardType}/detail/${index}`">
-        {{ item.title }}
+        <router-link :to="`/errboard/search?boardId=${item.errorBoardId}`">
+        {{ item.errboardTitle  }}
         </router-link>
       </td>
-      <td>{{ item.author }}</td>
-      <td>{{ item[column] }}</td>
-      <td>{{ item.date }}</td>
+      <td>{{ item.userName  }}</td>
+      <td>{{ item.errboardCategory }}</td>
+      <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
       <td class="action-bundle">
         <button @click="$emit('edit-item', item)" class="action-btn edit-btn">
           <i class="edit-icon"></i>

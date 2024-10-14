@@ -1,23 +1,29 @@
 <script setup>
 import {useRoute} from 'vue-router';
-import {computed, inject, ref} from 'vue';
-import {workspaceData} from '@/static/workspaceData';
+import {computed, inject, onMounted, ref} from 'vue';
+import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
 
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
+// import user1 from '@/assets/icon/persona/user1.svg';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+const meetingId = route.params.meetingId;
+
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Detail';
+
+contentsTitle.value = 'Meeting Detail';
 contentsDescription.value = '회의 정보를 확인해보세요!';
 
+const meetingStore = useMeetingStore();
 const editor = ref(null);
 const showEditor = ref(false);
+const participants = computed(() => meetingStore.meetings.find(meeting => meeting.id === workspaceId).participants);
+
+onMounted(() => {
+  meetingStore.getMeeting({workspaceId, meetingId});
+})
 </script>
 
 <template>
@@ -37,18 +43,18 @@ const showEditor = ref(false);
         </span>
         <p class="description-editor">회의록 상세"</p>
       </div>
-      <div class="author-section">
-        <div class="author">
-          <span class="column">
-            <i class="user-editor column-icon"></i>
-            작성자
-          </span>
-          <div class="user-profile">
-            <img :src="user1" alt="작성자">
-            <span>최승은</span>
-          </div>
-        </div>
-      </div>
+<!--      <div class="author-section">-->
+<!--        <div class="author">-->
+<!--          <span class="column">-->
+<!--            <i class="user-editor column-icon"></i>-->
+<!--            작성자-->
+<!--          </span>-->
+<!--          <div class="user-profile">-->
+<!--            <img :src="user1" alt="작성자">-->
+<!--            <span>최승은</span>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div class="author-section">
         <div class="participants">
@@ -57,13 +63,9 @@ const showEditor = ref(false);
             회의 참여자
           </span>
           <div class="users-list">
-            <div class="user-profile">
-              <img :src=user2 alt="참여자">
-              <span>강혜정</span>
-            </div>
-            <div class="user-profile">
-              <img :src=user3 alt="참여자">
-              <span>차윤슬</span>
+            <div v-for="(participant, index) in participants" :key="index" class="user-profile">
+              <img :src="participant.image" :alt="`참여자 ${index + 1}`">
+              <span>{{ participant.name }}</span>
             </div>
           </div>
         </div>

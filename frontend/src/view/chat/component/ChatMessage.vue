@@ -1,22 +1,30 @@
 <script setup>
 import space6 from '@/assets/icon/persona/space6.svg';
 import { defineProps } from 'vue';
-import { useChatMessageStore } from "@/stores/chat/useChatMessageStore";
-// import { ref } from "vue";
-
-const chatMessageStore = useChatMessageStore();
-const message= chatMessageStore().message().filter((item) => item.messageType === 'TEXT');
 
 defineProps({
-  // message: {
-  //   type: Object,
-  //   required: true,
-  // },
+  message:{
+    type: Object,
+    default: () => ({}),
+  },
   isOwnMessage: {
     type: Boolean,
     required: true,
   },
+  messageContents: {
+    type: String,
+    default: '',
+  },
+  file: {
+    type: Object,
+    default: () => ({}),
+  },
+  createdAt: {
+    type: String,
+    required: true,
+  },
 });
+
 </script>
 
 <template>
@@ -24,9 +32,13 @@ defineProps({
     <img v-if="!isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
     <div class="message-content">
       <div class="message-bubble">
-        <p>{{ message.messageContents || 'No message' }}</p>
+        <img v-if="message.file && message.file.fileUrl && message.file.fileType.startsWith('image/')" :src="message.file.fileUrl" alt="file" style="max-width: 230px"/>
+        <a v-else-if="message.file && message.file.fileUrl" :href="message.file.fileUrl" target="_blank">{{ message.file.fileName || '파일 보기' }}</a>
+
+        <!-- 메시지가 있을 경우 메시지 표시 -->
+        <p v-else>{{ messageContents || 'No message' }}</p>
       </div>
-      <span class="timestamp">{{ message.createdAt || 'No time' }}</span>
+      <span class="timestamp">{{ createdAt || 'No time' }}</span>
     </div>
     <img v-if="isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
   </div>
@@ -39,11 +51,9 @@ defineProps({
   margin-bottom: 15px;
 }
 
+
 .own {
   flex-direction: row-reverse;
-  img{
-    display: none;
-  }
 }
 
 .profile-pic {

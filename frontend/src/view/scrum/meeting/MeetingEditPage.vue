@@ -1,38 +1,55 @@
 <script setup>
 import {useRoute} from 'vue-router';
-import {computed, inject, ref} from 'vue';
-import {workspaceData} from '@/static/workspaceData';
+import {inject, ref} from 'vue';
+// import {useUserStore} from "@/stores/user/useUserStore";
+import {useMeetingStore} from "@/stores/scrum/useMeetingStore";
 import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
 import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
-
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
+import {timeInputUtils} from '@/utils/timeInputUtils';
+import {setPersona} from "@/utils/personaUtils";
+import router from "@/router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
-const workspace = computed(() => workspaceData.find(ws => ws.workspaceId === workspaceId));
+
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-contentsTitle.value = workspace.value ? `${workspace.value.workspaceName} Meeting` : 'Meeting Detail';
-contentsDescription.value = '회의를 수정하세요!';
+contentsTitle.value = 'Meeting Create';
+contentsDescription.value = '회의를 만들어 보세요!';
 
-const meetingTitle = ref('회의록 제목');
-const meetingDescription = ref('회의록 상세 설명');
+const meetingStore = useMeetingStore();
+const meetingTitle = ref('회의 제목');
+const meetingDescription = ref('회의 상세 설명');
 const startTime = ref('');
 const endTime = ref('');
 const rightSideVisible = ref(false);
 const activeComponentId = ref('');
 const editor = ref(null);
 const isQuillVisible = ref(false);
+const participants = ref([]);
+
+const adjustTime = () => {
+  if (startTime.value && endTime.value) {
+    const {start, end} = timeInputUtils.adjustTime(startTime.value, endTime.value);
+    startTime.value = start;
+    endTime.value = end;
+  }
+};
+
+const addMeeting = () => {
+  meetingStore.addMeeting({
+    workspaceId: workspaceId,
+    meetingTitle: meetingTitle.value,
+    meetingDescription: meetingDescription.value,
+    participants: participants.value,
+    startTime: startTime.value,
+    endTime: endTime.value,
+  });
+};
 
 const addNote = () => {
-  isQuillVisible.value = true;
-};
-const saveNote = () => {
-  // const noteContent = editor.value.querySelector('.ql-editor').innerHTML;
-  console.log('Meeting title:', meetingTitle.value);
-  // TODO 백엔드로 전송하거나 로컬 저장소에 저장하는 로직을 추가
+  addMeeting();
+  router.push(`/workspace/${workspaceId}/scrum/meeting/edit`);
 };
 
 const rightSideOn = (id) => {
@@ -54,11 +71,10 @@ const rightSideOn = (id) => {
         <div class="meeting-title-container">
         <span class="column">
           <i class="meeting-title column-icon"></i>
-          회의록 제목
+          회의 제목
         </span>
           <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목"/>
         </div>
-        <!--      설명 추가하기-->
         <div class="issue-section">
         <span class="column">
           <i class="meeting-description column-icon"></i>
@@ -67,7 +83,6 @@ const rightSideOn = (id) => {
           <input v-model="meetingDescription" class="description-editor" placeholder="회의록 상세"/>
         </div>
 
-        <!--     시간 추가하기-->
         <div class="issue-section">
         <span class="column">
           <i class="meeting-time column-icon"></i>
@@ -75,25 +90,24 @@ const rightSideOn = (id) => {
         </span>
           <div class="meeting-time-input">
             <span>시작 시간</span>
-            <input v-model="startTime" type="datetime-local" class="time-editor"/>
+            <input v-model="startTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
             <span>~ 종료 시간</span>
-            <input v-model="endTime" type="datetime-local" class="time-editor"/>
+            <input v-model="endTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
           </div>
 
         </div>
-        <!-- 작성자 및 회의 참가자 표시 -->
-        <div class="author-section">
-          <div class="author">
-          <span class="column">
-            <i class="user-editor column-icon"></i>
-            작성자
-          </span>
-            <div class="user-profile">
-              <img :src="user1" alt="작성자">
-              <span>최승은</span>
-            </div>
-          </div>
-        </div>
+        <!--        <div class="author-section">-->
+        <!--          <div class="author">-->
+        <!--          <span class="column">-->
+        <!--            <i class="user-editor column-icon"></i>-->
+        <!--            작성자-->
+        <!--          </span>-->
+        <!--            <div class="user-profile">-->
+        <!--              <img :src="setPersona(userId)" alt="작성자">-->
+        <!--              <span>{{ loggedInUser?.userName }}</span>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
 
         <div class="author-section">
           <div class="participants">
@@ -103,18 +117,13 @@ const rightSideOn = (id) => {
           </span>
             <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
             <div class="users-list">
-              <div class="user-profile">
-                <img :src=user2 alt="참여자">
-                <span>강혜정</span>
-              </div>
-              <div class="user-profile">
-                <img :src=user3 alt="참여자">
-                <span>차윤슬</span>
+              <div class="user-profile" v-for="participant in participants" :key="participant.id">
+                <img :src="setPersona(participant.persona)" alt="참여자">
+                <span>{{ participant.username }}</span>
               </div>
             </div>
           </div>
         </div>
-
         <div class="issue-section">
         <span class="column">
           <i class="label-add column-icon"></i>
@@ -130,7 +139,7 @@ const rightSideOn = (id) => {
           <i class="task-add column-icon"></i>
           태스크 추가하기
         </span>
-          <button class="issue-button" @click="rightSideOn('task')">태스크 연동하기</button>
+          <button class="issue-button" @click="rightSideOn('task')">태스크 추가하기</button>
           <span class="issue-id">User_001</span>
         </div>
 
@@ -140,18 +149,17 @@ const rightSideOn = (id) => {
           <i class="issue-add column-icon"></i>
           이슈 추가하기
         </span>
-          <button class="issue-button" @click="rightSideOn('issue')">이슈 연동하기</button>
+          <button class="issue-button" @click="rightSideOn('issue')">이슈 추가하기</button>
           <span class="issue-id">User_001</span>
         </div>
       </div>
 
       <div class="btn-sector">
-        <button class="save-button" @click="addNote">회의 저장하기</button>
-        <button class="save-button" @click="addNote">회의록 추가하기</button>
+        <button class="save-button" @click="addMeeting">회의 저장하기</button>
+        <button class="save-button btn-ver2" @click="addNote">회의록 추가하기</button>
       </div>
       <div v-show="isQuillVisible" class="quill-wrap">
         <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
-        <button class="save-button btn-v2" @click="saveNote">저장하기</button>
       </div>
     </div>
     <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
@@ -173,10 +181,6 @@ const rightSideOn = (id) => {
   width: 100%;
   height: 100%;
   justify-content: space-between;
-  //height: 100%;
-  //overflow-y: auto;
-  //display: flex;
-  //flex-direction: column-reverse;
 }
 
 .meeting-input-wrap {
@@ -292,10 +296,6 @@ const rightSideOn = (id) => {
   border: 0;
 }
 
-.time-editor{
-  border: none;
-}
-
 .description-editor {
   font-size: 1rem;
   border: 0;
@@ -306,7 +306,7 @@ const rightSideOn = (id) => {
 
 
 .content-editor {
-  min-height: 200px;
+  min-height: 500px;
   padding: 10px;
   background-color: white;
   margin-top: 10px;
@@ -326,7 +326,7 @@ const rightSideOn = (id) => {
   //margin-left: auto;
 }
 
-.btn-ver2{
+.btn-ver2 {
   color: #e0e8ff;
   background-color: #666daf;
 }
@@ -347,6 +347,10 @@ const rightSideOn = (id) => {
   gap: 10px;
   width: 100%;
   justify-content: flex-end;
+}
+
+.time-editor {
+  border: none;
 }
 
 .fade-enter-active, .fade-leave-active {

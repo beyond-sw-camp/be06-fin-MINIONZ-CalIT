@@ -1,6 +1,7 @@
 HELP.md
 .idea/**
 .gradle
+.DS_Store
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -38,4 +39,4 @@ out/
 .vscode/
 
 application-local.yml
-/Dockerfile
+/api-server/Dockerfile
