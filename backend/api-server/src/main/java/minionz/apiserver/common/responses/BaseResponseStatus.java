@@ -155,6 +155,8 @@ public enum BaseResponseStatus {
 
     CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다."),
     MESSAGE_UPDATE_FAILED(false, 6902, "메시지 업데이트에 실패했습니다."),
+    FILE_RETRIEVAL_SUCCESS(true, 6903, "파일 내역 조회에 성공했습니다."),
+    FILE_NOT_FOUND(false, 6904, "파일 내역 조회에 실패했습니다."),
 
 
     /**
