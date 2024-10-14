@@ -29,11 +29,14 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "ORDER BY m.createdAt DESC")
     List<Message> findLatestMessagesByChatRoomId(Long chatRoomId);
 
-    @Query("SELECT m FROM Message m WHERE m.chatParticipation.chatRoom.chatRoomId = :chatRoomId AND m.deletedAt IS NULL ORDER BY m.createdAt ASC")
-    Page<Message> findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(Long chatRoomId, Pageable pageable);
+    @Query("SELECT m FROM Message m WHERE m.chatParticipation.chatRoom.chatRoomId = :chatRoomId AND m.deletedAt IS NULL ORDER BY m.createdAt DESC")
+    Page<Message> findByChatRoomIdAndDeletedAtIsNull(Long chatRoomId, Pageable pageable);
 
     @Query("SELECT m FROM Message m WHERE m.messageId = :messageId")
     Message findMessageById(Long messageId);
+
+    @Query("SELECT m FROM Message m WHERE m.chatParticipation.chatRoom.chatRoomId = :chatRoomId AND m.messageType = 'FILE' AND m.deletedAt IS NULL")
+    List<Message> findFilesByChatRoomId(Long chatRoomId);
 
     @Query("SELECT m FROM Message m " +
             "WHERE m.chatRoomId = :chatRoomId " +
