@@ -1,15 +1,28 @@
 <script setup>
 // 실시간 통신용
-import { onMounted, ref } from 'vue';
+import {onMounted} from 'vue';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
-import { Stomp } from '@stomp/stompjs';
+import {Stomp} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import {useUserStore} from "@/stores/user/useUserStore";
 
 // Vue refs for Quill editor and WebSocket client
-const editor = ref(null);
 let quillEditor = null; // Quill 인스턴스를 저장할 변수
 let stompClient = null;
+let editorChangeFromRemote = false;
+const userStore = useUserStore();
+const toolbar = [
+    [{'size': []}],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{'color': []}, {'background': []}],
+    [{'script': 'super'}, {'script': 'sub'}],
+    [{'header': '1'}, {'header': '2'}, 'blockquote', 'code-block'],
+    [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+    ['direction', {'align': []}],
+    ['link', 'image', 'video', 'formula'],
+    ['clean']
+]
 
 // Note information - should be dynamically set
 const meetingId = 1; // Placeholder, should be set dynamically
@@ -49,16 +62,6 @@ function sendNoteUpdate() {
     {},
     JSON.stringify(noteMessage)
   );
-}
-
-// 다른 사용자가 보낸 노트 업데이트를 화면에 반영
-function showNoteUpdate(noteMessage) {
-  console.log(noteMessage);
-
-  // Quill 에디터의 내용을 업데이트
-  const currentRange = quillEditor.getSelection();
-  quillEditor.setContents(noteMessage.noteContents);
-  quillEditor.setSelection(currentRange.index, currentRange.length);
 }
 
 onMounted(() => {
@@ -151,33 +154,27 @@ onMounted(() => {
           },
         },
       },
-    });
 
-    // Quill 에디터에서 텍스트 변경 이벤트 리스너 추가
-    let timeoutId;
     quillEditor.on('text-change', function (delta, oldDelta, source) {
-      if (source === 'user') {
-        // 기존 타이머가 있으면 지우기
-        if (timeoutId) {
-          clearTimeout(timeoutId);
+        // 사용자로부터 발생한 변경사항만 전송(전송 받은 데이터로 업데이트 되는 것은 보내지 않음)
+        if (source === 'user' && !editorChangeFromRemote) {
+            const noteMessage = {
+                noteContents: delta,
+                meetingId: meetingId,
+                senderLoginId: userStore.user.value.loginId
+            };
+            stompClient.send(`/app/note/edit/${meetingId}`, {}, JSON.stringify(noteMessage));
         }
-
-        // 1초 후에만 서버로 전송
-        timeoutId = setTimeout(() => {
-          sendNoteUpdate();
-        }, 1000); // 1초 지연
-      }
     });
 
     // WebSocket 연결 설정
     connectWebSocket();
-  } else {
-    console.warn('Editor ref is not initialized.');
-  }
+
 });
 </script>
 <template>
   <!-- Quill 에디터 섹션 -->
+
   <div class="editor-section">
     <span class="column">
       <!--          <i class="quill-editings column-icon"></i>-->
@@ -185,12 +182,14 @@ onMounted(() => {
     </span>
     <div ref="editor" class="content-editor" style="border: none"></div>
   </div>
+
+    <div id="editor-container"></div>
 </template>
 
 <style scoped>
 .editor-section {
-  margin-top: 30px;
-  min-height: 50%;
+    margin-top: 30px;
+    min-height: 50%;
 }
 
 .toolbar {
@@ -202,12 +201,14 @@ onMounted(() => {
 .ql-snow {
   border: none !important;
 }
+
 .editor-section div.ql-container.ql-snow {
-  border: none !important;
+    border: none !important;
 }
 
 .editor-section div.ql-toolbar.ql-snow {
   border: none !important;
   outline: none !important;
+
 }
 </style>
