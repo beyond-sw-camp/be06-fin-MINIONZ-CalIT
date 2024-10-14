@@ -30,6 +30,7 @@ public enum BaseResponseStatus {
     USER_CREATE_FAIL(false, 2006, "회원가입에 실패했습니다. "),
     USER_LOGIN_FAIL(false, 2007, "로그인에 실패했습니다. "),
     USER_NOT_FOUND(false, 2008, "존재하지 않는 사용자입니다. "),
+    USER_LOGINID_SUCCESS(true, 2009, "아이디가 등록되었습니다."),
 
     /**
      * 3000: 마이 페이지

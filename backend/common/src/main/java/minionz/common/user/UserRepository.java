@@ -8,4 +8,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByLoginId(String loginId);
     //아이디를 찾고 해당하는 USER 객체 반환
     User findByLoginId(String loginId);
+
+    User findByEmail(String email);
 }
