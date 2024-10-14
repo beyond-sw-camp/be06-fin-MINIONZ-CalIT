@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.chat.chat_participation.ChatParticipationRepository;
+import minionz.apiserver.chat.chat_room.model.response.FileInfoResponse;
 import minionz.apiserver.chat.chat_room.model.response.ReadMessageResponse;
 import minionz.apiserver.chat.message.model.request.FileInfo;
 import minionz.apiserver.chat.message.model.request.SendMessageRequest;
@@ -19,7 +20,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -131,8 +131,8 @@ public class MessageService {
     }
 
     public List<ReadMessageResponse> readMessage(Long chatRoomId, Long userId, Integer page, Integer size) throws BaseException {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
-        Page<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNullOrderByCreatedAtAsc(chatRoomId, pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Message> messages = messageRepository.findByChatRoomIdAndDeletedAtIsNull(chatRoomId, pageable);
 
         if (messages.isEmpty()) {
             throw new BaseException(BaseResponseStatus.MESSAGE_NOT_FOUND);
@@ -157,6 +157,25 @@ public class MessageService {
                         .isOwn(message.getChatParticipation().getUser().getUserId().equals(userId))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public List<FileInfoResponse> getFileList(Long chatRoomId) throws BaseException {
+        // 파일 타입 메시지만 조회
+        List<FileInfoResponse> fileInfoResponses = messageRepository.findFilesByChatRoomId(chatRoomId)
+                .stream()
+                .map(message -> FileInfoResponse.builder()
+                        .fileName(message.getFileName())
+                        .fileUrl(message.getFileUrl())
+                        .fileSize(message.getFileSize())
+                        .fileType(message.getFileType())
+                        .build())
+                .collect(Collectors.toList());
+
+        if (fileInfoResponses.isEmpty()) {
+            throw new BaseException(BaseResponseStatus.FILE_NOT_FOUND);
+        }
+
+        return fileInfoResponses;
     }
 
     public void enterChatRoom(Long chatRoomId, Long userId) throws BaseException {
