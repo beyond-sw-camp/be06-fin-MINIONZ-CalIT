@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted, defineEmits, defineProps } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from '@/view/schedule/component/ScheduleModal.vue';

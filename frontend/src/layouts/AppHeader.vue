@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/stores/user/useUserStore';
+import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
 import ChatModal from '@/layouts/component/modal/ChatModal.vue';
 import AlarmModal from '@/layouts/component/modal/AlarmModal.vue';
 import WorkspaceModal from '@/layouts/component/modal/WorkspaceModal.vue';
@@ -49,8 +50,9 @@ const handleClickOutside = (event) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('click', handleClickOutside);
+  await alarmStore.getAlarmData();
 });
 
 onBeforeUnmount(() => {
@@ -58,11 +60,9 @@ onBeforeUnmount(() => {
 });
 
 const userStore = useUserStore();
-console.log('User Store:', userStore);
-console.log('User:', userStore.user.value);
-console.log('User Name:', userStore.user);
+const alarmStore = useAlarmStore();
+
 const loginId = computed(() => {
-  console.log('Computed loginId:', userStore.user.value ? userStore.user.value.loginId : '');
   return userStore.user.value ? userStore.user.value.loginId : '';
 });
 </script>
@@ -79,6 +79,7 @@ const loginId = computed(() => {
         </div>
         <div class="alarm" @click="toggleAlarmModal">
           <img :src="alarm" alt="alarm">
+          <span v-show="alarmStore.alarms.length > 0" class="alarm-indicator"></span>
         </div>
       </div>
       <div class="workspace-bundle" @click="toggleWorkspaceModal">
@@ -167,11 +168,10 @@ img {
   border: 2px solid white;
 }
 
-.alarm::after {
-  content: '';
+.alarm-indicator {
   position: absolute;
   top: 3px;
-  right: -5px;
+  right: 0;
   width: 10px;
   height: 10px;
   background-color: #FF6B6B;

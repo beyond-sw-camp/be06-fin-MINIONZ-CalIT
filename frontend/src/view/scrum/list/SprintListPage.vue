@@ -4,6 +4,7 @@ import { useSprintStore } from "@/stores/scrum/useSprintStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import SprintList from "@/common/component/Board/SprintList.vue";
 import {useRoute} from "vue-router";
+import SearchComponent from "@/common/component/SearchComponent.vue";
 
 const sprintStore = useSprintStore();
 const contentsTitle = inject('contentsTitle');
@@ -12,7 +13,7 @@ contentsTitle.value =  'Sprint List';
 contentsDescription.value = 'sprint 목록을 확인하세요!';
 
 const route = useRoute();
-const workSpaceId = route.params.workspaceId;
+const workspaceId = route.params.workspaceId;
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -35,13 +36,14 @@ const goToPage = (page) => {
 };
 
 onMounted(async() => {
-  await sprintStore.getSprintList(workSpaceId);
+  await sprintStore.getSprintList(workspaceId);
 });
 </script>
 
 <template>
   <div class="board-list-container">
     <div v-if="sprintStore.sprints && sprintStore.sprints.length > 0">
+      <SearchComponent :link="`/workspace/${workspaceId}/scrum/sprint/create`"/>
       <SprintList
           :items="sprintStore.sprints"
           board-type="sprint"/>
@@ -56,7 +58,7 @@ onMounted(async() => {
 
     <div v-else class="initial-wrap">
       <p>스프린트를 추가하고 스크럼 관리를 시작해보세요!</p>
-      <router-link :to='`/workspace/${workSpaceId}/scrum/sprint/create`'>스프린트 추가하기</router-link>
+      <router-link :to='`/workspace/${workspaceId}/scrum/sprint/create`'>스프린트 추가하기</router-link>
     </div>
   </div>
 </template>

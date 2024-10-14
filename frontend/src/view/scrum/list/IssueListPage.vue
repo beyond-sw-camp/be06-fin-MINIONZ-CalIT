@@ -43,7 +43,7 @@ onMounted(() => {
 <template>
   <div class="board-list-container">
     <div v-if="issueStore.issues && issueStore.issues.length > 0">
-      <SearchComponent/>
+      <SearchComponent :link="`/workspace/${workspaceId}/scrum/issue/create`"/>
       <ScrumList
           :items="issueStore.issues"
           firstColumn="스프린트 명"

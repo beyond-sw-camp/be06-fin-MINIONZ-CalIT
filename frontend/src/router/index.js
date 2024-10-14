@@ -41,6 +41,19 @@ const routes = [
                 }
             },
             {
+                path: 'social-redirection',
+                name: 'SocialRedirection',
+                component: () => import('@/view/user/pages/SocialRedirectionPage.vue'),
+                // beforeEnter: (to, from, next) => {
+                //     const token = sessionStorage.getItem('userInfo');
+                //     if (token) {
+                //         next('/my/dashboard');
+                //     } else {
+                //         next();
+                //     }
+                // }
+            },
+            {
                 path: 'signup',
                 name: 'Signup',
                 component: SignupPage
