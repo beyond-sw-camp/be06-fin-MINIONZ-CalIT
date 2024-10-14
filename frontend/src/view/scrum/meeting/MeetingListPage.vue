@@ -25,7 +25,6 @@ onMounted(() => {
     <div v-if="meetingStore.meetings && meetingStore.meetings.length > 0">
       <SearchComponent :link="`/workspace/${workspaceId}/scrum/meeting/create`"/>
       <div class="meeting-card-container">
-        <!--  TODO 유저랑 연동시킬 것-->
         <MeetingCard
             v-for="meeting in meetingStore.meetings"
             :key="meeting.id"
