@@ -71,6 +71,9 @@ ul{
     }
   }
 }
+.submenu {
+  padding-left: 1.25rem;
+}
 p{
   margin: 0;
   font-size: 1rem;
@@ -85,6 +88,12 @@ hr{
 }
 .icon-schedule{
   background-image: url("@/assets/icon/menu/schedule.svg");
+}
+.icon-monthly {
+  background-image: url("@/assets/icon/menu/monthly.svg");
+}
+.icon-weekly{
+  background-image: url("@/assets/icon/menu/weekly.svg");
 }
 .icon-task{
   background-image: url("@/assets/icon/menu/task.svg");

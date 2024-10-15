@@ -31,20 +31,8 @@ const workspaceId = route.params.workspaceId;
 
 const isVisible = ref(false);
 
-// const eventData = ref({
-//   title: '',
-//   startDate: '',
-//   participants: '',
-// });
-
 const show = () => {
-  // eventData.value = {
-  //   title: data.title || '',
-  //   startDate: data.startDate || '',
-  //   participants: data.participants || '',
-  // };
   isVisible.value = true;
-  // console.log(eventData.value);
 };
 
 const {
@@ -56,18 +44,34 @@ const {
   goToToday,
 } = useCalendar();
 
-// const meetings = ref([]);
 
 const meetingsForDay = (day) => {
   return props.meetingData?.filter(
-      (meeting) => formatUtil(meeting.startDate, 'd') === String(day)
+      (meeting) => {
+        try {
+          return formatUtil(meeting.startDate, 'd') === String(day);
+        } catch (error) {
+          console.error('Failed to format meeting date:', error);
+          return false;
+        }
+      }
   ) || [];
 };
 
 const sprintsForDay = (day) => {
-  return props.sprintData?.filter(
-      (sprint) => formatUtil(sprint.startDate, 'd') === String(day)
-  ) || [];
+  return props.sprintData?.filter(sprint => {
+    const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
+    return day === startDay;
+  }).map(sprint => {
+    const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
+    const endDay = parseInt(formatUtil(sprint.endDate, 'd'), 10);
+    const duration = endDay - startDay + 1;
+    return {
+      ...sprint,
+      gridColumnStart: startDay,
+      gridColumnEnd: `span ${duration}`,
+    };
+  }) || [];
 };
 
 const handlePrevMonth = () => {
@@ -119,26 +123,32 @@ const handleNextMonth = () => {
     </div>
 
     <div class="calendar-grid">
+
       <div v-for="n in startBlankDays" :key="n"></div>
       <div v-for="day in daysInMonth" :key="day" class="day-cell">
         <div class="day-number">{{ day }}</div>
         <div class="events">
-          <button
-              v-for="event in sprintsForDay(day)"
-              :key="event.id"
-              class="event sprint"
-              @click="show()"
-          >
-            {{ event.title }}
-          </button>
-          <button
-              v-for="event in meetingsForDay(day)"
-              :key="event.id"
-              class="event meeting"
-              @click="show()"
-          >
-            {{ event.title }}
-          </button>
+          <div>
+            <button
+                v-for="event in sprintsForDay(day)"
+                :key="event.id"
+                class="event sprint"
+                :style="{ gridColumn: `${event.gridColumnStart} / ${event.gridColumnEnd}` }"
+                @click="show()"
+            >
+              {{ event.title }}
+            </button>
+          </div>
+          <div>
+            <button
+                v-for="event in meetingsForDay(day)"
+                :key="event.id"
+                class="event meeting"
+                @click="show()"
+            >
+              {{ event.title }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -175,7 +185,7 @@ const handleNextMonth = () => {
   gap: 20px;
 
   span {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -186,6 +196,7 @@ const handleNextMonth = () => {
   background-color: #e0e8ff;
   padding: 5px 10px;
   border-radius: 25px;
+  font-size: 15px;
 
   a {
     color: #666daf;
@@ -208,6 +219,7 @@ const handleNextMonth = () => {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-auto-flow: dense;
 }
 
 .header .day-header {
@@ -229,9 +241,10 @@ const handleNextMonth = () => {
 
 .day-cell {
   border: 1px solid #ddd;
-  height: 150px;
+  min-height: 150px;
   position: relative;
   padding: 10px;
+  overflow: visible;
 }
 
 .day-number {
@@ -241,6 +254,7 @@ const handleNextMonth = () => {
 
 .events {
   margin-top: 10px;
+  position: relative;
 }
 
 .event {
@@ -255,6 +269,12 @@ const handleNextMonth = () => {
   width: 100%;
   text-align: left;
 }
+.event {
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .event.meeting {
   border: 2px solid #2196f3;
@@ -264,5 +284,6 @@ const handleNextMonth = () => {
 .event.sprint {
   border: 2px solid #db2777;
   background-color: rgba(219, 39, 119, 0.1);
+  grid-column: span 2;
 }
 </style>

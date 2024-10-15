@@ -18,19 +18,12 @@ const { startDate, endDate } = monthlySettingUtils();
 const currentStartDate = ref(startDate);
 const currentEndDate = ref(endDate);
 
-const fetchMonthlyData = () => {
-  mypageStore.getMyMonthly({startDate: currentStartDate.value, endDate: currentEndDate.value});
-  console.log()
+const fetchMonthlyData = async () => {
+  await mypageStore.getMyMonthly({
+    startDate: currentStartDate.value,
+    endDate: currentEndDate.value
+  });
 };
-
-// const myMonthlyMeeting = ref(mypageStore.mySprintData);
-console.log(mypageStore);
-console.log(mypageStore.mySprintData);
-console.log(mypageStore.mySprintData.meetings);
-console.log(mypageStore.mySprintData.sprints);
-// console.log(myMonthlyMeeting.value);
-// console.log(myMonthlyMeeting);
-// console.log(fetchMonthlyData())
 
 const handlePrevMonth = () => {
   const {startDate: newStartDate, endDate: newEndDate} = prevMonth(currentStartDate.value, currentEndDate.value);
