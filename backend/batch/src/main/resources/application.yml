@@ -1,7 +1,6 @@
 spring:
   batch:
     job:
-      name: meetingReminderJob
       enabled: true
   datasource:
     url: ${DB_URL}
