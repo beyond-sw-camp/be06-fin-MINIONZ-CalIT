@@ -24,6 +24,9 @@ const formatFileSize = (size) => {
 
 // 파일 목록 가져오기
 const fetchFiles = async () => {
+  if(!chatroomId){
+    return;
+  }
   const fileMessages = await chatMessageStore.fetchFileMessages(chatroomId);
   if (fileMessages) {
     files.value = fileMessages;
