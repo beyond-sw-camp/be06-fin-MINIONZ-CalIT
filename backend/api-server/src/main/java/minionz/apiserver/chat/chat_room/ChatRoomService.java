@@ -1,7 +1,8 @@
 package minionz.apiserver.chat.chat_room;
 
 import lombok.RequiredArgsConstructor;
-import minionz.apiserver.chat.chat_participation.ChatParticipationRepository;
+import minionz.common.chat.chat_participation.ChatParticipationRepository;
+import minionz.common.chat.chat_room.ChatRoomRepository;
 import minionz.common.chat.chat_room.model.ChatRoom;
 import minionz.apiserver.chat.chat_room.model.request.CreateChatRoomRequest;
 import minionz.apiserver.chat.chat_room.model.request.SearchChatRoomRequest;
@@ -9,11 +10,11 @@ import minionz.apiserver.chat.chat_room.model.request.UpdateChatRoomRequest;
 import minionz.apiserver.chat.chat_room.model.response.CreateChatRoomResponse;
 import minionz.apiserver.chat.chat_room.model.response.ReadChatRoomResponse;
 import minionz.apiserver.chat.chat_room.model.response.SearchChatRoomResponse;
-import minionz.apiserver.chat.message.MessageRepository;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponse;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import minionz.common.chat.chat_participation.model.ChatParticipation;
+import minionz.common.chat.message.MessageRepository;
 import minionz.common.chat.message.model.Message;
 import minionz.common.chat.message.model.MessageStatus;
 import minionz.common.user.UserRepository;
