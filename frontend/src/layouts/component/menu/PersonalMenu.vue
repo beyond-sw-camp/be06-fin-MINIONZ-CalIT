@@ -16,6 +16,20 @@
         <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
+      <ul class="submenu">
+        <li>
+          <router-link to="/my/schedule/monthly">
+            <i class="icon-monthly"/>
+            <p class="outfit">Monthly</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/my/schedule/weekly">
+            <i class="icon-weekly"/>
+            <p class="outfit">Weekly</p>
+          </router-link>
+        </li>
+      </ul>
     </li>
     <hr>
     <li>

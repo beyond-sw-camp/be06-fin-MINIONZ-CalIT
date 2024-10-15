@@ -12,30 +12,35 @@ contentsTitle.value = 'My Monthly Schedule';
 contentsDescription.value = '나의 이달 일정을 살펴보세요!';
 
 const mypageStore = useMyDashboardStore();
+
+const { prevMonth, nextMonth } = useCalendar();
 const { startDate, endDate } = monthlySettingUtils();
 const currentStartDate = ref(startDate);
 const currentEndDate = ref(endDate);
 
-const { prevMonth, nextMonth } = useCalendar();
-
-const monthlyData = ref({ sprints: [], meetings: [] } || {});
-
-const fetchMonthlyData = async () => {
-  const response = await mypageStore.getMyMonthly({ startDate: currentStartDate.value, endDate: currentEndDate.value });
-  if (response.success) {
-    monthlyData.value = response.result;
-  }
+const fetchMonthlyData = () => {
+  mypageStore.getMyMonthly({startDate: currentStartDate.value, endDate: currentEndDate.value});
+  console.log()
 };
 
+// const myMonthlyMeeting = ref(mypageStore.mySprintData);
+console.log(mypageStore);
+console.log(mypageStore.mySprintData);
+console.log(mypageStore.mySprintData.meetings);
+console.log(mypageStore.mySprintData.sprints);
+// console.log(myMonthlyMeeting.value);
+// console.log(myMonthlyMeeting);
+// console.log(fetchMonthlyData())
+
 const handlePrevMonth = () => {
-  const { startDate: newStartDate, endDate: newEndDate } = prevMonth(currentStartDate.value, currentEndDate.value);
+  const {startDate: newStartDate, endDate: newEndDate} = prevMonth(currentStartDate.value, currentEndDate.value);
   currentStartDate.value = newStartDate;
   currentEndDate.value = newEndDate;
   fetchMonthlyData();
 };
 
 const handleNextMonth = () => {
-  const { startDate: newStartDate, endDate: newEndDate } = nextMonth(currentStartDate.value, currentEndDate.value);
+  const {startDate: newStartDate, endDate: newEndDate} = nextMonth(currentStartDate.value, currentEndDate.value);
   currentStartDate.value = newStartDate;
   currentEndDate.value = newEndDate;
   fetchMonthlyData();
@@ -47,10 +52,10 @@ fetchMonthlyData();
 <template>
   <div class="monthly">
     <MonthlyComponent
-        :startDate="currentStartDate.value"
-        :endDate="currentEndDate.value"
-        :meetings="monthlyData.value.meetings"
-        :sprints="monthlyData.value.sprints"
+        :startDate="currentStartDate"
+        :endDate="currentEndDate"
+        :meetingData="mypageStore.mySprintData.meetings"
+        :sprintData="mypageStore.mySprintData.sprints"
         @prevMonth="handlePrevMonth"
         @nextMonth="handleNextMonth"
     />
