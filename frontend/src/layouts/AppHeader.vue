@@ -62,6 +62,8 @@ onBeforeUnmount(() => {
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 
+const userId = userStore.user.value?.idx;
+
 const loginId = computed(() => {
   return userStore.user.value ? userStore.user.value.loginId : '';
 });
@@ -74,6 +76,11 @@ const loginId = computed(() => {
     </div>
     <div class="right-side">
       <div class="notice-bundle">
+        <div>
+          <router-link :to="`/chatbot/${userId}`">
+            챗봇
+          </router-link>
+        </div>
         <div class="chat" @click="toggleChatModal">
           <img :src="message" alt="chat">
         </div>
