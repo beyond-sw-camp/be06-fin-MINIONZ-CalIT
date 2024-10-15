@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue';
-import { getDaysInMonthUtil, startOfMonthUtil } from '@/utils/dateUtils';
+import { getDaysInMonthUtil, startOfMonthUtil } from '@/utils/scheduleDateFnsUtils';
 
 export const useCalendar = () => {
     const today = new Date();
