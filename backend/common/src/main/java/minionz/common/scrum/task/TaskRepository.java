@@ -1,6 +1,7 @@
 package minionz.common.scrum.task;
 
 import minionz.common.scrum.task.model.Task;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -82,7 +83,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "AND t.status = minionz.common.scrum.task.model.TaskStatus.DONE")
     int findSuccessTaskCount(Long workspaceId);
 
-    List<Task> findTasksByEndDateAfter(LocalDateTime endDate);
+    Page<Task> findTasksByEndDateAfter(LocalDateTime endDate, Pageable pageable);
 }
 
 
