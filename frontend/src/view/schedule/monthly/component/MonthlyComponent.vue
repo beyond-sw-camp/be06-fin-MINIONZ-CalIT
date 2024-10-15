@@ -3,7 +3,7 @@ import { ref, onMounted, defineEmits, defineProps } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { useCalendar } from '@/utils/calendarUtils';
-import { formatUtil } from '@/utils/dateUtils';
+import { formatUtil } from '@/utils/scheduleDateFnsUtils';
 
 const emit = defineEmits(['prevMonth', 'nextMonth']);
 

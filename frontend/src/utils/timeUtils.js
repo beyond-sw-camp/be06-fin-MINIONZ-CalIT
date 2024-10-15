@@ -1,4 +1,4 @@
-import {formatUtil} from "@/utils/dateUtils";
+import {formatUtil} from "@/utils/scheduleDateFnsUtils";
 
 export function getTimeDifference(time) {
     const now = new Date();

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, defineProps, defineEmits } from 'vue';
 import { useRoute } from "vue-router";
-import { formatUtil, getWeekDaysUtil } from '@/utils/dateUtils';
+import { formatUtil, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
 import { getWeekRange } from "@/utils/timeUtils";

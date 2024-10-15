@@ -3,7 +3,7 @@ import { inject, ref } from 'vue';
 import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
 import MonthlyComponent from '@/view/schedule/monthly/component/MonthlyComponent.vue';
 import { useRoute } from 'vue-router';
-import { monthlySettingUtils } from '@/utils/dateSettingUtils';
+import { monthlySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { useCalendar } from '@/utils/calendarUtils';
 
 const contentsTitle = inject('contentsTitle');

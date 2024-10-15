@@ -2,7 +2,7 @@
 import { inject, ref } from 'vue';
 import { useMyDashboardStore } from '@/stores/myspace/useMyDashboardStore';
 import MonthlyComponent from '@/view/schedule/monthly/component/MonthlyComponent.vue';
-import { monthlySettingUtils } from '@/utils/dateSettingUtils';
+import { monthlySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { useCalendar } from '@/utils/calendarUtils';
 
 const contentsTitle = inject('contentsTitle');
