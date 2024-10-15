@@ -1,9 +1,10 @@
 <script setup>
-import {inject, onMounted } from 'vue';
+import {inject, onMounted, ref} from 'vue';
 import { useRoute } from 'vue-router';
 import MeetingCard from "@/view/scrum/meeting/component/MeetingCard.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
+import PaginationComponent from "@/common/component/PaginationComponent.vue";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -15,8 +16,17 @@ contentsDescription.value = '워크스페이스의 회의 내역을 살펴보세
 
 const meetingStore = useMeetingStore();
 
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
+
+const fetchMeetings = async () => {
+  const page = currentPage.value;
+  const size = itemsPerPage.value;
+  await meetingStore.getMeetingList({workspaceId, page, size});
+};
+
 onMounted(() => {
-    meetingStore.getMeetingList(workspaceId);
+  fetchMeetings();
 });
 </script>
 
@@ -34,6 +44,12 @@ onMounted(() => {
             :contents="meeting.contents"
             :participants="meeting.participants.map((participant) => participant.persona)"
             :startDate="meeting.startDate"
+        />
+        <PaginationComponent
+            :currentPage="currentPage"
+            :itemsPerPage="itemsPerPage"
+            :totalItems="10"
+            @pageChanged="fetchMeetings"
         />
       </div>
     </div>

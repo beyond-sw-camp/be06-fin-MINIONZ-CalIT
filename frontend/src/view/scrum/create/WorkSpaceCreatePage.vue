@@ -103,9 +103,8 @@ const addWorkspace = async ({ workspaceName, participants }) => {
                   display: flex;
                 "
               >
-                <img
-                  :src="setPersona"
-                  alt="setPersona(user.persona)"
+                <img :src="setPersona(user.persona)"
+                  alt="persona"
                   style="width: 30px; height: 30px; margin-right: 20px"
                 />
                 <span class="participant-name">{{

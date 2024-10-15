@@ -2,7 +2,8 @@
 import { useRoute } from 'vue-router';
 import BasicLayout from "@/layouts/BasicLayout.vue";
 import Thumbnail from "@/view/thumbnail/ThumbnailPage.vue";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
+import { connectEventSource } from '@/utils/alarmUtils'
 
 const route = useRoute();
 
@@ -12,6 +13,10 @@ const showBasicLayout = computed(() => {
 
 const showThumbnail = computed(() => {
   return route.path === '/';
+});
+
+onMounted(() => {
+  connectEventSource();
 });
 </script>
 

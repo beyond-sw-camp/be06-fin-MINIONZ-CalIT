@@ -1,6 +1,6 @@
 <script setup>
-import {ref, computed, onMounted, defineProps, defineEmits} from 'vue';
-import {useRoute} from "vue-router";
+import { ref, computed, onMounted, defineProps, defineEmits } from 'vue';
+import { useRoute } from "vue-router";
 import { formatUtil, getWeekDaysUtil } from '@/utils/dateUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
@@ -299,6 +299,7 @@ function getEventWidth(startDate, endDate) {
 }
 
 .day-header {
+  font-size: 12px;
   font-weight: 500;
   height: 35px;
   display: flex;

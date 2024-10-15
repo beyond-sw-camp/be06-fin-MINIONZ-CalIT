@@ -4,9 +4,9 @@ import notification from "@/assets/icon/alarm/notification.svg";
 import info from "@/assets/icon/alarm/info.svg";
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import PerfectScrollbar from "perfect-scrollbar";
-import {onMounted} from "vue";
-import {useAlarmStore} from "@/stores/alarm/useAlarmStore";
-import {useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
+import { onMounted } from "vue";
+import { useAlarmStore } from "@/stores/alarm/useAlarmStore";
+import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
 
 const alarmStore = useAlarmStore();
 const workspaceStore = useWorkspaceStore();
@@ -59,7 +59,7 @@ const handleRead = (alarm) => {
               거절
             </button>
           </div>
-          <p class="alarm-time">{{ getTimeDifference(alarm.time) }}</p>
+          <p class="alarm-time">{{ getTimeDifference(Date.parse(alarm.time)) }}</p>
         </div>
         <div class="right-side normal-alarm" v-else>
           <button @click="handleRead(alarm)">
@@ -87,7 +87,7 @@ const handleRead = (alarm) => {
   background-color: #F3F6FF;
   border-radius: 10px;
   padding: 15px;
-  width: 300px;
+  width: 350px;
 }
 
 p {
@@ -154,6 +154,12 @@ ul {
       background-color: #C6D2FD;
       color: white;
       border-radius: 10px;
+      .btn-accept {
+        background-color: #fff;
+      }
+      .btn-reject{
+        background-color: #d9e1ec;
+      }
     }
   }
 }
@@ -200,14 +206,14 @@ button {
   display: flex;
   justify-content: flex-end;
   font-size: 10px;
-  width: 60px;
+  width: 100%;
 
   .btn-accept {
     background-color: #C6D2FD;
     color: #28303F;
     padding: 5px;
     border: none;
-    border-radius: 2px;
+    border-radius: 5px;
     cursor: pointer;
     margin-right: 5px;
   }
