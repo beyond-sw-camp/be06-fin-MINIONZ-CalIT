@@ -3,7 +3,7 @@ import { inject, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useIssueStore } from '@/stores/scrum/useIssueStore';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
-import { validateTime } from '@/utils/minuteUtils';
+import { timeInputUtils } from "@/utils/timeInputUtils";
 import { useField, useForm } from 'vee-validate';
 import { Notyf } from 'notyf';
 import * as yup from 'yup';
@@ -53,8 +53,8 @@ const searchFriends = async () => {
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    const validatedStartDate = validateTime(values.startDate);
-    const validatedEndDate = validateTime(values.endDate);
+    const validatedStartDate = timeInputUtils.validateTime(values.startDate);
+    const validatedEndDate = timeInputUtils.validateTime(values.endDate);
 
     await issueStore.addIssue(workspaceId, {
       title: values.issueName,

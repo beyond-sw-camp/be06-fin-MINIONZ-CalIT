@@ -4,7 +4,7 @@ import { useFriendsStore } from '@/stores/user/useFriendsStore';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { Notyf } from 'notyf';
 import { useRouter } from 'vue-router';
-import {setPersona} from "@/utils/personaUtils";
+import { setPersona } from '@/utils/personaUtils';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');

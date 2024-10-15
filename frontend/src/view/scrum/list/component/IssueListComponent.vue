@@ -47,7 +47,7 @@ defineProps({
         <span class="title">
           {{ item.endDate }}
         </span>
-        </td>
+      </td>
     </tr>
     </tbody>
   </table>

@@ -20,7 +20,7 @@ public class NoteProducer {
     public void sendNoteUpdate(NoteMessage noteMessage) {
         try {
             String messageStr = objectMapper.writeValueAsString(noteMessage);
-            kafkaTemplate.send("note-topic", noteMessage.getNoteId().toString(), messageStr);
+            kafkaTemplate.send("note-topic", messageStr);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to send Kafka message", e);
         }

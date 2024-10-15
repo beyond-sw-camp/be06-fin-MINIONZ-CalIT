@@ -2,7 +2,6 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useChatMessageStore } from '@/stores/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
-import ObserverComponent from './ObserverComponent.vue'; // 옵저버 컴포넌트
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
