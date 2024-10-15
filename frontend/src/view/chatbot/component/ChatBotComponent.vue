@@ -193,7 +193,6 @@ const triggerFileInput = () => {
     </div>
 
     <div class="chat-messages">
-      <ObserverComponent :callback="loadMoreMessages" :isLoading="isLoading" />
       <div class="chat-msg-container">
         <Message
           v-for="(message, index) in messages"

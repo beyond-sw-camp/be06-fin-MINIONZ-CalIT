@@ -1,7 +1,5 @@
 <script setup>
 import ChatRoomComponent from "@/view/chat/component/ChatRoomComponent.vue";
-import ChatRoomList from "@/view/chat/component/ChatRoomList.vue";
-import FileList from "@/view/chat/component/FileList.vue";
 </script>
 
 <template>
