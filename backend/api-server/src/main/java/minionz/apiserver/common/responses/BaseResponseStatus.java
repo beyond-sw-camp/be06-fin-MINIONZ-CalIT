@@ -158,6 +158,12 @@ public enum BaseResponseStatus {
     MESSAGE_UPDATE_FAILED(false, 6902, "메시지 업데이트에 실패했습니다."),
     FILE_RETRIEVAL_SUCCESS(true, 6903, "파일 내역 조회에 성공했습니다."),
     FILE_NOT_FOUND(false, 6904, "파일 내역 조회에 실패했습니다."),
+    CHATBOT_MESSAGE_RECEIVED(true, 6903, "챗봇에게 메세지가 성공적으로 수신되었습니다."),
+    CHATBOT_RESPONSE_SAVED(true, 6904, "챗봇 응답이 성공적으로 저장되었습니다."),
+    CHATBOT_ERROR(false, 6905, "챗봇 처리 중 오류가 발생했습니다."),
+    CHATBOT_USER_NOT_FOUND(false, 6906, "챗봇 메시지를 처리하는 동안 사용자를 찾을 수 없습니다."),
+    CHATBOT_DATABASE_ERROR(false, 6907, "챗봇 데이터베이스 처리 중 오류가 발생했습니다."),
+    CHATBOT_EXTERNAL_API_ERROR(false, 6908, "외부 API 호출 중 챗봇 오류가 발생했습니다."),
 
 
     /**
