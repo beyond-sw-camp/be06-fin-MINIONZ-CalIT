@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    include: oauth
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -14,3 +12,4 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 5
