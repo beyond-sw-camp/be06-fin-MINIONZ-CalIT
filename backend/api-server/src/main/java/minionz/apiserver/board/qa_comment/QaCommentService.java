@@ -1,8 +1,10 @@
 package minionz.apiserver.board.qa_comment;
 
 
-import minionz.apiserver.board.qa_board.QaBoardRepository;
+import minionz.common.board.qa_board.QaBoardRepository;
 import minionz.common.board.qa_board.model.QaBoard;
+import minionz.common.board.qa_comment.QaCommentImageRepository;
+import minionz.common.board.qa_comment.QaCommentRepository;
 import minionz.common.board.qa_comment.model.ProgressStatus;
 import minionz.common.board.qa_comment.model.QaComment;
 import minionz.common.board.qa_comment.model.QaCommentImage;

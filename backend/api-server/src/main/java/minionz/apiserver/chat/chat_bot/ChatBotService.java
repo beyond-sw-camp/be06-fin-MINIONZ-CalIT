@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
+import minionz.common.chat.chat_bot.ChatBotRepository;
 import minionz.common.chat.chat_bot.model.ChatBot;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;

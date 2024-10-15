@@ -1,5 +1,6 @@
 package minionz.apiserver.note;
 
+import minionz.common.note.NoteRepository;
 import minionz.common.note.model.Note;
 import minionz.common.scrum.meeting.MeetingRepository;
 import minionz.common.scrum.meeting.model.Meeting;

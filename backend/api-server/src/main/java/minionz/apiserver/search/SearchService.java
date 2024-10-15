@@ -2,6 +2,7 @@ package minionz.apiserver.search;
 
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.search.model.response.SearchUserResponse;
+import minionz.common.search.SearchRepository;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;
 import org.springframework.stereotype.Service;
