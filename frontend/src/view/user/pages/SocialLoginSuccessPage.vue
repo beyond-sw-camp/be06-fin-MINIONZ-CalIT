@@ -9,7 +9,7 @@ const token = route.query.Authorization;
 if (token) {
   const userStore = useUserStore();
   userStore.setToken(token);
-  router.push({ path: '/my/dashboard' });
+  router.push({ path: '/user/social-redirection' });
 } else {
   console.error('Authorization token not found in URL');
 }

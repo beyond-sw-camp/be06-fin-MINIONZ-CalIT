@@ -14,12 +14,13 @@ const loginId = ref('');
 const signup = () => {
   if (checkId(loginId.value)) {
     try {
+      //TODO 이거 바뀜
       axios.post('/api/user/signup', {
-        loginId: loginId.value,
+        loginId: loginId.value
       });
 // TODO 이메일도 같이 보내기
       notyf.success('회원가입에 성공했습니다.');
-      return router.push('/user/login');
+      return router.push('/my/dashboard');
     } catch (error) {
       console.error('Signup failed', error);
       notyf.error('회원가입에 실패했습니다.');
@@ -32,7 +33,7 @@ const signup = () => {
 const checkId = async (loginId) => {
   const r = await axios.post('/api/user/social-redirection', {
     loginId: loginId,
-    // 이거 바뀜
+    //TODO 이거 바뀜
   });
   if (r.data.success) {
     notyf.success('사용 가능한 아이디 입니다.');
