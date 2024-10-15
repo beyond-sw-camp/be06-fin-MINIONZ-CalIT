@@ -39,3 +39,4 @@ out/
 
 application-local.yml
 /Dockerfile
+.DS_Store

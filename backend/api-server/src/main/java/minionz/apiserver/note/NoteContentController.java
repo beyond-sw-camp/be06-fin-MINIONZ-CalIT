@@ -24,9 +24,10 @@ public class NoteContentController {
 
         // Kafka로 메시지 전송
         NoteMessage noteMessage = new NoteMessage();
-        noteMessage.setNoteId(note.getNoteId());
+//        noteMessage.setNoteId(note.getNoteId());
         noteMessage.setNoteContents(note.getNoteContents());
-        noteMessage.setSender(note.getMeetingParticipations().toString());
+        noteMessage.setSenderLoginId(note.getSenderLoginId());
+//        noteMessage.setSender(note.getMeetingParticipations().toString());
 
         noteProducer.sendNoteUpdate(noteMessage);
 

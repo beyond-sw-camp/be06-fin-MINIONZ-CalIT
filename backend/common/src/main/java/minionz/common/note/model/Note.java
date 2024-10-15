@@ -28,6 +28,9 @@ public class Note {
     @Convert(converter = ObjectToJsonConverter.class)
     @Column(name = "note_contents", columnDefinition = "TEXT")
     private Object noteContents;
+
+    private String senderLoginId;
+
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
