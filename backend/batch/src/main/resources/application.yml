@@ -1,7 +1,6 @@
 spring:
   batch:
     job:
-      name: meetingReminderJob
       enabled: true
   datasource:
     url: ${DB_URL}
@@ -16,3 +15,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER}
+    producer:
+      bootstrap-servers: ${KAFKA_SERVER}
+    consumer:
+      bootstrap-servers: ${KAFKA_SERVER}

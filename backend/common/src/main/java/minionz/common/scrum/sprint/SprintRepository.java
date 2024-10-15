@@ -1,6 +1,8 @@
 package minionz.common.scrum.sprint;
 
 import minionz.common.scrum.sprint.model.Sprint;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -36,6 +38,6 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
             "WHERE w.workspaceId = :workspaceId ")
     int findAllSprintCount(Long workspaceId);
 
-    List<Sprint> findSprintsByEndDateAfter(LocalDateTime endDate);
+    Page<Sprint> findSprintsByEndDateAfter(LocalDateTime endDate, Pageable pageable);
 
 }
