@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatBotRequest {
-    private String question;
+    private String messageContents;
     private Long userId;
+    private boolean isFromChatBot = false;
 }

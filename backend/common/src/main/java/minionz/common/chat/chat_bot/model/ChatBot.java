@@ -2,6 +2,7 @@ package minionz.common.chat.chat_bot.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import minionz.common.common.BaseEntity;
 import minionz.common.user.model.User;
 
 import java.time.LocalDateTime;
@@ -12,10 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-public class ChatBot {
+public class ChatBot extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatBotId;
+    private Long botQuestionId;
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
@@ -25,9 +26,7 @@ public class ChatBot {
     @Column(columnDefinition = "LONGTEXT")
     private String response;
 
-    private LocalDateTime timestamp;
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
