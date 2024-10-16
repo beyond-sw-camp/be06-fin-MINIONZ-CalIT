@@ -50,6 +50,7 @@ public class SearchService {
                         .userName(user.getUserName())
                         .loginId(user.getLoginId())
                         .email(user.getEmail())
+                        .persona(user.getPersona())
                         .build())
                 .collect(Collectors.toList());
     }
