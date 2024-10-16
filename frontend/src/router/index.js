@@ -316,13 +316,13 @@ const routes = [
                 path: 'chat/:chatroomId',
                 name: 'ChatRoom',
                 component: () => import('@/view/chat/ChatRoomPage.vue')
-            },
-            {
-                path: '/chatbot/:userId',
-                name: 'ChatBot',
-                component: () => import('@/view/chatbot/ChatBotPage.vue'),
-                meta: { requiresAuth: true },
             }
+            // {
+            //     path: 'chatbot/:userId',
+            //     name: 'ChatBot',
+            //     component: () => import('@/view/chatbot/ChatBotPage.vue'),
+            //     meta: { requiresAuth: true },
+            // }
         ]
     },
 ];

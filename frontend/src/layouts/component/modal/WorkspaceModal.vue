@@ -1,33 +1,37 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import { setPersona } from '@/utils/personaUtils';
-import { axiosInstance } from '@/utils/axiosInstance';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import {setPersona} from '@/utils/personaUtils';
+import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
+import {useRouter} from 'vue-router';
 
+const router = useRouter();
 const workspaceStore = useWorkspaceStore();
-const workspace = ref([]);
-
-const getAllWorkspace = async () => {
-  try {
-    const response = await axiosInstance.get('/api/workspace/my/all');
-    workspace.value = response.data.result;
-    if (workspace.value.length > 0) {
-      workspaceStore.setWorkspaceId(workspace.value[0].workspaceId);
-    }
-  } catch (error) {
-    console.error('Failed to fetch all workspaces', error);
-  }
-};
-
-const handleWorkspaceClick = (workspaceItem) => {
-  workspaceStore.setNowWorkspace(workspaceItem);
-};
+const {getAllWorkspace, setWorkspaceId} = workspaceStore;
+const isLoading = ref(false);
+const errorMessage = ref(null);
 
 onMounted(async () => {
-  await getAllWorkspace();
+  isLoading.value = true;
+  errorMessage.value = null;
+  try {
+    await getAllWorkspace();
+    if (workspaceStore.workspace.length > 0) {
+      setWorkspaceId(workspaceStore.workspace[0].workspaceId);
+    }
+  } catch (error) {
+    errorMessage.value = 'Failed to load workspaces. Please try again.';
+  } finally {
+    isLoading.value = false;
+  }
 });
+
+// 워크스페이스 선택 시 처리
+const handleWorkspaceSelection = (workspaceItem) => {
+  workspaceStore.setNowWorkspace(workspaceItem);
+  router.push(`/workspace/${workspaceItem.workspaceId}/dashboard`);
+};
 </script>
 
 <template>
@@ -37,37 +41,34 @@ onMounted(async () => {
         <div>
           <p>Workspace List</p>
         </div>
-        <hr />
+        <hr/>
       </div>
       <div class="workspace-modal-body">
-        <ul>
+        <div v-if="isLoading">Loading...</div>
+        <div v-else-if="errorMessage">{{ errorMessage }}</div>
+        <ul v-else>
           <li>
             <div class="workspace-item">
               <router-link to="/my/dashboard">
-                <img :src="user1" alt="user" />
+                <img :src="user1" alt="user"/>
                 <p>My Space</p>
               </router-link>
             </div>
-            <hr />
+            <hr/>
           </li>
-          <li v-for="(workspaceItem, index) in workspace" :key="index">
-            <div class="workspace-item">
-              <router-link
-                :to="'/workspace/' + workspaceItem.workspaceId + '/dashboard'"
-                @click="handleWorkspaceClick(workspaceItem)"
-              >
-                <img :src="setPersona(workspaceItem.avatar)" alt="workspace" />
-                <p>{{ workspaceItem.workspaceName }}</p>
-              </router-link>
+          <li v-for="(workspaceItem, index) in workspaceStore.workspace" :key="index">
+            <div class="workspace-item" @click="handleWorkspaceSelection(workspaceItem)">
+              <img width="30px" :src="setPersona(workspaceItem.avatar)" alt="workspace"/>
+              <p>{{ workspaceItem.workspaceName }}</p>
             </div>
           </li>
         </ul>
       </div>
       <div class="workspace-modal-footer">
-        <hr />
+        <hr/>
         <div>
           <router-link to="/my/create">
-            <img :src="plus" class="plus" alt="plus-btn" />
+            <img :src="plus" class="plus" alt="plus-btn"/>
             <p>Add Workspace</p>
           </router-link>
         </div>
@@ -144,6 +145,15 @@ ul {
       background-color: #c6d2fd;
       color: white;
     }
+    img {
+      width: 30px;
+      height: 30px;
+    }
+    p{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }
 
@@ -154,10 +164,7 @@ a {
   align-items: center;
   gap: 10px;
 
-  img {
-    width: 30px;
-    height: 30px;
-  }
+
 }
 
 .plus {

@@ -5,6 +5,7 @@ import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
 import ChatModal from '@/layouts/component/modal/ChatModal.vue';
 import AlarmModal from '@/layouts/component/modal/AlarmModal.vue';
 import WorkspaceModal from '@/layouts/component/modal/WorkspaceModal.vue';
+import chatbot from '@/assets/icon/menu/chatbot.svg';
 import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
@@ -78,7 +79,7 @@ const loginId = computed(() => {
       <div class="notice-bundle">
         <div>
           <router-link :to="`/chatbot/${userId}`">
-            챗봇
+            <img :src="chatbot" alt="chatbot" style="width: 27px; height: 27px">
           </router-link>
         </div>
         <div class="chat" @click="toggleChatModal">
@@ -166,7 +167,7 @@ img {
 .chat::after {
   content: '';
   position: absolute;
-  left: 20px;
+  right: 2.4rem;
   top: 3px;
   width: 10px;
   height: 10px;
