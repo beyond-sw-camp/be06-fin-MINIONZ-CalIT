@@ -46,10 +46,10 @@ public class ChatBotService {
         String webhookUrl;
         if (message.contains("회의록")) {
             // 회의록 요약에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook-test/calit-test2";
+            webhookUrl = "http://localhost:5678/webhook-test/calit-note";
         } else {
             // 일반 회의에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook-test/calit-test";
+            webhookUrl = "http://localhost:5678/webhook/calit-meeting";
         }
 
         try {

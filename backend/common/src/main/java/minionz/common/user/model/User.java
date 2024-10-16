@@ -44,9 +44,9 @@ public class User {
     private String providerId; // google 유저 고유 ID
     private Integer persona;
 
-    // ChatBot 1 : 1
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private ChatBot chatBot;
+    // ChatBot 1 : N
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ChatBot> chatBots = new ArrayList<>();
 
     // ChatParticipation 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

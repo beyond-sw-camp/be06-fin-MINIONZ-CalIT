@@ -39,10 +39,11 @@ public class ChatBotController {
     @PostMapping("/receiveFromN8n")
     public BaseResponse<String> receiveFromN8n(@RequestBody Map<String, String> requestData) {
         try {
+            System.out.println("POST 요청 받음: " + requestData);  // 디버깅용 로그
             String message = requestData.get("message");
-//            Long userId = Long.parseLong(requestData.get("userId"));
+            Long userId = Long.parseLong(requestData.get("userId"));
             Long botQuestionId = Long.parseLong(requestData.get("botQuestionId"));
-            Long userId = chatBotService.saveChatBotResponse(message, botQuestionId);
+            Long response_update = chatBotService.saveChatBotResponse(message, botQuestionId);
             messagingTemplate.convertAndSend("/subUser/" + userId, message);
             return new BaseResponse<>(BaseResponseStatus.CHATBOT_RESPONSE_SAVED);
         } catch (BaseException e) {
