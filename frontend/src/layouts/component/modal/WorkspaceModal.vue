@@ -1,4 +1,4 @@
-<<script setup>
+<script setup>
 import { onMounted, ref, watch } from 'vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
@@ -39,7 +39,7 @@ watch(
 
 const handleWorkspaceSelection = (workspaceItem) => {
   workspaceStore.setNowWorkspace(workspaceItem);
-  router.push({ path: '/workspace/dashboard', query: { wsId: workspaceItem.workspaceId } });
+  router.push(`/workspace/${workspaceItem.workspaceId}/dashboard`);
 };
 </script>
 

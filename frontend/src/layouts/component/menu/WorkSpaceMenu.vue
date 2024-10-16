@@ -1,14 +1,19 @@
 <script setup>
 import { useRoute } from 'vue-router';
+import { ref, watch } from "vue";
 
 const route = useRoute();
-const workspaceId = route.query.wsId;
+const workspaceId = ref(route.params.workspaceId);
+
+watch(() => route.params.workspaceId, (newId) => {
+  workspaceId.value = newId;
+});
 </script>
 
 <template>
   <ul>
     <li>
-      <router-link :to="{ path: '/workspace/dashboard', query: { wsId: workspaceId }}">
+      <router-link :to="`/workspace/${workspaceId}/dashboard`">
         <i class="icon-dashboard"/>
         <p class="outfit">Dashboard</p>
       </router-link>
