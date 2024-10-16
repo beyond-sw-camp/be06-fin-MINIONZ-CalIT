@@ -50,6 +50,8 @@ public class MeetingReminderBatchConfig {
         return meeting -> {
             LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
+            System.out.println("현재 시각: " + now);
+
             if (meeting.getStartDate().minusMinutes(10).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
                 List<Long> participants = meeting.getMeetingParticipations()
                         .stream()

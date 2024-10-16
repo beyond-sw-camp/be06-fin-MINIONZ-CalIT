@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SprintParticipationRepository extends JpaRepository<SprintParticipation, Long> {
     SprintParticipation findBySprintAndIsManager(Sprint sprint, Boolean isManager);
-    SprintParticipation findBySprintAndUser(Sprint sprint, User user);
+    SprintParticipation findBySprintAndUserAndIsManager(Sprint sprint, User user, Boolean isManager);
 }
