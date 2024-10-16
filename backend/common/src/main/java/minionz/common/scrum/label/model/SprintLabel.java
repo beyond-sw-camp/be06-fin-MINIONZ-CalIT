@@ -21,7 +21,7 @@ public class SprintLabel {
 
     private String labelName;
     private String description;
-    private String color;
+    private Integer color;
 
     // SprintLabel : SprintLabelSelect = 1 : N
     @OneToMany(mappedBy = "sprintLabel", fetch = FetchType.LAZY)

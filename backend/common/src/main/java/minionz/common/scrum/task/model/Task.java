@@ -26,7 +26,10 @@ public class Task extends BaseEntity {
     private Long taskId;
 
     public String taskTitle;
-    public String taskContents;
+
+    @Column(name = "task_contents", columnDefinition = "LONGTEXT")
+    private String taskContents;
+
     public LocalDateTime startDate;
     public LocalDateTime endDate;
     public LocalDateTime doneDate;
