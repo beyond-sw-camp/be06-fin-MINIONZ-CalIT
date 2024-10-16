@@ -26,8 +26,9 @@ public class Note {
     private Long noteId;
 
     @Convert(converter = ObjectToJsonConverter.class)
-    @Column(name = "note_contents", columnDefinition = "TEXT")
+    @Column(name = "note_contents", columnDefinition = "LONGTEXT")
     private Object noteContents;
+
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

@@ -8,5 +8,5 @@ import lombok.Getter;
 public class Label {
     private Long id;
     private String labelName;
-    private String color;
+    private Integer color;
 }

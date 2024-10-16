@@ -10,5 +10,5 @@ public class CreateMeetingLabelRequest {
     private Long workspaceId;
     private String labelName;
     private String description;
-    private String color;
+    private Integer color;
 }

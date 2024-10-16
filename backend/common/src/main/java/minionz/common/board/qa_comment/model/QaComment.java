@@ -23,6 +23,8 @@ public class QaComment {
     private Long qaCommentId;
 
     private String qaCommentTitle;
+
+    @Column(name = "qa_comment_content", columnDefinition = "LONGTEXT")
     private String qaCommentContent;
 
     @CreatedDate

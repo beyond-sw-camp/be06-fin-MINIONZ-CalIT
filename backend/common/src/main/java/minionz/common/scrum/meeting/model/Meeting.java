@@ -27,6 +27,8 @@ public class Meeting extends BaseEntity {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String meetingTitle;
+
+    @Column(name = "meeting_contents", columnDefinition = "LONGTEXT")
     private String meetingContents;
 
     // Meeting : MeetingParticipation = 1 : N
