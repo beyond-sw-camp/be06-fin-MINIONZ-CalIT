@@ -2,36 +2,35 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useChatMessageStore } from '@/stores/chat/useChatMessageStore';
 import Message from './ChatMessage.vue';
-import ObserverComponent from './ObserverComponent.vue'; // 옵저버 컴포넌트
 import space3 from '@/assets/icon/persona/space3.svg';
 import clip from '@/assets/icon/chatIcon/clip.svg';
 import send from '@/assets/icon/chatIcon/sendIcon.svg';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { useUserStore } from '@/stores/user/useUserStore';
-import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 
 const userStore = useUserStore();
-const userId = userStore.user.value.idx;
-const userName = userStore.user.value.userName;
+const userId = userStore.user.value?.idx;
+
+const chatroomId = 1; // 임시로 1로 설정
+const userName = userStore.user.value?.userName;
+const chatroom = chatroomId;
 
 const newMessage = ref('');
 const messages = ref([]);
 const stompClient = ref(null);
 const fileInput = ref(null);
 const selectedFile = ref(null);
-const isLoading = ref(false);
+// const isLoading = ref(false);
 const page = ref(0);
 const size = 20;
 
 const chatMessageStore = useChatMessageStore();
-const route = useRoute();
-const chatroomId = route.params.chatroomId;
 
 onMounted(async () => {
   const initialMessages = await chatMessageStore.fetchChatMessages(
-    chatroomId,
+    userId,
     page.value,
     size
   );
@@ -51,7 +50,7 @@ onMounted(async () => {
       console.log('Connected: ' + frame);
 
       stompClient.value.subscribe(
-        `/sub/room/${chatroomId}`,
+        `/sub/room/${chatroom}`,
         (messageOutput) => {
           const receivedMessage = JSON.parse(messageOutput.body);
           if (receivedMessage) {
@@ -74,30 +73,30 @@ onBeforeUnmount(() => {
 });
 
 // 무한 스크롤을 위한 추가 메시지 로드 함수
-const loadMoreMessages = async () => {
-  if (isLoading.value) return;
-  isLoading.value = true;
-
-  const chatContainer = document.querySelector('.chat-messages');
-  const previousScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
-
-  const additionalMessages = await chatMessageStore.fetchChatMessages(
-    chatroomId,
-    page.value,
-    size
-  );
-  if (additionalMessages && additionalMessages.length) {
-    messages.value = [...additionalMessages.reverse(), ...messages.value]; // 이전 메시지를 역순으로 추가
-    page.value += 1;
-
-    // 새로운 메시지를 추가한 후 스크롤 위치 유지 (이전 스크롤 위치로)
-    setTimeout(() => {
-      chatContainer.scrollTop =
-        chatContainer.scrollHeight - previousScrollHeight;
-    }, 0);
-  }
-  isLoading.value = false;
-};
+// const loadMoreMessages = async () => {
+//   if (isLoading.value) return;
+//   isLoading.value = true;
+//
+//   const chatContainer = document.querySelector('.chat-messages');
+//   const previousScrollHeight = chatContainer.scrollHeight; // 이전 스크롤 높이 저장
+//
+//   const additionalMessages = await chatMessageStore.fetchChatMessages(
+//     chatroomId,
+//     page.value,
+//     size
+//   );
+//   if (additionalMessages && additionalMessages.length) {
+//     messages.value = [...additionalMessages.reverse(), ...messages.value]; // 이전 메시지를 역순으로 추가
+//     page.value += 1;
+//
+//     // 새로운 메시지를 추가한 후 스크롤 위치 유지 (이전 스크롤 위치로)
+//     setTimeout(() => {
+//       chatContainer.scrollTop =
+//         chatContainer.scrollHeight - previousScrollHeight;
+//     }, 0);
+//   }
+//   isLoading.value = false;
+// };
 
 // 스크롤을 맨 아래로 이동시키는 함수
 const scrollToBottom = () => {
@@ -194,7 +193,6 @@ const triggerFileInput = () => {
     </div>
 
     <div class="chat-messages">
-      <ObserverComponent :callback="loadMoreMessages" :isLoading="isLoading" />
       <div class="chat-msg-container">
         <Message
           v-for="(message, index) in messages"

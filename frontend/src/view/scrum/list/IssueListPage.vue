@@ -3,7 +3,7 @@ import {computed, inject, onMounted, ref} from 'vue';
 import {useIssueStore} from "@/stores/scrum/useIssueStore";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import ScrumList from "@/common/component/Board/ScrumList.vue";
+import IssueListComponent from "@/view/scrum/list/component/IssueListComponent.vue";
 import {useRoute} from "vue-router";
 
 const issueStore = useIssueStore();
@@ -43,15 +43,8 @@ onMounted(() => {
 <template>
   <div class="board-list-container">
     <div v-if="issueStore.issues && issueStore.issues.length > 0">
-      <SearchComponent/>
-      <ScrumList
-          :items="issueStore.issues"
-          firstColumn="스프린트 명"
-          secondColumn="label"
-          thirdColumn="status"
-          fourthColumn="priority"
-          fifthColumn="taskNumber"
-          board-type="issue"/>
+      <SearchComponent :link="`/workspace/${workspaceId}/scrum/issue/create`"/>
+      <IssueListComponent :items="issueStore.issues"/>
       <Pagination
           :currentPage="currentPage"
           :totalPages="totalPages"

@@ -1,18 +1,18 @@
 <script setup>
-import {computed, ref, watchEffect} from 'vue';
-import {useRoute} from "vue-router";
-import {useUserStore} from '@/stores/user/useUserStore';
-// import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { computed, ref, watchEffect } from 'vue';
+import { useRoute } from "vue-router";
+import { useUserStore } from '@/stores/user/useUserStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 const route = useRoute();
+// const workspaceId = route.params.workspaceId;
 const isPersonalMenu = computed(() => route.path.startsWith('/my'));
 
-const workspaceName = ref('Workspace');
+const workspaceName = ref('');
 
 watchEffect(async () => {
   if (isPersonalMenu.value) {
@@ -20,9 +20,10 @@ watchEffect(async () => {
   } else {
     try {
       const response = await axiosInstance.get(`/api/workspace/my/all`);
-      workspaceName.value = response.data.workspaceName || 'Workspace';
+      const currentWorkspace = response.data.result;
+      workspaceName.value = currentWorkspace[0].workspaceName;
+      console.log(currentWorkspace[0]);
     } catch (error) {
-      console.error('Failed to fetch workspace name', error);
       workspaceName.value = 'Workspace';
     }
   }

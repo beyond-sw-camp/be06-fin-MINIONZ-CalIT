@@ -4,6 +4,7 @@ import { useFriendsStore } from '@/stores/user/useFriendsStore';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { Notyf } from 'notyf';
 import { useRouter } from 'vue-router';
+import { setPersona } from '@/utils/personaUtils';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -102,10 +103,7 @@ const addWorkspace = async ({ workspaceName, participants }) => {
                   display: flex;
                 "
               >
-                <img
-                  :src="
-                    require(`@/assets/icon/persona/space${user.persona}.svg`)
-                  "
+                <img :src="setPersona(user.persona)"
                   alt="persona"
                   style="width: 30px; height: 30px; margin-right: 20px"
                 />

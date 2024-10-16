@@ -41,6 +41,11 @@ const routes = [
                 }
             },
             {
+                path: 'social-redirection',
+                name: 'SocialRedirection',
+                component: () => import('@/view/user/pages/SocialRedirectionPage.vue'),
+            },
+            {
                 path: 'signup',
                 name: 'Signup',
                 component: SignupPage
@@ -311,6 +316,12 @@ const routes = [
                 path: 'chat/:chatroomId',
                 name: 'ChatRoom',
                 component: () => import('@/view/chat/ChatRoomPage.vue')
+            },
+            {
+                path: 'chatbot/:userId',
+                name: 'ChatBot',
+                component: () => import('@/view/chatbot/ChatBotPage.vue'),
+                meta: { requiresAuth: true },
             }
         ]
     },

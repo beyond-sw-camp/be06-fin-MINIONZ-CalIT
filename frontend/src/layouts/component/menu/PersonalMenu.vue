@@ -16,6 +16,20 @@
         <i class="icon-schedule"/>
         <p class="outfit">Schedule</p>
       </router-link>
+      <ul class="submenu">
+        <li>
+          <router-link to="/my/schedule/monthly">
+            <i class="icon-monthly"/>
+            <p class="outfit">Monthly</p>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/my/schedule/weekly">
+            <i class="icon-weekly"/>
+            <p class="outfit">Weekly</p>
+          </router-link>
+        </li>
+      </ul>
     </li>
     <hr>
     <li>
@@ -57,6 +71,9 @@ ul{
     }
   }
 }
+.submenu {
+  padding-left: 1.25rem;
+}
 p{
   margin: 0;
   font-size: 1rem;
@@ -71,6 +88,12 @@ hr{
 }
 .icon-schedule{
   background-image: url("@/assets/icon/menu/schedule.svg");
+}
+.icon-monthly {
+  background-image: url("@/assets/icon/menu/monthly.svg");
+}
+.icon-weekly{
+  background-image: url("@/assets/icon/menu/weekly.svg");
 }
 .icon-task{
   background-image: url("@/assets/icon/menu/task.svg");

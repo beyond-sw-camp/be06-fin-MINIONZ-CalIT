@@ -22,10 +22,14 @@ const formatFileSize = (size) => {
   return parseFloat((size / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
+// 파일 목록 가져오기
 const fetchFiles = async () => {
-  const chatMessages = await chatMessageStore.fetchChatMessages(chatroomId);
-  if (chatMessages) {
-    files.value = chatMessages.filter((message) => message.messageType === 'FILE').map((message) => message.file);
+  if(!chatroomId){
+    return;
+  }
+  const fileMessages = await chatMessageStore.fetchFileMessages(chatroomId);
+  if (fileMessages) {
+    files.value = fileMessages;
   }
 };
 
@@ -52,21 +56,25 @@ const getFileIcon = (fileType) => {
 <template>
   <div class="file-list-container">
     <div class="file-header">
-      <p>Files <span class="badge">{{ files.length }}</span></p>
+      <p>
+        Files <span class="badge">{{ files.length }}</span>
+      </p>
     </div>
     <div class="file-list">
       <div class="file-item" v-for="(file, index) in files" :key="index">
         <div class="file-info">
           <div class="file-icon">
-            <img :src="getFileIcon(file.fileType)" alt="file icon"/>
+            <img :src="getFileIcon(file.fileType)" alt="file icon" />
           </div>
           <div class="file-details">
             <span class="file-name">{{ file.fileName }}</span>
-            <span class="file-type">{{ file.fileType }} · {{ formatFileSize(file.fileSize) }}</span>
+            <span class="file-type"
+              >{{ file.fileType }} · {{ formatFileSize(file.fileSize) }}</span
+            >
           </div>
         </div>
         <a :href="file.fileUrl" target="_blank" class="download-button">
-          <img :src="downloadIcon" alt="download icon"/>
+          <img :src="downloadIcon" alt="download icon" />
         </a>
       </div>
     </div>
@@ -92,7 +100,7 @@ const getFileIcon = (fileType) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  background-color: #FFF;
+  background-color: #fff;
   position: sticky;
   top: 0;
   height: 60px;
@@ -105,7 +113,7 @@ const getFileIcon = (fileType) => {
 }
 
 .file-header span {
-  background-color: #EDF2F7;
+  background-color: #edf2f7;
   font-size: 12px;
   padding: 8px 12px;
   border-radius: 24px;
