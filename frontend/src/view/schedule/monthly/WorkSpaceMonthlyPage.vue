@@ -1,10 +1,11 @@
 <script setup>
-import { inject, ref } from 'vue';
+import {inject, onMounted, ref, watch} from 'vue';
 import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
 import MonthlyComponent from '@/view/schedule/monthly/component/MonthlyComponent.vue';
 import { useRoute } from 'vue-router';
 import { monthlySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { useCalendar } from '@/utils/calendarUtils';
+import {useWorkspaceStore} from "@/stores/workspace/useWorkspaceStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -15,14 +16,15 @@ contentsDescription.value = '워크스페이스의 이달 일정을 살펴보세
 const dashboardStore = useWorkspaceDashboardStore();
 
 const route = useRoute();
-const workspaceId = route.params.workspaceId;
+const workspaceStore = useWorkspaceStore();
+const { setWorkspaceId } = workspaceStore;
 
 const { prevMonth, nextMonth } = useCalendar();
 const { startDate, endDate } = monthlySettingUtils();
 const currentStartDate = ref(startDate);
 const currentEndDate = ref(endDate);
 
-const fetchWorkspaceMonthlyData = async () => {
+const fetchWorkspaceMonthlyData = async (workspaceId) => {
   await dashboardStore.getWorkspaceMonthly({
     workspaceId,
     startDate: currentStartDate.value,
@@ -44,7 +46,17 @@ const handleNextMonth = async () => {
   await fetchWorkspaceMonthlyData();
 };
 
-fetchWorkspaceMonthlyData();
+watch(() => route.query.wsId, (newId) => {
+  setWorkspaceId(newId);
+  fetchWorkspaceMonthlyData(newId);
+});
+
+onMounted(() => {
+  if (route.query.wsId) {
+    setWorkspaceId(route.query.wsId);
+    fetchWorkspaceMonthlyData(route.query.wsId);
+  }
+});
 </script>
 
 <template>

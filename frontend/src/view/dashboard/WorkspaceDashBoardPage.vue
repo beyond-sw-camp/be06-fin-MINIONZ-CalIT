@@ -1,14 +1,14 @@
 <script setup>
-import { inject, onMounted, ref, watch } from 'vue';
+import {inject, onMounted, ref, watch} from 'vue';
 import WorkspaceTaskOverview from '@/view/dashboard/component/WorkspaceTaskOverview.vue';
 import MeetingList from '@/view/dashboard/component/MeetingList.vue';
 import BurndownChart from '@/view/dashboard/component/BurndownChart.vue';
-import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
-import { useRoute } from 'vue-router';
+import {useWorkspaceDashboardStore} from '@/stores/workspace/useWorkspaceDashboardStore';
+import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
+import {useRoute} from 'vue-router';
 
 const route = useRoute();
-const workspaceStore = useWorkspaceStore(); // 워크스페이스 스토어 사용
+const workspaceStore = useWorkspaceStore();
 const dashboardStore = useWorkspaceDashboardStore();
 
 const contentsTitle = inject('contentsTitle');
@@ -18,7 +18,7 @@ contentsDescription.value = '워크스페이스의 대시보드를 살펴보세�
 
 const dashboard = ref(null);
 
-watch(() => route.params.workspaceId, (newId) => {
+watch(() => route.query.wsId, (newId) => {
   workspaceStore.setWorkspaceId(newId);
   fetchDashboardData(newId);
 });
@@ -36,9 +36,9 @@ const fetchDashboardData = async (workspaceId) => {
 };
 
 onMounted(() => {
-  if (route.params.workspaceId) {
-    workspaceStore.setWorkspaceId(route.params.workspaceId);
-    fetchDashboardData(route.params.workspaceId);
+  if (route.query.wsId) {
+    workspaceStore.setWorkspaceId(route.query.wsId);
+    fetchDashboardData(route.query.wsId);
   }
 });
 </script>
@@ -59,7 +59,7 @@ onMounted(() => {
           :total-tasks="dashboard.progress.allTaskCount"
           :issue-count="dashboard.progress.issueCount"
       />
-      <BurndownChart />
+      <BurndownChart/>
       <MeetingList
           v-if="dashboard.upcomingMeetings"
           :meetings="dashboard.upcomingMeetings"
@@ -67,7 +67,7 @@ onMounted(() => {
     </div>
     <div v-else class="initial-wrap">
       <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceStore.workspaceId}/scrum/sprint/create`">
+      <router-link :to="`/workspace/scrum/sprint/create?wsId=${workspaceStore.workspaceId}`">
         스프린트 추가하기
       </router-link>
     </div>

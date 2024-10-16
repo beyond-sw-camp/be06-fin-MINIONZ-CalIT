@@ -5,8 +5,7 @@ import SignupPage from "@/view/user/pages/SignupPage.vue";
 import PasswordPage from "@/view/user/pages/PasswordPage.vue";
 import CompletePage from "@/view/user/pages/CompletePage.vue";
 import SocialLoginSuccessPage from "@/view/user/pages/SocialLoginSuccessPage.vue";
-// import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 const routes = [
     {
@@ -14,14 +13,11 @@ const routes = [
         name: 'Thumbnail',
         component: () => import('@/view/thumbnail/ThumbnailPage.vue')
     },
-
     {
         path: '/social/login/success',
         name: 'SocialLoginSuccess',
         component: SocialLoginSuccessPage,
     },
-
-    // user
     {
         path: '/user',
         name: 'UserTemplate',
@@ -67,8 +63,6 @@ const routes = [
             }
         ]
     },
-
-    // my
     {
         path: '/my',
         name: 'My',
@@ -125,21 +119,18 @@ const routes = [
             }
         ]
     },
-
-    // dashboard
     {
-        path: '/workspace/:workspaceId',
+        path: '/workspace',
         name: 'Workspace',
         component: () => import('@/layouts/ContentsArea.vue'),
         meta: { requiresAuth: true },
         children: [
-            // dashboard
             {
                 path: 'dashboard',
                 name: 'WorkspaceDashboard',
-                component: () => import('@/view/dashboard/WorkspaceDashBoardPage.vue')
+                component: () => import('@/view/dashboard/WorkspaceDashBoardPage.vue'),
+                props: (route) => ({ workspaceId: route.query.wsId }),
             },
-            // schedule
             {
                 path: 'schedule',
                 name: 'WorkspaceSchedule',
@@ -147,17 +138,17 @@ const routes = [
                     {
                         path: 'monthly',
                         name: 'WorkspaceMonthly',
-                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthlyPage.vue')
+                        component: () => import('@/view/schedule/monthly/WorkSpaceMonthlyPage.vue'),
+                        props: (route) => ({ workspaceId: route.query.wsId }),
                     },
                     {
                         path: 'weekly',
                         name: 'WorkspaceWeekly',
-                        component: () => import('@/view/schedule/weekly/WorkSpaceWeeklyPage.vue')
+                        component: () => import('@/view/schedule/weekly/WorkSpaceWeeklyPage.vue'),
+                        props: (route) => ({ workspaceId: route.query.wsId }),
                     }
                 ]
             },
-
-            // scrum
             {
                 path: 'scrum',
                 name: 'WorkspaceScrum',
@@ -234,7 +225,7 @@ const routes = [
                                 name: 'WorkspaceIssueCreate',
                                 component: () => import('@/view/scrum/create/IssueCreatePage.vue')
                             }
-                            ]
+                        ]
                     },
                     {
                         path: 'meeting',
@@ -332,7 +323,6 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    // const workspaceStore = useWorkspaceStore();
     const isAuthenticated = !!sessionStorage.getItem('userInfo');
 
     const proceed = () => {
@@ -342,8 +332,8 @@ router.beforeEach(async (to, from, next) => {
                     path: '/user/login',
                     query: {}
                 };
-                if (to.params.workspaceId) {
-                    loginRoute.query.workspaceId = to.params.workspaceId;
+                if (to.query.wsId) {
+                    loginRoute.query.wsId = to.query.wsId;
                 }
                 next(loginRoute);
             } else {
@@ -354,7 +344,7 @@ router.beforeEach(async (to, from, next) => {
         }
     };
 
-    if (to.params.workspaceId) {
+    if (to.query.wsId) {
         try {
             const response = await axiosInstance.get(`/api/workspace/my/all`);
             if (response.data && response.data.result) proceed();
