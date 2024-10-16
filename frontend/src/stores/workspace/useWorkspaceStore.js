@@ -12,13 +12,11 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
   // POST 워크스페이스 생성 /api/workspaces
   const addWorkspace = async ({ workspaceName, participants, avatar }) => {
     try {
-      console.log('Sending request to API with:', { workspaceName, participants, avatar });
       const response = await axiosInstance.post('/api/workspace', {
         workspaceName,
         participants,
         avatar,
       });
-      console.log('API response:', response.data);
       workspace.value = response.data.result;
       return response.data;
     } catch (error) {
@@ -29,6 +27,9 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
 
   // GET 워크스페이스 리스트 조회 /api/workspaces/all
   const getAllWorkspace = async () => {
+    if (workspace.value.length > 0) {
+      return workspace.value; // 이미 로드된 경우, 중복 호출 방지
+    }
     try {
       const response = await axiosInstance.get('/api/workspace/my/all', {
         withCredentials: true,
@@ -41,7 +42,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     }
   };
 
-  // PATCH 워크스페이스 수정 api/workspace/:id
+  // PATCH 워크스페이스 수정 /api/workspace/:id
   const updateWorkspace = async ({ workspaceId, workspaceName, participants }) => {
     try {
       const response = await axiosInstance.patch(`/api/workspace/${workspaceId}`, {
@@ -50,19 +51,20 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         participants,
       });
       workspace.value = response.data.result;
-      return response.data.result; // 수정된 데이터 반환
+      return response.data.result;
     } catch (error) {
       console.error('Failed to update workspace', error);
       throw error;
     }
   };
 
-  // DELETE 워크스페이스 삭제 api/workspace/:id
+  // DELETE 워크스페이스 삭제 /api/workspace/:id
   const deleteWorkspace = async (workspaceId) => {
     try {
       const response = await axiosInstance.delete(`/api/workspace/${workspaceId}`);
       workspace.value = response.data.result;
 
+      // 선택한 워크스페이스가 삭제되었을 때 상태 초기화
       if (workspaceId === nowWorkspace.value?.workspaceId) {
         nowWorkspace.value = null;
         workspaceId.value = null;
@@ -76,16 +78,14 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     }
   };
 
-  // 라우터에서 받은 워크스페이스 ID 설정 (API 아님)
-  const setWorkspaceId = async (id) => {
-    if (!workspace.value.length) {
-      await getAllWorkspace();
-    }
-    workspaceId.value = id;
+  // 라우터에서 받은 워크스페이스 ID 설정
+  const setWorkspaceId = (id) => {
     const selectedWorkspace = workspace.value.find((ws) => ws.workspaceId === id);
     if (selectedWorkspace) {
+      workspaceId.value = id;
       workspaceName.value = selectedWorkspace.workspaceName;
     } else {
+      workspaceId.value = null;
       workspaceName.value = '';
     }
   };

@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted, defineEmits, defineProps } from 'vue';
+import { ref, onMounted, defineEmits, defineProps, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { useCalendar } from '@/utils/calendarUtils';
 import { formatUtil } from '@/utils/scheduleDateFnsUtils';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 
 const emit = defineEmits(['prevMonth', 'nextMonth']);
 
@@ -23,17 +24,14 @@ onMounted(() => {
   if (container) {
     new PerfectScrollbar(container);
   }
-
 });
 
 const route = useRoute();
+const workspaceStore = useWorkspaceStore();
 const workspaceId = route.params.workspaceId;
-
-const isVisible = ref(false);
-
-const show = () => {
-  isVisible.value = true;
-};
+watch(() => route.params.workspaceId, (newId) => {
+  workspaceStore.setWorkspaceId(newId);
+});
 
 const {
   currentYear,
@@ -44,7 +42,13 @@ const {
   goToToday,
 } = useCalendar();
 
+const isVisible = ref(false);
 
+const show = () => {
+  isVisible.value = true;
+};
+
+// 회의 데이터를 필터링하여 특정 날짜의 회의 가져오기
 const meetingsForDay = (day) => {
   return props.meetingData?.filter(
       (meeting) => {
@@ -58,6 +62,7 @@ const meetingsForDay = (day) => {
   ) || [];
 };
 
+// 스프린트 데이터를 필터링하여 특정 날짜의 스프린트 가져오기
 const sprintsForDay = (day) => {
   return props.sprintData?.filter(sprint => {
     const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
@@ -74,10 +79,12 @@ const sprintsForDay = (day) => {
   }) || [];
 };
 
+// 이전 달로 이동
 const handlePrevMonth = () => {
   emit('prevMonth');
 };
 
+// 다음 달로 이동
 const handleNextMonth = () => {
   emit('nextMonth');
 };
