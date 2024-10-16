@@ -27,7 +27,6 @@ onMounted(async () => {
   }
 });
 
-// 워크스페이스 선택 시 처리
 const handleWorkspaceSelection = (workspaceItem) => {
   workspaceStore.setNowWorkspace(workspaceItem);
   router.push(`/workspace/${workspaceItem.workspaceId}/dashboard`);
