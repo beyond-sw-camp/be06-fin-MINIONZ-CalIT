@@ -81,6 +81,11 @@ const routes = [
                 component: () => import('@/view/scrum/create/WorkSpaceCreatePage.vue')
             },
             {
+                path: 'chatbot/:userId',
+                name: 'Chatbot',
+                component: () => import('@/view/chatbot/ChatBotPage.vue')
+            },
+            {
                 path: 'dashboard',
                 name: 'MyDashboard',
                 component: () => import('@/view/dashboard/MyDashBoardPage.vue')
@@ -317,14 +322,8 @@ const routes = [
                 name: 'ChatRoom',
                 component: () => import('@/view/chat/ChatRoomPage.vue')
             },
-            {
-                path: 'chatbot/:userId',
-                name: 'ChatBot',
-                component: () => import('@/view/chatbot/ChatBotPage.vue'),
-                meta: { requiresAuth: true },
-            }
         ]
-    },
+    }
 ];
 
 const router = createRouter({
