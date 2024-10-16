@@ -7,12 +7,14 @@ import minionz.apiserver.board.error_board.model.response.GetErrorBoardImageResp
 import minionz.apiserver.board.error_board.model.response.GetErrorBoardResponse;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
-import minionz.apiserver.scrum.workspace.WorkspaceRepository;
+import minionz.common.board.error_board.ErrorBoardImageRepository;
+import minionz.common.board.error_board.ErrorBoardRepository;
 import minionz.common.board.error_board.model.ErrorBoard;
 import minionz.common.board.error_board.model.ErrorBoardCategory;
 import minionz.common.board.error_board.model.ErrorBoardImage;
 import minionz.common.scrum.task.TaskRepository;
 import minionz.common.scrum.task.model.Task;
+import minionz.common.scrum.workspace.WorkspaceRepository;
 import minionz.common.scrum.workspace.model.Workspace;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;

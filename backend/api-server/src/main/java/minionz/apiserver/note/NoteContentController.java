@@ -17,7 +17,7 @@ public class NoteContentController {
     private final NoteProducer noteProducer;
 
     @MessageMapping("/edit/{meetingId}")
-    @SendTo("/topic/note")
+    @SendTo("/topic/note/{meetingId}")
     public Note editNote(Note note, @DestinationVariable Long meetingId) throws BaseException {
         // Note 내용을 업데이트
         noteService.updateNote(meetingId, note.getNoteContents().toString());

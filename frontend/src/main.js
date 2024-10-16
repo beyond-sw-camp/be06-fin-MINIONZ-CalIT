@@ -12,6 +12,7 @@ import vuetify from './plugins/vuetify';
 
 const app = createApp(App);
 const pinia = createPinia();
+<<<<<<< HEAD
 //
 // const notyf = new Notyf()
 // const userStore = useUserStore();
@@ -39,6 +40,35 @@ const pinia = createPinia();
 // }
 //
 // connectEventSource();
+=======
+
+const notyf = new Notyf()
+const userStore = useUserStore();
+const userId = userStore.user.value?.idx;
+let eventSource;
+function connectEventSource() {
+    if (eventSource) {
+        eventSource.close(); // 기존 연결 종료
+    }
+
+    eventSource = new EventSource(`https://calit.kro.kr/api/alarm/connect/${userId}`);
+
+    eventSource.onmessage = (event) => {
+        console.log('New message:', event.data);
+        console.log('메세지가 도착했어요!');
+        const data = JSON.parse(event.data);
+        notyf.success(data.AlarmContents);
+    };
+
+    eventSource.onerror = () => {
+        console.error('SSE 연결이 끊어졌습니다. 재연결 시도 중...');
+        eventSource.close(); // 현재 연결 종료
+        setTimeout(connectEventSource, 1000); // 1초 후 재연결 시도
+    };
+}
+
+connectEventSource();
+>>>>>>> c5aaae2814e315dbaa3f1786bd6df3975dbe6dc9
 
 router.onError((error) => {
     console.error('Router error:', error);

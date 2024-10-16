@@ -1,6 +1,8 @@
 package minionz.common.scrum.meeting;
 
 import minionz.common.scrum.meeting.model.Meeting;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -24,5 +26,5 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "AND m.startDate >= :startDate")
     List<Meeting> findMyMeetingsInPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<Meeting> findMeetingByStartDateAfter(LocalDateTime startDate);
+    Page<Meeting> findMeetingByStartDateAfter(LocalDateTime startDate, Pageable pageable);
 }

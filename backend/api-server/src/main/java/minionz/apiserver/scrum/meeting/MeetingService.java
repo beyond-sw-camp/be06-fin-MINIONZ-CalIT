@@ -7,7 +7,7 @@ import minionz.apiserver.scrum.meeting.model.request.CreateMeetingRequest;
 import minionz.apiserver.scrum.meeting.model.response.CreateMeetingResponse;
 import minionz.apiserver.scrum.meeting.model.response.ReadAllMeetingResponse;
 import minionz.apiserver.scrum.meeting.model.response.ReadMeetingResponse;
-import minionz.apiserver.scrum.meeting_participation.MeetingParticipationRepository;
+import minionz.common.scrum.meeting_participation.MeetingParticipationRepository;
 import minionz.common.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.apiserver.scrum.sprint.model.response.Label;
 import minionz.apiserver.scrum.sprint.model.response.Participant;

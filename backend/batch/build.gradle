@@ -1,9 +1,8 @@
 plugins {
-
 }
 
-
 dependencies {
+    implementation project(':common')
     //batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
 }

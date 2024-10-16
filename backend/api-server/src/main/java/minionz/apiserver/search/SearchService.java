@@ -2,6 +2,7 @@ package minionz.apiserver.search;
 
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.search.model.response.SearchUserResponse;
+import minionz.common.search.SearchRepository;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class SearchService {
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
                 .map(user -> searchUserResponse.builder()
+                        .persona(user.getPersona())
                         .searchUserIdx(user.getUserId())
                         .loginId(user.getLoginId())
                         .userName(user.getUserName())
@@ -51,7 +53,6 @@ public class SearchService {
                         .userName(user.getUserName())
                         .loginId(user.getLoginId())
                         .email(user.getEmail())
-                        .persona(user.getPersona())
                         .build())
                 .collect(Collectors.toList());
     }

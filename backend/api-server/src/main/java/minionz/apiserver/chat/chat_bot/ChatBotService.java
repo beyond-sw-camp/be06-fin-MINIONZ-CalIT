@@ -1,94 +1,78 @@
 package minionz.apiserver.chat.chat_bot;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import minionz.apiserver.chat.chat_bot.model.request.ChatBotRequest;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
+import minionz.common.chat.chat_bot.ChatBotRepository;
 import minionz.common.chat.chat_bot.model.ChatBot;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
 public class ChatBotService {
 
-    private final WebClient.Builder webClientBuilder;
-    private final UserRepository userRepository;
     private final ChatBotRepository chatBotRepository;
-    private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${gemini.api-key}")
-    private String apiKey;
-
-    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
-
-    // GPT에 질문을 보내고, 응답을 저장하는 메서드
-    public Mono<String> askAi(String question, Long userId) {
-        // User 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
-
-        // 원래 DB에서 뭘 읽어와서 하려고 했는데 DB에서 읽어온 데이터를 형식으로 넣어주기?
-
-        String requestBody = """
-                {
-                  "contents": [
-                    {
-                      "parts": [
-                        {
-                          "text": "%s"
-                        }
-                      ]
-                    }
-                  ]
-                }
-                """.formatted(question);
-
-        return webClientBuilder.build()
-                .post()
-                .uri(GEMINI_API_URL + "?key=" + apiKey)  // Append API key to the URL
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(response -> {
-                    // JSON에서 "text" 값 추출
-                    String responseText = extractTextFromResponse(response);
-                    // ChatBot 대화 저장
-                    saveChatBotConversation(question, responseText, user);
-                    return responseText;
-                });
-    }
-
-    // JSON 응답에서 "text" 값만 추출하는 메서드
-    private String extractTextFromResponse(String response) {
+    // 사용자 메시지를 DB에 저장
+    public Long saveUserMessage(ChatBotRequest request) {
         try {
-            JsonNode root = objectMapper.readTree(response);
-            return root.path("candidates").get(0)
-                    .path("content").path("parts").get(0)
-                    .path("text").asText();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to parse response", e);
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new BaseException(BaseResponseStatus.CHATBOT_USER_NOT_FOUND));
+
+            ChatBot chatBotMessage = ChatBot.builder()
+                    .question(request.getMessageContents())  // 사용자 메시지 저장
+                    .user(user)
+                    .build();
+
+            chatBotMessage = chatBotRepository.save(chatBotMessage);
+            return chatBotMessage.getBotQuestionId();
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.CHATBOT_DATABASE_ERROR);
         }
     }
 
-    // ChatBot 대화를 저장
-    private void saveChatBotConversation(String question, String response, User user) {
-        ChatBot chatBot = ChatBot.builder()
-                .user(user)
-                .question(question)
-                .response(response)
-                .timestamp(LocalDateTime.now())
-                .build();
-        chatBotRepository.save(chatBot);
+    // n8n으로 메시지를 전송하고 응답 받기
+    public String sendMessageToN8n(Long botQuestionId, String message, Long userId) {
+        String webhookUrl;
+        if (message.contains("회의록")) {
+            // 회의록 요약에 대한 요청
+            webhookUrl = "http://localhost:5678/webhook-test/calit-test2";
+        } else {
+            // 일반 회의에 대한 요청
+            webhookUrl = "http://localhost:5678/webhook-test/calit-test";
+        }
+
+        try {
+            Map<String, String> jsonMap = new HashMap<>();
+            jsonMap.put("message", message);
+            jsonMap.put("userId", String.valueOf(userId));
+            jsonMap.put("botQuestionId", String.valueOf(botQuestionId));
+            // n8n로 post -> webhook 동작
+            return restTemplate.postForObject(webhookUrl, jsonMap, String.class);
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.CHATBOT_EXTERNAL_API_ERROR);
+        }
+    }
+
+    // 챗봇 응답을 DB에 저장
+    public Long saveChatBotResponse(String message, Long botQuestionId) {
+        try {
+            ChatBot chatBotResponse = chatBotRepository.findById(botQuestionId).orElseThrow();
+            chatBotResponse.setResponse(message);
+            chatBotRepository.save(chatBotResponse);
+            return chatBotResponse.getUser().getUserId();
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.CHATBOT_DATABASE_ERROR);
+        }
     }
 }
-

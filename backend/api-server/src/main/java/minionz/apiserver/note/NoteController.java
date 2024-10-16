@@ -20,6 +20,7 @@ public class NoteController {
 
   private final NoteService noteService;
 
+
   @GetMapping("/search")
   public BaseResponse<GetNoteResponse> searchNote(@RequestParam Long noteId) throws BaseException {
     GetNoteResponse response = noteService.readNote(noteId);
@@ -27,7 +28,7 @@ public class NoteController {
   }
 
   @GetMapping("/search-all")
-  public BaseResponse<Page<GetNoteAllResponse>> readAllErrorBoard(
+  public BaseResponse<Page<GetNoteAllResponse>> readAllNote(
 
           @RequestParam int page,
           @RequestParam int size) throws BaseException {

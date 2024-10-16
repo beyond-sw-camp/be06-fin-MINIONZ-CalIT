@@ -3,31 +3,62 @@ package minionz.apiserver.note;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import minionz.common.note.model.NoteMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
 
 @Service
 public class NoteConsumer {
 
-    private final ObjectMapper objectMapper;
-    private final SimpMessagingTemplate messagingTemplate;
+    @Value("${spring.kafka.producer.bootstrap-servers}")
+    private String kafkaBroker;
 
-    public NoteConsumer(ObjectMapper objectMapper, SimpMessagingTemplate messagingTemplate) {
-        this.objectMapper = objectMapper;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
+
+    public NoteConsumer(KafkaTemplate<String, String> kafkaTemplate, SimpMessagingTemplate messagingTemplate, ObjectMapper objectMapper) {
+        this.kafkaTemplate = kafkaTemplate;
         this.messagingTemplate = messagingTemplate;
+        this.objectMapper = objectMapper;
     }
 
-    @KafkaListener(topics = "note-topic")
-    public void consumeNoteMessage(ConsumerRecord<String, String> record) {
-        try {
-            NoteMessage noteMessage = objectMapper.readValue(record.value(), NoteMessage.class);
-            // WebSocket으로 클라이언트에게 메시지 전송
-            messagingTemplate.convertAndSend("/topic/note/" + noteMessage.getNoteId(), noteMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    public void consumeNoteById(Long noteId) {
+        String topicName = "note-topic-" + noteId;
+
+        // 수동으로 컨슈머 생성 및 구독
+        Properties props = new Properties();
+        props.put("bootstrap.servers", kafkaBroker);
+        props.put("group.id", "note-consumer-group");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Collections.singletonList(topicName));
+
+        // 메시지 수신 후 WebSocket으로 전송
+        new Thread(() -> {
+            while (true) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+                for (ConsumerRecord<String, String> record : records) {
+                    try {
+                        NoteMessage noteMessage = objectMapper.readValue(record.value(), NoteMessage.class);
+                        messagingTemplate.convertAndSend("/topic/note/" + noteId, noteMessage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 }
+

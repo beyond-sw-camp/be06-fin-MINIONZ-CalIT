@@ -1,11 +1,11 @@
 package minionz.apiserver.scrum.schedule;
 
 import lombok.RequiredArgsConstructor;
-import minionz.apiserver.scrum.issue.IssueRepository;
 import minionz.apiserver.scrum.schedule.request.ReadScheduleRequest;
 import minionz.apiserver.scrum.schedule.response.*;
 import minionz.apiserver.scrum.sprint.model.response.Label;
 import minionz.apiserver.scrum.sprint.model.response.Participant;
+import minionz.common.scrum.issue.IssueRepository;
 import minionz.common.scrum.issue.model.Issue;
 import minionz.common.scrum.meeting.MeetingRepository;
 import minionz.common.scrum.meeting.model.Meeting;
