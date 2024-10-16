@@ -2,17 +2,17 @@ package minionz.apiserver.chat.chat_bot;
 
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.chat.chat_bot.model.request.ChatBotRequest;
+import minionz.apiserver.chat.chat_bot.model.response.ReadChatBotResponse;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponse;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -50,6 +50,16 @@ public class ChatBotController {
 
             messagingTemplate.convertAndSend("/subUser/" + res_userId, response);
             return new BaseResponse<>(BaseResponseStatus.CHATBOT_RESPONSE_SAVED);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/botMessage/{userId}")
+    public BaseResponse<List<ReadChatBotResponse>> getChatHistory(@PathVariable Long userId) {
+        try {
+            List<ReadChatBotResponse> response = chatBotService.getChatHistory(userId);
+            return new BaseResponse<>(BaseResponseStatus.CHATBOT_LIST_SUCCESS, response);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
