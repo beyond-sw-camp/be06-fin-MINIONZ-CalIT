@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/stores/user/useUserStore';
 import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import ChatModal from '@/layouts/component/modal/ChatModal.vue';
 import AlarmModal from '@/layouts/component/modal/AlarmModal.vue';
 import WorkspaceModal from '@/layouts/component/modal/WorkspaceModal.vue';
@@ -60,6 +61,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
+const workspaceId = useWorkspaceStore().workspaceId;
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 
@@ -78,7 +80,7 @@ const loginId = computed(() => {
     <div class="right-side">
       <div class="notice-bundle">
         <div>
-          <router-link :to="`/chatbot/${userId}`">
+          <router-link :to="`/workspace/${workspaceId}/chatbot/${userId}`">
             <img :src="chatbot" alt="chatbot" style="width: 27px; height: 27px">
           </router-link>
         </div>
