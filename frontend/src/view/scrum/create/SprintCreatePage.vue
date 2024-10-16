@@ -10,6 +10,7 @@ import { useField, useForm } from 'vee-validate';
 import { Notyf } from 'notyf';
 import * as yup from 'yup';
 import router from "@/router";
+import Multiselect from 'vue-multiselect';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -136,12 +137,16 @@ onMounted(() => {
 
           <div>
             <label for="participants">참여자 선택</label>
-            <select id="participants" v-model="selectedParticipant" class="input-field">
-              <option disabled value="">참여자를 선택하세요</option>
-              <option v-for="friend in filteredFriends" :key="friend.searchUserIdx" :value="friend">
-                {{ friend.userName || '참여자를 추가해주세요' }}
-              </option>
-            </select>
+            <multiselect
+                v-model="selectedParticipant"
+                :options="filteredFriends"
+                :searchable="true"
+                :close-on-select="true"
+                :show-labels="false"
+                placeholder="참여자를 선택하세요"
+                label="userName"
+                track-by="searchUserIdx"
+            />
             <p class="error-message" v-if="errors.participants">{{ errors.participants }}</p>
             <div class="selections participants" v-if="participants && participants.length">
               <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
