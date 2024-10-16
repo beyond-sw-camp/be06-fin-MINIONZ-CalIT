@@ -1,8 +1,6 @@
 package minionz.apiserver.user;
 
 
-import minionz.apiserver.common.exception.BaseException;
-import minionz.apiserver.user.model.EmailVerify;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;

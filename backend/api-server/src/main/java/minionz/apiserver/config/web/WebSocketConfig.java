@@ -15,18 +15,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat")
-                .setAllowedOriginPatterns("*") // 모든 도메인에서의 CORS 허용
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
         registry.addEndpoint("/note")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
+        registry.addEndpoint("/chatbot")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // SimpleBroker로 두 개의 경로를 한 번에 설정
-        registry.enableSimpleBroker("/sub", "/topic/note");
-        registry.setApplicationDestinationPrefixes("/pub", "/app/note");
+        registry.enableSimpleBroker("/sub", "/topic/note", "/subUser");
+        registry.setApplicationDestinationPrefixes("/pub", "/app/note", "/pubBot");
     }
+
 
 }

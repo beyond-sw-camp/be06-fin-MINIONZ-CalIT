@@ -1,5 +1,7 @@
 package minionz.apiserver.board.error_board;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.board.error_board.model.request.CreateErrorBoardRequest;
 import minionz.apiserver.board.error_board.model.response.CreateErrorBoardResponse;
@@ -14,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -26,15 +29,33 @@ public class ErrorBoardController {
   // 게시글 생성
   @PostMapping("/write")
   public BaseResponse<CreateErrorBoardResponse> createErrorBoard(
-      @RequestParam Long workspaceId,
-      @RequestPart(name = "request") CreateErrorBoardRequest request,
-      @RequestPart(name = "files") MultipartFile[] files,
-      @AuthenticationPrincipal CustomSecurityUserDetails userDetails) throws BaseException {
+          @RequestParam Long workspaceId,
+          @RequestPart(name = "request") String requestJson,  // JSON 데이터를 문자열로 받음
+          @RequestPart(name = "files", required = false) MultipartFile[] files,
+          @AuthenticationPrincipal CustomSecurityUserDetails userDetails) throws BaseException {
+
+    // JSON을 객체로 변환
+    ObjectMapper objectMapper = new ObjectMapper();
+    CreateErrorBoardRequest request;
+    try {
+      request = objectMapper.readValue(requestJson, CreateErrorBoardRequest.class);
+    } catch (JsonProcessingException e) {
+      throw new BaseException(BaseResponseStatus.ERRORBOARD_CREATE_FAIL);
+    }
+
+    // 파일이 제대로 전송되었는지 확인
+    if (files != null) {
+      for (MultipartFile file : files) {
+        System.out.println("받은 파일 이름: " + file.getOriginalFilename());
+      }
+    }
+
     Long userId = userDetails.getUserId();
-    List<String> fileNames = cloudFileUpload.multipleUpload(files);
+    List<String> fileNames = (files != null && files.length > 0) ? cloudFileUpload.multipleUpload(files) : Collections.emptyList();
     CreateErrorBoardResponse response = errBoardService.create(fileNames, request, workspaceId, userId);
     return new BaseResponse<>(BaseResponseStatus.ERRORBOARD_CREATE_SUCCESS, response);
   }
+
 
   // 게시글 하나 조회
   @GetMapping("/search")

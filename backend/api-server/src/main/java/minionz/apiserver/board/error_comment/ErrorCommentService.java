@@ -1,6 +1,5 @@
 package minionz.apiserver.board.error_comment;
 
-import minionz.apiserver.board.error_board.ErrorBoardRepository;
 import minionz.apiserver.board.error_comment.model.request.CreateErrorCommentRequest;
 import minionz.apiserver.board.error_comment.model.response.CreateErrorCommentResponse;
 import minionz.apiserver.board.error_comment.model.response.GetErrorCommentImageResponse;
@@ -8,7 +7,10 @@ import minionz.apiserver.board.error_comment.model.response.GetErrorCommentRespo
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import minionz.apiserver.utils.CloudFileUpload;
+import minionz.common.board.error_board.ErrorBoardRepository;
 import minionz.common.board.error_board.model.ErrorBoard;
+import minionz.common.board.error_comment.ErrorCommentImageRepository;
+import minionz.common.board.error_comment.ErrorCommentRepository;
 import minionz.common.board.error_comment.model.ErrorComment;
 import minionz.common.board.error_comment.model.ErrorCommentImage;
 import minionz.common.user.UserRepository;

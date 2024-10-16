@@ -1,6 +1,7 @@
 package minionz.apiserver.chat.message;
 
 import lombok.RequiredArgsConstructor;
+import minionz.apiserver.chat.chat_room.model.response.FileInfoResponse;
 import minionz.apiserver.chat.chat_room.model.response.ReadMessageResponse;
 import minionz.apiserver.chat.message.model.request.SendMessageRequest;
 import minionz.apiserver.chat.message.model.request.UpdateMessageRequest;
@@ -58,7 +59,18 @@ public class MessageController {
     } catch (BaseException e) {
       return new BaseResponse<>(e.getStatus());
     }
+  }
 
+  // 파일 내역 조회
+  @GetMapping(value = "/message/{chatRoomId}/files")
+  public BaseResponse<List<FileInfoResponse>> getFileMessages(
+          @PathVariable Long chatRoomId) {
+    try {
+      List<FileInfoResponse> response = messageService.getFileList(chatRoomId);
+      return new BaseResponse<>(BaseResponseStatus.FILE_RETRIEVAL_SUCCESS, response);
+    } catch (BaseException e) {
+      return new BaseResponse<>(e.getStatus());
+    }
   }
 
   // 메세지 수정

@@ -19,10 +19,12 @@ public class NoteProducer {
 
     public void sendNoteUpdate(NoteMessage noteMessage) {
         try {
-            String messageStr = objectMapper.writeValueAsString(noteMessage);
-            kafkaTemplate.send("note-topic", messageStr);
+            String topicName = "note-topic-" + noteMessage.getNoteId(); // noteId 별로 다른 토픽 생성
+            String message = objectMapper.writeValueAsString(noteMessage);
+            kafkaTemplate.send(topicName, message); // 동적으로 생성된 토픽으로 메시지 전송
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to send Kafka message", e);
+            throw new RuntimeException("Error serializing NoteMessage", e);
         }
     }
+
 }
