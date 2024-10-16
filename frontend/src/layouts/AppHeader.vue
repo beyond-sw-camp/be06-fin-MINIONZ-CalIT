@@ -2,9 +2,11 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/stores/user/useUserStore';
 import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import ChatModal from '@/layouts/component/modal/ChatModal.vue';
 import AlarmModal from '@/layouts/component/modal/AlarmModal.vue';
 import WorkspaceModal from '@/layouts/component/modal/WorkspaceModal.vue';
+import chatbot from '@/assets/icon/menu/chatbot.svg';
 import message from '@/assets/icon/menu/message.svg';
 import alarm from '@/assets/icon/menu/alarm.svg';
 import user1 from '@/assets/icon/persona/user1.svg';
@@ -59,6 +61,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
+const workspaceId = useWorkspaceStore().workspaceId;
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 
@@ -77,8 +80,8 @@ const loginId = computed(() => {
     <div class="right-side">
       <div class="notice-bundle">
         <div>
-          <router-link :to="`/chatbot/${userId}`">
-            챗봇
+          <router-link :to="`/workspace/${workspaceId}/chatbot/${userId}`">
+            <img :src="chatbot" alt="chatbot" style="width: 27px; height: 27px">
           </router-link>
         </div>
         <div class="chat" @click="toggleChatModal">
@@ -166,7 +169,7 @@ img {
 .chat::after {
   content: '';
   position: absolute;
-  left: 20px;
+  right: 2.4rem;
   top: 3px;
   width: 10px;
   height: 10px;
