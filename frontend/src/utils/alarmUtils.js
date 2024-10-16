@@ -15,7 +15,7 @@ export function connectEventSource() {
     if (
         userId &&
         (router.currentRoute.value.path.startsWith('/my') || router.currentRoute.value.path.startsWith('/workspace'))) {
-        eventSource = new EventSource(`http://localhost:8080/alarm/connect/${userId}`);
+        eventSource = new EventSource(`https://calit.kro.kr/api/alarm/connect/${userId}`);
     }
 
     if (eventSource) {
