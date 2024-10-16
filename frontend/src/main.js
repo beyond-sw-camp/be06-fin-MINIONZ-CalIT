@@ -22,7 +22,7 @@ function connectEventSource() {
         eventSource.close(); // 기존 연결 종료
     }
 
-    eventSource = new EventSource(`https://calit.kro.kr/alarm/connect/${userId}`);
+    eventSource = new EventSource(`https://calit.kro.kr/api/alarm/connect/${userId}`);
 
     eventSource.onmessage = (event) => {
         console.log('New message:', event.data);
