@@ -1,5 +1,7 @@
 package minionz.apiserver.board.qa_board;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.board.qa_board.model.request.CreateQaBoardRequest;
 import minionz.apiserver.board.qa_board.model.response.CreateQaBoardResponse;
@@ -14,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -23,18 +26,30 @@ public class QaBoardController {
   private final QaBoardService qaBoardService;
   private final CloudFileUpload cloudFileUpload;
 
-  // 게시글 생성
   @PostMapping("/write")
   public BaseResponse<CreateQaBoardResponse> createQaBoard(
-      @RequestParam Long workspaceId,
-      @RequestPart(name = "request") CreateQaBoardRequest request,
-      @RequestPart(name = "files") MultipartFile[] files,
-      @AuthenticationPrincipal CustomSecurityUserDetails userDetails) throws BaseException {
-    List<String> fileNames = cloudFileUpload.multipleUpload(files);
+          @RequestParam Long workspaceId,
+          @RequestPart(name = "request") String requestJson,  // JSON 데이터를 문자열로 받음
+          @RequestPart(name = "files", required = false) MultipartFile[] files,
+          @AuthenticationPrincipal CustomSecurityUserDetails userDetails) throws BaseException {
+
+    // JSON을 객체로 변환
+    ObjectMapper objectMapper = new ObjectMapper();
+    CreateQaBoardRequest request;
+    try {
+      request = objectMapper.readValue(requestJson, CreateQaBoardRequest.class);
+    } catch (JsonProcessingException e) {
+      throw new BaseException(BaseResponseStatus.QABOARD_CREATE_FAIL);
+    }
+
+    // 파일 처리
+    List<String> fileNames = (files != null && files.length > 0) ? cloudFileUpload.multipleUpload(files) : Collections.emptyList();
+
     Long userId = userDetails.getUserId();
     CreateQaBoardResponse response = qaBoardService.create(fileNames, request, workspaceId, userId);
     return new BaseResponse<>(BaseResponseStatus.QABOARD_CREATE_SUCCESS, response);
   }
+
 
   // 게시글 하나 조회
   @GetMapping("/search")

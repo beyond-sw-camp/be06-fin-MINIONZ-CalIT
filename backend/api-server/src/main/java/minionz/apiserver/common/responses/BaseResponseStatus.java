@@ -30,6 +30,7 @@ public enum BaseResponseStatus {
     USER_CREATE_FAIL(false, 2006, "회원가입에 실패했습니다. "),
     USER_LOGIN_FAIL(false, 2007, "로그인에 실패했습니다. "),
     USER_NOT_FOUND(false, 2008, "존재하지 않는 사용자입니다. "),
+    USER_LOGINID_SUCCESS(true, 2009, "아이디가 등록되었습니다."),
 
     /**
      * 3000: 마이 페이지
@@ -55,6 +56,7 @@ public enum BaseResponseStatus {
     TASK_CREATE_SUCCESS(true, 4009, "태스크 생성에 성공했습니다."),
     TASK_READ_SUCCESS(true, 4010, "태스크 상세 조회에 성공했습니다."),
     TASK_READ_ALL_SUCCESS(true, 4011, "해당 스프린트의 태스크 목록 조회를 성공했습니다."),
+    TASK_READ_ALLWORKSPACE_SUCCESS(true, 4011, "해당 워크스페이스의 태스크 목록 조회를 성공했습니다."),
     MEETING_CREATE_SUCCESS(true, 4012, "회의 생성에 성공했습니다."),
     MEETING_READ_SUCCESS(true, 4013, "회의 상세 조회에 성공했습니다."),
     ISSUE_CREATE_SUCCESS(true, 4014, "이슈 생성에 성공했습니다."),
@@ -154,6 +156,14 @@ public enum BaseResponseStatus {
 
     CHATROOM_SEARCH_SUCCESS(true, 6801, "채팅방 검색에 성공했습니다."),
     MESSAGE_UPDATE_FAILED(false, 6902, "메시지 업데이트에 실패했습니다."),
+    FILE_RETRIEVAL_SUCCESS(true, 6903, "파일 내역 조회에 성공했습니다."),
+    FILE_NOT_FOUND(false, 6904, "파일 내역 조회에 실패했습니다."),
+    CHATBOT_MESSAGE_RECEIVED(true, 6903, "챗봇에게 메세지가 성공적으로 수신되었습니다."),
+    CHATBOT_RESPONSE_SAVED(true, 6904, "챗봇 응답이 성공적으로 저장되었습니다."),
+    CHATBOT_ERROR(false, 6905, "챗봇 처리 중 오류가 발생했습니다."),
+    CHATBOT_USER_NOT_FOUND(false, 6906, "챗봇 메시지를 처리하는 동안 사용자를 찾을 수 없습니다."),
+    CHATBOT_DATABASE_ERROR(false, 6907, "챗봇 데이터베이스 처리 중 오류가 발생했습니다."),
+    CHATBOT_EXTERNAL_API_ERROR(false, 6908, "외부 API 호출 중 챗봇 오류가 발생했습니다."),
 
 
     /**

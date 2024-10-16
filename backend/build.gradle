@@ -39,6 +39,9 @@ subprojects {
         //lombok
         compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
         annotationProcessor('org.projectlombok:lombok')
+        //kafka
+        implementation 'org.springframework.kafka:spring-kafka'
+        testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     }
 

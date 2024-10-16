@@ -5,6 +5,7 @@ import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import minionz.apiserver.scrum.issue.model.request.CreateIssueRequest;
 import minionz.apiserver.scrum.issue.model.response.ReadIssueResponse;
+import minionz.common.scrum.issue.IssueRepository;
 import minionz.common.scrum.issue.model.Issue;
 import minionz.common.scrum.workspace.model.Workspace;
 import minionz.common.user.model.User;

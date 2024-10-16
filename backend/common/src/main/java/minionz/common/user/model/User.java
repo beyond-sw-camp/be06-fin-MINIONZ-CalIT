@@ -45,8 +45,8 @@ public class User {
     private Integer persona;
 
     // ChatBot 1 : 1
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<ChatBot> chatBots = new ArrayList<>();
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private ChatBot chatBot;
 
     // ChatParticipation 1 : N
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

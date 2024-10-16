@@ -47,29 +47,38 @@ public class CustomOauth2UserDetails implements UserDetails, OAuth2User {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.addAll(workspaceParticipations.stream()
-                .filter(participate -> participate.getIsValid())
-                .map(participate -> {
-                    String rolePrefix = participate.getIsManager() ? "ROLE_WORKSPACE_ADMIN_" : "ROLE_WORKSPACE_MEMBER_";
-                    String roleName = rolePrefix + participate.getWorkspace().getWorkspaceId();
-                    return new SimpleGrantedAuthority(roleName);
-                })
-                .collect(Collectors.toList()));
+// workspaceParticipations 처리
+        if (workspaceParticipations != null) {
+            authorities.addAll(workspaceParticipations.stream()
+                    .filter(participate -> participate.getIsValid())
+                    .map(participate -> {
+                        String rolePrefix = participate.getIsManager() ? "ROLE_WORKSPACE_ADMIN_" : "ROLE_WORKSPACE_MEMBER_";
+                        String roleName = rolePrefix + participate.getWorkspace().getWorkspaceId();
+                        return new SimpleGrantedAuthority(roleName);
+                    })
+                    .collect(Collectors.toList()));
+        }
 
-        authorities.addAll(sprintParticipations.stream()
-                .map(participate -> {
-                    String rolePrefix = participate.getIsManager() ? "ROLE_SPRINT_ADMIN_" : "ROLE_SPRINT_MEMBER_";
-                    String roleName = rolePrefix + participate.getSprint().getSprintId();
-                    return new SimpleGrantedAuthority(roleName);
-                })
-                .collect(Collectors.toList()));
+// sprintParticipations 처리
+        if (sprintParticipations != null) {
+            authorities.addAll(sprintParticipations.stream()
+                    .map(participate -> {
+                        String rolePrefix = participate.getIsManager() ? "ROLE_SPRINT_ADMIN_" : "ROLE_SPRINT_MEMBER_";
+                        String roleName = rolePrefix + participate.getSprint().getSprintId();
+                        return new SimpleGrantedAuthority(roleName);
+                    })
+                    .collect(Collectors.toList()));
+        }
 
-        authorities.addAll(meetingParticipations.stream()
-                .map(participate -> {
-                    String roleName = "ROLE_MEETING_MEMBER_" + participate.getMeeting().getMeetingId();
-                    return new SimpleGrantedAuthority(roleName);
-                })
-                .collect(Collectors.toList()));
+// meetingParticipations 처리
+        if (meetingParticipations != null) {
+            authorities.addAll(meetingParticipations.stream()
+                    .map(participate -> {
+                        String roleName = "ROLE_MEETING_MEMBER_" + participate.getMeeting().getMeetingId();
+                        return new SimpleGrantedAuthority(roleName);
+                    })
+                    .collect(Collectors.toList()));
+        }
 
         // 사용자 역할 추가
         authorities.add(new SimpleGrantedAuthority(user.getRole()));

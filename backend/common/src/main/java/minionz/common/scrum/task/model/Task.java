@@ -7,6 +7,8 @@ import minionz.common.scrum.meeting.model.Meeting;
 import minionz.common.scrum.sprint.model.Sprint;
 import minionz.common.scrum.task_participation.model.TaskParticipation;
 import minionz.common.common.BaseEntity;
+import minionz.common.scrum.workspace.model.Workspace;
+import org.hibernate.jdbc.Work;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,6 +52,12 @@ public class Task extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
+
+    // Task : Workspace = N : 1
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
+
 
     // Task : Meeting = N : 1
     @ManyToOne(fetch = FetchType.LAZY)
