@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -39,12 +40,15 @@ public class ChatBotController {
     @PostMapping("/receiveFromN8n")
     public BaseResponse<String> receiveFromN8n(@RequestBody Map<String, String> requestData) {
         try {
-            System.out.println("POST 요청 받음: " + requestData);  // 디버깅용 로그
             String message = requestData.get("message");
             Long userId = Long.parseLong(requestData.get("userId"));
             Long botQuestionId = Long.parseLong(requestData.get("botQuestionId"));
-            Long response_update = chatBotService.saveChatBotResponse(message, botQuestionId);
-            messagingTemplate.convertAndSend("/subUser/" + userId, message);
+            Long res_userId = chatBotService.saveChatBotResponse(message, botQuestionId);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("messageContents", message);
+
+            messagingTemplate.convertAndSend("/subUser/" + res_userId, response);
             return new BaseResponse<>(BaseResponseStatus.CHATBOT_RESPONSE_SAVED);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
