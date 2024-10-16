@@ -1,5 +1,5 @@
-import { ref } from 'vue';
-import { jwtDecode } from 'jwt-decode';
+import {ref} from 'vue';
+import {jwtDecode} from 'jwt-decode';
 
 export const useUserStore = () => {
     const token = ref(null);
@@ -8,14 +8,10 @@ export const useUserStore = () => {
 
     const setToken = (newToken) => {
         token.value = newToken;
-        if (newToken) {
-            const userInfo = extractUserInfoFromToken(newToken);
-            if (userInfo) {
-                setUser(userInfo);
-                isLoggedIn.value = true;
-            } else {
-                logout();
-            }
+        const userInfo = extractUserInfoFromToken(newToken);
+        if (newToken && userInfo) {
+            setUser(userInfo);
+            isLoggedIn.value = true;
         } else {
             isLoggedIn.value = false;
             logout();
@@ -32,8 +28,7 @@ export const useUserStore = () => {
         const userInfoString = sessionStorage.getItem('userInfo');
         if (userInfoString) {
             try {
-                const userInfo = JSON.parse(userInfoString);
-                return userInfo;
+                return JSON.parse(userInfoString);
             } catch (error) {
                 return null;
             }
@@ -49,6 +44,7 @@ export const useUserStore = () => {
         token.value = null;
         user.value = null;
         isLoggedIn.value = false;
+        sessionStorage.clear();
         sessionStorage.removeItem('userInfo');
     };
 

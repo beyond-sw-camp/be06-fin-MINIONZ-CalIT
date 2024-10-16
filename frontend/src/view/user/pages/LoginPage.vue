@@ -1,12 +1,12 @@
 <script setup>
-import {ref} from 'vue';
-import {useRouter} from 'vue-router';
-import {useUserStore} from '@/stores/user/useUserStore';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user/useUserStore';
 import UserButton from '@/view/user/component/UserButton.vue';
 import UserInput from '@/view/user/component/UserInput.vue';
 import SocialLogin from '@/view/user/component/SocialLogin.vue';
 import axios from 'axios';
-import {Notyf} from 'notyf';
+import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
 const router = useRouter();
