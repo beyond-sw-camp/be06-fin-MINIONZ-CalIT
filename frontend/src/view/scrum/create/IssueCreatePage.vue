@@ -70,10 +70,10 @@ const onSubmit = handleSubmit(async (values) => {
     startDate.value = '';
     endDate.value = '';
 
-    notyf.success('성공했습니다.');
+    notyf.success('이슈가 성공적으로 추가되었습니다.');
     router.push(`/workspace/${workspaceId}/scrum/issue/list`);
   } catch (error) {
-    notyf.error('실패했습니다.');
+    notyf.error('이슈 추가에 실패하였습니다.');
   }
 });
 

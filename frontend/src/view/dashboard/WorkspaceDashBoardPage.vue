@@ -1,16 +1,14 @@
 <script setup>
-import {inject, onMounted, ref, watch} from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import WorkspaceTaskOverview from '@/view/dashboard/component/WorkspaceTaskOverview.vue';
 import MeetingList from '@/view/dashboard/component/MeetingList.vue';
 import BurndownChart from '@/view/dashboard/component/BurndownChart.vue';
-import {useWorkspaceDashboardStore} from '@/stores/workspace/useWorkspaceDashboardStore';
-import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
-import {useRoute} from 'vue-router';
+import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const workspaceStore = useWorkspaceStore();
+const workspaceId = route.params.workspaceId;
 const dashboardStore = useWorkspaceDashboardStore();
-
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Workspace Dashboard';
@@ -18,12 +16,7 @@ contentsDescription.value = '워크스페이스의 대시보드를 살펴보세�
 
 const dashboard = ref(null);
 
-watch(() => route.query.wsId, (newId) => {
-  workspaceStore.setWorkspaceId(newId);
-  fetchDashboardData(newId);
-});
-
-const fetchDashboardData = async (workspaceId) => {
+onMounted(async () => {
   if (workspaceId) {
     try {
       dashboard.value = await dashboardStore.getWorkspaceDashboard(workspaceId);
@@ -32,13 +25,6 @@ const fetchDashboardData = async (workspaceId) => {
     }
   } else {
     console.error('workspaceId is not set');
-  }
-};
-
-onMounted(() => {
-  if (route.query.wsId) {
-    workspaceStore.setWorkspaceId(route.query.wsId);
-    fetchDashboardData(route.query.wsId);
   }
 });
 </script>
@@ -59,7 +45,7 @@ onMounted(() => {
           :total-tasks="dashboard.progress.allTaskCount"
           :issue-count="dashboard.progress.issueCount"
       />
-      <BurndownChart/>
+      <BurndownChart />
       <MeetingList
           v-if="dashboard.upcomingMeetings"
           :meetings="dashboard.upcomingMeetings"
@@ -67,7 +53,7 @@ onMounted(() => {
     </div>
     <div v-else class="initial-wrap">
       <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/scrum/sprint/create?wsId=${workspaceStore.workspaceId}`">
+      <router-link :to="`/workspace/${workspaceId}/scrum/sprint/create`">
         스프린트 추가하기
       </router-link>
     </div>

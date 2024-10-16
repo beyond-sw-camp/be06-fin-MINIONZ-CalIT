@@ -86,13 +86,7 @@ onMounted(async () => {
         </div>
         <div>
           <label for="task-content">Task 내용</label>
-          <textarea
-            id="task-content"
-            v-model="taskContent"
-            placeholder="Task 내용을 적어주세요"
-            class="input-field"
-            style="margin: 0"
-          />
+          <textarea id="task-content" v-model="taskContent" placeholder="Task 내용을 적어주세요" class="input-field" style="margin: 0"/>
         </div>
         <div>
           <label>담당자</label>

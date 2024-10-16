@@ -5,7 +5,6 @@ import SignupPage from '@/view/user/pages/SignupPage.vue';
 import PasswordPage from '@/view/user/pages/PasswordPage.vue';
 import CompletePage from '@/view/user/pages/CompletePage.vue';
 import SocialLoginSuccessPage from '@/view/user/pages/SocialLoginSuccessPage.vue';
-// import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
 import { axiosInstance } from '@/utils/axiosInstance';
 
 const routes = [
@@ -358,7 +357,6 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  // const workspaceStore = useWorkspaceStore();
   const isAuthenticated = !!sessionStorage.getItem('userInfo');
 
   const proceed = () => {

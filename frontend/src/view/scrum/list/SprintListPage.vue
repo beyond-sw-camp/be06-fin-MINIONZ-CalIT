@@ -1,9 +1,9 @@
 <script setup>
-import {computed, inject, onMounted, ref} from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import { useSprintStore } from "@/stores/scrum/useSprintStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
 import SprintList from "@/common/component/Board/SprintList.vue";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 
 const sprintStore = useSprintStore();
