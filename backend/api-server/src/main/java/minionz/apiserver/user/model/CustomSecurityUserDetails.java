@@ -40,7 +40,7 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<WorkspaceParticipation> workspaceParticipations = user.getWorkspaceParticipations();
         List<SprintParticipation> sprintParticipations = user.getSprintParticipations();
-        List<MeetingParticipation> meetingParticipations = user.getMeetingParticipations();
+//        List<MeetingParticipation> meetingParticipations = user.getMeetingParticipations();
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -61,12 +61,12 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
                 })
                 .collect(Collectors.toList()));
 
-        authorities.addAll(meetingParticipations.stream()
-                .map(participate -> {
-                    String roleName = "M_" + participate.getMeeting().getMeetingId();
-                    return new SimpleGrantedAuthority(roleName);
-                })
-                .collect(Collectors.toList()));
+//        authorities.addAll(meetingParticipations.stream()
+//                .map(participate -> {
+//                    String roleName = "M_" + participate.getMeeting().getMeetingId();
+//                    return new SimpleGrantedAuthority(roleName);
+//                })
+//                .collect(Collectors.toList()));
 
         // 사용자 역할 추가
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
