@@ -48,7 +48,7 @@ const login = async () => {
     notyf.success('로그인 성공');
     loginId.value = '';
     password.value = '';
-    router.replace('/my/dashboard');
+    router.push('/my/dashboard');
   } else {
     notyf.error('로그인 실패: 아이디 또는 비밀번호를 확인해주세요.');
   }
