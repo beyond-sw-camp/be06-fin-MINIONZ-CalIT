@@ -226,10 +226,10 @@ public class SecurityConfig {
     }
 
     public static class RoleConstants {
-        public static final String ROLE_WORKSPACE_ADMIN = "ROLE_WORKSPACE_ADMIN";
-        public static final String ROLE_WORKSPACE_MEMBER = "ROLE_WORKSPACE_MEMBER";
-        public static final String ROLE_SPRINT_ADMIN = "ROLE_SPRINT_ADMIN";
-        public static final String ROLE_SPRINT_MEMBER = "ROLE_SPRINT_MEMBER";
-        public static final String ROLE_MEETING_MEMBER = "ROLE_MEETING_MEMBER";
+        public static final String ROLE_WORKSPACE_ADMIN = "W_A";
+        public static final String ROLE_WORKSPACE_MEMBER = "W_M";
+        public static final String ROLE_SPRINT_ADMIN = "S_A";
+        public static final String ROLE_SPRINT_MEMBER = "S_M";
+//        public static final String ROLE_MEETING_MEMBER = "M_M";
     }
 }
