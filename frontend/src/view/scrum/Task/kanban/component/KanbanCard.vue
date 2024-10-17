@@ -1,6 +1,7 @@
 <script setup>
 import { setPersona } from '@/utils/personaUtils';
 import { defineProps } from 'vue';
+import { formatDate } from '@/utils/timeUtils';
 
 defineProps({
   task: {
@@ -21,14 +22,15 @@ defineProps({
     <div class="task-footer">
       <div class="avatars">
         <img
-          v-for="user in task.participants"
-          :key="user.id"
-          :src="setPersona(user.persona)"
-          class="avatar"
-          alt="users"
+            v-for="(user) in task.participants"
+            :key="user.id"
+            :src="setPersona(user.persona)"
+            class="avatar"
+            alt="users"
         />
+        <span v-if="task.participants.length > 3" class="more">and more</span>
       </div>
-      <span class="due-date">{{ task.endDate }}</span>
+      <span class="due-date">{{ formatDate(task.endDate) }}</span>
     </div>
   </div>
 </template>
@@ -79,5 +81,20 @@ p {
 
 .due-date {
   font-size: 10px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+  margin-right: 0;
+}
+
+.more {
+  position: absolute;
+  left: 60px;
+  font-size: 12px;
+  color: #28303f;
 }
 </style>

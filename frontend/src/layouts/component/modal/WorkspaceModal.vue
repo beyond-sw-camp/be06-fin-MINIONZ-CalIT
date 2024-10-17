@@ -1,14 +1,15 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import plus from '@/assets/icon/menu/plus.svg';
-import {setPersona} from '@/utils/personaUtils';
-import {useWorkspaceStore} from '@/stores/workspace/useWorkspaceStore';
-import {useRouter} from 'vue-router';
+import { setPersona } from '@/utils/personaUtils';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 const workspaceStore = useWorkspaceStore();
-const {getAllWorkspace, setWorkspaceId} = workspaceStore;
+const { getAllWorkspace, setWorkspaceId } = workspaceStore;
 const isLoading = ref(false);
 const errorMessage = ref(null);
 
@@ -26,6 +27,15 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
+watch(
+    () => route.query.wsId,
+    (newWorkspaceId) => {
+      if (newWorkspaceId) {
+        setWorkspaceId(newWorkspaceId);
+      }
+    }
+);
 
 const handleWorkspaceSelection = (workspaceItem) => {
   workspaceStore.setNowWorkspace(workspaceItem);

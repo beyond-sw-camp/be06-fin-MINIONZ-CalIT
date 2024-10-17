@@ -75,14 +75,14 @@ function setLabelColor(color) {
                         </select>
                     </div>
                     <div>
-                        <div v-if="selectedLabelName" class="label-details">
-                            <div v-for="(label, index) in labelDetails" :key="index" class="label-detail-item">
-                <span :style="{ backgroundColor: label.color.backgroundColor, color: label.color.color }">
-                  {{ label.labelName }}
-                  <span @click="deleteLabelByName(label.labelName)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
-                </span>
-                            </div>
+                      <div v-if="selectedLabelName" class="label-details">
+                        <div v-for="(label, index) in labelDetails" :key="index" class="label-detail-item">
+                          <span :style="{ backgroundColor: label.color.backgroundColor, color: label.color.color }">
+                            {{ label.labelName }}
+                            <span @click="deleteLabelByName(label.labelName)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+                          </span>
                         </div>
+                      </div>
                     </div>
                 </div>
                 <hr>

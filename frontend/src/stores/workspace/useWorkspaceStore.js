@@ -5,7 +5,7 @@ import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
   const workspace = ref([]);
-  const workspaceId = ref(null);
+  const workspaceId = ref(localStorage.getItem('workspaceId') || null);
   const workspaceName = ref('');
   const nowWorkspace = ref(null);
 
@@ -69,6 +69,7 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         nowWorkspace.value = null;
         workspaceId.value = null;
         workspaceName.value = '';
+        localStorage.removeItem('workspaceId');
       }
 
       return response.data;
@@ -84,9 +85,11 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
     if (selectedWorkspace) {
       workspaceId.value = id;
       workspaceName.value = selectedWorkspace.workspaceName;
+      localStorage.setItem('workspaceId', id);
     } else {
       workspaceId.value = null;
       workspaceName.value = '';
+      localStorage.removeItem('workspaceId');
     }
   };
 
