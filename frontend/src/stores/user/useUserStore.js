@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 export const useUserStore = () => {
     const token = ref(null);
@@ -21,7 +21,7 @@ export const useUserStore = () => {
     const setUser = (userInfo) => {
         if (userInfo) {
             user.value = userInfo;
-            sessionStorage.setItem('userInfo', JSON.stringify(userInfo)); // 유효한 userInfo만 저장
+            sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
         } else {
             console.warn('Attempted to set null userInfo. Ignoring.');
         }
