@@ -14,6 +14,7 @@ const loginId = ref('');
 const password = ref('');
 const userStore = useUserStore();
 const notyf = new Notyf();
+const isSubmitting = ref(false);
 
 const authenticate = async (loginId, password) => {
   try {
@@ -21,9 +22,8 @@ const authenticate = async (loginId, password) => {
       loginId: loginId,
       password: password
     });
-    return response.headers.getAuthorization().split(' ')[1];
+    return response.headers['authorization']?.split(' ')[1];
   } catch (error) {
-    console.error('Login failed', error);
     if (error.response && error.response.data) {
       notyf.error(error.response.data.message || '로그인 실패');
     } else {
@@ -33,19 +33,26 @@ const authenticate = async (loginId, password) => {
 };
 
 const login = async () => {
+  if (isSubmitting.value) return;
+
   if (loginId.value === '' || password.value === '') {
     notyf.error('아이디와 비밀번호 모두 입력해주세요.');
     return;
   }
 
+  isSubmitting.value = true;
+
   const token = await authenticate(loginId.value, password.value);
   if (token) {
     userStore.setToken(token);
     notyf.success('로그인 성공');
-    router.push('/my/dashboard');
+    loginId.value = '';
+    password.value = '';
+    router.replace('/my/dashboard');
   } else {
-    notyf.error('로그인 실패');
+    notyf.error('로그인 실패: 아이디 또는 비밀번호를 확인해주세요.');
   }
+  isSubmitting.value = false;
 };
 </script>
 

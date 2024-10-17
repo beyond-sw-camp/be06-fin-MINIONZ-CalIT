@@ -1,5 +1,5 @@
-import {ref} from 'vue';
-import {jwtDecode} from 'jwt-decode';
+import { ref } from 'vue';
+import jwtDecode from 'jwt-decode';
 
 export const useUserStore = () => {
     const token = ref(null);
@@ -19,44 +19,46 @@ export const useUserStore = () => {
     };
 
     const setUser = (userInfo) => {
-        if (userInfo)
+        if (userInfo) {
             user.value = userInfo;
-            sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
-    };
-
-    const getUserInfoFromSession = () => {
-        const userInfoString = sessionStorage.getItem('userInfo');
-        if (userInfoString) {
-            try {
-                return JSON.parse(userInfoString);
-            } catch (error) {
-                return null;
-            }
+            sessionStorage.setItem('userInfo', JSON.stringify(userInfo)); // 유효한 userInfo만 저장
         } else {
-            return null;
+            console.warn('Attempted to set null userInfo. Ignoring.');
         }
     };
 
-    const userInfo = getUserInfoFromSession();
-    setUser(userInfo);
+    const getUserInfoFromSession = () => {
+        const storedToken = sessionStorage.getItem('token');
+        if (storedToken) {
+            const userInfo = extractUserInfoFromToken(storedToken);
+            if (userInfo) {
+                setUser(userInfo);
+                token.value = storedToken;
+                isLoggedIn.value = true;
+            } else {
+                logout();
+            }
+        } else {
+            logout();
+        }
+    };
 
     const logout = () => {
         token.value = null;
         user.value = null;
         isLoggedIn.value = false;
         sessionStorage.clear();
-        sessionStorage.removeItem('userInfo');
     };
 
     const extractUserInfoFromToken = (token) => {
         try {
-
             const decodedToken = jwtDecode(token);
             const currentTime = Math.floor(Date.now() / 1000);
 
             if (decodedToken.exp < currentTime) {
                 throw new Error('Token has expired');
             }
+
             return {
                 idx: decodedToken.idx,
                 loginId: decodedToken.loginId,
@@ -64,6 +66,7 @@ export const useUserStore = () => {
                 userName: decodedToken.userName
             };
         } catch (error) {
+            console.error('Error decoding token:', error);
             return null;
         }
     };
@@ -74,6 +77,7 @@ export const useUserStore = () => {
         isLoggedIn,
         setToken,
         setUser,
-        logout
+        logout,
+        getUserInfoFromSession,
     };
 };
