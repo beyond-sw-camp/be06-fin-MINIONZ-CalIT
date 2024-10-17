@@ -6,12 +6,14 @@ import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
+import { Notyf } from 'notyf';
 import { axiosInstance } from "@/utils/axiosInstance";
+import axios from 'axios';
 
 const route = useRoute();
 // const workspaceId = route.params.workspaceId;
 const isPersonalMenu = computed(() => route.path.startsWith('/my'));
-
+const notyf = new Notyf();
 const workspaceName = ref('');
 
 watchEffect(async () => {
@@ -29,9 +31,16 @@ watchEffect(async () => {
   }
 });
 
-const logout = () => {
-  useUserStore().logout();
-  router.push('/user/login');
+const logout = async () => {
+  try {
+    useUserStore().logout();
+    await axios.post(`/api/user/logout`, {}, { withCredentials: true });
+    notyf.success("로그아웃이 완료되었습니다");
+    router.push('/user/login');
+  } catch (error) {
+    console.error("Logout failed", error);
+    notyf.error("로그아웃에 실패했습니다. 다시 시도해 주세요. ")
+  }
 };
 </script>
 
