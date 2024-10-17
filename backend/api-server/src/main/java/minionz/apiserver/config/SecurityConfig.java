@@ -89,7 +89,7 @@ public class SecurityConfig {
         http
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                        .logoutSuccessUrl("http://calit.kro.kr/")
+                        .logoutSuccessUrl("https://calit.kro.kr/")
                         .deleteCookies("ATOKEN")
                         .addLogoutHandler(new CustomLogoutHandler()));
 
