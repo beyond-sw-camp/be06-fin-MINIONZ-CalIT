@@ -1,10 +1,10 @@
 <script setup>
-import BoardDetail from "@/common/component/Board/QABoardDetail.vue";
-import {computed, inject} from "vue";
+import BoardDetail from '@/common/component/Board/QABoardDetail.vue';
+import { computed, inject } from 'vue';
 import { useRoute } from 'vue-router';
-import { useQAStore } from "@/stores/board/useQAStore";
-import DateComment from "@/view/board/component/DateComment.vue";
-import CommentComponent from "@/view/board/detail/componenet/CommentComponent.vue";
+import { useQAStore } from '@/stores/board/useQAStore';
+import DateComment from '@/view/board/component/DateComment.vue';
+import CommentComponent from '@/view/board/detail/componenet/CommentComponent.vue';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -31,22 +31,23 @@ fetchQaDetail();
   <div class="qa-detail-container">
     <div>
       <BoardDetail
-          :title="postDetail.value?.qaBoardTitle || ''"
-          :descriptionList="[postDetail.value?.qaBoardContent || '']"
-          :status="postDetail.value?.answerStatus || ''"
-          :owner="postDetail.value?.userName || ''"
+        :title="postDetail.qaboardTitle || ''"
+        :descriptionList="[postDetail.qaboardContent || '']"
+        :status="postDetail.answerStatus || ''"
+        :owner="postDetail.assignUser || ''"
+        :taskName="postDetail.taskName || ''"
       />
       <DateComment
-          :date="postDetail.value.createdAt"
-          :comments="postDetail.value.comments"
+        :date="postDetail.createdAt"
+        :comments="postDetail.comments"
       />
     </div>
-    <CommentComponent/>
+    <CommentComponent />
   </div>
 </template>
 
 <style scoped>
-.qa-detail-container{
+.qa-detail-container {
   padding: 30px;
 }
 </style>
