@@ -1,10 +1,9 @@
 <script setup>
-import {ref, computed, onMounted, defineProps, defineEmits} from 'vue';
-import {useRoute} from "vue-router";
-import { formatUtil, getWeekDaysUtil } from '@/utils/dateUtils';
+import { ref, computed, onMounted, defineProps, defineEmits } from 'vue';
+import { useRoute } from "vue-router";
+import { formatUtil,getWeekRange, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import { getWeekRange } from "@/utils/timeUtils";
 
 const props = defineProps({
   selectedWeek: {
@@ -299,6 +298,7 @@ function getEventWidth(startDate, endDate) {
 }
 
 .day-header {
+  font-size: 12px;
   font-weight: 500;
   height: 35px;
   display: flex;

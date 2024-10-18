@@ -1,3 +1,4 @@
+// schedule에서 시작날짜 끝날짜 설정하는 로직
 export const weeklySettingUtils = () => {
     const today = new Date();
     const startDate = new Date(today.setDate(today.getDate() - today.getDay()));

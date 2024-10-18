@@ -32,7 +32,6 @@ const workspaceId = route.params.workspaceId;
           </router-link>
         </li>
       </ul>
-
     </li>
     <li>
       <router-link :to="`/workspace/${workspaceId}/chat`">

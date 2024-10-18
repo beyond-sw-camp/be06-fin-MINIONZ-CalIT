@@ -1,13 +1,15 @@
 import { ref } from 'vue';
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { defineStore } from 'pinia';
 
 export const useMeetingStore = defineStore('meetingStore', () => {
     const meetings =  ref([]);
+    const meetingId = ref(null);
 
-    const addMeeting = async ({sprintId, startDate, endDate, meetingTitle, meetingContents, participants }) => {
+    const addMeeting = async (data, sprintId) => {
         try {
-            const response = await axiosInstance.post(`api/${sprintId}/meeting`, {startDate, endDate, meetingTitle, meetingContents, participants});
+
+            const response = await axiosInstance.post(`/api/meeting/${sprintId}`, data);
             meetings.value.push(response.data.result);
         }
         catch (error) {
@@ -17,7 +19,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
 
     const getMeeting = async ({workspaceId, meetingId}) => {
         try {
-            const response = await axiosInstance.get(`api/meeting/${workspaceId}/${meetingId}`);
+            const response = await axiosInstance.get(`/api/meeting/${workspaceId}/${meetingId}`);
             return response.data.result;
         }
         catch (error) {
@@ -25,10 +27,11 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         }
     }
 
-    const getMeetingList = async ({workspaceId, meetingId}) => {
+    const getMeetingList = async ({workspaceId, page, size}) => {
         try {
-            const response = await axiosInstance.get(`api/meeting/${workspaceId}/${meetingId}`);
-            meetings.value = response.data.result;
+            const response = await axiosInstance.get(`/api/meeting/${workspaceId}/search-all?page=${page}&size=${size}`);
+            meetings.value = response.data.result.content;
+            return response.data.result.content;
         }
         catch (error) {
             console.error(error);
@@ -37,7 +40,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
 
     const updateMeeting = async ({ meetingId, meetingTitle, meetingContents }) => {
         try {
-            const response = await axiosInstance.put(`api/meeting/${meetingId}`, {meetingId, meetingTitle, meetingContents});
+            const response = await axiosInstance.put(`/api/meeting/${meetingId}`, {meetingId, meetingTitle, meetingContents});
             return response.data.result;
         }
         catch (error) {
@@ -47,7 +50,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
 
     const deleteMeeting = async ({ meetingId }) => {
         try {
-            const response = await axiosInstance.delete(`api/meeting/${meetingId}`);
+            const response = await axiosInstance.delete(`/api/meeting/${meetingId}`);
             return response.data.result;
         }
         catch (error) {
@@ -57,7 +60,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
 
     const alertMeeting = async ({ sprintId, startDate, endDate, meetingTitle, meetingContents, participants }) => {
         try {
-            const response = await axiosInstance.get(`api/${sprintId}/meeting`, {startDate, endDate, meetingTitle, meetingContents, participants});
+            const response = await axiosInstance.get(`/api/${sprintId}/meeting`, {startDate, endDate, meetingTitle, meetingContents, participants});
             return response.data.result;
         }
         catch (error) {
@@ -65,13 +68,19 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         }
     }
 
+    const setMeetingId = (id) => {
+        meetingId.value = id
+    }
+
     return {
         meetings,
+        meetingId,
         addMeeting,
         getMeeting,
         getMeetingList,
         updateMeeting,
         deleteMeeting,
-        alertMeeting
+        alertMeeting,
+        setMeetingId
     }
 })

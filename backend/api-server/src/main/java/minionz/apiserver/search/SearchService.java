@@ -34,6 +34,7 @@ public class SearchService {
                 .map(user -> searchUserResponse.builder()
                         .persona(user.getPersona())
                         .searchUserIdx(user.getUserId())
+                        .loginId(user.getLoginId())
                         .userName(user.getUserName())
                         .email(user.getEmail())
                         .persona(user.getPersona())

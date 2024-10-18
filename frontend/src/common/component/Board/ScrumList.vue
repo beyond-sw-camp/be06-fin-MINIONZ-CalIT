@@ -1,15 +1,5 @@
 <script setup>
-import { computed, defineProps } from 'vue';
-import { useRoute } from "vue-router";
-import { useWorkspaceStore } from "@/stores/workspace/useWorkspaceStore";
-
-
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
-const workspace = computed(() => {
-  const workspaceStore = useWorkspaceStore();
-  return workspaceStore.workspace.value?.find(ws => ws.workspaceId === workspaceId);
-});
+import { defineProps } from 'vue';
 
 defineProps({
   items: Array,
@@ -39,9 +29,7 @@ defineProps({
     <tbody>
     <tr v-for="(item, index) in items" :key="index">
       <td class="title">
-        <router-link :to="`/workspace/${workspace}/scrum/${boardType}/detail/${index}`">
           {{ item.title }}
-        </router-link>
       </td>
       <td >
         <span class="label">

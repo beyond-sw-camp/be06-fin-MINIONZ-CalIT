@@ -1,9 +1,10 @@
 <script setup>
-import {inject, ref} from 'vue';
-import {useFriendsStore} from '@/stores/user/useFriendsStore';
-import {axiosInstance} from "@/utils/axiosInstance";
+import { inject, ref } from 'vue';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import { axiosInstance } from '@/utils/axiosInstance';
 import { Notyf } from 'notyf';
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router';
+import { setPersona } from '@/utils/personaUtils';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -20,15 +21,13 @@ const filteredUsers = ref([]);
 const selectedUsers = ref([]);
 
 const searchUsers = async () => {
-  console.log('Searching users with participants:', participantsInput.value);
   if (participantsInput.value) {
     try {
-      await friendStore.getUserList(participantsInput.value);
-      console.log('Fetched friends from store:', friendStore.friends.value);
-      filteredUsers.value = friendStore.friends;
-      console.log('Fetched users:', filteredUsers.value);
+      const getUserListResult = await friendStore.getUserList(
+        participantsInput.value
+      );
+      filteredUsers.value = [...filteredUsers.value, ...getUserListResult];
     } catch (error) {
-      console.error('Error fetching users:', error);
       filteredUsers.value = [];
     }
   } else {
@@ -49,20 +48,20 @@ const isSelected = (user) => {
   return selectedUsers.value.includes(user.searchUserIdx);
 };
 
-const addWorkspace = async ({workspaceName, participants}) => {
+const addWorkspace = async ({ workspaceName, participants }) => {
   try {
-    console.log('Sending request to API with:', {workspaceName, participants});
-    const response = await axiosInstance.post('/api/workspace', {workspaceName, participants});
-    console.log('API response:', response.data);
+    const response = await axiosInstance.post('/api/workspace', {
+      workspaceName,
+      participants,
+    });
     notyf.success('WorkSpace가 추가되었습니다.');
     await router.push('/my/dashboard');
     return response.data;
   } catch (error) {
-    console.error('Failed to add workspace', error);
     notyf.error('WorkSpace 추가에 실패했습니다.');
     throw error;
   }
-}
+};
 </script>
 
 <template>
@@ -72,34 +71,76 @@ const addWorkspace = async ({workspaceName, participants}) => {
         <div>
           <div>
             <label for="workspaceName">WorkSpace 이름</label>
-            <input type="text" id="workspaceName" v-model="workspaceName" placeholder="WorkSpace 이름을 입력하세요"
-                   class="input-field">
+            <input
+              type="text"
+              id="workspaceName"
+              v-model="workspaceName"
+              placeholder="WorkSpace 이름을 입력하세요"
+              class="input-field"
+            />
           </div>
 
           <div>
             <label for="workspaceParticipation">참여자 추가</label>
-            <input type="text" id="workspaceParticipation" v-model="participantsInput" placeholder="아이디를 검색해주세요"
-                   class="input-field" @keyup.enter="searchUsers">
+            <input
+              type="text"
+              id="workspaceParticipation"
+              v-model="participantsInput"
+              placeholder="아이디를 검색해주세요"
+              class="input-field"
+              @keyup.enter="searchUsers"
+            />
             <ul v-if="filteredUsers && filteredUsers.length">
-              <li v-for="user in filteredUsers" :key="user.id" @click="toggleUserSelection(user)"
-                  :class="{ selected: isSelected(user) }">
-                {{ typeof user === 'string' ? user : user.userName }}
+              <li
+                v-for="user in filteredUsers"
+                :key="user.searchUserIdx"
+                @click="toggleUserSelection(user)"
+                :class="{ selected: isSelected(user) }"
+                :style="{ order: isSelected(user) ? -1 : 0 }"
+                style="
+                  /* justify-content: center; */
+                  align-items: center;
+                  display: flex;
+                "
+              >
+                <img :src="setPersona(user.persona)"
+                  alt="persona"
+                  style="width: 30px; height: 30px; margin-right: 20px"
+                />
+                <span class="participant-name">{{
+                  typeof user === 'string' ? user : user.userName
+                }}</span>
               </li>
             </ul>
             <p v-else-if="filteredUsers === null">검색된 사용자가 없습니다.</p>
           </div>
-
         </div>
       </div>
       <div class="button-wrap">
-        <button @click="addWorkspace({ workspaceName: workspaceName, participants: selectedUsers })" class="add-workspace-btn">WorkSpace 추가</button>
+        <button
+          @click="
+            addWorkspace({
+              workspaceName: workspaceName,
+              participants: selectedUsers,
+            })
+          "
+          class="add-workspace-btn"
+        >
+          WorkSpace 추가
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-ul, il {
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ul,
+li {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -150,8 +191,8 @@ label {
 }
 
 .add-workspace-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -162,7 +203,7 @@ label {
 }
 
 .add-workspace-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 
 li {
@@ -173,7 +214,7 @@ li {
 }
 
 .selected {
-  background-color: #C6D2FD;
+  background-color: #c6d2fd;
   border: none;
 }
 </style>

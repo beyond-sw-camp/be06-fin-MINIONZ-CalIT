@@ -1,31 +1,23 @@
 <script setup>
-import { ref, watch } from 'vue';
-import {useRoute, useRouter} from 'vue-router';
+import { ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const router = useRouter();
 const showAvatarGroup = ref(true);
+const workspaceId = route.params.workspaceId;
 
 watch(
-    () => route.path,
-    (newPath) => {
-      showAvatarGroup.value = !newPath.startsWith('/my');
-    },
-    { immediate: true}
-)
-
-import user1 from '@/assets/icon/persona/user1.svg';
-import user2 from '@/assets/icon/persona/user2.svg';
-import user3 from '@/assets/icon/persona/user3.svg';
-import user4 from '@/assets/icon/persona/user4.svg';
+  () => route.path,
+  (newPath) => {
+    showAvatarGroup.value = !newPath.startsWith('/my');
+  },
+  { immediate: true }
+);
 
 const currentView = ref('board');
-const avatars = ref([
-  { src: user1, alt: 'User 1' },
-  { src: user2, alt: 'User 2' },
-  { src: user3, alt: 'User 3' },
-  { src: user4, alt: 'User 4' }
-]);
 
 const setView = (view) => {
   currentView.value = view;
@@ -34,68 +26,122 @@ const setView = (view) => {
 };
 
 const to = ref('kanban');
+
+const sprintStore = useSprintStore();
+const taskStore = useTaskStore();
+const sprintOptions = ref([]);
+const taskLists = ref([]);
+const selectedSprintId = ref(null);
+
+onMounted(async () => {
+  await sprintStore.getSprintList(workspaceId);
+  sprintOptions.value = sprintStore.sprints;
+
+  if (sprintOptions.value.length > 0) {
+    selectedSprintId.value = sprintOptions.value[0].sprintId;
+    await getTasks(selectedSprintId.value);
+  }
+});
+
+const getTasks = async (sprintId) => {
+  taskLists.value = await taskStore.getTaskList(sprintId);
+};
+
+watch(selectedSprintId, async (newSprintId) => {
+  if (newSprintId) {
+    taskLists.value = await taskStore.getTaskList(newSprintId);
+  }
+});
 </script>
 
 <template>
   <div class="view-toggle-bar">
+    <select v-model="selectedSprintId" class="input-field">
+      <option
+        v-for="sprint in sprintOptions"
+        :key="sprint.sprintId"
+        :value="sprint.sprintId"
+      >
+        {{ sprint.title }}
+      </option>
+    </select>
     <div class="view-toggle-buttons">
       <router-link
-          :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/scrum/task/${currentView}` : to"
-          :class="{ active: currentView === 'kanban' }"
-          @click="setView('kanban')"
+        :to="'kanban'"
+        :class="{ active: currentView === 'kanban' }"
+        @click="setView('kanban')"
       >
         <i class="icon-kanban"></i>
         Kanban
       </router-link>
-      <div class="v-line"/>
+      <div class="v-line" />
       <router-link
-          :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/task/${currentView}` : to"
-          :class="{ active: currentView === 'list' }" @click="setView('list')">
+        :to="'list'"
+        :class="{ active: currentView === 'list' }"
+        @click="setView('list')"
+      >
         <i class="icon-list"></i>
         List
       </router-link>
-      <div class="v-line"/>
+      <div class="v-line" />
       <router-link
-          :to="to.startsWith('my') ? `/my/task/${currentView}` : to.startsWith('workspace') ? `/workspace/task/${currentView}` : to"
-          :class="{ active: currentView === 'timeline' }" @click="setView('timeline')">
+        :to="
+          to.startsWith('my')
+            ? `/my/task/${currentView}`
+            : to.startsWith('workspace')
+            ? `/workspace/task/${currentView}`
+            : to
+        "
+        :class="{ active: currentView === 'timeline' }"
+        @click="setView('timeline')"
+      >
         <i class="icon-timeline"></i>
         TimeLine
       </router-link>
     </div>
 
-    <div v-if="showAvatarGroup" class="avatar-group">
-      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" />
-      <button class="add-avatar-btn">+</button>
-    </div>
+    <!--    <div v-if="showAvatarGroup" class="avatar-group">-->
+    <!--      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" />-->
+    <!--      <button class="add-avatar-btn">+</button>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <style scoped>
-i{
+.input-field {
+  width: 200px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+i {
   width: 24px;
   display: block;
   height: 24px;
 }
-a{
+a {
   display: flex;
   text-decoration: none;
   //padding: 10px;
-  color: #28303F;
+  color: #28303f;
   border-radius: 4px;
   margin: 5px 10px;
   padding: 5px;
-  &:hover, &:focus{
-    background-color: #C6D2FD;
+  &:hover,
+  &:focus {
+    background-color: #c6d2fd;
   }
 }
-.icon-kanban{
-  background-image: url("@/assets/icon/menu/kanban.svg");
+.icon-kanban {
+  background-image: url('@/assets/icon/menu/kanban.svg');
 }
-.icon-list{
-  background-image: url("@/assets/icon/menu/list.svg");
+.icon-list {
+  background-image: url('@/assets/icon/menu/list.svg');
 }
-.icon-timeline{
-  background-image: url("@/assets/icon/menu/timeline.svg");
+.icon-timeline {
+  background-image: url('@/assets/icon/menu/timeline.svg');
 }
 .view-toggle-bar {
   display: flex;
@@ -109,7 +155,7 @@ a{
   display: flex;
   align-items: center;
   //border: 1px solid #cccccc;
-  background-color: #F3F6FF;
+  background-color: #f3f6ff;
   border-radius: 4px;
   margin-top: 10px;
 }
@@ -175,8 +221,8 @@ a{
 }
 
 .v-line {
-  border-left : 1px solid #93AAFD;
-  height : 24px;
+  border-left: 1px solid #93aafd;
+  height: 24px;
   margin: 0 10px;
 }
 </style>

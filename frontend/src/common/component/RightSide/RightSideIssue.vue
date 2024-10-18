@@ -1,8 +1,7 @@
 <script setup>
 import { ref} from 'vue';
 import SearchFriends from "@/common/component/search/SearchFriends.vue";
-
-import {useIssueStore} from "@/stores/scrum/useIssueStore";
+import { useIssueStore } from "@/stores/scrum/useIssueStore";
 
 const issueStore = useIssueStore();
 const issueName = ref('');
@@ -46,9 +45,9 @@ const addIssue = () => {
 
         <div class="time-wrap">
           <label>시작 날짜</label>
-          <input v-model="startTime" type="datetime-local" class="time-editor" />
+          <input v-model="startTime" type="datetime-local" class="time-editor" step="600"/>
           <span>~ 종료 날짜</span>
-          <input v-model="endTime" type="datetime-local" class="time-editor" />
+          <input v-model="endTime" type="datetime-local" class="time-editor" step="600"/>
         </div>
 
         <div>
