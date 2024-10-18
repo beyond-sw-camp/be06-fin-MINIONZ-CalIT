@@ -22,7 +22,7 @@ public class NoteLabel {
 
     private String labelName;
     private String description;
-    private String color;
+    private Integer color;
 
     // NoteLabel : NoteLabelSelect = 1 : N
     @OneToMany(mappedBy = "noteLabel", fetch = FetchType.LAZY)

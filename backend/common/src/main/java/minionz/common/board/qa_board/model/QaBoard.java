@@ -27,8 +27,9 @@ public class QaBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long qaBoardId;
     private String qaboardTitle;
-    private String qaboardContent;
 
+    @Column(name = "qaboard_content", columnDefinition = "LONGTEXT")
+    private String qaboardContent;
 
     @Enumerated(EnumType.ORDINAL)
     private AnswerStatus answerStatus; //답변상태

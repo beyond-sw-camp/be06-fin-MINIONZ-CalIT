@@ -11,36 +11,29 @@ import minionz.common.scrum.label_select.model.TaskLabelSelect;
 import minionz.apiserver.scrum.sprint.model.response.Label;
 import minionz.apiserver.scrum.sprint.model.response.Participant;
 import minionz.common.scrum.meeting.model.Meeting;
-import minionz.common.scrum.sprint.SprintRepository;
+import minionz.common.scrum.sprint.repository.SprintRepository;
 import minionz.common.scrum.sprint.model.Sprint;
-import minionz.common.scrum.sprint_participation.SprintParticipationRepository;
-import minionz.common.scrum.sprint_participation.model.SprintParticipation;
 import minionz.apiserver.scrum.task.model.request.CreateTaskRequest;
 import minionz.apiserver.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.apiserver.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.apiserver.scrum.task.model.response.ReadTaskResponse;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.TaskStatus;
-import minionz.common.scrum.task_participation.TaskParticipationRepository;
-import minionz.common.scrum.task_participation.model.TaskParticipation;
 import minionz.common.scrum.task.model.Task;
-import minionz.common.scrum.workspace.WorkspaceRepository;
 import minionz.common.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
-    private final WorkspaceRepository workspaceRepository;
     private final TaskLabelSelectRepository taskLabelSelectRepository;
-    private final SprintParticipationRepository sprintParticipationRepository;
-    private final TaskParticipationRepository taskParticipationRepository;
+//    private final SprintParticipationRepository sprintParticipationRepository;
     private final SprintRepository sprintRepository;
     private final AlarmService alarmService;
 
@@ -63,23 +56,8 @@ public class TaskService {
                 .meeting(meeting)
                 .build());
 
-
-        SprintParticipation sprintParticipation = sprintParticipationRepository.findBySprintAndUser(Sprint.builder().sprintId(request.getSprintId()).build(), user);
         alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId() );
 
-        if (sprintParticipation.getIsManager()) {
-            request.getParticipants().forEach(participantId ->
-                    taskParticipationRepository.save(TaskParticipation
-                            .builder()
-                            .task(task)
-                            .user(User.builder().userId(participantId).build())
-                            .build())
-            );
-        } else {
-            throw new BaseException(BaseResponseStatus.TASK_LABEL_SELECT_FAIL);
-        }
-
-        //      TODO: 태스크 라벨이 존재하는지 검증하는 유효성 테스트 필요
         request.getLabels().forEach(labelId ->
                 taskLabelSelectRepository.save(TaskLabelSelect
                         .builder()
@@ -122,10 +100,10 @@ public class TaskService {
 
 
     public List<ReadAllTaskResponse> readAllTask(Long sprintId) {
-        List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,null);
 
-        Optional<Sprint> sprint = sprintRepository.findById(sprintId);
-        String workspaceName = sprint.get().getWorkspace().getWorkspaceName();
+        // Optional 조회 및 추가 쿼리 제거
+        String workspaceName = result.isEmpty() ? null : result.get(0).getSprint().getWorkspace().getWorkspaceName();
 
         List<ReadAllTaskResponse> response = result.stream().map(
                 task -> ReadAllTaskResponse
@@ -145,9 +123,9 @@ public class TaskService {
 
         return response;
     }
+
     public List<ReadAllTaskResponse> readAllWorkspaceTask(Long workspaceId) {
         List<Task> result = taskRepository.findAllByWorkspaceWorkspaceId(workspaceId);
-
 
         List<ReadAllTaskResponse> response = result.stream().map(
                 task -> ReadAllTaskResponse
@@ -161,7 +139,6 @@ public class TaskService {
                         .taskNumber(task.getTaskNumber())
                         .participants(findParticipants(task))
                         .priority(task.getPriority())
-
                         .build()
         ).toList();
 
@@ -189,6 +166,48 @@ public class TaskService {
         ).toList();
 
         return response;
+    }
+
+    public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId, Long userId) {
+        // 스프린트 ID로 모든 Task 가져오기
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,userId);
+
+        // 스프린트 정보 가져오기
+        Optional<Sprint> sprint = sprintRepository.findById(sprintId);
+        String workspaceName = sprint.get().getWorkspace().getWorkspaceName();
+
+        // 상태별로 기본 빈 리스트를 미리 준비
+        Map<TaskStatus, List<ReadAllTaskResponse>> groupedByStatus = new HashMap<>();
+        groupedByStatus.put(TaskStatus.NO_STATUS, new ArrayList<>());
+        groupedByStatus.put(TaskStatus.TODO, new ArrayList<>());
+        groupedByStatus.put(TaskStatus.IN_PROGRESS, new ArrayList<>());
+        groupedByStatus.put(TaskStatus.DONE, new ArrayList<>());
+
+        // Task들을 ReadAllTaskResponse로 변환하고 상태별로 그룹화
+        result.stream()
+                .map(task -> ReadAllTaskResponse.builder()
+                        .id(task.getTaskId())
+                        .status(task.getStatus())
+                        .title(task.getTaskTitle())
+                        .labels(findLabels(task))
+                        .startDate(task.getStartDate())
+                        .endDate(task.getEndDate())
+                        .taskNumber(task.getTaskNumber())
+                        .participants(findParticipants(task))
+                        .priority(task.getPriority())
+                        .workspaceName(workspaceName)
+                        .build()
+                )
+                .forEach(response -> {
+                    // TaskStatus 타입 그대로 유지
+                    TaskStatus statusKey = Optional.ofNullable(response.getStatus()).orElse(TaskStatus.NO_STATUS);
+                    groupedByStatus.get(statusKey).add(response); // 상태에 해당하는 리스트에 추가
+                });
+
+        // Map을 List로 변환하여 반환
+        return groupedByStatus.entrySet().stream()
+                .map(entry -> Map.of(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
 
@@ -241,6 +260,7 @@ public class TaskService {
                 participant -> Participant.builder()
                         .id(participant.getUser().getUserId())
                         .userName(participant.getUser().getUserName())
+                        .persona(participant.getUser().getPersona())
                         .isManager(true)
                         .build()
         ).toList();

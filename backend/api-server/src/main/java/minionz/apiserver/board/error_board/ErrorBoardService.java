@@ -12,7 +12,7 @@ import minionz.common.board.error_board.ErrorBoardRepository;
 import minionz.common.board.error_board.model.ErrorBoard;
 import minionz.common.board.error_board.model.ErrorBoardCategory;
 import minionz.common.board.error_board.model.ErrorBoardImage;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.Task;
 import minionz.common.scrum.workspace.WorkspaceRepository;
 import minionz.common.scrum.workspace.model.Workspace;

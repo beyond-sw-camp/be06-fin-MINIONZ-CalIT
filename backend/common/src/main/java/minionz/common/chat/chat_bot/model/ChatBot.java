@@ -26,7 +26,7 @@ public class ChatBot extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String response;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

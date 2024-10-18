@@ -2,7 +2,7 @@ package minionz.batch.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import minionz.common.scrum.sprint.SprintRepository;
+import minionz.common.scrum.sprint.repository.SprintRepository;
 import minionz.common.scrum.sprint.model.Sprint;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -51,22 +52,23 @@ public class SprintReminderBatchConfig {
     @Bean
     public ItemProcessor<Sprint, Map<String, Object>> sprintProcessor() {
         return sprint -> {
-            LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+            LocalDate today = LocalDate.now();
 
-            // 알람을 보낼 사용자 ID 목록 생성
             List<Long> participants = sprint.getSprintParticipations()
                     .stream()
                     .map(sprintParticipation -> sprintParticipation.getUser().getUserId())
                     .toList();
 
-            // 1일 전 알람
-            if (sprint.getEndDate().minusDays(2).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
+            if (sprint.getEndDate().toLocalDate().isEqual(today.minusDays(3))) {
                 return Map.of("participants", participants, "id", sprint.getSprintId(), "alarmId", 9L);
             }
 
-            // 1시간 전 알람
-            if (sprint.getEndDate().minusDays(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
+            if (sprint.getEndDate().toLocalDate().isEqual(today.minusDays(1))) {
                 return Map.of("participants", participants, "id", sprint.getSprintId(), "alarmId", 10L);
+            }
+
+            if (sprint.getEndDate().toLocalDate().isEqual(today)) {
+                return Map.of("participants", participants, "id", sprint.getSprintId(), "alarmId", 11L);
             }
 
             return null;

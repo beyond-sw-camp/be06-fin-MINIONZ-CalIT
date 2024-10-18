@@ -22,7 +22,9 @@ public class Message extends BaseEntity {
     private Long chatRoomId;
     private Long userId;
 
+    @Column(name = "message_contents", columnDefinition = "LONGTEXT")
     private String messageContents;
+
     private String fileType;
     private String fileSize;
     private String fileUrl;

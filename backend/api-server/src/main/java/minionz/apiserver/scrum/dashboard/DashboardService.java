@@ -5,12 +5,12 @@ import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import minionz.apiserver.scrum.dashboard.model.request.ReadMyDashboardRequest;
 import minionz.apiserver.scrum.dashboard.model.response.*;
-import minionz.common.scrum.issue.IssueRepository;
+import minionz.common.scrum.issue.repository.IssueRepository;
 import minionz.common.scrum.meeting.model.Meeting;
 import minionz.common.scrum.sprint.model.Sprint;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.meeting.MeetingRepository;
-import minionz.common.scrum.sprint.SprintRepository;
+import minionz.common.scrum.sprint.repository.SprintRepository;
 import minionz.common.scrum.task.model.Task;
 import minionz.common.scrum.task.model.TaskStatus;
 import minionz.common.scrum.workspace.WorkspaceRepository;
@@ -39,8 +39,8 @@ public class DashboardService {
         MyProgressResponse progress = MyProgressResponse
                 .builder()
                 .workspaceCount(workspaceRepository.findWorkspaceCountByUserId(userId))
-                .allTaskCount(taskRepository.findMyAllTask(userId))
-                .successTaskCount(taskRepository.findMyDoneTask(userId))
+                .allTaskCount(taskRepository.findMyTaskCount(userId, false))
+                .successTaskCount(taskRepository.findMyTaskCount(userId, true))
                 .build();
 
         List<Task> tasks = taskRepository.findPriorityMyTasks(userId, pageable);
@@ -105,7 +105,7 @@ public class DashboardService {
         Sprint sprint = sprintRepository.findById(sprintId).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.SPRINT_NOT_EXISTS));
 
-        List<Task> tasks = taskRepository.findAllBySprintSprintId(sprintId);
+        List<Task> tasks = taskRepository.findAllBySprintIdAndUserId(sprintId,null);
 
         // 전체 작업 수 계산
         int allTaskCount = tasks.size();

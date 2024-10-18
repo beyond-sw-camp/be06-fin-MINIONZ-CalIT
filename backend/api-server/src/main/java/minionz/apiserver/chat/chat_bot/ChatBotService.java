@@ -2,6 +2,7 @@ package minionz.apiserver.chat.chat_bot;
 
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.chat.chat_bot.model.request.ChatBotRequest;
+import minionz.apiserver.chat.chat_bot.model.response.ReadChatBotResponse;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponseStatus;
 import minionz.common.chat.chat_bot.ChatBotRepository;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -46,10 +49,13 @@ public class ChatBotService {
         String webhookUrl;
         if (message.contains("회의록")) {
             // 회의록 요약에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook-test/calit-test2";
-        } else {
+            webhookUrl = "http://localhost:5678/webhook/calit-note";
+        } else if (message.contains("회의")) {
             // 일반 회의에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook-test/calit-test";
+            webhookUrl = "http://localhost:5678/webhook/calit-meeting";
+        } else {
+            // 기타 메시지에 대한 처리
+            webhookUrl = "http://localhost:5678/webhook/calit-etc";
         }
 
         try {
@@ -73,6 +79,27 @@ public class ChatBotService {
             return chatBotResponse.getUser().getUserId();
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.CHATBOT_DATABASE_ERROR);
+        }
+    }
+
+    public List<ReadChatBotResponse> getChatHistory (Long userId) {
+        try{
+            List<ChatBot> chatHistory = chatBotRepository.findAllByUser_UserIdOrderByCreatedAtAsc(userId);
+
+            return chatHistory.stream()
+                    .map(chatBot -> ReadChatBotResponse.builder()
+                            .botQuestionId(chatBot.getBotQuestionId())
+                            .question(chatBot.getQuestion())
+                            .response(chatBot.getResponse())
+                            .userQuestionAt(chatBot.getCreatedAt())
+                            .botResponseAt(chatBot.getModifiedAt())
+                            .userId(chatBot.getUser().getUserId())
+                            .userName(chatBot.getUser().getUserName())
+                            .build())
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.CHATBOT_LIST_FAILED);
         }
     }
 }

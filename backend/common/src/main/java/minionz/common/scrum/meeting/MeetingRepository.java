@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
-
     @Query("SELECT m FROM Meeting m " +
             "JOIN FETCH m.sprint s " +
             "JOIN FETCH s.workspace w " +
@@ -27,4 +26,11 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> findMyMeetingsInPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 
     Page<Meeting> findMeetingByStartDateAfter(LocalDateTime startDate, Pageable pageable);
+
+    @Query("SELECT m FROM Meeting m " +
+    "JOIN FETCH m.meetingParticipations mp " +
+    "JOIN FETCH m.sprint s " +
+    "JOIN FETCH s.workspace w " +
+    "WHERE w.workspaceId = :workspaceId")
+    Page<Meeting> findMeetingByWorkspace(Long workspaceId, Pageable pageable);
 }

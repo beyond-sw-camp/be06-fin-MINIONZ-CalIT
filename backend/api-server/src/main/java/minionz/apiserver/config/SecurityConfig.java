@@ -33,6 +33,7 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -85,11 +86,12 @@ public class SecurityConfig {
             config.failureHandler(oAuth2AuthenticationFailureHandler);
             config.userInfoEndpoint((endpoint) -> endpoint.userService(customOauth2UserService));
         });
-
         http
-                .logout(logout -> logout
-                        .logoutUrl("/oauth-login/logout")
-                        .logoutSuccessUrl("/oauth-login/logout-success"));
+                .logout((logout) -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                        .logoutSuccessUrl("https://calit.kro.kr/")
+                        .deleteCookies("ATOKEN")
+                        .addLogoutHandler(new CustomLogoutHandler()));
 
         http
                 .authorizeHttpRequests((requestMatcher) -> requestMatcher
@@ -184,7 +186,7 @@ public class SecurityConfig {
             }
 
             if (roles.contains(role)) {
-                String token = jwtUtil.createToken(  customUserDetails.getLoginId(), customUserDetails.getUserId(), rolesJson,customUserDetails.getUserName());
+                String token = jwtUtil.createToken(customUserDetails.getLoginId(), customUserDetails.getUserId(), rolesJson, customUserDetails.getUserName());
                 Cookie aToken = new Cookie("ATOKEN", token);
                 aToken.setHttpOnly(true);
                 aToken.setSecure(true);
@@ -224,10 +226,10 @@ public class SecurityConfig {
     }
 
     public static class RoleConstants {
-        public static final String ROLE_WORKSPACE_ADMIN = "ROLE_WORKSPACE_ADMIN";
-        public static final String ROLE_WORKSPACE_MEMBER = "ROLE_WORKSPACE_MEMBER";
-        public static final String ROLE_SPRINT_ADMIN = "ROLE_SPRINT_ADMIN";
-        public static final String ROLE_SPRINT_MEMBER = "ROLE_SPRINT_MEMBER";
-        public static final String ROLE_MEETING_MEMBER = "ROLE_MEETING_MEMBER";
+        public static final String ROLE_WORKSPACE_ADMIN = "W_A";
+        public static final String ROLE_WORKSPACE_MEMBER = "W_M";
+        public static final String ROLE_SPRINT_ADMIN = "S_A";
+        public static final String ROLE_SPRINT_MEMBER = "S_M";
+//        public static final String ROLE_MEETING_MEMBER = "M_M";
     }
 }

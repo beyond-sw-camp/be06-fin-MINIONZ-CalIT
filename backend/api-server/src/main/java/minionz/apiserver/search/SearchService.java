@@ -2,7 +2,6 @@ package minionz.apiserver.search;
 
 import lombok.RequiredArgsConstructor;
 import minionz.apiserver.search.model.response.SearchUserResponse;
-import minionz.common.search.SearchRepository;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;
 import org.springframework.stereotype.Service;
@@ -13,14 +12,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class SearchService {
-    private final SearchRepository searchRepository;
     private final UserRepository userRepository;
 
     public List<SearchUserResponse> getAllUser() {
         List<User> users = userRepository.findAll();
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
-                .map(user -> searchUserResponse.builder()
+                .map(user -> SearchUserResponse.builder()
                         .searchUserIdx(user.getUserId())
                         .userName(user.getUserName())
                         .email(user.getEmail())
@@ -30,7 +28,7 @@ public class SearchService {
     }
 
     public List<SearchUserResponse> getUsernamesByWorkspaceId(Long workspaceId) {
-        List<User> users = searchRepository.findByWorkspaceParticipations_Workspace_WorkspaceId(workspaceId);
+        List<User> users = userRepository.findByWorkspaceParticipations_Workspace_WorkspaceId(workspaceId);
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
                 .map(user -> searchUserResponse.builder()
@@ -45,7 +43,7 @@ public class SearchService {
     }
 
     public List<SearchUserResponse> containedUser(String loginId) {
-        List<User> users = searchRepository.findByLoginIdContaining(loginId);
+        List<User> users = userRepository.findByLoginIdContaining(loginId);
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
                 .map(user -> searchUserResponse.builder()
@@ -53,6 +51,7 @@ public class SearchService {
                         .userName(user.getUserName())
                         .loginId(user.getLoginId())
                         .email(user.getEmail())
+                        .persona(user.getPersona())
                         .build())
                 .collect(Collectors.toList());
     }

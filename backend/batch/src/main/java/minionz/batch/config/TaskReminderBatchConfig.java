@@ -1,7 +1,7 @@
 package minionz.batch.config;
 
 import lombok.RequiredArgsConstructor;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.Task;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -48,24 +49,25 @@ public class TaskReminderBatchConfig {
     @Bean
     public ItemProcessor<Task, Map<String, Object>> taskProcessor() {
         return task -> {
-            LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+            LocalDate today = LocalDate.now();
 
             List<Long> participants = task.getTaskParticipations()
                     .stream()
                     .map(taskParticipation -> taskParticipation.getUser().getUserId())
                     .toList();
 
-            if (task.getEndDate().minusDays(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
+            if (task.getEndDate().toLocalDate().isEqual(today.minusDays(1))) {
                 return Map.of("participants", participants, "id", task.getTaskId(), "alarmId", 7L);
             }
 
-            if (task.getEndDate().minusHours(1).truncatedTo(ChronoUnit.MINUTES).isEqual(now)) {
+            if (task.getEndDate().toLocalDate().isEqual(today)) {
                 return Map.of("participants", participants, "id", task.getTaskId(), "alarmId", 8L);
             }
 
             return null;
         };
     }
+
 
     @Bean
     public ItemWriter<Map<String, Object>> taskWriter() {
