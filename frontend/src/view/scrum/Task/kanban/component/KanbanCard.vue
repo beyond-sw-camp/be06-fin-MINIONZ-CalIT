@@ -16,7 +16,7 @@ defineProps({
     <p>{{ task.title }}</p>
     <div class="labels">
       <span v-for="label in task.labels" :key="label" class="label">{{
-        label
+        label.labelName
       }}</span>
     </div>
     <div class="task-footer">
