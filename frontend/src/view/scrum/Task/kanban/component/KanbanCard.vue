@@ -25,17 +25,17 @@ function navigateToDetailPage(task) {
     <p @click="navigateToDetailPage(task)">{{ task.title }}</p>
     <div class="labels">
       <span v-for="label in task.labels" :key="label" class="label">{{
-        label
+        label.labelName
       }}</span>
     </div>
     <div class="task-footer">
       <div class="avatars">
         <img
-            v-for="(user) in task.participants"
-            :key="user.id"
-            :src="setPersona(user.persona)"
-            class="avatar"
-            alt="users"
+          v-for="user in task.participants"
+          :key="user.id"
+          :src="setPersona(user.persona)"
+          class="avatar"
+          alt="users"
         />
         <span v-if="task.participants.length > 3" class="more">and more</span>
       </div>
@@ -90,14 +90,6 @@ p {
 
 .due-date {
   font-size: 10px;
-}
-
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  position: absolute;
-  margin-right: 0;
 }
 
 .more {

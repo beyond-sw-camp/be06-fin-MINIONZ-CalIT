@@ -1,10 +1,9 @@
 <script setup>
-import {useRoute} from 'vue-router';
-import {inject, onMounted, ref} from 'vue';
-import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
-import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
-
-// import user1 from '@/assets/icon/persona/user1.svg';
+import { useRoute } from 'vue-router';
+import { inject, onMounted, ref } from 'vue';
+import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
+import QuillEditor from '@/common/component/Editor/QuillEditorMeeting.vue';
+import { setPersona } from '@/utils/personaUtils';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -19,19 +18,18 @@ contentsDescription.value = '회의 정보를 확인해보세요!';
 const meetingStore = useMeetingStore();
 const showEditor = ref(false);
 const meeting = ref({
-    id: 0,
-    title: "",
-    contents: "",
-    startDate: "",
-    endDate: "",
-    participants: [
-
-    ],
-    createdAt: ""
+  id: 0,
+  title: '',
+  contents: '',
+  startDate: '',
+  endDate: '',
+  participants: [],
+  createdAt: '',
+  labels: [],
 });
 
 onMounted(async () => {
-    meeting.value = await meetingStore.getMeeting({ workspaceId, meetingId });
+  meeting.value = await meetingStore.getMeeting({ workspaceId, meetingId });
 });
 </script>
 
@@ -43,28 +41,15 @@ onMounted(async () => {
           <i class="meeting-title column-icon"></i>
           회의록 제목
         </span>
-        <p class="title-editor"> {{meeting.title}}</p>
+        <p class="title-editor">{{ meeting.title }}</p>
       </div>
       <div class="issue-section">
         <span class="column">
           <i class="meeting-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor">{{meeting.contents}}</p>
+        <p class="description-editor">{{ meeting.contents }}</p>
       </div>
-<!--      <div class="author-section">-->
-<!--        <div class="author">-->
-<!--          <span class="column">-->
-<!--            <i class="user-editor column-icon"></i>-->
-<!--            작성자-->
-<!--          </span>-->
-<!--          <div class="user-profile">-->
-<!--            <img :src="user1" alt="작성자">-->
-<!--            <span>최승은</span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-
       <div class="author-section">
         <div class="participants">
           <span class="column">
@@ -72,9 +57,16 @@ onMounted(async () => {
             회의 참여자
           </span>
           <div class="users-list">
-            <div v-for="(participant, index) in meeting.participants" :key="index" class="user-profile">
-              <img :src="participant.image" :alt="`참여자 ${index + 1}`">
-              <span>{{ participant.name }}</span>
+            <div
+              v-for="(participant, index) in meeting.participants"
+              :key="index"
+              class="user-profile"
+            >
+              <img
+                :src="setPersona(participant.persona)"
+                :alt="`참여자 ${index + 1}`"
+              />
+              <span>{{ participant.userName }}</span>
             </div>
           </div>
         </div>
@@ -84,16 +76,22 @@ onMounted(async () => {
           <i class="label-add column-icon"></i>
           라벨
         </span>
-        <button class="label-button">Frontend</button>
+        <div v-for="label in meeting.labels" :key="label.id">
+          <button class="label-button" style="margin-right: 5px">
+            {{ label.labelName }}
+          </button>
+        </div>
       </div>
-      <div class="save-button" @click="showEditor = !showEditor">회의록 작성하기</div>
-      <QuillEditor v-if="showEditor" class="content-editor"/>
+      <div class="save-button" @click="showEditor = !showEditor">
+        회의록 작성하기
+      </div>
+      <QuillEditor v-if="showEditor" class="content-editor" />
     </div>
   </div>
 </template>
 
 <style scoped>
-a{
+a {
   text-decoration: none;
   text-align: center;
 }
@@ -115,7 +113,7 @@ a{
 }
 
 .user-multiple {
-  background-image: url("@/assets/icon/boardIcon/userMultiple.svg");
+  background-image: url('@/assets/icon/boardIcon/userMultiple.svg');
 }
 
 .column {
@@ -134,17 +132,18 @@ a{
   display: flex;
 }
 
-.author, .participants {
+.author,
+.participants {
   display: flex;
   align-items: center;
 }
 
 .meeting-title {
-  background-image: url("@/assets/icon/boardIcon/titleEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/titleEdit.svg');
 }
 
 .meeting-description {
-  background-image: url("@/assets/icon/boardIcon/quillDescription.svg");
+  background-image: url('@/assets/icon/boardIcon/quillDescription.svg');
 }
 
 .column-icon {
@@ -155,22 +154,23 @@ a{
 }
 
 .user-editor {
-  background-image: url("@/assets/icon/boardIcon/userEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/userEdit.svg');
 }
 
-.author img, .participants img {
+.author img,
+.participants img {
   border-radius: 50%;
   width: 30px;
   height: 30px;
 }
 
 .label-add {
-  background-image: url("@/assets/icon/boardIcon/labelIcon.svg");
+  background-image: url('@/assets/icon/boardIcon/labelIcon.svg');
 }
 
 .label-button {
-  background-color: #FBDBEA;
-  color: #DB2777;
+  background-color: #fbdbea;
+  color: #db2777;
   border: none;
   padding: 5px 10px;
   border-radius: 15px;
@@ -188,19 +188,19 @@ a{
 }
 
 .issue-id {
-  color: #28303F;
-  background-color: #F3F6FF;
+  color: #28303f;
+  background-color: #f3f6ff;
   padding: 5px 10px;
   border-radius: 15px;
   font-size: 12px;
 }
 
 .issue-add {
-  background-image: url("@/assets/icon/boardIcon/issueAdd.svg");
+  background-image: url('@/assets/icon/boardIcon/issueAdd.svg');
 }
 
 .task-add {
-  background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
+  background-image: url('@/assets/icon/boardIcon/taskAdd.svg');
 }
 
 .title-editor {
@@ -221,7 +221,7 @@ a{
   padding: 10px;
   background-color: white;
   margin-top: 10px;
-  border-top: 1px solid #28303F;
+  border-top: 1px solid #28303f;
   position: relative;
 }
 
@@ -249,16 +249,19 @@ a{
   gap: 10px;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: transform 0.5s, opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   transform: translateX(100%);
   opacity: 0;
 }
 
-.fade-enter-to, .fade-leave {
+.fade-enter-to,
+.fade-leave {
   transform: translateX(0);
   opacity: 1;
 }

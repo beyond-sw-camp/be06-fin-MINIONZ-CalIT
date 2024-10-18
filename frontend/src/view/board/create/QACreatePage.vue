@@ -1,18 +1,18 @@
 <script setup>
-import { inject, ref, onMounted } from "vue";
-import { useTaskStore } from "@/stores/scrum/useTaskStore";
-import { useQAStore } from "@/stores/board/useQAStore";
-import { useRoute } from "vue-router";
-import Multiselect from "vue-multiselect";
-import { useFriendsStore } from "@/stores/user/useFriendsStore";
-import router from "@/router";
-import { Notyf } from "notyf";
+import { inject, ref, onMounted } from 'vue';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
+import { useQAStore } from '@/stores/board/useQAStore';
+import { useRoute } from 'vue-router';
+import Multiselect from 'vue-multiselect';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import router from '@/router';
+import { Notyf } from 'notyf';
 
-const contentsTitle = inject("contentsTitle");
-const contentsDescription = inject("contentsDescription");
+const contentsTitle = inject('contentsTitle');
+const contentsDescription = inject('contentsDescription');
 
-contentsTitle.value = "QA 게시글 만들기";
-contentsDescription.value = "QA 게시글을 만들어 보세요!";
+contentsTitle.value = 'QA 게시글 만들기';
+contentsDescription.value = 'QA 게시글을 만들어 보세요!';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -43,7 +43,9 @@ const searchFriends = async () => {
 };
 
 const deleteParticipant = (searchUserIdx) => {
-  participants.value = participants.value.filter(participant => participant.searchUserIdx !== searchUserIdx);
+  participants.value = participants.value.filter(
+    (participant) => participant.searchUserIdx !== searchUserIdx
+  );
 };
 
 const handleFileChange = (event) => {
@@ -54,13 +56,13 @@ const savePost = async () => {
   try {
     const formData = new FormData();
 
-    const response = await qaStore.writePost({
+    await qaStore.writePost({
       workspaceId,
       taskId: selectedTask.value,
       qaboardTitle: qaTitle.value,
       qaboardContent: qaContent.value,
       workspaceParticipationId: 3,
-      formData
+      formData,
     });
     notyf.success('게시글이 성공적으로 저장되었습니다.');
     router.push(`/workspace/${workspaceId}/scrum/board/qa/list`);
@@ -76,7 +78,10 @@ onMounted(async () => {
     tasks.value = Array.isArray(response) ? response : [];
     await searchFriends();
   } catch (error) {
-    console.error('태스크 목록을 불러오는 중 오류가 발생했습니다.', error.message);
+    console.error(
+      '태스크 목록을 불러오는 중 오류가 발생했습니다.',
+      error.message
+    );
   }
 });
 </script>
@@ -89,21 +94,42 @@ onMounted(async () => {
           <!-- 게시글 제목 -->
           <div class="qa-title-container">
             <span class="column">게시글 제목</span>
-            <input v-model="qaTitle" class="title-editor" placeholder="게시글 제목"/>
+            <input
+              v-model="qaTitle"
+              class="title-editor"
+              placeholder="게시글 제목"
+            />
           </div>
 
           <div class="author-section">
             <div class="participants">
               <span class="column">담당자</span>
-              <multiselect v-model="selectedParticipants" :options="filteredFriends" :searchable="true"
-                           :close-on-select="true" :show-labels="false" placeholder="참여자를 선택하세요" label="userName"
-                           track-by="searchUserIdx"/>
+              <multiselect
+                v-model="selectedParticipants"
+                :options="filteredFriends"
+                :searchable="true"
+                :close-on-select="true"
+                :show-labels="false"
+                placeholder="참여자를 선택하세요"
+                label="userName"
+                track-by="searchUserIdx"
+              />
               <div class="users-list">
-                <div class="selections participants" v-if="participants && participants.length">
-                  <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
+                <div
+                  class="selections participants"
+                  v-if="participants && participants.length"
+                >
+                  <span
+                    class="item"
+                    v-for="participant in participants"
+                    :key="participant.searchUserIdx"
+                  >
                     {{ participant.userName }}
-                    <span @click="deleteParticipant(participant.searchUserIdx)"
-                          style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+                    <span
+                      @click="deleteParticipant(participant.searchUserIdx)"
+                      style="cursor: pointer; margin: 0 10px; padding: 0"
+                      >x</span
+                    >
                   </span>
                 </div>
               </div>
@@ -121,12 +147,17 @@ onMounted(async () => {
 
           <div class="qa-content-section">
             <label for="content">글 작성하기</label>
-            <textarea v-model="qaContent" id="content" class="content-editor" placeholder="내용을 입력하세요..."></textarea>
+            <textarea
+              v-model="qaContent"
+              id="content"
+              class="content-editor"
+              placeholder="내용을 입력하세요..."
+            ></textarea>
           </div>
 
           <div class="file-upload">
             <label for="files">파일 업로드</label>
-            <input type="file" id="files" multiple @change="handleFileChange"/>
+            <input type="file" id="files" multiple @change="handleFileChange" />
           </div>
         </div>
       </div>
@@ -175,7 +206,7 @@ onMounted(async () => {
 }
 
 .qa-title {
-  background-image: url("@/assets/icon/boardIcon/quillEditor.svg");
+  background-image: url('@/assets/icon/boardIcon/quillEditor.svg');
 }
 
 .title-editor {
