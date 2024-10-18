@@ -48,7 +48,7 @@ kind: CronJob
 metadata:
   name: calit-task
 spec:
-  schedule: "*/10 * * * *"
+  schedule: "0 0 * * *"
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 0
   jobTemplate:
@@ -93,7 +93,7 @@ kind: CronJob
 metadata:
   name: calit-sprint
 spec:
-  schedule: "*/10 * * * *"
+  schedule: "0 0 * * *"
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 0
   jobTemplate:
