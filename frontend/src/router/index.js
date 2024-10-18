@@ -320,7 +320,7 @@ const routes = [
                     component: () => import('@/view/board/list/QAListPage.vue'),
                   },
                   {
-                    path: 'detail/:id',
+                    path: 'detail/:boardId',
                     name: 'QADetail',
                     component: () =>
                       import('@/view/board/detail/QADetailPage.vue'),

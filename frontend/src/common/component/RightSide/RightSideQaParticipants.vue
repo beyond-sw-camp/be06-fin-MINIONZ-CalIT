@@ -1,16 +1,39 @@
 <script setup>
-import {ref, defineEmits} from "vue";
-import SearchQaFriends from "../search/SearchQaFriends.vue";
+import {ref, defineEmits, onMounted} from "vue";
+import { useFriendsStore } from "@/stores/user/useFriendsStore";
+import Multiselect from "vue-multiselect";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const friendStore = useFriendsStore();
 const participants = ref([]);
-const emit = defineEmits(['update-participants']);
-const updateSelectedParticipants = (newParticipants) => {
-  participants.value = newParticipants;
+const filteredFriends = ref([]);
+const emit = defineEmits(['update-participants', 'update-qa-participants']);
+
+const searchFriends = async () => {
+  try {
+    await friendStore.getFriendsList(workspaceId);
+    filteredFriends.value = friendStore.friends;
+  } catch (error) {
+    console.error('Error fetching Friends:', error);
+    filteredFriends.value = [];
+  }
+};
+
+const deleteParticipant = (searchUserIdx) => {
+  participants.value = participants.value.filter(participant => participant.searchUserIdx !== searchUserIdx);
 };
 
 const saveParticipantsToUserList = () => {
   emit('update-participants', participants.value);
+  emit('update-qa-participants', participants.value);
 };
+
+onMounted(async () => {
+  await searchFriends();
+});
 </script>
 
 <template>
@@ -18,7 +41,27 @@ const saveParticipantsToUserList = () => {
     <h2>participants 추가하기</h2>
     <hr/>
     <div class="participants-wrap">
-      <SearchQaFriends @update-selected-participants="updateSelectedParticipants" />
+      <div>
+        <label for="participants">참여자 선택</label>
+        <multiselect
+            v-model="participants"
+            :options="filteredFriends"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            placeholder="참여자를 선택하세요"
+            label="userName"
+            track-by="searchUserIdx"
+        />
+<!--        <p class="error-message" v-if="errors.participants">{{ errors.participants }}</p>-->
+        <div class="selections participants" v-if="participants && participants.length">
+              <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
+                {{ participant.userName }}
+                <span @click="deleteParticipant(participant.searchUserIdx)"
+                      style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+              </span>
+        </div>
+      </div>
       <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
     </div>
   

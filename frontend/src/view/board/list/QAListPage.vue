@@ -1,8 +1,8 @@
 <script setup>
-import {computed, inject, ref} from 'vue';
+import { computed, inject, onMounted, ref, watch } from 'vue';
 import { useQAStore } from "@/stores/board/useQAStore";
 import Pagination from '@/common/component/PaginationComponent.vue';
-import BoardList from "@/common/component/Board/BoardList.vue";
+import BoardList from "@/common/component/Board/QABoardList.vue";
 import SearchComponent from "@/common/component/SearchComponent.vue";
 import {useRoute} from "vue-router";
 
@@ -17,43 +17,58 @@ contentsDescription.value = 'QA 목록을 확인하세요!';
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const searchKeyword = ref('');
+
+const totalPages = computed(() => Math.ceil(( postList.value?.length || 0) / itemsPerPage));
+const prevPage = () => { if (currentPage.value > 1) { currentPage.value--; }};
+const nextPage = () => { if (currentPage.value < totalPages.value) { currentPage.value++; }}
+const goToPage = (page) => { currentPage.value = page };
+
+// const editItem = (item) => { console.log('Editing:', item)};
+// const deleteItem = (item) => { console.log('Deleting:', item)};
 
 const qaStore = useQAStore();
+const postList = ref([]);
 
-const totalPages = computed(() => Math.ceil((qaStore.getPostList().value?.length || 0) / itemsPerPage));
+const fetchPostList = async () => {
+  try {
+    const page = Number(currentPage.value);
+    if (isNaN(page) || page < 1) {
+      console.error('유효하지 않은 페이지 번호:', currentPage.value);
+      return;
+    }
 
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
+    if (searchKeyword.value) {
+      const result = await qaStore.searchQaBoardByKeyword({workspaceId, page, itemsPerPage, searchKeyword});
+      postList.value = result || [];
+    } else {
+      await qaStore.getPostList(workspaceId, page, itemsPerPage);
+      postList.value = qaStore.postList || [];
+    }
+  } catch (error) {
+    console.error('게시글 목록을 가져오는 중 오류가 발생했습니다:', error);
   }
-};
+}
+onMounted(async () => { await fetchPostList() });
+watch(currentPage, async () => { await fetchPostList() });
 
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
-};
+watch(currentPage, async () => {
+  await fetchPostList();
+});
 
-const goToPage = (page) => {
-  currentPage.value = page;
-};
-
-const editItem = (item) => {
-  console.log('Editing:', item);
-};
-
-const deleteItem = (item) => {
-  console.log('Deleting:', item);
-};
+watch(searchKeyword, async () => {
+  currentPage.value = 1;
+  await fetchPostList();
+});
 </script>
 
 <template>
   <div class="board-list-container">
-    <div v-if="qaStore.getPostList().value && qaStore.getPostList().value.length > 0">
+    <div v-if="postList.length > 0">
       <div class="header">
         <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
       </div>
-      <BoardList :items="qaStore" thcolumn="상태" column="state" board-type="qa" @edit-item="editItem" @delete-item="deleteItem" />
+      <BoardList :items="postList"/>
       <Pagination
           :currentPage="currentPage"
           :totalPages="totalPages"

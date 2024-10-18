@@ -97,9 +97,8 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 const fetchLabels = async () => {
-  const labelStore = useSprintLabelStore();
-  await labelStore.getSprintLabel(workspaceId);
-  availableLabels.value = labelStore.labels;
+  await sprintLabelStore.getSprintLabel(workspaceId);
+  availableLabels.value = sprintLabelStore.labels;
 };
 
 onMounted(() => {

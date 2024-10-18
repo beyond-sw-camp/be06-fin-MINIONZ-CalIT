@@ -1,7 +1,8 @@
 <script setup>
-import { defineProps} from 'vue';
+import { defineProps } from 'vue';
+import { useRoute } from "vue-router";
+import { formatDate } from "@/utils/timeUtils";
 import router from "@/router";
-import {useRoute} from "vue-router";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -14,13 +15,7 @@ defineProps({
 });
 
 function navigateToDetailPage(item) {
-  router.push({
-    name: 'ErrorDetailPage',
-    params: {
-      workspaceId: workspaceId,
-      boardId: item.errorBoardId,
-    }
-  });
+    router.push(`/workspace/${workspaceId}/scrum/board/qa/detail/${item.qaBoardId}`);
 }
 </script>
 
@@ -29,26 +24,21 @@ function navigateToDetailPage(item) {
     <thead>
     <tr>
       <th>게시글 제목</th>
+      <th>내용</th>
+      <th>Task</th>
+      <th>담당자</th>
       <th>작성자</th>
-      <th>{{thcolumn}}</th>
       <th>작성 시간</th>
-      <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr v-for="(item, index) in items" :key="index" @click="navigateToDetailPage">
-      <td class="title">{{ item.errboardTitle  }}</td>
-      <td>{{ item.userName  }}</td>
-      <td>{{ item.errboardCategory }}</td>
-      <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
-      <td class="action-bundle">
-        <button @click="$emit('edit-item', item)" class="action-btn edit-btn">
-          <i class="edit-icon"></i>
-        </button>
-        <button @click="$emit('delete-item', item)" class="action-btn delete-btn">
-          <i class="delete-icon"></i>
-        </button>
-      </td>
+    <tr v-for="(item, index) in items" :key="index" @click="navigateToDetailPage(item)">
+        <td class="title">{{ item.qaboardTitle  }}</td>
+          <td>{{ item.qaboardContent }}</td>
+        <td>{{ item.taskName  }}</td>
+        <td>{{ item.assignUser }}</td>
+        <td>{{ item.userName }}</td>
+        <td>{{ formatDate(item.createdAt) }}</td>
     </tr>
     </tbody>
   </table>
@@ -61,7 +51,7 @@ a{
 }
 
 .board-table {
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
   margin: 0 30px;
 }

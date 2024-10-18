@@ -1,7 +1,8 @@
 <script setup>
-import BoardDetail from "@/common/component/Board/BoardDetail.vue";
-import {inject} from "vue";
-import { useQAStore} from "@/stores/board/useQAStore";
+import BoardDetail from "@/common/component/Board/QABoardDetail.vue";
+import {computed, inject} from "vue";
+import { useRoute } from 'vue-router';
+import { useQAStore } from "@/stores/board/useQAStore";
 import DateComment from "@/view/board/component/DateComment.vue";
 import CommentComponent from "@/view/board/detail/componenet/CommentComponent.vue";
 
@@ -12,21 +13,32 @@ contentsTitle.value = 'QA 상세 보기';
 contentsDescription.value = 'QA를 확인하세요!';
 
 const qaStore = useQAStore();
+const route = useRoute();
+const boardId = route.params.boardId;
+
+const postDetail = computed(() => qaStore.postDetail);
+
+const fetchQaDetail = async () => {
+  const postDetail = await qaStore.getPostDetail(boardId);
+  contentsTitle.value = postDetail.title || 'QA 상세 보기';
+  contentsDescription.value = postDetail.description || 'QA를 확인하세요!';
+};
+
+fetchQaDetail();
 </script>
 
 <template>
   <div class="qa-detail-container">
     <div>
       <BoardDetail
-          :title="qaStore.postDetail.title"
-          :status="qaStore.postDetail.status"
-          :subheading="qaStore.postDetail.subheading"
-          :descriptionList="qaStore.postDetail.descriptionList"
-          :owner="qaStore.postDetail.owner"
+          :title="postDetail.value?.qaBoardTitle || ''"
+          :descriptionList="[postDetail.value?.qaBoardContent || '']"
+          :status="postDetail.value?.answerStatus || ''"
+          :owner="postDetail.value?.userName || ''"
       />
       <DateComment
-          :date="qaStore.postDetail.date"
-          :comments="qaStore.postDetail.comments"
+          :date="postDetail.value.createdAt"
+          :comments="postDetail.value.comments"
       />
     </div>
     <CommentComponent/>

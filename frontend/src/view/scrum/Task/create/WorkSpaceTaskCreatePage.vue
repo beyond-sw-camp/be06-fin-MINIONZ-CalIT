@@ -23,7 +23,6 @@ const workspaceId = route.params.workspaceId;
 const notyf = new Notyf();
 
 const friendStore = useFriendsStore();
-const sprintStore = useSprintStore();
 const taskStore = useTaskStore();
 const taskLabelStore = useTaskLabelStore();
 
@@ -32,7 +31,7 @@ const { handleSubmit, errors } = useForm({
     selectedSprintId: yup.string().required('스프린트를 선택해주세요'),
     taskName: yup.string().required('Task 제목을 입력해주세요'),
     taskContent: yup.string().required('Task 내용을 입력해주세요'),
-    participants: yup.array().min(1, '담당자를 선택해주세요'),
+    participants: yup.array().min(1, '담당자를 선택하세요'),
     selectedLevel: yup.string().required('난이도를 선택해주세요'),
     selectedPriority: yup.string().required('중요도를 선택해주세요'),
     startTime: yup.string().required('시작 날짜를 선택해주세요'),
@@ -50,9 +49,8 @@ const { value: startTime } = useField('startTime');
 const { value: endTime } = useField('endTime');
 
 const sprintOptions = ref([]);
-const taskSearch = ref('');
-const selectedTasks = ref([]);
 const filteredFriends = ref([]);
+const selectedParticipant = ref(null);
 const labels = ref([]);
 const availableLabels = ref([]);
 const selectedLabel = ref([]);
@@ -87,26 +85,17 @@ const onSubmit = handleSubmit(async (values) => {
     const validatedEndTime = timeInputUtils.validateTime(values.endTime);
 
     await taskStore.addTask({
+      sprintId: selectedSprintId.value,
       title: values.taskName,
       contents: values.taskContent,
       participants: values.participants.map(participant => participant.searchUserIdx),
-      level: values.selectedLevel,
+      difficulty: values.selectedLevel,
       priority: values.selectedPriority,
-      startTime: validatedStartTime,
-      endTime: validatedEndTime,
-      sprintId: selectedSprintId.value
-    });
-
-    taskName.value = '';
-    taskContent.value = '';
-    participants.value = [];
-    selectedLevel.value = '';
-    selectedPriority.value = '';
-    startTime.value = '';
-    endTime.value = '';
-    selectedSprintId.value = null;
-    selectedTasks.value = [];
-    taskSearch.value = '';
+      startDate: validatedStartTime,
+      endDate: validatedEndTime,
+      labels: selectedLabel.value.map(label => label.id),
+      meetingId: 0
+    }, selectedSprintId.value);
     notyf.success('Task가 추가되었습니다.');
     router.push(`/workspace/${workspaceId}/scrum/task/list`);
   } catch (error) {
@@ -116,15 +105,12 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 const fetchSprints = async () => {
-  try {
-    await sprintStore.getSprintList(workspaceId);
-    sprintOptions.value = sprintStore.sprints || [];
-  } catch (error) {
-    console.error('Error fetching sprints:', error);
-  }
+  const sprintStore = useSprintStore();
+  await sprintStore.getSprintList(workspaceId);
+  sprintOptions.value = sprintStore.sprints;
 };
 const fetchLabels = async () => {
-  await taskLabelStore.getTaskLabel(workspaceId);
+  await taskLabelStore.getTaskLabel({workspaceId, sprintId: selectedSprintId.value});
   availableLabels.value = taskLabelStore.labels;
 };
 
@@ -166,15 +152,15 @@ onMounted(async () => {
         </div>
         <div>
           <label>담당자</label>
-          <multiselect v-if="sprintOptions && sprintOptions.length"
-          v-model="selectedSprintId"
-          :options="sprintOptions"
-          :searchable="true"
-          :close-on-select="true"
-          :show-labels="false"
-          placeholder="스프린트를 선택해주세요"
-          label="name"
-          track-by="id"
+          <multiselect
+              v-model="selectedParticipant"
+              :options="filteredFriends"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="참여자를 선택하세요"
+              label="userName"
+              track-by="searchUserIdx"
           />
           <p class="error-message" v-if="errors.participants">{{ errors.participants }}</p>
           <div class="selections participants" v-if="participants && participants.length">
@@ -235,7 +221,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <button @click="onSubmit" class="add-task-btn">Task 추가하기</button>
+      <button type="button" @click="onSubmit" class="add-task-btn">Task 추가하기</button>
     </div>
   </div>
 </template>

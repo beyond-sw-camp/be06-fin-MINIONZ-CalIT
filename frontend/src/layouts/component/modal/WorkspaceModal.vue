@@ -30,8 +30,9 @@ onMounted(async () => {
 
 watch(
     () => route.query.wsId,
-    (newWorkspaceId) => {
+    async (newWorkspaceId) => {
       if (newWorkspaceId) {
+        await getAllWorkspace();
         setWorkspaceId(newWorkspaceId);
       }
     }

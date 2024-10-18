@@ -1,5 +1,5 @@
 <script setup>
-import BoardDetail from "@/common/component/Board/BoardDetail.vue";
+import BoardDetail from "@/common/component/Board/ErrorBoardDetail.vue";
 import {inject} from "vue";
 import { useRoute } from 'vue-router';
 import { useErrorStore } from "@/stores/board/useErrorStore";
