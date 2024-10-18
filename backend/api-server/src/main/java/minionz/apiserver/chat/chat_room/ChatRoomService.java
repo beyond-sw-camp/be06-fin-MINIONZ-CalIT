@@ -44,18 +44,8 @@ public class ChatRoomService {
         if (!request.getParticipants().contains(user.getUserId())) {
             request.getParticipants().add(user.getUserId());
         }
-
-        String chatRoomName;
-        // 본인을 추가해서 총 2명일 경우
-        if (request.getParticipants().size() == 2) {
-            // 개인 채팅의 경우 상대방의 이름으로 설정
-            User participant = userRepository.findById(request.getParticipants().get(0))
-                    .orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_FOUND));
-            chatRoomName = participant.getUserName();
-        } else {
-            // 그룹 채팅의 경우 요청에서 받은 이름으로 설정
-            chatRoomName = request.getChatRoomName();
-        }
+        System.out.println(request.getChatRoomName());
+        String chatRoomName = request.getChatRoomName();
 
         // 채팅방 생성
         ChatRoom chatRoom = createChatRoom(chatRoomName);

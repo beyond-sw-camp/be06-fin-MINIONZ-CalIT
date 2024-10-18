@@ -49,13 +49,13 @@ public class ChatBotService {
         String webhookUrl;
         if (message.contains("회의록")) {
             // 회의록 요약에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook/calit-note";
+            webhookUrl = "http://192.0.50.101:5678/webhook/calit-note";
         } else if (message.contains("회의")) {
             // 일반 회의에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook/calit-meeting";
+            webhookUrl = "http://192.0.50.101:5678/webhook/calit-meeting";
         } else {
             // 기타 메시지에 대한 처리
-            webhookUrl = "http://localhost:5678/webhook/calit-etc";
+            webhookUrl = "http://192.0.50.101:5678/webhook/calit-etc";
         }
 
         try {
