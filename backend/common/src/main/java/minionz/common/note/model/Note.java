@@ -41,7 +41,7 @@ public class Note {
     @OneToMany(mappedBy = "note", fetch = FetchType.LAZY)
     private List<MeetingParticipation> meetingParticipations = new ArrayList<>();
 
-    private String senderLoginId;
+
 
 
 }
