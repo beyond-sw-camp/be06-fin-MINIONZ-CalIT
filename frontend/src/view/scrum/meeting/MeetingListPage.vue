@@ -16,7 +16,7 @@ contentsDescription.value = '워크스페이스의 회의 내역을 살펴보세
 
 const meetingStore = useMeetingStore();
 
-const currentPage = ref(1);
+const currentPage = ref(0);
 const itemsPerPage = ref(10);
 
 const fetchMeetings = async () => {
