@@ -4,8 +4,8 @@ import router from '@/router';
 import { useRoute } from 'vue-router';
 import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
-import { Notyf } from "notyf";
-import {setPersona} from "@/utils/personaUtils";
+import { Notyf } from 'notyf';
+import { setPersona } from '@/utils/personaUtils';
 
 const chatRoomStore = useChatRoomStore();
 const friendStore = useFriendsStore();
@@ -35,20 +35,23 @@ const searchFriends = async () => {
 };
 
 const toggleFriendSelection = () => {
-  if (selectedFriend.value && !selectedFriends.value.includes(selectedFriend.value)) {
+  if (
+    selectedFriend.value &&
+    !selectedFriends.value.includes(selectedFriend.value)
+  ) {
     selectedFriends.value.push(selectedFriend.value);
   }
 };
 
 const removeFriendSelection = (friend) => {
-  selectedFriends.value = selectedFriends.value.filter(f => f !== friend);
+  selectedFriends.value = selectedFriends.value.filter((f) => f !== friend);
 };
 
 const addChatRoom = async () => {
   try {
     const response = await chatRoomStore.addChatRoom({
-      chattingRoomName: chattingRoomName.value,
-      participants: selectedFriends.value.map(friend => friend.searchUserIdx),
+      chatRoomName: chattingRoomName.value,
+      participants: selectedFriends.value.map((friend) => friend.searchUserIdx),
     });
     const chatRoomId = response?.chatRoomId;
     notyf.success('채팅방이 추가되었습니다.');
@@ -75,38 +78,62 @@ searchFriends();
           <div class="input-wrap">
             <label for="chatroom-name">채팅방 이름 설정</label>
             <input
-                type="text"
-                id="chatroom-name"
-                v-model="chattingRoomName"
-                placeholder="채팅방 이름을 입력하세요"
-                class="input-field"
+              type="text"
+              id="chatroom-name"
+              v-model="chattingRoomName"
+              placeholder="채팅방 이름을 입력하세요"
+              class="input-field"
             />
           </div>
 
           <div class="add-participants">
             <div class="add-participants-input">
               <label for="participants-name">참여자 검색</label>
-              <select id="participants-name" v-model="selectedFriend" class="input-field">
-                <option v-for="friend in filteredFriends" :key="friend.searchFriendsIdx" :value="friend">
+              <select
+                id="participants-name"
+                v-model="selectedFriend"
+                class="input-field"
+              >
+                <option
+                  v-for="friend in filteredFriends"
+                  :key="friend.searchFriendsIdx"
+                  :value="friend"
+                >
                   {{ friend.userName || '채팅할 사용자를 추가해주세요' }}
                 </option>
               </select>
-              <button @click="toggleFriendSelection" class="participants-btn">추가</button>
+              <button @click="toggleFriendSelection" class="participants-btn">
+                추가
+              </button>
             </div>
-            <ul v-if="selectedFriends && selectedFriends.length" class="participants-list">
-              <li v-for="friend in selectedFriends" :key="friend.searchFriendsIdx" class="participants-item">
+            <ul
+              v-if="selectedFriends && selectedFriends.length"
+              class="participants-list"
+            >
+              <li
+                v-for="friend in selectedFriends"
+                :key="friend.searchFriendsIdx"
+                class="participants-item"
+              >
                 <div class="participants-item-info">
-                  <img :src="setPersona(1)" alt="persona" class="persona">
+                  <img :src="setPersona(1)" alt="persona" class="persona" />
                   <span>{{ friend.userName }}</span>
                 </div>
-                <button @click="removeFriendSelection(friend)" class="del-btn participants-btn">삭제</button>
+                <button
+                  @click="removeFriendSelection(friend)"
+                  class="del-btn participants-btn"
+                >
+                  삭제
+                </button>
               </li>
             </ul>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button @click="addChatRoom" class="save-btn participants-btn">저장하기</button>
+          <button @click="addChatRoom" class="save-btn participants-btn">
+            저장하기
+          </button>
           <button @click="closeModal" class="cancel-btn">취소하기</button>
         </div>
       </div>
@@ -115,7 +142,8 @@ searchFriends();
 </template>
 
 <style scoped>
-ul, li {
+ul,
+li {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -224,8 +252,8 @@ label {
 }
 
 .participants-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -235,7 +263,7 @@ label {
 }
 
 .participants-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 
 .del-btn {
@@ -293,7 +321,7 @@ label {
 
     &:hover {
       background-color: #e0e8ff;
-      border: 1px solid #C6D2FD;
+      border: 1px solid #c6d2fd;
     }
   }
 }
