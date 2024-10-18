@@ -4,7 +4,7 @@ metadata:
   name: calit-meeting
 spec:
   schedule: "*/10 * * * *"
-  successfulJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 0
   jobTemplate:
     spec:
@@ -49,7 +49,7 @@ metadata:
   name: calit-task
 spec:
   schedule: "0 0 * * *"
-  successfulJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 0
   jobTemplate:
     spec:
@@ -94,7 +94,7 @@ metadata:
   name: calit-sprint
 spec:
   schedule: "0 0 * * *"
-  successfulJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 0
   jobTemplate:
     spec:
