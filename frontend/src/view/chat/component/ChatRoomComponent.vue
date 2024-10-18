@@ -114,28 +114,10 @@ const onFileSelected = async (event) => {
   if (file) {
     selectedFile.value = file;
 
-    const fileUrls = await chatMessageStore.sendFile({
+    await chatMessageStore.sendFile({
       files: selectedFile.value,
       chatRoomId: chatroomId,
     });
-
-    if (fileUrls) {
-      const messagePayload = {
-        chatRoomId: chatroomId,
-        userId: userId,
-        userName: userName,
-        messageContents: '',
-        files: fileUrls,
-      };
-      stompClient.value.send(
-        `/pub/room/${chatroomId}/send`,
-        {},
-        JSON.stringify(messagePayload)
-      );
-      selectedFile.value = null;
-    } else {
-      console.error('파일 업로드 실패');
-    }
   }
 };
 
