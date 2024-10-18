@@ -94,21 +94,6 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
     }
 
-    @GetMapping("/{workspaceId}/workspaceall")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllWorkspaceTask(@PathVariable Long workspaceId) {
-
-        List<ReadAllTaskResponse> response;
-
-        try {
-            response = taskService.readAllWorkspaceTask(workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALLWORKSPACE_SUCCESS, response);
-    }
-
-
     @GetMapping("/my/all")
     public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
             @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {

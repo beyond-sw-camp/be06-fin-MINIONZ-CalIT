@@ -9,6 +9,7 @@ import minionz.common.chat.chat_bot.ChatBotRepository;
 import minionz.common.chat.chat_bot.model.ChatBot;
 import minionz.common.user.UserRepository;
 import minionz.common.user.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +22,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ChatBotService {
+
+    @Value("${chatbot.webhook.note-url}")
+    private String noteWebhookUrl;
+
+    @Value("${chatbot.webhook.meeting-url}")
+    private String meetingWebhookUrl;
+
+    @Value("${chatbot.webhook.etc-url}")
+    private String etcWebhookUrl;
 
     private final ChatBotRepository chatBotRepository;
     private final UserRepository userRepository;
@@ -49,13 +59,13 @@ public class ChatBotService {
         String webhookUrl;
         if (message.contains("회의록")) {
             // 회의록 요약에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook/calit-note";
+            webhookUrl = noteWebhookUrl;
         } else if (message.contains("회의")) {
             // 일반 회의에 대한 요청
-            webhookUrl = "http://localhost:5678/webhook/calit-meeting";
+            webhookUrl = meetingWebhookUrl;
         } else {
             // 기타 메시지에 대한 처리
-            webhookUrl = "http://localhost:5678/webhook/calit-etc";
+            webhookUrl = etcWebhookUrl;
         }
 
         try {
