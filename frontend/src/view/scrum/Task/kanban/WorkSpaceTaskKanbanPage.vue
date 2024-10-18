@@ -5,14 +5,23 @@ import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
 
 const reorderTasksByStatus = (tasksArray) => {
-  if (!tasksArray) return [];
+  if (!tasksArray) return []; // tasksArray가 null 또는 undefined일 경우 빈 배열 반환
 
-  const reorderedTasks = tasksArray.map((statusObject) => {
+  const reorderedTasks = { NO_STATUS: [], TODO: [], IN_PROGRESS: [], DONE: [] };
+
+  tasksArray.forEach((statusObject) => {
     const [status, tasks] = Object.entries(statusObject)[0];
-    return { [status]: tasks };
+    if (reorderedTasks[status] !== undefined) {
+      reorderedTasks[status].push(...tasks);
+    }
   });
 
-  return reorderedTasks;
+  return [
+    { NO_STATUS: reorderedTasks.NO_STATUS },
+    { TODO: reorderedTasks.TODO },
+    { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
+    { DONE: reorderedTasks.DONE },
+  ];
 };
 
 const contentsTitle = inject('contentsTitle');
