@@ -147,6 +147,21 @@ spec:
                 secretKeyRef:
                   name: calit-backend-secrets
                   key: GEMINI_API_KEY
+            - name: CHATBOT_WEBHOOK_NOTE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: CHATBOT_WEBHOOK_NOTE_URL
+            - name: CHATBOT_WEBHOOK_MEETING_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: CHATBOT_WEBHOOK_MEETING_URL
+            - name: CHATBOT_WEBHOOK_ETC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: calit-backend-configmap
+                  key: CHATBOT_WEBHOOK_ETC_URL
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
