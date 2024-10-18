@@ -168,9 +168,9 @@ public class TaskService {
         return response;
     }
 
-    public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId) {
+    public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId, Long userId) {
         // 스프린트 ID로 모든 Task 가져오기
-        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,null);
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,userId);
 
         // 스프린트 정보 가져오기
         Optional<Sprint> sprint = sprintRepository.findById(sprintId);
