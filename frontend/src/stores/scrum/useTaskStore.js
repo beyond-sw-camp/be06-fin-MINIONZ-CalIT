@@ -52,7 +52,9 @@ export const useTaskStore = defineStore('taskStore', () => {
   };
   const getWorkspaceTaskList = async (workspaceId) => {
     try {
-      const response = await axiosInstance.get(`/api/workspace/${workspaceId}/workspaceall`);
+      const response = await axiosInstance.get(
+        `/api/workspace/${workspaceId}/tasks`
+      );
       console.log('API 응답:', response);
       return response.data.result;
     } catch (error) {
@@ -121,6 +123,6 @@ export const useTaskStore = defineStore('taskStore', () => {
     deleteTask,
     getMyTask,
     taskList,
-    getWorkspaceTaskList
+    getWorkspaceTaskList,
   };
 });
