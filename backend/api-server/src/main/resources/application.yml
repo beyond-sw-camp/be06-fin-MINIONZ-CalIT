@@ -116,6 +116,12 @@ cloud:
     s3:
       bucket: ${S3_BUCKET}
 
+chatbot:
+  webhook:
+    note-url: ${CHATBOT_NOTE_WEBHOOK_URL}
+    meeting-url: ${CHATBOT_MEETING_WEBHOOK_URL}
+    etc-url: ${CHATBOT_ETC_WEBHOOK_URL}
+
 #redis:
 #  host: localhost
 #  port: 6379
