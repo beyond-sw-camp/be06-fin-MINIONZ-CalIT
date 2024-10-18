@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import { setPersona } from '@/utils/personaUtils';
+import { formatDate } from '@/utils/timeUtils';
 
 defineProps({
   task: {
@@ -21,7 +22,7 @@ defineProps({
     <div class="list-items">
       <div class="labels">
         <span v-for="label in task.labels" :key="label" class="label">{{
-          label
+          label.labelName
         }}</span>
       </div>
       <div class="list-item-bundle">
@@ -38,7 +39,7 @@ defineProps({
         </div>
         <div class="list-item-end">
           <span class="task-id">{{ task.taskNumber }}</span>
-          <span class="due-date">{{ task.endDate }}</span>
+          <span class="due-date">{{ formatDate(task.endDate) }}</span>
         </div>
       </div>
     </div>
@@ -93,6 +94,7 @@ defineProps({
 }
 .due-date {
   font-size: 10px;
+  min-width: 80px;
 }
 .avatars {
   display: flex;
