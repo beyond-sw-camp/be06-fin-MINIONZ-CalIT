@@ -8,7 +8,7 @@ import minionz.common.scrum.sprint.model.Sprint;
 import minionz.common.scrum.task_participation.model.TaskParticipation;
 import minionz.common.common.BaseEntity;
 import minionz.common.scrum.workspace.model.Workspace;
-import org.hibernate.jdbc.Work;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,10 +45,12 @@ public class Task extends BaseEntity {
 
     // Task : TaskParticipation = 1 : N
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private List<TaskParticipation> taskParticipations = new ArrayList<>();
 
     // Task : TaskParticipation = 1 : N
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private List<TaskLabelSelect> taskLabelSelects = new ArrayList<>();
 
     // Task : Sprint = N : 1

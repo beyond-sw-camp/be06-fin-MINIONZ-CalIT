@@ -12,7 +12,7 @@ import minionz.common.board.qa_board.QaBoardRepository;
 import minionz.common.board.qa_board.model.AnswerStatus;
 import minionz.common.board.qa_board.model.QaBoard;
 import minionz.common.board.qa_board.model.QaBoardImage;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.Task;
 import minionz.common.scrum.workspace.WorkspaceRepository;
 import minionz.common.scrum.workspace.model.Workspace;
