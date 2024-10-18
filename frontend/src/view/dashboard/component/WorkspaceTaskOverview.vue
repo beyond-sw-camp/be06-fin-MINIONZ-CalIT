@@ -59,7 +59,7 @@ defineProps({
         <p>Completion rate</p>
       </div>
       <div class="item-contents">
-        <p class="highlight">{{ completionRate }}%</p>
+        <p class="highlight">{{ completionRate.toFixed(2) }}%</p>
         <a href="#">See all</a>
       </div>
     </div>
