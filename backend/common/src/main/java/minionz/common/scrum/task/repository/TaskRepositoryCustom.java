@@ -16,4 +16,5 @@ public interface TaskRepositoryCustom {
     List<Task> findUpcomingWorkspaceTasks(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
     List<Task> findUpcomingMyTasks(Long userId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
     List<Task> findAllBySprintIdAndUserId(Long sprintId, Long userId);
+    List<Task> findAllByWorkspaceId(Long workspaceId);
 }

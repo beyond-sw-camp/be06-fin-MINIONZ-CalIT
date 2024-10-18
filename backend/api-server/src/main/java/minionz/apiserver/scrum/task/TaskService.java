@@ -125,7 +125,7 @@ public class TaskService {
     }
 
     public List<ReadAllTaskResponse> readAllWorkspaceTask(Long workspaceId) {
-        List<Task> result = taskRepository.findAllByWorkspaceWorkspaceId(workspaceId);
+        List<Task> result = taskRepository.findAllByWorkspaceId(workspaceId);
 
         List<ReadAllTaskResponse> response = result.stream().map(
                 task -> ReadAllTaskResponse
