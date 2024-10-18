@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import minionz.common.scrum.meeting.model.Meeting;
 import minionz.common.scrum.meeting_participation.model.MeetingParticipation;
-import minionz.common.utils.ObjectToJsonConverter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,9 +24,8 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long noteId;
 
-    @Convert(converter = ObjectToJsonConverter.class)
     @Column(name = "note_contents", columnDefinition = "LONGTEXT")
-    private Object noteContents;
+    private String noteContents;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -41,7 +39,10 @@ public class Note {
     @OneToMany(mappedBy = "note", fetch = FetchType.LAZY)
     private List<MeetingParticipation> meetingParticipations = new ArrayList<>();
 
-    private String senderLoginId;
+    private String sender;
+
+
+
 
 
 }

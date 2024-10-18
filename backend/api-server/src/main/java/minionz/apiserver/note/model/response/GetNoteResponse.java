@@ -9,5 +9,5 @@ import lombok.*;
 @Builder
 public class GetNoteResponse {
     private Long meetingId;
-    private Object noteContent;
+    private String noteContent;
 }
