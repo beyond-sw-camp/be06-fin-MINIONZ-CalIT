@@ -1,5 +1,5 @@
 <script setup>
-import space6 from '@/assets/icon/persona/space2.svg';
+import space6 from '@/assets/icon/persona/chatbot.svg';
 import { defineProps } from 'vue';
 import { getTimeDifference } from '@/utils/timeUtils';
 
@@ -22,7 +22,11 @@ defineProps({
 
     <div class="message-content">
       <div class="message-bubble">
-        <p>{{ message.messageContents || 'No message' }}</p>
+        <p
+          v-html="
+            message.messageContents.replace(/\n/g, '<br>') || 'No message'
+          "
+        ></p>
       </div>
       <span class="timestamp">{{
         getTimeDifference(message.createdAt) || 'No time'

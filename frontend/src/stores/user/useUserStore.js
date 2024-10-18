@@ -2,10 +2,10 @@ import { ref } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 
 export const useUserStore = () => {
-    const token = ref(null);
-    const user = ref(null);
-    const isLoggedIn = ref(false);
-
+  const token = ref(null);
+  const user = ref(null);
+  const isLoggedIn = ref(false);
+  
     const setToken = (newToken) => {
         console.log('setToken called with:', newToken);
         token.value = newToken;

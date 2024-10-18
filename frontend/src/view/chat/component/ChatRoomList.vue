@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
 import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
-import {setPersona} from "@/utils/personaUtils";
+import { setPersona } from '@/utils/personaUtils';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -12,6 +12,14 @@ const workspaceId = route.params.workspaceId;
 const chatRoomStore = useChatRoomStore();
 
 const chatRoom = computed(() => chatRoomStore.chatRoom);
+
+const totalUnreadMessages = computed(() => {
+  return chatRoom.value.reduce(
+    (total, room) => total + (room.unreadMessages || 0),
+    0
+  );
+});
+
 onMounted(async () => {
   await chatRoomStore.fetchChatRooms(workspaceId);
 });
@@ -30,14 +38,21 @@ const closeModal = async () => {
 <template>
   <div class="message-list-container">
     <div class="message-header">
-      <p>Messages
-        <span class="badge">2</span>
+      <p>
+        Messages
+        <!-- unreadMessages 총합을 보여줌 -->
+        <span class="badge">{{ totalUnreadMessages }}</span>
       </p>
       <button class="new-message-button" @click="openModal">+</button>
     </div>
     <div class="message-list" v-if="chatRoom && chatRoom.length">
-      <router-link :to="`/workspace/${workspaceId}/chat/` + room.chatroomId" class="message-item" v-for="(room) in chatRoom" :key="room.id">
-        <img :src="setPersona(2)" alt="profile" class="profile-pic"/>
+      <router-link
+        :to="`/workspace/${workspaceId}/chat/` + room.chatroomId"
+        class="message-item"
+        v-for="room in chatRoom"
+        :key="room.id"
+      >
+        <img :src="setPersona(2)" alt="profile" class="profile-pic" />
         <div class="message-info">
           <div class="message-item-top">
             <span class="user-name">{{ room.chatRoomName }}</span>
@@ -45,24 +60,28 @@ const closeModal = async () => {
           <p class="message-text">{{ room.messageContents }}</p>
         </div>
         <div class="message-item-right">
-          <span class="message-time">{{ getTimeDifference(room.createdAt) }}</span>
-          <span v-if="room.unreadMessages" class="unread-count">{{ room.unreadMessages }}</span>
+          <span class="message-time">{{
+            getTimeDifference(room.createdAt)
+          }}</span>
+          <span v-if="room.unreadMessages" class="unread-count">{{
+            room.unreadMessages
+          }}</span>
         </div>
       </router-link>
     </div>
-    <FriendsModal v-if="showModal" @close="closeModal"/>
+    <FriendsModal v-if="showModal" @close="closeModal" />
   </div>
 </template>
 
 <style scoped>
 a {
   text-decoration: none;
-  color: #28303F;
+  color: #28303f;
 }
 
 .message-list-container {
   position: relative;
-  height: 50vh;
+  height: 100vh;
   overflow: scroll;
 }
 
@@ -77,7 +96,7 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #FFF;
+  background-color: #fff;
   position: sticky;
   top: 0;
   height: 60px;
@@ -88,7 +107,7 @@ a {
   border-bottom: 1px solid #e0e0e0;
 
   span {
-    background-color: #EDF2F7;
+    background-color: #edf2f7;
     font-size: 12px;
     padding: 8px 12px;
     border-radius: 24px;

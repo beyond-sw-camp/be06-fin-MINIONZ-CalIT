@@ -1,22 +1,19 @@
 <script setup>
-import ChatComponent from "@/view/chat/component/ChatComponent.vue";
-import ChatRoomList from "@/view/chat/component/ChatRoomList.vue";
-import FileList from "@/view/chat/component/FileList.vue";
-
+import ChatComponent from '@/view/chat/component/ChatComponent.vue';
+import ChatRoomList from '@/view/chat/component/ChatRoomList.vue';
 </script>
 
 <template>
   <div class="chat-room">
     <ChatComponent />
     <div class="chat-sidebar">
-      <ChatRoomList/>
-      <FileList/>
+      <ChatRoomList />
     </div>
   </div>
 </template>
 
 <style scoped>
-.chat-room{
+.chat-room {
   display: flex;
 }
 .chat-sidebar {
