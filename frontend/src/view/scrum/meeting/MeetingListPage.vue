@@ -1,10 +1,10 @@
 <script setup>
-import {inject, onMounted, ref} from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import MeetingCard from "@/view/scrum/meeting/component/MeetingCard.vue";
-import SearchComponent from "@/common/component/SearchComponent.vue";
-import { useMeetingStore } from "@/stores/scrum/useMeetingStore";
-import PaginationComponent from "@/common/component/PaginationComponent.vue";
+import MeetingCard from '@/view/scrum/meeting/component/MeetingCard.vue';
+import SearchComponent from '@/common/component/SearchComponent.vue';
+import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
+import PaginationComponent from '@/common/component/PaginationComponent.vue';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -22,7 +22,7 @@ const itemsPerPage = ref(10);
 const fetchMeetings = async () => {
   const page = currentPage.value;
   const size = itemsPerPage.value;
-  await meetingStore.getMeetingList({workspaceId, page, size});
+  await meetingStore.getMeetingList({ workspaceId, page, size });
 };
 
 onMounted(() => {
@@ -33,29 +33,35 @@ onMounted(() => {
 <template>
   <div class="meeting-container">
     <div v-if="meetingStore.meetings && meetingStore.meetings.length > 0">
-      <SearchComponent :link="`/workspace/${workspaceId}/scrum/meeting/create`"/>
+      <SearchComponent
+        :link="`/workspace/${workspaceId}/scrum/meeting/create`"
+      />
       <div class="meeting-card-container">
         <MeetingCard
-            v-for="meeting in meetingStore.meetings"
-            :key="meeting.id"
-            :id="meeting.id"
-            :title="meeting.title"
-            label="Front"
-            :contents="meeting.contents"
-            :participants="meeting.participants.map((participant) => participant.persona)"
-            :startDate="meeting.startDate"
+          v-for="meeting in meetingStore.meetings"
+          :key="meeting.id"
+          :id="meeting.id"
+          :title="meeting.title"
+          :labels="meeting.labels"
+          :contents="meeting.contents"
+          :participants="
+            meeting.participants.map((participant) => participant.persona)
+          "
+          :startDate="meeting.startDate"
         />
         <PaginationComponent
-            :currentPage="currentPage"
-            :itemsPerPage="itemsPerPage"
-            :totalItems="10"
-            @pageChanged="fetchMeetings"
+          :currentPage="currentPage"
+          :itemsPerPage="itemsPerPage"
+          :totalItems="10"
+          @pageChanged="fetchMeetings"
         />
       </div>
     </div>
     <div v-else class="initial-wrap">
       <p>회의를 추가하고 일정 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/scrum/meeting/create`">회의 추가하기</router-link>
+      <router-link :to="`/workspace/${workspaceId}/scrum/meeting/create`"
+        >회의 추가하기</router-link
+      >
     </div>
   </div>
 </template>
@@ -81,13 +87,13 @@ onMounted(() => {
 
   a {
     padding: 10px 20px;
-    background-color: #93AAFD;
+    background-color: #93aafd;
     color: white;
     border-radius: 5px;
     text-decoration: none;
 
     &:hover {
-      background-color: #6F8FFC;
+      background-color: #6f8ffc;
     }
   }
 }
