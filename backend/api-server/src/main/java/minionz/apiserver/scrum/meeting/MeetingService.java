@@ -17,6 +17,7 @@ import minionz.common.scrum.sprint.model.Sprint;
 import minionz.common.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,8 +107,9 @@ public class MeetingService {
     }
 
 
-    public Page<ReadAllMeetingResponse> readAll(int page, int size) {
-        Page<Meeting> result = meetingRepository.findAll(PageRequest.of(page, size));
+    public Page<ReadAllMeetingResponse> readAll(Long workspaceId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Meeting> result = meetingRepository.findMeetingByWorkspace(workspaceId, pageable);
 
         Page<ReadAllMeetingResponse> readMeetingResponses = result.map(meeting -> {
             List<Participant> participants = findParticipants(meeting);
