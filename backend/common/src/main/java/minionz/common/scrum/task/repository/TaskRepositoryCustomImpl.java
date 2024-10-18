@@ -164,4 +164,22 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
                 .fetch();
     }
 
+    @Override
+    public List<Task> findAllByWorkspaceId(Long workspaceId) {
+        QTask task = QTask.task;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // Null 체크 추가
+        if (workspaceId != null) {
+            builder.and(task.sprint.workspace.workspaceId.eq(workspaceId));
+        }
+
+        return queryFactory.selectFrom(task)
+                .join(task.sprint).fetchJoin()
+                .join(task.sprint.workspace).fetchJoin()
+                .where(builder)
+                .fetch();
+    }
+
+
 }

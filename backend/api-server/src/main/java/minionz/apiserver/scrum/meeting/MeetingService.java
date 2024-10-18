@@ -80,6 +80,7 @@ public class MeetingService {
                 .endDate(meeting.getEndDate())
                 .createdAt(meeting.getCreatedAt())
                 .participants(findParticipants(meeting))
+                .labels(findLabels(meeting))
                 .build();
     }
 
@@ -91,17 +92,6 @@ public class MeetingService {
                         .userName(participant.getUser().getUserName())
                         .persona(participant.getUser().getPersona())
                         .isManager(true)
-                        .build()
-        ).toList();
-    }
-
-    public List<Label> findLabels(Meeting meeting) {
-        return meeting.getNoteLabelSelects().stream().map(
-                label -> Label
-                        .builder()
-                        .id(label.getNoteLabel().getNoteLabelId())
-                        .labelName(label.getNoteLabel().getLabelName())
-                        .color(label.getNoteLabel().getColor())
                         .build()
         ).toList();
     }
@@ -129,5 +119,16 @@ public class MeetingService {
         });
 
         return readMeetingResponses;
+    }
+
+    public List<Label> findLabels(Meeting meeting) {
+        return meeting.getNoteLabelSelects().stream().map(
+                label -> Label
+                        .builder()
+                        .id(label.getNoteLabel().getNoteLabelId())
+                        .labelName(label.getNoteLabel().getLabelName())
+                        .color(label.getNoteLabel().getColor())
+                        .build()
+        ).toList();
     }
 }
