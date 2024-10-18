@@ -2,6 +2,8 @@
 import { setPersona } from '@/utils/personaUtils';
 import { defineProps } from 'vue';
 import { formatDate } from '@/utils/timeUtils';
+import router from "@/router";
+import {useRoute} from "vue-router";
 
 defineProps({
   task: {
@@ -9,11 +11,18 @@ defineProps({
     required: true,
   },
 });
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+function navigateToDetailPage(task) {
+  router.push(`/workspace/${workspaceId}/scrum/task/${task.id}`);
+}
 </script>
 
 <template>
   <div class="task-card">
-    <p>{{ task.title }}</p>
+    <p @click="navigateToDetailPage(task)">{{ task.title }}</p>
     <div class="labels">
       <span v-for="label in task.labels" :key="label" class="label">{{
         label
