@@ -11,13 +11,13 @@ import minionz.common.scrum.label_select.model.TaskLabelSelect;
 import minionz.apiserver.scrum.sprint.model.response.Label;
 import minionz.apiserver.scrum.sprint.model.response.Participant;
 import minionz.common.scrum.meeting.model.Meeting;
-import minionz.common.scrum.sprint.SprintRepository;
+import minionz.common.scrum.sprint.repository.SprintRepository;
 import minionz.common.scrum.sprint.model.Sprint;
 import minionz.apiserver.scrum.task.model.request.CreateTaskRequest;
 import minionz.apiserver.scrum.task.model.request.UpdateTaskStatusRequest;
 import minionz.apiserver.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.apiserver.scrum.task.model.response.ReadTaskResponse;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.TaskStatus;
 import minionz.common.scrum.task.model.Task;
 import minionz.common.user.model.User;
@@ -100,10 +100,10 @@ public class TaskService {
 
 
     public List<ReadAllTaskResponse> readAllTask(Long sprintId) {
-        List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,null);
 
-        Optional<Sprint> sprint = sprintRepository.findById(sprintId);
-        String workspaceName = sprint.get().getWorkspace().getWorkspaceName();
+        // Optional 조회 및 추가 쿼리 제거
+        String workspaceName = result.isEmpty() ? null : result.get(0).getSprint().getWorkspace().getWorkspaceName();
 
         List<ReadAllTaskResponse> response = result.stream().map(
                 task -> ReadAllTaskResponse
@@ -123,6 +123,7 @@ public class TaskService {
 
         return response;
     }
+
     public List<ReadAllTaskResponse> readAllWorkspaceTask(Long workspaceId) {
         List<Task> result = taskRepository.findAllByWorkspaceWorkspaceId(workspaceId);
 
@@ -169,7 +170,7 @@ public class TaskService {
 
     public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId) {
         // 스프린트 ID로 모든 Task 가져오기
-        List<Task> result = taskRepository.findAllBySprintSprintId(sprintId);
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,null);
 
         // 스프린트 정보 가져오기
         Optional<Sprint> sprint = sprintRepository.findById(sprintId);

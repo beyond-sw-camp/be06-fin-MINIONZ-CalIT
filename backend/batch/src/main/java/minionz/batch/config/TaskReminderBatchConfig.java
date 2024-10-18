@@ -1,7 +1,7 @@
 package minionz.batch.config;
 
 import lombok.RequiredArgsConstructor;
-import minionz.common.scrum.task.TaskRepository;
+import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.Task;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

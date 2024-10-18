@@ -1,4 +1,4 @@
-package minionz.common.scrum.issue;
+package minionz.common.scrum.issue.repository;
 
 import minionz.common.scrum.issue.model.Issue;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,7 @@ package minionz.batch.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import minionz.common.scrum.sprint.SprintRepository;
+import minionz.common.scrum.sprint.repository.SprintRepository;
 import minionz.common.scrum.sprint.model.Sprint;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
