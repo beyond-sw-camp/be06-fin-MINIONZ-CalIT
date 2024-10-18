@@ -9,7 +9,7 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
 
     const addTaskLabel = async ({workspaceId, labelName, description, color}) => {
         try {
-            const response = await axiosInstance.post('/api/label/task', {workspaceId, labelName, description, color});
+            const response = await axiosInstance.post(`/api/label/${workspaceId}/task`, {workspaceId, labelName, description, color});
             labels.value.push(response.data.result);
         }
         catch (error) {
@@ -17,9 +17,9 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
         }
     }
 
-    const getTaskLabel = async (workspaceId) => {
+    const getTaskLabel = async ({workspaceId, sprintId}) => {
         try {
-            const response = await axiosInstance.get(`/api/label/task?id=${workspaceId}`);
+            const response = await axiosInstance.get(`/api/label/${workspaceId}/task?id=${sprintId}`);
             labels.value = response.data.result;
         }
         catch (error) {

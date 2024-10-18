@@ -108,7 +108,6 @@ onMounted(searchFriends);
           <p class="error-message" v-if="errors.issueDescription">{{ errors.issueDescription }}</p>
         </div>
 
-
       </div>
 
       <div class="inputs-wrap">

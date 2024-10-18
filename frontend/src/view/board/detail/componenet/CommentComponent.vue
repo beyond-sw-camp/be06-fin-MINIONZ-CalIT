@@ -17,7 +17,7 @@ const publishComment = () => {
   if (newComment.value.trim() !== '') {
     const newComments = [...props.comments, {
       id: props.comments.length + 1,
-      user: {name: 'New User', avatar: ''}, // Replace with actual user data
+      user: {name: 'New User', avatar: ''},
       text: newComment.value,
       timeAgo: 'just now',
       attachment: newAttachment.value

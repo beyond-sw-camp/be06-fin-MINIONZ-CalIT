@@ -9,7 +9,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
 
     const addSprintLabel = async ({workspaceId, labelName, description, color}) => {
         try {
-            const response = await axiosInstance.get('/api/label/sprint', {workspaceId, labelName, description, color});
+            const response = await axiosInstance.get(`/api/label/${workspaceId}/sprint`, {labelName, description, color});
             labels.value.push(response.data.result);
         }
         catch (error) {
@@ -17,12 +17,11 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
         }
     }
 
-    const getSprintLabel = async (workspaceId) => {
+    const getSprintLabel = async ({workspaceId, sprintId}) => {
         try {
-            const response = await axiosInstance.post(`/api/label/sprint?id=${workspaceId}`);
+            const response = await axiosInstance.post(`/api/label/${workspaceId}/sprint?id=${sprintId}`);
             labels.value = response.data.result;
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Error fetching labels:', error);
         }
     };
