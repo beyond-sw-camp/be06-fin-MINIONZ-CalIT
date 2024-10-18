@@ -1,8 +1,19 @@
 <script setup>
 import { inject, ref, watch, onMounted, computed } from 'vue';
-import TaskColumn from './component/KanbanColumn.vue'; // TaskColumn 컴포넌트
+import TaskColumn from './component/KanbanColumn.vue';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
+
+const reorderTasksByStatus = (tasksArray) => {
+  if (!tasksArray) return [];
+
+  const reorderedTasks = tasksArray.map((statusObject) => {
+    const [status, tasks] = Object.entries(statusObject)[0];
+    return { [status]: tasks };
+  });
+
+  return reorderedTasks;
+};
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -38,7 +49,11 @@ const hasTasks = computed(() => {
 <template>
   <div class="kanban-container">
     <div class="kanban-board" v-if="hasTasks">
-      <TaskColumn v-for="task in tasksByStatus" :key="task.key" :data="task" />
+      <TaskColumn
+        v-for="task in reorderTasksByStatus(tasksByStatus)"
+        :key="task.key"
+        :data="task"
+      />
     </div>
     <div class="initial-wrap" v-else>
       <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
@@ -50,7 +65,7 @@ const hasTasks = computed(() => {
 </template>
 
 <style scoped>
-.kanban-board{
+.kanban-board {
   display: flex;
   justify-content: space-between;
   padding: 0 20px;
