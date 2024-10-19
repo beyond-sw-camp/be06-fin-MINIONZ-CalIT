@@ -1,5 +1,5 @@
 <script setup>
-import { inject, ref, onMounted } from 'vue';
+import {inject, ref, onMounted, watch} from 'vue';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import Multiselect from 'vue-multiselect';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
@@ -116,8 +116,23 @@ const fetchLabels = async () => {
 
 onMounted(async () => {
   await searchFriends();
-  await fetchLabels();
   await fetchSprints();
+  watch(selectedParticipant, (newParticipant) => {
+    if (newParticipant) {
+      if (!participants.value) {
+        participants.value = [];
+      }
+      if (!participants.value.some(p => p.searchUserIdx === newParticipant.searchUserIdx)) {
+        participants.value.push(newParticipant);
+      }
+    }
+  });
+});
+
+watch(selectedSprintId, async (newSprintId) => {
+  if (newSprintId) {
+    await fetchLabels();
+  }
 });
 </script>
 
@@ -127,16 +142,15 @@ onMounted(async () => {
       <div class="input-wrap">
         <div>
           <label>스프린트 선택하기</label>
-          <multiselect
-          v-model="selectedSprintId"
-          :options="sprintOptions"
-          :searchable="true"
-          :close-on-select="true"
-          :show-labels="false"
-          placeholder="스프린트를 선택해주세요"
-          label="name"
-          track-by="id"
-          />
+          <select v-model="selectedSprintId" class="input-field">
+            <option
+                v-for="sprint in sprintOptions"
+                :key="sprint.sprintId"
+                :value="sprint.sprintId"
+            >
+              {{ sprint.title }}
+            </option>
+          </select>
           <p class="error-message" v-if="errors.sprintId">{{ errors.sprintId }}</p>
         </div>
         <div>
@@ -151,24 +165,26 @@ onMounted(async () => {
           <p class="error-message" v-if="errors.taskContent">{{ errors.taskContent }}</p>
         </div>
         <div>
-          <label>담당자</label>
-          <multiselect
-              v-model="selectedParticipant"
-              :options="filteredFriends"
-              :searchable="true"
-              :close-on-select="true"
-              :show-labels="false"
-              placeholder="참여자를 선택하세요"
-              label="userName"
-              track-by="searchUserIdx"
-          />
-          <p class="error-message" v-if="errors.participants">{{ errors.participants }}</p>
-          <div class="selections participants" v-if="participants && participants.length">
+          <div>
+            <label for="participants">참여자 선택</label>
+            <multiselect
+                v-model="selectedParticipant"
+                :options="filteredFriends"
+                :searchable="true"
+                :close-on-select="true"
+                :show-labels="false"
+                placeholder="참여자를 선택하세요"
+                label="userName"
+                track-by="searchUserIdx"
+            />
+            <p class="error-message" v-if="errors.participants">{{ errors.participants }}</p>
+            <div class="selections participants" v-if="participants && participants.length">
               <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
                 {{ participant.userName }}
                 <span @click="deleteParticipant(participant.searchUserIdx)"
                       style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
               </span>
+            </div>
           </div>
         </div>
         <div class="inputs-wrap">

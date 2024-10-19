@@ -135,13 +135,11 @@ const routes = [
     component: () => import('@/layouts/ContentsArea.vue'),
     meta: { requiresAuth: true },
     children: [
-      // dashboard
       {
         path: 'dashboard',
         name: 'WorkspaceDashboard',
         component: () => import('@/view/dashboard/WorkspaceDashBoardPage.vue'),
       },
-      // schedule
       {
         path: 'schedule',
         name: 'WorkspaceSchedule',
@@ -206,6 +204,14 @@ const routes = [
                   import(
                     '@/view/scrum/Task/create/WorkSpaceTaskCreatePage.vue'
                   ),
+              },
+              {
+                path: 'detail/:taskId',
+                name: 'WorkspaceTaskDetail',
+                component: () =>
+                    import(
+                        '@/view/scrum/detail/TaskDetailPage.vue'
+                        ),
               },
               {
                 path: 'kanban',
