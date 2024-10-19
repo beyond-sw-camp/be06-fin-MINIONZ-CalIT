@@ -61,27 +61,34 @@ export const useSprintStore = defineStore('sprintStore', () => {
   };
 
   const updateSprint = async ({
+    wowrkspaceId,
     sprintId,
     sprintTitle,
     sprintContents,
     labelId,
   }) => {
     try {
-      const response = await axiosInstance.put(`/api/sprint`, {
-        sprintId,
-        sprintTitle,
-        sprintContents,
-        labelId,
-      });
+      const response = await axiosInstance.patch(
+        `/api/sprint/${wowrkspaceId}`,
+        {
+          sprintId,
+          sprintTitle,
+          sprintContents,
+          labelId,
+        }
+      );
       sprints.value = response.data.result;
     } catch (error) {
       console.log('Error updating Sprint', error);
     }
   };
 
-  const updateSprintState = async (status) => {
+  const updateSprintState = async (sprintId, status) => {
     try {
-      const response = await axiosInstance.put(`/api/sprint/status`, status);
+      const response = await axiosInstance.patch(
+        `/api/sprint/${sprintId}/status`,
+        status
+      );
       sprints.value = response.data.result;
     } catch (error) {
       console.log('Error updating Sprint State', error);
