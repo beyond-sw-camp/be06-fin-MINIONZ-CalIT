@@ -54,7 +54,9 @@ export const useTaskStore = defineStore('taskStore', () => {
   };
   const getWorkspaceTaskList = async (workspaceId) => {
     try {
-      const response = await axiosInstance.get(`/api/task/${workspaceId}/workspaceall`);
+      const response = await axiosInstance.get(
+        `/api/task/${workspaceId}/workspaceall`
+      );
       console.log('API 응답:', response); // 응답 전체 확인
       return response.data.result; // 응답 데이터 반환
     } catch (error) {
@@ -73,7 +75,7 @@ export const useTaskStore = defineStore('taskStore', () => {
     participants,
   }) => {
     try {
-      const response = await axiosInstance.put(`api/task/${taskId}`, {
+      const response = await axiosInstance.patch(`api/task/${taskId}`, {
         taskId,
         title,
         contents,
@@ -123,6 +125,6 @@ export const useTaskStore = defineStore('taskStore', () => {
     deleteTask,
     getMyTask,
     taskList,
-    getWorkspaceTaskList
+    getWorkspaceTaskList,
   };
 });
