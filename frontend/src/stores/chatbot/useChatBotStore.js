@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 
 export const useChatBotStore = defineStore('chatBot', {
   state: () => ({
-    botMessageList: [], // 챗봇과의 메시지 기록을 저장할 리스트
+    botMessageList: [],
   }),
 
   actions: {
@@ -18,6 +18,7 @@ export const useChatBotStore = defineStore('chatBot', {
           '/api/receiveFromN8n',
           payload
         );
+        console.log(response.data.result);
         return response.data.result;
       } catch (error) {
         console.error(
@@ -25,6 +26,22 @@ export const useChatBotStore = defineStore('chatBot', {
           error.response ? error.response.data : error.message
         );
         return null;
+      }
+    },
+
+    // [GET] 사용자 메시지 내역 불러오기
+    async loadBotMessages(userId) {
+      try {
+        const response = await axiosInstance.get(`/api/botMessage/${userId}`);
+        this.botMessageList = response.data;
+        console.log('들어오는 데이터값 확인:' + response.data);
+        return response.data; // 데이터를 반환
+      } catch (error) {
+        console.error(
+          '메시지 불러오기 에러:',
+          error.response ? error.response.data : error.message
+        );
+        return null; // 오류 발생 시 null 반환
       }
     },
   },
