@@ -25,8 +25,8 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("/{sprintId}")
-    public BaseResponse<BaseResponseStatus> createTask(
-            @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
+    public BaseResponse<BaseResponseStatus> createTask(@PathVariable Long sprintId,
+                                                       @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
         try {
             taskService.createTask(customUserDetails.getUser(), request);
@@ -40,7 +40,7 @@ public class TaskController {
     }
 
     @GetMapping("/{sprintId}/{taskId}")
-    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId) {
+    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId, @PathVariable Long sprintId) {
         ReadTaskResponse response;
 
         try {
@@ -110,7 +110,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{sprintId}/status/{taskId}")
-    public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId,
+    public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @PathVariable Long sprintId,
                                                              @RequestBody UpdateTaskStatusRequest request) {
 
         try {
