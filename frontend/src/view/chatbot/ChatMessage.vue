@@ -12,19 +12,29 @@ defineProps({
     type: Boolean,
     required: true,
   },
+  isFromChatBot: {
+    type: Boolean,
+    required: true,
+  },
 });
 </script>
 
 <template>
-  <div :class="['message-container', isOwnMessage ? 'own' : '']">
-    <!-- 상대방의 메시지일 때만 프로필 사진 표시 -->
-    <img v-if="!isOwnMessage" class="profile-pic" :src="space6" alt="profile" />
+  <div
+    :class="[
+      'message-container',
+      isFromChatBot ? 'chatbot' : isOwnMessage ? 'own' : '',
+    ]"
+  >
+    <img v-if="isFromChatBot" class="profile-pic" :src="space6" alt="profile" />
 
     <div class="message-content">
       <div class="message-bubble">
         <p
           v-html="
-            message.messageContents.replace(/\n/g, '<br>') || 'No message'
+            message.messageContents
+              ? message.messageContents.replace(/\n/g, '<br>')
+              : 'No message'
           "
         ></p>
       </div>
@@ -40,6 +50,10 @@ defineProps({
   display: flex;
   align-items: flex-start;
   margin-bottom: 15px;
+}
+
+.chatbot {
+  flex-direction: row;
 }
 
 .own {
@@ -68,6 +82,10 @@ defineProps({
 .own .message-bubble {
   background-color: #4a90e2;
   color: white;
+}
+
+.chatbot .message-bubble {
+  background-color: #f1f1f1;
 }
 
 .timestamp {
