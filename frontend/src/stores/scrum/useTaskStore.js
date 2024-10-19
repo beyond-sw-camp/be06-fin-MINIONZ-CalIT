@@ -20,7 +20,7 @@ export const useTaskStore = defineStore('taskStore', () => {
 
   const updateTaskStatus = async ({ sprintId, taskId, status }) => {
     try {
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         `/api/task/${sprintId}/status/${taskId}`,
         { taskId, status }
       );
@@ -52,9 +52,25 @@ export const useTaskStore = defineStore('taskStore', () => {
       console.error('Error getting task list:', error);
     }
   };
+
+  // 유저 별 태스크 칸반 조회
+  const getTaskListByUser = async (sprintId, userId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/task/${sprintId}/all/status/${userId}`
+      );
+      taskList.value = response.data.result;
+      return response.data.result;
+    } catch (error) {
+      console.error('Error getting task list:', error);
+    }
+  };
+
   const getWorkspaceTaskList = async (workspaceId) => {
     try {
-      const response = await axiosInstance.get(`/api/task/${workspaceId}/workspaceall`);
+      const response = await axiosInstance.get(
+        `/api/workspace/${workspaceId}/tasks`
+      );
       console.log('API 응답:', response); // 응답 전체 확인
       return response.data.result; // 응답 데이터 반환
     } catch (error) {
@@ -123,6 +139,7 @@ export const useTaskStore = defineStore('taskStore', () => {
     deleteTask,
     getMyTask,
     taskList,
-    getWorkspaceTaskList
+    getWorkspaceTaskList,
+    getTaskListByUser,
   };
 });
