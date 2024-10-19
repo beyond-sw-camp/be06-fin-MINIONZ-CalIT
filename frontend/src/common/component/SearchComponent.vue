@@ -1,23 +1,31 @@
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, defineEmits, onMounted, ref } from 'vue';
+import Multiselect from 'vue-multiselect';
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+
+const selectedLanguage = ref('');
+
 defineProps({
   link: String,
 });
 
+defineEmits(['update:selectedLanguage']);
+
+const isErrorPage = ref(false);
+
+onMounted(async () => {
+  if (window.location.href.endsWith('/error/list')) {
+    isErrorPage.value = true;
+  }
+});
 </script>
 
 <template>
   <div class="toolbar">
     <div class="filter-search">
-      <!-- 필터 드롭다운 -->
-<!--      <div class="filter">-->
-<!--        <button class="filter-button">-->
-<!--          Filter-->
-<!--          <span class="dropdown-icon">▼</span>-->
-<!--        </button>-->
-<!--      </div>-->
-
-      <!-- 검색창 -->
+      <div v-if="isErrorPage" class="filter">
+        <multiselect v-model="selectedLanguage" :options="['JAVA', 'C', 'PYTHON', 'JS', 'SQL']" @input="$emit('update:selectedLanguage', selectedLanguage)" />
+      </div>
       <div class="search">
         <input type="text" class="search-input" placeholder="Search..." />
         <span class="search-icon">🔍</span>
@@ -25,7 +33,7 @@ defineProps({
     </div>
 
     <!-- Create 버튼 -->
-    <router-link :to=link class="create-button">
+    <router-link :to="link" class="create-button">
       <span class="create-icon">+</span> Create
     </router-link>
   </div>
@@ -39,7 +47,6 @@ defineProps({
   padding: 30px;
   background-color: #fff;
   border-radius: 8px;
-  //box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.05);
 }
 
 .filter-search {
@@ -64,7 +71,6 @@ defineProps({
 .search {
   display: flex;
   align-items: center;
-  //margin-left: 10px;
   position: relative;
 }
 

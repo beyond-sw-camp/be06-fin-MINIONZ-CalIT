@@ -8,11 +8,9 @@ export const useTaskStore = defineStore('taskStore', () => {
 
   const addTask = async (data, sprintId) => {
     try {
-      // sprintId와 함께 데이터를 서버에 전송
       const response = await axiosInstance.post(`/api/task/${sprintId}`, data);
-
       console.log(response.data.result);
-      // taskData.value.push(response.data.result); // 필요시 추가
+      taskData.value.push(response.data.result);
     } catch (error) {
       console.error('Error adding task:', error);
     }
@@ -75,7 +73,7 @@ export const useTaskStore = defineStore('taskStore', () => {
       return response.data.result; // 응답 데이터 반환
     } catch (error) {
       console.error('Error getting task list:', error);
-      return []; // 오류 시 빈 배열 반환
+      return [];
     }
   };
 
@@ -89,7 +87,7 @@ export const useTaskStore = defineStore('taskStore', () => {
     participants,
   }) => {
     try {
-      const response = await axiosInstance.put(`api/task/${taskId}`, {
+      const response = await axiosInstance.patch(`api/task/${taskId}`, {
         taskId,
         title,
         contents,

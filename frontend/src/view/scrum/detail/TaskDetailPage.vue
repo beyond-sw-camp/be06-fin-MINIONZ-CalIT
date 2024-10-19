@@ -1,66 +1,74 @@
 <script setup>
-import { computed, inject, onMounted } from 'vue';
-import { useSprintStore } from '@/stores/scrum/useSprintStore';
-import { setPersona } from '@/utils/personaUtils';
+import { useRoute } from 'vue-router';
+import { inject, onMounted, ref } from 'vue';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
+
+const route = useRoute();
+
+const taskId = route.params.tasktId;
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
-
-contentsTitle.value = 'Sprint Detail';
+contentsTitle.value = 'Task Detail';
 contentsDescription.value = '스프린트 정보를 확인해보세요!';
 
-const sprintStore = useSprintStore();
-
-const filteredLabels = computed(() => {
-  return (sprintStore.sprint.labels || []).filter(label => label.name);
-});
+const taskStore = useTaskStore();
+const task = ref(null);
 
 onMounted(async () => {
-  await sprintStore.getSprint();
+  await taskStore.getTask(taskId);
+  task.value = taskStore.tasks.values;
 });
 </script>
 
 <template>
-  <div class="sprint-wrap">
-    <div class="sprint-note-container">
-      <div class="sprint-title-container">
+  <div class="task-wrap">
+    <div class="task-note-container">
+      <div class="task-title-container">
         <span class="column">
-          <i class="sprint-title column-icon"></i>
-          스프린트 제목
+          <i class="task-title column-icon"></i>
+          태스크 제목
         </span>
-        <p class="title-editor text">{{ sprintStore.sprint.title }}</p>
+        <p class="title-editor">{{ task.value.taskTitle }}</p>
       </div>
-      <div class="sprint-section">
+      <div class="issue-section">
         <span class="column">
-          <i class="sprint-description column-icon"></i>
+          <i class="task-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor text">{{ sprintStore.sprint.contents }}</p>
+        <p class="description-editor">{{ task.value.taskContents }}</p>
       </div>
       <div class="author-section">
         <div class="participants">
           <span class="column">
             <i class="user-multiple column-icon"></i>
-            스프린트 참여자
+            태스크 참여자
           </span>
-          <div class="users-list text">
-            <div class="user-profile" v-for="participant in sprintStore.sprint.participants" :key="participant.id">
-              <img :src="setPersona(participant.persona)" alt="참여자" />
-              <span>{{ participant.userName }}</span>
+          <div class="users-list">
+            <div
+                class="user-profile"
+                v-for="participant in task.value.participants"
+                :key="participant.id"
+            >
+              <img :src="participant.avatar" alt="참여자" />
+              <span>{{ participant.name }}</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="sprint-section">
+      <div class="issue-section">
         <span class="column">
           <i class="label-add column-icon"></i>
           라벨
         </span>
-        <div class="label-list text">
-          <button class="label-button" v-for="label in filteredLabels" :key="label.id">
+        <div class="label-list">
+          <button
+              class="label-button"
+              v-for="label in task.value.labels"
+              :key="label.id"
+          >
             {{ label.name }}
           </button>
-          <span v-if="filteredLabels.length === 0">라벨이 없습니다.</span>
         </div>
       </div>
     </div>
@@ -72,13 +80,12 @@ a {
   text-decoration: none;
   text-align: center;
 }
-
-.sprint-wrap {
+.task-wrap {
   display: flex;
   gap: 1rem;
 }
 
-.sprint-note-container {
+.task-note-container {
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -86,9 +93,8 @@ a {
   width: 100%;
 }
 
-.sprint-title-container {
+.task-title-container {
   display: flex;
-  flex-direction: column;
 }
 
 .user-multiple {
@@ -107,21 +113,21 @@ a {
   flex-direction: column;
 }
 
-.sprint-section {
+.issue-section {
   display: flex;
-  flex-direction: column;
 }
 
+.author,
 .participants {
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 
-.sprint-title {
+.task-title {
   background-image: url('@/assets/icon/boardIcon/titleEdit.svg');
 }
 
-.sprint-description {
+.task-description {
   background-image: url('@/assets/icon/boardIcon/quillDescription.svg');
 }
 
@@ -156,7 +162,7 @@ a {
   cursor: pointer;
 }
 
-.sprint-button {
+.issue-button {
   background-color: #f8d7da;
   color: #c82333;
   border: none;
@@ -166,8 +172,24 @@ a {
   margin-right: 10px;
 }
 
+.issue-id {
+  color: #28303f;
+  background-color: #f3f6ff;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+.issue-add {
+  background-image: url('@/assets/icon/boardIcon/issueAdd.svg');
+}
+
+.task-add {
+  background-image: url('@/assets/icon/boardIcon/taskAdd.svg');
+}
+
 .title-editor {
-  font-size: 1rem;
+  font-size: 1.5rem;
   border: 0;
 }
 
@@ -175,8 +197,8 @@ a {
   font-size: 1rem;
   border: 0;
   font-weight: 400;
+  width: 100%;
   margin-left: 15px;
-  flex-direction: column;
 }
 
 .content-editor {
@@ -205,22 +227,11 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 10px;
 }
 
 .users-list {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
-}
-
-.text{
-  margin: 10px 0 0 30px;
-  background-color: #f7f8f9;
-  padding: 20px;
-  border-radius: 10px;
 }
 
 .fade-enter-active,

@@ -1,6 +1,9 @@
 <script setup>
 import { setPersona } from '@/utils/personaUtils';
 import { defineProps } from 'vue';
+import { formatDate } from '@/utils/timeUtils';
+import router from "@/router";
+import {useRoute} from "vue-router";
 
 defineProps({
   task: {
@@ -8,14 +11,21 @@ defineProps({
     required: true,
   },
 });
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+function navigateToDetailPage(task) {
+  router.push(`/workspace/${workspaceId}/scrum/task/${task.id}`);
+}
 </script>
 
 <template>
   <div class="task-card">
-    <p>{{ task.title }}</p>
+    <p @click="navigateToDetailPage(task)">{{ task.title }}</p>
     <div class="labels">
       <span v-for="label in task.labels" :key="label" class="label">{{
-        label
+        label.labelName
       }}</span>
     </div>
     <div class="task-footer">
@@ -27,8 +37,9 @@ defineProps({
           class="avatar"
           alt="users"
         />
+        <span v-if="task.participants.length > 3" class="more">and more</span>
       </div>
-      <span class="due-date">{{ task.endDate }}</span>
+      <span class="due-date">{{ formatDate(task.endDate) }}</span>
     </div>
   </div>
 </template>
@@ -79,5 +90,12 @@ p {
 
 .due-date {
   font-size: 10px;
+}
+
+.more {
+  position: absolute;
+  left: 60px;
+  font-size: 12px;
+  color: #28303f;
 }
 </style>

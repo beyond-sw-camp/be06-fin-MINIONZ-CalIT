@@ -32,7 +32,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
   const getSprintLabel = async (workspaceId) => {
     try {
       const response = await axiosInstance.post(
-        `/api//label/${workspaceId}/sprint`
+        `/api/label/${workspaceId}/sprint`
       );
       labels.value = response.data.result;
     } catch (error) {

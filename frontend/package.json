@@ -22,6 +22,7 @@
     "pinia": "^2.2.2",
     "pinia-plugin-persistedstate": "^3.2.3",
     "quill": "^2.0.2",
+    "quill-cursors": "^4.0.3",
     "sockjs-client": "^1.6.1",
     "vee-validate": "^4.13.2",
     "vue": "^3.2.13",

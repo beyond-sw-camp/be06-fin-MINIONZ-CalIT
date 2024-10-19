@@ -43,7 +43,7 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
   }) => {
     try {
       const response = await axiosInstance.patch(
-        `/api/label/${workspaceId}/sprint`,
+        `/api/label/${workspaceId}/task`,
         {
           taskLabelId,
           labelName,

@@ -13,8 +13,8 @@ import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 
 const userStore = useUserStore();
-const userId = userStore.user.value.idx;
-const userName = userStore.user.value.userName;
+const userId = userStore.user.value?.idx;
+const userName = userStore.user.value?.userName;
 
 const newMessage = ref('');
 const messages = ref([]);
@@ -114,28 +114,10 @@ const onFileSelected = async (event) => {
   if (file) {
     selectedFile.value = file;
 
-    const fileUrls = await chatMessageStore.sendFile({
+    await chatMessageStore.sendFile({
       files: selectedFile.value,
       chatRoomId: chatroomId,
     });
-
-    if (fileUrls) {
-      const messagePayload = {
-        chatRoomId: chatroomId,
-        userId: userId,
-        userName: userName,
-        messageContents: '',
-        files: fileUrls,
-      };
-      stompClient.value.send(
-        `/pub/room/${chatroomId}/send`,
-        {},
-        JSON.stringify(messagePayload)
-      );
-      selectedFile.value = null;
-    } else {
-      console.error('파일 업로드 실패');
-    }
   }
 };
 

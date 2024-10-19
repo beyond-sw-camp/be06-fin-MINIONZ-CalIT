@@ -16,16 +16,11 @@ export const useChatMessageStore = defineStore('chatMessage', {
         formData.append('chatRoomId', chatRoomId);
         formData.append('files', files); // 단일 파일 처리
 
-        const response = await axiosInstance.post(
-          '/api/message/sendFile',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
-        return response.data.result; // 파일 URL 반환
+        await axiosInstance.post('/api/message/sendFile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
       } catch (error) {
         console.error(
           '파일 업로드 에러:',

@@ -7,20 +7,20 @@ import itemIcon3 from '@/assets/icon/dashboard/itemIcon3.svg';
 defineProps({
   tasksCompleted: {
     type: Number,
-    required: true
+    required: true,
   },
   totalTasks: {
     type: Number,
-    required: true
+    required: true,
   },
   completionRate: {
     type: Number,
-    required: true
+    required: true,
   },
   workSpaceCount: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 </script>
 
@@ -28,7 +28,7 @@ defineProps({
   <div class="task-overview">
     <div class="overview-item">
       <div class="item-title">
-        <img :src="itemIcon1" alt="tasks">
+        <img :src="itemIcon1" alt="tasks" />
         <p>Task to complete</p>
       </div>
       <div class="item-contents">
@@ -42,17 +42,17 @@ defineProps({
     </div>
     <div class="overview-item">
       <div class="item-title">
-        <img :src="itemIcon2" alt="rates">
+        <img :src="itemIcon2" alt="rates" />
         <p>Completion rate</p>
       </div>
       <div class="item-contents">
-        <p class="highlight">{{ completionRate }}%</p>
+        <p class="highlight">{{ completionRate.toFixed(1) }}%</p>
         <a href="#">See all</a>
       </div>
     </div>
     <div class="overview-item">
       <div class="item-title">
-        <img :src="itemIcon3" alt="Issues">
+        <img :src="itemIcon3" alt="Issues" />
         <p>My Issues</p>
       </div>
       <div class="item-contents">
@@ -71,7 +71,7 @@ defineProps({
 
 .overview-item {
   text-align: center;
-  border: 1px solid #E3E3E3;
+  border: 1px solid #e3e3e3;
   border-radius: 16px;
   padding: 1rem;
   width: 220px;
@@ -81,13 +81,13 @@ defineProps({
   justify-content: space-between;
 }
 
-.item-nums{
+.item-nums {
   display: flex;
   gap: 5px;
   align-items: flex-end;
 }
 
-.highlight{
+.highlight {
   font-size: 2rem;
   font-weight: 600;
 }
@@ -103,15 +103,15 @@ h2 {
   margin: 0;
 }
 
-p{
+p {
   margin: 0;
 }
 
-.item-contents{
+.item-contents {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  a{
+  a {
     color: #909090;
     font-size: 14px;
     text-decoration: none;

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
-
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
 

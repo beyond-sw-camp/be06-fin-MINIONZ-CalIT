@@ -31,8 +31,6 @@ export const labelColorPalette= [
     },
 ];
 
-function getLabelColors() {
+export function getLabelColors() {
     return labelColorPalette.map(color => color.color);
 }
-
-export { getLabelColors };

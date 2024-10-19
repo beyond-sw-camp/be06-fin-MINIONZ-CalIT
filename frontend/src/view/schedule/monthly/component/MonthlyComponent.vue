@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted, defineEmits, defineProps } from 'vue';
+import { ref, onMounted, defineEmits, defineProps, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { useCalendar } from '@/utils/calendarUtils';
 import { formatUtil } from '@/utils/scheduleDateFnsUtils';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 
 const emit = defineEmits(['prevMonth', 'nextMonth']);
 
@@ -23,17 +24,14 @@ onMounted(() => {
   if (container) {
     new PerfectScrollbar(container);
   }
-
 });
 
 const route = useRoute();
+const workspaceStore = useWorkspaceStore();
 const workspaceId = route.params.workspaceId;
-
-const isVisible = ref(false);
-
-const show = () => {
-  isVisible.value = true;
-};
+watch(() => route.params.workspaceId, (newId) => {
+  workspaceStore.setWorkspaceId(newId);
+});
 
 const {
   currentYear,
@@ -44,7 +42,13 @@ const {
   goToToday,
 } = useCalendar();
 
+const isVisible = ref(false);
 
+const show = () => {
+  isVisible.value = true;
+};
+
+// 회의 데이터를 필터링하여 특정 날짜의 회의 가져오기
 const meetingsForDay = (day) => {
   return props.meetingData?.filter(
       (meeting) => {
@@ -61,7 +65,8 @@ const meetingsForDay = (day) => {
 const sprintsForDay = (day) => {
   return props.sprintData?.filter(sprint => {
     const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
-    return day === startDay;
+    const endDay = parseInt(formatUtil(sprint.endDate, 'd'), 10);
+    return day >= startDay && day <= endDay;
   }).map(sprint => {
     const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
     const endDay = parseInt(formatUtil(sprint.endDate, 'd'), 10);
@@ -69,6 +74,7 @@ const sprintsForDay = (day) => {
     return {
       ...sprint,
       gridColumnStart: startDay,
+      class: startDay === day ? 'start' : (endDay === day ? 'end' : ''),
       gridColumnEnd: `span ${duration}`,
     };
   }) || [];
@@ -123,23 +129,24 @@ const handleNextMonth = () => {
     </div>
 
     <div class="calendar-grid">
-
       <div v-for="n in startBlankDays" :key="n"></div>
       <div v-for="day in daysInMonth" :key="day" class="day-cell">
         <div class="day-number">{{ day }}</div>
         <div class="events">
-          <div>
+          <div class="sprints">
             <button
                 v-for="event in sprintsForDay(day)"
                 :key="event.id"
-                class="event sprint"
+                :class="['event', 'sprint', event.class]"
                 :style="{ gridColumn: `${event.gridColumnStart} / ${event.gridColumnEnd}` }"
                 @click="show()"
             >
-              {{ event.title }}
+              <template v-if="event.class === 'start' || event.class === 'end'">
+                {{ event.title }}
+              </template>
             </button>
           </div>
-          <div>
+          <div class="meetings">
             <button
                 v-for="event in meetingsForDay(day)"
                 :key="event.id"
@@ -243,23 +250,25 @@ const handleNextMonth = () => {
   border: 1px solid #ddd;
   min-height: 150px;
   position: relative;
-  padding: 10px;
   overflow: visible;
 }
 
 .day-number {
   font-size: 16px;
   text-align: left;
+  padding: 5px;
 }
 
 .events {
-  margin-top: 10px;
+  margin-bottom: 10px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .event {
   color: #28303f;
-  border-radius: 5px;
   padding: 5px;
   font-size: 13px;
   margin-bottom: 2px;
@@ -269,21 +278,39 @@ const handleNextMonth = () => {
   width: 100%;
   text-align: left;
 }
-.event {
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .event.meeting {
   border: 2px solid #2196f3;
   background-color: rgba(33, 150, 243, 0.1);
+  margin: 0 10px;
+  border-radius: 5px;
+  width: calc(100% - 20px);
+}
+
+.meetings, .sprints {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .event.sprint {
-  border: 2px solid #db2777;
+  //border: 2px solid #db2777;
   background-color: rgba(219, 39, 119, 0.1);
   grid-column: span 2;
+  height: 30px;
+}
+
+.event.sprint.start{
+  border-left: 2px solid #db2777;
+  margin-left: 10px;
+  border-radius: 5px 0 0 5px;
+  width: calc(100% - 10px);
+}
+
+.event.sprint.end{
+  border-right: 2px solid #db2777;
+  margin-right: 10px;
+  border-radius: 0 5px 5px 0;
+  width: calc(100% - 10px);
 }
 </style>
