@@ -70,6 +70,14 @@ onMounted(() => {
     fetchWorkspaceMonthlyData();
   }
 });
+
+watch(
+    [() => currentStartDate.value, () => currentEndDate.value],
+    () => {
+      fetchWorkspaceMonthlyData();
+    },
+    { immediate: true }
+);
 </script>
 
 <template>

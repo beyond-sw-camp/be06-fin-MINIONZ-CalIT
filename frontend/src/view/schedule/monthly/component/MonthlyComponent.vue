@@ -9,6 +9,14 @@ import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 const emit = defineEmits(['prevMonth', 'nextMonth']);
 
 const props = defineProps({
+  startDate: {
+    type: String,
+    required: true,
+  },
+  endDate: {
+    type: String,
+    required: true,
+  },
   sprintData: {
     type: Array,
     required: true,
