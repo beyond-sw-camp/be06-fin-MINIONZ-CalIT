@@ -14,7 +14,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
     color,
   }) => {
     try {
-      const response = await axiosInstance.get(
+      const response = await axiosInstance.post(
         `/api/label/${workspaceId}/sprint`,
         { labelName, description, color }
       );
@@ -26,7 +26,7 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
 
   const getSprintLabel = async (workspaceId) => {
     try {
-      const response = await axiosInstance.post(
+      const response = await axiosInstance.get(
         `/api/label/${workspaceId}/sprint`
       );
       labels.value = response.data.result;
