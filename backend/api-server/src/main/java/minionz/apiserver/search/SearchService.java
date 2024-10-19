@@ -28,7 +28,7 @@ public class SearchService {
     }
 
     public List<SearchUserResponse> getUsernamesByWorkspaceId(Long workspaceId) {
-        List<User> users = userRepository.findByWorkspaceParticipations_Workspace_WorkspaceId(workspaceId);
+        List<User> users = userRepository.findByWorkspaceParticipations_Workspace_WorkspaceIdAndWorkspaceParticipations_IsValidTrue(workspaceId);
         SearchUserResponse searchUserResponse = new SearchUserResponse();
         return users.stream()
                 .map(user -> searchUserResponse.builder()

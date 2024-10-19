@@ -17,5 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByLoginIdContaining(String loginId);
 
-    List<User> findByWorkspaceParticipations_Workspace_WorkspaceId(Long workspaceId);
+    List<User> findByWorkspaceParticipations_Workspace_WorkspaceIdAndWorkspaceParticipations_IsValidTrue(Long workspaceId);
+
 }
