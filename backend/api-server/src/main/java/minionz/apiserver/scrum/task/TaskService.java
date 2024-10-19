@@ -58,7 +58,17 @@ public class TaskService {
 
         alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId() );
 
-        request.getLabels().forEach(labelId ->
+        List<Long> labels = request.getLabels();
+        List<Long> participants = request.getParticipants();
+
+        if (labels == null) {
+            labels = new ArrayList<>();
+        }
+        if (participants == null) {
+            participants = new ArrayList<>();
+        }
+
+        labels.forEach(labelId ->
                 taskLabelSelectRepository.save(TaskLabelSelect
                         .builder()
                         .taskLabel(TaskLabel.builder().taskLabelId(labelId).build())
@@ -114,6 +124,7 @@ public class TaskService {
                         .labels(findLabels(task))
                         .startDate(task.getStartDate())
                         .endDate(task.getEndDate())
+                        .doneDate(task.getDoneDate())
                         .taskNumber(task.getTaskNumber())
                         .participants(findParticipants(task))
                         .priority(task.getPriority())

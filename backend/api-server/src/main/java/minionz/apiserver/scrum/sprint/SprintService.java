@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import minionz.common.scrum.label.model.SprintLabel;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +57,17 @@ public class SprintService {
         sprintParticipationRepository.save(SprintParticipation.builder().sprint(sprint).user(user).isManager(false).build());
         alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),2L, sprint.getSprintId());
 
-        request.getParticipants().forEach(participantId ->
+        List<Long> labels = request.getLabels();
+        List<Long> participants = request.getParticipants();
+
+        if (labels == null) {
+            labels = new ArrayList<>();
+        }
+        if (participants == null) {
+            participants = new ArrayList<>();
+        }
+
+        participants.forEach(participantId ->
                 sprintParticipationRepository.save(SprintParticipation
                         .builder()
                         .sprint(sprint)
@@ -65,7 +76,7 @@ public class SprintService {
                         .build())
         );
 
-        request.getLabels().forEach(labelId ->
+        labels.forEach(labelId ->
                 sprintLabelSelectRepository.save(SprintLabelSelect
                         .builder()
                         .sprintLabel(SprintLabel.builder().sprintLabelId(labelId).build())
