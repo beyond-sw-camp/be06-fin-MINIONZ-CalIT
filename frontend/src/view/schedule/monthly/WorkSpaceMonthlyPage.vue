@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { monthlySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { useCalendar } from '@/utils/calendarUtils';
 import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import {formatUtil} from "@/utils/scheduleDateFnsUtils";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -16,9 +17,7 @@ contentsDescription.value = '워크스페이스의 이달 일정을 살펴보세
 const dashboardStore = useWorkspaceDashboardStore();
 
 const route = useRoute();
-
 const workspaceId = route.params.workspaceId;
-
 const workspaceStore = useWorkspaceStore();
 const { setWorkspaceId } = workspaceStore;
 
@@ -28,10 +27,12 @@ const currentStartDate = ref(startDate);
 const currentEndDate = ref(endDate);
 
 const fetchWorkspaceMonthlyData = async () => {
+  const formattedStartDate = formatUtil(currentStartDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  const formattedEndDate = formatUtil(currentEndDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
   await dashboardStore.getWorkspaceMonthly({
     workspaceId,
-    startDate: currentStartDate.value,
-    endDate: currentEndDate.value,
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
   });
 };
 
@@ -56,19 +57,27 @@ const handleNextMonth = async () => {
 };
 
 watch(
-  () => route.query.wsId,
-  (newId) => {
-    setWorkspaceId(newId);
-    fetchWorkspaceMonthlyData();
-  }
+    () => route.query.workspaceId,
+    (newId) => {
+      setWorkspaceId(newId);
+      fetchWorkspaceMonthlyData();
+    }
 );
 
 onMounted(() => {
   if (workspaceId) {
-    setWorkspaceId(route.query.wsId);
+    setWorkspaceId(route.query.workspaceId);
     fetchWorkspaceMonthlyData();
   }
 });
+
+watch(
+    [() => currentStartDate.value, () => currentEndDate.value],
+    () => {
+      fetchWorkspaceMonthlyData();
+    },
+    { immediate: true }
+);
 </script>
 
 <template>

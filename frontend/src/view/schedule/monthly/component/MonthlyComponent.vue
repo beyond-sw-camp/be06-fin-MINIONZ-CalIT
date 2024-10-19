@@ -9,6 +9,14 @@ import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 const emit = defineEmits(['prevMonth', 'nextMonth']);
 
 const props = defineProps({
+  startDate: {
+    type: String,
+    required: true,
+  },
+  endDate: {
+    type: String,
+    required: true,
+  },
   sprintData: {
     type: Array,
     required: true,
@@ -25,6 +33,9 @@ onMounted(() => {
     new PerfectScrollbar(container);
   }
 });
+
+const currentStartDate = ref(props.startDate);
+const currentEndDate = ref(props.endDate);
 
 const route = useRoute();
 const workspaceStore = useWorkspaceStore();
@@ -48,7 +59,6 @@ const show = () => {
   isVisible.value = true;
 };
 
-// 회의 데이터를 필터링하여 특정 날짜의 회의 가져오기
 const meetingsForDay = (day) => {
   return props.meetingData?.filter(
       (meeting) => {
@@ -87,6 +97,14 @@ const handlePrevMonth = () => {
 const handleNextMonth = () => {
   emit('nextMonth');
 };
+
+watch(() => props.startDate, () => {
+  const { startDate, endDate } = props;
+  currentStartDate.value = startDate;
+  currentEndDate.value = endDate;
+  currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
+  currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10) - 1;
+});
 </script>
 
 <template>
