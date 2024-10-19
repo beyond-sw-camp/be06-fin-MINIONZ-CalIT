@@ -16,9 +16,7 @@ contentsDescription.value = '워크스페이스의 이달 일정을 살펴보세
 const dashboardStore = useWorkspaceDashboardStore();
 
 const route = useRoute();
-
 const workspaceId = route.params.workspaceId;
-
 const workspaceStore = useWorkspaceStore();
 const { setWorkspaceId } = workspaceStore;
 
@@ -56,16 +54,16 @@ const handleNextMonth = async () => {
 };
 
 watch(
-  () => route.query.wsId,
-  (newId) => {
-    setWorkspaceId(newId);
-    fetchWorkspaceMonthlyData();
-  }
+    () => route.query.workspaceId,
+    (newId) => {
+      setWorkspaceId(newId);
+      fetchWorkspaceMonthlyData();
+    }
 );
 
 onMounted(() => {
   if (workspaceId) {
-    setWorkspaceId(route.query.wsId);
+    setWorkspaceId(route.query.workspaceId);
     fetchWorkspaceMonthlyData();
   }
 });

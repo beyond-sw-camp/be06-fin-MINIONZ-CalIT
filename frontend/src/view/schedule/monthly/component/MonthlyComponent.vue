@@ -48,7 +48,6 @@ const show = () => {
   isVisible.value = true;
 };
 
-// 회의 데이터를 필터링하여 특정 날짜의 회의 가져오기
 const meetingsForDay = (day) => {
   return props.meetingData?.filter(
       (meeting) => {

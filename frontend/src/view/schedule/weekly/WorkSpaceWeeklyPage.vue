@@ -28,6 +28,8 @@ const updateSelectedWeek = (week) => {
     <WeeklyComponent
       :selected-week="selectedWeek"
       @update:selected-week="updateSelectedWeek"
+      :meeting-data="dashboardStore.workspaceWeeklyData.meetings"
+      :sprint-data="dashboardStore.workspaceWeeklyData.sprints"
     />
     <div class="week-data">
       <MiniCalendar @update:selectedWeek="updateSelectedWeek" />
