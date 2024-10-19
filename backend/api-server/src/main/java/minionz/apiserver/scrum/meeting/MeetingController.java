@@ -37,7 +37,7 @@ public class MeetingController {
     }
 
     @GetMapping("/{workspaceId}/{meetingId}")
-    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long meetingId) {
+    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long workspaceId,@PathVariable Long meetingId) {
         ReadMeetingResponse response;
         try {
             response = meetingService.readMeeting(meetingId);
