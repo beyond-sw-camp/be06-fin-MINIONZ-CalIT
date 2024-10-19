@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { monthlySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { useCalendar } from '@/utils/calendarUtils';
 import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
+import {formatUtil} from "@/utils/scheduleDateFnsUtils";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -26,10 +27,12 @@ const currentStartDate = ref(startDate);
 const currentEndDate = ref(endDate);
 
 const fetchWorkspaceMonthlyData = async () => {
+  const formattedStartDate = formatUtil(currentStartDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  const formattedEndDate = formatUtil(currentEndDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
   await dashboardStore.getWorkspaceMonthly({
     workspaceId,
-    startDate: currentStartDate.value,
-    endDate: currentEndDate.value,
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
   });
 };
 
