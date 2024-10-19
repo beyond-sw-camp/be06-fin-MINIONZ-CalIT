@@ -20,6 +20,7 @@ public class ReadAllTaskResponse {
     private String taskNumber;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private LocalDateTime doneDate;
     private List<Participant> participants;
     private TaskLevel priority;
     private String workspaceName;
