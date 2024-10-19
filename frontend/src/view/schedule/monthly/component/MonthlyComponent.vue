@@ -1,12 +1,10 @@
 <script setup>
-import { ref, onMounted, defineEmits, defineProps, watch } from 'vue';
+import { ref, onMounted, defineProps, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { useCalendar } from '@/utils/calendarUtils';
 import { formatUtil } from '@/utils/scheduleDateFnsUtils';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
-
-const emit = defineEmits(['prevMonth', 'nextMonth']);
+import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
 
 const props = defineProps({
   startDate: {
@@ -35,22 +33,20 @@ onMounted(() => {
 });
 
 const route = useRoute();
-const workspaceStore = useWorkspaceStore();
+const workspaceStore = useWorkspaceDashboardStore();
 const workspaceId = route.params.workspaceId;
 watch(() => route.params.workspaceId, (newId) => {
   workspaceStore.setWorkspaceId(newId);
 });
 
-const {
-  currentYear,
-  currentMonth,
-  weekDays,
-  daysInMonth,
-  startBlankDays,
-  goToToday,
-} = useCalendar();
+const currentYear = ref(new Date(props.startDate).getFullYear());
+const currentMonth = ref(new Date(props.startDate).getMonth());
+
+const { weekDays, daysInMonth, startBlankDays, goToToday, prevMonth, nextMonth } = useCalendar();
 
 const isVisible = ref(false);
+const currentStartDate = ref(new Date(props.startDate));
+const currentEndDate = ref(new Date(props.endDate));
 
 const show = () => {
   isVisible.value = true;
@@ -88,12 +84,44 @@ const sprintsForDay = (day) => {
 };
 
 const handlePrevMonth = () => {
-  emit('prevMonth');
+  const {startDate: newStartDate, endDate: newEndDate} = prevMonth(currentStartDate.value, currentEndDate.value);
+  currentStartDate.value = newStartDate;
+  currentEndDate.value = newEndDate;
+  currentYear.value = newStartDate.getFullYear();
+  currentMonth.value = newStartDate.getMonth();
+  fetchMonthlyData();
 };
 
 const handleNextMonth = () => {
-  emit('nextMonth');
+  const {startDate: newStartDate, endDate: newEndDate} = nextMonth(currentStartDate.value, currentEndDate.value);
+  currentStartDate.value = newStartDate;
+  currentEndDate.value = newEndDate;
+  currentYear.value = newStartDate.getFullYear();
+  currentMonth.value = newStartDate.getMonth();
+  fetchMonthlyData();
 };
+
+const fetchMonthlyData = async () => {
+  const formattedStartDate = formatUtil(currentStartDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  const formattedEndDate = formatUtil(currentEndDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  await workspaceStore.getWorkspaceMonthly({
+    workspaceId,
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
+  });
+};
+
+watch(
+    [() => props.startDate, () => props.endDate],
+    ([newStartDate, newEndDate]) => {
+      currentStartDate.value = new Date(newStartDate);
+      currentEndDate.value = new Date(newEndDate);
+      currentYear.value = currentStartDate.value.getFullYear();
+      currentMonth.value = currentStartDate.value.getMonth();
+      fetchMonthlyData();
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
