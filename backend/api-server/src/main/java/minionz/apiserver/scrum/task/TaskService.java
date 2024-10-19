@@ -20,6 +20,8 @@ import minionz.apiserver.scrum.task.model.response.ReadTaskResponse;
 import minionz.common.scrum.task.repository.TaskRepository;
 import minionz.common.scrum.task.model.TaskStatus;
 import minionz.common.scrum.task.model.Task;
+import minionz.common.scrum.task_participation.TaskParticipationRepository;
+import minionz.common.scrum.task_participation.model.TaskParticipation;
 import minionz.common.user.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,8 @@ import java.util.stream.Collectors;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskLabelSelectRepository taskLabelSelectRepository;
-//    private final SprintParticipationRepository sprintParticipationRepository;
+    private final TaskParticipationRepository taskParticipationRepository;
+    //    private final SprintParticipationRepository sprintParticipationRepository;
     private final SprintRepository sprintRepository;
     private final AlarmService alarmService;
 
@@ -56,7 +59,7 @@ public class TaskService {
                 .meeting(meeting)
                 .build());
 
-        alarmService.sendEventsToClients(request.getParticipants(),user.getUserId(),3L, task.getTaskId() );
+        alarmService.sendEventsToClients(request.getParticipants(), user.getUserId(), 3L, task.getTaskId());
 
         List<Long> labels = request.getLabels();
         List<Long> participants = request.getParticipants();
@@ -68,6 +71,14 @@ public class TaskService {
             participants = new ArrayList<>();
         }
 
+        participants.forEach(participantId -> {
+            taskParticipationRepository.save(TaskParticipation
+                    .builder()
+                    .task(task)
+                    .user(User.builder().userId(participantId).build())
+                    .build());
+        });
+
         labels.forEach(labelId ->
                 taskLabelSelectRepository.save(TaskLabelSelect
                         .builder()
@@ -75,6 +86,7 @@ public class TaskService {
                         .task(task)
                         .build()));
     }
+
 
     public String makeTaskNumber(Long sprintId) {
         int num = taskRepository.findTaskCount(sprintId) + 1;
@@ -110,7 +122,7 @@ public class TaskService {
 
 
     public List<ReadAllTaskResponse> readAllTask(Long sprintId) {
-        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,null);
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId, null);
 
         // Optional 조회 및 추가 쿼리 제거
         String workspaceName = result.isEmpty() ? null : result.get(0).getSprint().getWorkspace().getWorkspaceName();
@@ -181,7 +193,7 @@ public class TaskService {
 
     public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId, Long userId) {
         // 스프린트 ID로 모든 Task 가져오기
-        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId,userId);
+        List<Task> result = taskRepository.findAllBySprintIdAndUserId(sprintId, userId);
 
         // 스프린트 정보 가져오기
         Optional<Sprint> sprint = sprintRepository.findById(sprintId);
