@@ -6,7 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NoteMessage {
-    private Long noteId; // 업데이트할 노트의 ID
-    private Object noteContents;
-    private String senderLoginId;
+    private Long noteId;
+    private String noteContents;
+    private String sender;
+    private CursorPosition cursor;  // 커서 정보 추가
 }

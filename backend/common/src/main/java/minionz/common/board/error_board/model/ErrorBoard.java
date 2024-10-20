@@ -26,7 +26,9 @@ public class ErrorBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long errorBoardId;
     private String errorboardTitle;
+    @Column(name = "errorboard_content", columnDefinition = "LONGTEXT")
     private String errorboardContent;
+
 
     @Enumerated(EnumType.STRING)
     private ErrorBoardCategory category;

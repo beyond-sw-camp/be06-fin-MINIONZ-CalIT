@@ -17,6 +17,7 @@ import minionz.common.scrum.sprint.model.Sprint;
 import minionz.common.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +80,7 @@ public class MeetingService {
                 .endDate(meeting.getEndDate())
                 .createdAt(meeting.getCreatedAt())
                 .participants(findParticipants(meeting))
+                .labels(findLabels(meeting))
                 .build();
     }
 
@@ -94,20 +96,10 @@ public class MeetingService {
         ).toList();
     }
 
-    public List<Label> findLabels(Meeting meeting) {
-        return meeting.getNoteLabelSelects().stream().map(
-                label -> Label
-                        .builder()
-                        .id(label.getNoteLabel().getNoteLabelId())
-                        .labelName(label.getNoteLabel().getLabelName())
-                        .color(label.getNoteLabel().getColor())
-                        .build()
-        ).toList();
-    }
 
-
-    public Page<ReadAllMeetingResponse> readAll(int page, int size) {
-        Page<Meeting> result = meetingRepository.findAll(PageRequest.of(page, size));
+    public Page<ReadAllMeetingResponse> readAll(Long workspaceId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Meeting> result = meetingRepository.findMeetingByWorkspace(workspaceId, pageable);
 
         Page<ReadAllMeetingResponse> readMeetingResponses = result.map(meeting -> {
             List<Participant> participants = findParticipants(meeting);
@@ -127,5 +119,16 @@ public class MeetingService {
         });
 
         return readMeetingResponses;
+    }
+
+    public List<Label> findLabels(Meeting meeting) {
+        return meeting.getNoteLabelSelects().stream().map(
+                label -> Label
+                        .builder()
+                        .id(label.getNoteLabel().getNoteLabelId())
+                        .labelName(label.getNoteLabel().getLabelName())
+                        .color(label.getNoteLabel().getColor())
+                        .build()
+        ).toList();
     }
 }

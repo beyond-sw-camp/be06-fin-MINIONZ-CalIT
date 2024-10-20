@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories(basePackages = {
         "minionz.common",
-        "minionz.apiserver"
 })
 
 @EntityScan(basePackages = {

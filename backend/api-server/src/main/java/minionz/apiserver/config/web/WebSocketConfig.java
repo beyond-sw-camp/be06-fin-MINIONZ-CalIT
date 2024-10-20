@@ -27,9 +27,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub", "/topic/note", "/subUser");
-        registry.setApplicationDestinationPrefixes("/pub", "/app/note", "/pubBot");
+        // 커서 위치 경로 추가
+        registry.enableSimpleBroker("/sub", "/topic/note", "/topic/note/cursor", "/subUser");
+        registry.setApplicationDestinationPrefixes("/pub", "/app/note", "/app/cursor", "/pubBot");
     }
-
-
 }

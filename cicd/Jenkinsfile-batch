@@ -1,0 +1,90 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE = "minionz/calit-batch:latest"
+        BLUE_ENV = "calit-batch-blue"
+        GREEN_ENV = "calit-batch-green"
+        DISCORD_WEBHOOK = credentials("DISCORD_WEBHOOK")
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Add Permission"
+                sh 'chmod +x /var/lib/jenkins/workspace/minionz_calit_backend/backend/batch/gradlew'
+                echo "Gradle Build"
+                sh '''
+                    cd /var/lib/jenkins/workspace/minionz_calit_backend/backend/batch
+                    ./gradlew bootJar
+                '''
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'minionztest', usernameVariable: 'DOCKERID', passwordVariable: 'DOCKERPW')]) {
+                        echo "Docker Build"
+                        sh "docker build --tag minionz/calit-batch:1.${BUILD_ID} ./backend/batch"
+
+                        echo "Docker Login"
+                        sh "docker login -u $DOCKERID -p $DOCKERPW"
+
+                        echo "Docker Push"
+                        sh "docker push minionz/calit-batch:1.${BUILD_ID}"
+                    }
+                }
+            }
+        }
+
+        stage('Blue-Green Deployment') {
+            steps {
+                script {
+                    sshPublisher(
+                        continueOnError: false,
+                        failOnError: true,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'jenkins',
+                                verbose: true,
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'cicd/k8s-batch.yml',
+                                        remoteDirectory: '/minionz/',
+                                        execCommand: '''
+                                            # 현재 활성화된 환경(Blue 또는 Green) 확인 후 스위칭
+                                            CURRENT_ENV=$(kubectl get cronjob -n batch | grep -E 'calit-batch-(blue|green)' | awk '{print $1}' | head -n 1)
+                                            if [[ $CURRENT_ENV == *"blue"* ]]; then
+                                                NEW_ENV=${GREEN_ENV}
+                                            else
+                                                NEW_ENV=${BLUE_ENV}
+                                            fi
+
+                                            # 새 환경에 맞는 파일을 적용
+                                            sed -i "s/latest/1.${BUILD_ID}/g" /home/master/minionz/cicd/k8s-batch-${NEW_ENV}.yml
+                                            kubectl apply -f /home/master/minionz/cicd/k8s-batch-${NEW_ENV}.yml
+
+                                            # 새로운 배포 후, 이전 환경의 CronJob 삭제
+                                            kubectl delete cronjob $CURRENT_ENV -n batch
+                                        '''
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            discordSend description: "배포 성공",
+            webhookURL: "${env.DISCORD_WEBHOOK}"
+        }
+        failure {
+            discordSend description: "배포 실패",
+            webhookURL: "${env.DISCORD_WEBHOOK}"
+        }
+    }
+}

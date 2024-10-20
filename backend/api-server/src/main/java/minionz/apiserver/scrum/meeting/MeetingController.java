@@ -37,7 +37,7 @@ public class MeetingController {
     }
 
     @GetMapping("/{workspaceId}/{meetingId}")
-    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long meetingId) {
+    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long workspaceId,@PathVariable Long meetingId) {
         ReadMeetingResponse response;
         try {
             response = meetingService.readMeeting(meetingId);
@@ -50,8 +50,8 @@ public class MeetingController {
 
     //회의 전체 조회
     @GetMapping("/{workspaceId}/search-all")
-    public BaseResponse<Page<ReadAllMeetingResponse>> readAllMeeting(@RequestParam int page, @RequestParam int size) {
-        Page<ReadAllMeetingResponse> response = meetingService.readAll(page, size);
+    public BaseResponse<Page<ReadAllMeetingResponse>> readAllMeeting(@PathVariable Long workspaceId, @RequestParam int page, @RequestParam int size) {
+        Page<ReadAllMeetingResponse> response = meetingService.readAll(workspaceId,page, size);
         return new BaseResponse<>(BaseResponseStatus.MEETING_READ_SUCCESS, response);
     }
 

@@ -19,5 +19,4 @@ public class CreateTaskRequest {
     private TaskLevel priority;
     private List<Long> labels;
     private List<Long> participants;
-    private Long meetingId;
 }

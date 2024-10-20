@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import minionz.apiserver.common.exception.BaseException;
 import minionz.apiserver.common.responses.BaseResponse;
 import minionz.apiserver.common.responses.BaseResponseStatus;
+import minionz.apiserver.scrum.task.TaskService;
+import minionz.apiserver.scrum.task.model.response.ReadAllTaskResponse;
 import minionz.apiserver.scrum.workspace.model.request.CreateWorkspaceRequest;
 import minionz.apiserver.scrum.workspace.model.response.ReadWorkspaceResponse;
 import minionz.apiserver.user.UserService;
@@ -21,6 +23,7 @@ import java.util.List;
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
     private final UserService userService;
+    private final TaskService taskService;
 
     @PostMapping("")
     public BaseResponse<BaseResponseStatus> createWorkspace(
@@ -66,4 +69,19 @@ public class WorkspaceController {
 
         return new BaseResponse<>(BaseResponseStatus.MY_WORKSPACE_READ_SUCCESS, readWorkspaceResponses);
     }
+
+    @GetMapping("/{workspaceId}/tasks")
+    public BaseResponse<List<ReadAllTaskResponse>> readAllWorkspaceTask(@PathVariable Long workspaceId) {
+
+        List<ReadAllTaskResponse> response;
+
+        try {
+            response = taskService.readAllWorkspaceTask(workspaceId);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALLWORKSPACE_SUCCESS, response);
+    }
+
 }

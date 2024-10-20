@@ -22,7 +22,9 @@ public class ErrorComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long errorCommentId;
 
+    @Column(name = "err_comment_content", columnDefinition = "LONGTEXT")
     private String errCommentContent;
+
 
     @CreatedDate
     private LocalDateTime createdAt;

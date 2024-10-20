@@ -40,14 +40,14 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<WorkspaceParticipation> workspaceParticipations = user.getWorkspaceParticipations();
         List<SprintParticipation> sprintParticipations = user.getSprintParticipations();
-        List<MeetingParticipation> meetingParticipations = user.getMeetingParticipations();
+//        List<MeetingParticipation> meetingParticipations = user.getMeetingParticipations();
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         authorities.addAll(workspaceParticipations.stream()
                 .filter(participate -> participate.getIsValid())
                 .map(participate -> {
-                    String rolePrefix = participate.getIsManager() ? "ROLE_WORKSPACE_ADMIN_" : "ROLE_WORKSPACE_MEMBER_";
+                    String rolePrefix = participate.getIsManager() ? "W_A_" : "W_M_";
                     String roleName = rolePrefix + participate.getWorkspace().getWorkspaceId();
                     return new SimpleGrantedAuthority(roleName);
                 })
@@ -55,18 +55,18 @@ public class CustomSecurityUserDetails implements UserDetails, OAuth2User {
 
         authorities.addAll(sprintParticipations.stream()
                 .map(participate -> {
-                    String rolePrefix = participate.getIsManager() ? "ROLE_SPRINT_ADMIN_" : "ROLE_SPRINT_MEMBER_";
+                    String rolePrefix = participate.getIsManager() ? "S_A_" : "S_M_";
                     String roleName = rolePrefix + participate.getSprint().getSprintId();
                     return new SimpleGrantedAuthority(roleName);
                 })
                 .collect(Collectors.toList()));
 
-        authorities.addAll(meetingParticipations.stream()
-                .map(participate -> {
-                    String roleName = "ROLE_MEETING_MEMBER_" + participate.getMeeting().getMeetingId();
-                    return new SimpleGrantedAuthority(roleName);
-                })
-                .collect(Collectors.toList()));
+//        authorities.addAll(meetingParticipations.stream()
+//                .map(participate -> {
+//                    String roleName = "M_" + participate.getMeeting().getMeetingId();
+//                    return new SimpleGrantedAuthority(roleName);
+//                })
+//                .collect(Collectors.toList()));
 
         // 사용자 역할 추가
         authorities.add(new SimpleGrantedAuthority(user.getRole()));

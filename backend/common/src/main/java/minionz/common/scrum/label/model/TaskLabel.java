@@ -21,7 +21,7 @@ public class TaskLabel {
 
     private String labelName;
     private String description;
-    private String color;
+    private Integer color;
 
     // TaskLabel : TaskLabelSelect = 1 : N
     @OneToMany(mappedBy = "taskLabel", fetch = FetchType.LAZY)

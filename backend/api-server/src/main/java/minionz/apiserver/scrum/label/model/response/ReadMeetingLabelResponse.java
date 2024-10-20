@@ -11,5 +11,5 @@ public class ReadMeetingLabelResponse {
     private Long labelId;
     private String labelName;
     private String description;
-    private String color;
+    private Integer color;
 }
