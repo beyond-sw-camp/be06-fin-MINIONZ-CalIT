@@ -4,18 +4,16 @@ import { useRouter } from 'vue-router';
 import { axiosInstance } from '@/utils/axiosInstance';
 
 // 상태 변수들 정의
-const newComment = ref('');  // 새 댓글 내용
-const newAttachment = ref(null);  // 첨부 파일
-const comments = ref([]);  // 댓글 목록
+const newCommentTitle = ref('');  
+const newCommentContent = ref('');  
+const progressStatus = ref('NOT_STARTED');  
+const newAttachment = ref(null);  
+const comments = ref([]);  
 
-// useRouter로 현재 라우터 정보 가져오기
 const router = useRouter();
-const errorBoardId = router.currentRoute.value.params.boardId;
+const qaBoardId = router.currentRoute.value.params.boardId;  
 
-// errorBoardId 콘솔로 출력하여 값 확인
-console.log('errorBoardId:', errorBoardId);
 
-// 날짜를 yyyy-MM-dd 형식으로 변환하는 함수
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
@@ -24,11 +22,11 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
-// 댓글 목록 불러오기 로직
+
 const fetchComments = async () => {
   try {
-    const response = await axiosInstance.get(`/api/errcomment/search`, {
-      params: { errorBoardId },
+    const response = await axiosInstance.get(`/api/qacomment/search`, {
+      params: { qaBoardId },
     });
     comments.value = response.data.result;  // 서버에서 반환된 댓글 목록 저장
   } catch (error) {
@@ -36,7 +34,7 @@ const fetchComments = async () => {
   }
 };
 
-// 댓글 작성 로직
+
 const publishComment = async () => {
   try {
     const formData = new FormData();
@@ -45,19 +43,21 @@ const publishComment = async () => {
     formData.append(
       'request',
       JSON.stringify({
-        errCommentContent: newComment.value,  
+        qaCommentTitle: newCommentTitle.value,  // 댓글 제목
+        qaCommentContent: newCommentContent.value,  // 댓글 내용
+        progressStatus: progressStatus.value,  // 진행 상태
       })
     );
 
     // 파일이 있을 때만 파일을 FormData에 추가 (files)
     if (newAttachment.value) {
-      formData.append('files', newAttachment.value);  
+      formData.append('files', newAttachment.value);  // 서버에서 받는 MultipartFile[] 배열
     }
 
-    console.log('POST 요청 전송 중 errorBoardId:', errorBoardId);
-    const response = await axiosInstance.post(`/api/errcomment/write?errorBoardId=${errorBoardId}`, formData, {
+    // POST 요청 전송
+    const response = await axiosInstance.post(`/api/qacomment/write?qaBoardId=${qaBoardId}`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',  
+        'Content-Type': 'multipart/form-data',
       },
     });
 
@@ -67,7 +67,9 @@ const publishComment = async () => {
     fetchComments();
 
     // 상태 초기화
-    newComment.value = '';
+    newCommentTitle.value = '';
+    newCommentContent.value = '';
+    progressStatus.value = 'NOT_STARTED';
     newAttachment.value = null;
 
   } catch (error) {
@@ -91,8 +93,19 @@ onMounted(fetchComments);
   <div class="comment-section">
     <div class="comment-input">
       <div class="input-wrap">
-        <!-- 댓글 입력창 -->
-        <textarea v-model="newComment" placeholder="답글을 작성하세요" rows="2"></textarea>
+        <!-- 댓글 제목 입력창 -->
+        <input v-model="newCommentTitle" placeholder="댓글 제목을 입력하세요" class="comment-title" />
+
+        <!-- 댓글 내용 입력창 -->
+        <textarea v-model="newCommentContent" placeholder="댓글 내용을 입력하세요" rows="2"></textarea>
+
+        <!-- 진행 상태 드롭다운 -->
+        <label for="progress-status">진행 상태</label>
+        <select v-model="progressStatus" class="progress-status" id="progress-status">
+          <option value="NOT_STARTED">Not Started</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="DONE">Done</option>
+        </select>
 
         <div class="input-footer">
           <!-- 파일 첨부 버튼 -->
@@ -115,7 +128,7 @@ onMounted(fetchComments);
 
     <!-- 댓글 목록 표시 -->
     <div class="comment-list" v-if="comments.length > 0">
-      <div v-for="comment in comments" :key="comment.errorCommentId" class="comment-item">
+      <div v-for="comment in comments" :key="comment.qaCommentId" class="comment-item">
         <div class="comment-header">
           <!-- 사용자 이름 및 작성 시간 표시 -->
           <div class="comment-info">
@@ -124,13 +137,19 @@ onMounted(fetchComments);
           </div>
         </div>
 
+        <!-- 댓글 제목과 진행 상태 표시 -->
+        <div class="comment-title-status">
+          <strong>제목:</strong> {{ comment.qaCommentTitle }}<br/>
+          <strong>진행 상태:</strong> {{ comment.progressStatus }}
+        </div>
+
         <!-- 댓글 내용 표시 -->
         <div class="comment-body">
-          <p>{{ comment.errorCommentContent }}</p>
+          <p>{{ comment.qaCommentContent }}</p>
 
           <!-- 첨부된 이미지가 있는 경우 표시 -->
           <div v-if="comment.images && comment.images.length > 0" class="comment-images">
-            <div v-for="image in comment.images" :key="image.errorCommentImageId">
+            <div v-for="image in comment.images" :key="image.qaCommentImageId">
               <img :src="image.imageUrl" alt="Comment Image" class="comment-image" />
             </div>
           </div>
@@ -155,6 +174,14 @@ onMounted(fetchComments);
   flex-direction: column;
 }
 
+.comment-title {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
 textarea {
   width: calc(100% - 90px);
   padding: 10px;
@@ -164,6 +191,14 @@ textarea {
   outline: none;
   border: none;
   flex-grow: 1;
+}
+
+.progress-status {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 100%;
 }
 
 .input-footer {
@@ -179,15 +214,6 @@ textarea {
   font-size: 18px;
   cursor: pointer;
   margin-right: 10px;
-}
-
-.file-input-icon {
-  background-image: url("@/assets/icon/chatIcon/clip.svg"); /* 아이콘 경로 */
-  display: inline-block;
-  height: 30px;
-  width: 30px;
-  background-size: cover;
-  cursor: pointer;
 }
 
 .publish-button {
@@ -236,6 +262,10 @@ textarea {
   font-size: 12px;
 }
 
+.comment-title-status {
+  margin: 10px 0;
+}
+
 .comment-body {
   font-size: 14px;
 }
@@ -250,14 +280,5 @@ textarea {
   width: 100px;
   height: 100px;
   object-fit: cover;
-}
-
-.file-icon {
-  background-image: url("@/assets/icon/boardIcon/pdf.svg"); /* 아이콘 경로 */
-  display: inline-block;
-  height: 20px;
-  width: 20px;
-  background-size: cover;
-  margin-right: 5px;
 }
 </style>

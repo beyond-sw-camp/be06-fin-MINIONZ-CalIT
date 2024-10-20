@@ -6,38 +6,51 @@ export const useQAStore = defineStore('qaStore', () => {
   const postList = ref([]);
   const postDetail = ref({});
 
-  // [POST] 글 작성 /qaboard/write
-  const writePost = async ({
-    workspaceId,
-    taskId,
-    qaboardTitle,
-    qaboardContent,
-    workspaceParticipationId,
-    formData,
-  }) => {
-    try {
-      formData.append(
-        'request',
-        JSON.stringify({
-          qaboardTitle,
-          qaboardContent,
-          taskId,
-          workspaceParticipationId,
-        })
-      );
-      const response = await axiosInstance.post(
-        `/api/qaboard/write?workspaceId=${workspaceId}`,
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-      );
-      return response.data.result;
-    } catch (error) {
-      console.error('Error writing post:', error);
-      return error.response?.data || { message: 'Unknown error occurred' };
+ // [POST] QA 게시글 작성 (FormData 사용)
+ const writePost = async ({
+  workspaceId,
+  taskId,
+  qaboardTitle,
+  qaboardContent,
+  workspaceParticipationId,
+  files,  // 파일을 받음
+}) => {
+  try {
+    const formData = new FormData();
+    
+    // 게시글 정보 JSON으로 추가
+    formData.append(
+      'request',
+      JSON.stringify({
+        qaboardTitle,
+        qaboardContent,
+        taskId,
+        workspaceParticipationId,
+      })
+    );
+
+    // 파일이 있을 경우 파일 추가
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append('files', file);  // 각각의 파일을 FormData에 추가
+      });
     }
-  };
+
+    // 요청 전송 (multipart/form-data 설정)
+    const response = await axiosInstance.post(
+      `/api/qaboard/write?workspaceId=${workspaceId}`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+    
+    return response.data.result;
+  } catch (error) {
+    console.error('QA 게시글 작성 중 오류 발생:', error);
+    return error.response?.data || { message: 'Unknown error occurred' };
+  }
+};
 
   // [GET] 글 상세 조회 /qaboard/search
   const getPostDetail = async (boardId) => {
