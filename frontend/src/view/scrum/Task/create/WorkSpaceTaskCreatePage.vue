@@ -131,7 +131,7 @@ const fetchSprints = async () => {
   sprintOptions.value = sprintStore.sprints;
 };
 const fetchLabels = async () => {
-  await taskLabelStore.getTaskLabel(selectedSprintId.value);
+  await taskLabelStore.getTaskLabel(workspaceId);
   availableLabels.value = taskLabelStore.labels;
 };
 
