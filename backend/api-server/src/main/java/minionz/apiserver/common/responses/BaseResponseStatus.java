@@ -103,6 +103,7 @@ public enum BaseResponseStatus {
     QABOARD_SEARCH_SUCCESS(true,5101,"게시판 검색에 성공했습니다."),
     QABOARD_SERACH_FAIL(true,5102,"게시판 검색에 실패했습니다."),
     QACOMMENT_CREATE_SUCCESS(true,5201,"댓글 등록에 성공했습니다."),
+    QACOMMENT_SEARCH_SUCCESS(true,5202,"댓글 검색에 성공했습니다."),
 
 
     ERRORBOARD_CREATE_FAIL(false, 5002, "게시판 등록에 실패했습니다."),
