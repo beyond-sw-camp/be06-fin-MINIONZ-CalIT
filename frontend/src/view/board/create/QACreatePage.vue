@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
-import { useRoute } from 'vue-router';
+import { useRoute  } from 'vue-router';
 import { useQAStore } from '@/stores/board/useQAStore'; // QA Store 사용
+import Multiselect from 'vue-multiselect';
+import router from '@/router';
+import 'vue-multiselect/dist/vue-multiselect.min.css'; // 멀티셀렉트 스타일
 
 const taskStore = useTaskStore();
 const qaStore = useQAStore(); // QA Store 사용
@@ -12,10 +15,26 @@ const workspaceId = route.params.workspaceId;
 
 // 게시글 제목, 내용, 태스크 선택, 파일 업로드 관련 변수들
 const qaTitle = ref('');
-const qaContent = ref('');  
-const selectedTask = ref(null); 
+const qaContent = ref('');
+const selectedTask = ref(null);
 const tasks = ref([]);
-const qaFiles = ref([]);  // 파일 업로드를 위한 ref
+const qaFiles = ref([]); // 파일 업로드를 위한 ref
+
+// 참여자 및 친구 목록 관리
+const selectedParticipants = ref([]);
+const friendStore = useFriendsStore();
+const filteredFriends = ref([]);
+
+// 친구 목록을 가져오는 함수
+const fetchFriends = async () => {
+  try {
+    await friendStore.getFriendsList(workspaceId);
+    filteredFriends.value = friendStore.friends; // 친구 목록 저장
+  } catch (error) {
+    console.error('Error fetching Friends:', error);
+    filteredFriends.value = [];
+  }
+};
 
 // 파일 선택 핸들러
 const handleFileChange = (event) => {
@@ -33,6 +52,7 @@ const savePost = async () => {
       qaboardContent: qaContent.value,
       taskId: selectedTask.value,
       workspaceParticipationId: 3, // 필요에 따라 수정
+      participants: selectedParticipants.value // 선택한 참여자 추가
     }));
 
     // 파일이 있을 경우에만 파일 추가
@@ -51,9 +71,8 @@ const savePost = async () => {
       workspaceParticipationId: 3, // 필요에 따라 수정
       files: qaFiles.value, // 파일 배열
     });
-
+    router.push(`/workspace/${workspaceId}/scrum/board/qa/list`);
     console.log('게시글 저장 성공:', response);
-
   } catch (error) {
     console.error('게시글 저장 중 오류가 발생했습니다:', error);
   }
@@ -64,6 +83,7 @@ onMounted(async () => {
   try {
     const response = await taskStore.getWorkspaceTaskList(workspaceId);
     tasks.value = Array.isArray(response) ? response : [];
+    await fetchFriends(); // 친구 목록 불러오기
   } catch (error) {
     console.error('태스크 목록을 불러오는 중 오류가 발생했습니다.', error.message);
   }
@@ -78,6 +98,31 @@ onMounted(async () => {
         <div class="qa-title-container">
           <span class="column">게시글 제목</span>
           <input v-model="qaTitle" class="title-editor" placeholder="게시글 제목" />
+        </div>
+
+        <!-- 참여자 지정하기 -->
+        <div class="author-section">
+          <div class="participants">
+            <span class="column">담당자</span>
+            <multiselect
+              v-model="selectedParticipants"
+              :options="filteredFriends"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="참여자를 선택하세요"
+              label="userName"
+              track-by="searchUserIdx"
+            />
+            <div class="users-list">
+              <div class="selections participants" v-if="selectedParticipants.length">
+                <span class="item" v-for="participant in selectedParticipants" :key="participant.searchUserIdx">
+                  {{ participant.userName }}
+                  <span @click="deleteParticipant(participant.searchUserIdx)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- 태스크 연동 -->
