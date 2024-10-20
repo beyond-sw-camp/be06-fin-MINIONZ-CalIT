@@ -3,6 +3,9 @@ import { inject, ref, watch, onMounted, computed } from 'vue';
 import TaskColumn from './component/KanbanColumn.vue';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+
+const sprintStore = useSprintStore();
 
 const reorderTasksByStatus = (tasksArray) => {
   if (!tasksArray) return []; // tasksArray가 null 또는 undefined일 경우 빈 배열 반환
@@ -22,6 +25,13 @@ const reorderTasksByStatus = (tasksArray) => {
     { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
     { DONE: reorderedTasks.DONE },
   ];
+};
+
+const fetchTasks = async () => {
+  tasksByStatus.value = await taskStore.getTaskList(
+    workspaceId,
+    sprintStore.nowSprintId
+  );
 };
 
 const contentsTitle = inject('contentsTitle');
@@ -62,6 +72,7 @@ const hasTasks = computed(() => {
         v-for="task in reorderTasksByStatus(tasksByStatus)"
         :key="task.key"
         :data="task"
+        @taskUpdated="fetchTasks"
       />
     </div>
     <div class="initial-wrap" v-else>
