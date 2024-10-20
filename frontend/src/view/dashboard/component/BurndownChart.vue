@@ -24,20 +24,16 @@ const fetchBurndownData = async () => {
   console.log('Data:', data);
 
   if (data.sprint) {
-    const result = calculateBurndownData(data.doneTaskCount, data.sprint.startDate, data.sprint.endDate);
+    const result = calculateBurndownData(data.doneStoryPoints, data.sprint.startDate, data.sprint.endDate);
     console.log('Calculated Burndown Data:', result);
     idealData = result.idealData;
     actualData = result.actualData;
-  } else {
-    console.log('Data Result is empty or undefined');
-    idealData = [];
-    actualData = [];
   }
 
   if (chartInstance) {
     chartInstance.setOption({
       xAxis: {
-        data: Array.from({length: idealData.length}, (_, i) => `Day ${i + 1}`)
+        data: Array.from({ length: idealData.length }, (_, i) => `Day ${i + 1}`)
       },
       series: [
         {

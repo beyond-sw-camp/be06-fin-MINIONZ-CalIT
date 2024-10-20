@@ -1,4 +1,4 @@
-import {axiosInstance} from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 export const getBurndownData = async (workspaceId, sprintId) => {
     try {
@@ -18,7 +18,7 @@ export const getBurndownData = async (workspaceId, sprintId) => {
             sprint,
             allTaskCount: progress?.allTaskCount,
             doneTaskCount: tasks.filter(task => task.status === 'DONE').length,
-            doneStoryPoints: doneTasks.map(task => task.endDate)
+            doneStoryPoints: doneTasks
         };
     } catch (error) {
         console.error('Error fetching burndown data:', error);
@@ -26,30 +26,28 @@ export const getBurndownData = async (workspaceId, sprintId) => {
     }
 };
 
-export const calculateBurndownData = (tasks, sprintStartDate, sprintEndDate) => {
-    const totalTasks = tasks.length;
-    console.log( '테스트', sprintStartDate, sprintEndDate);
+export const calculateBurndownData = (doneStoryPoints, sprintStartDate, sprintEndDate) => {
+    const totalTasks = doneStoryPoints.length;
     const totalDays = (new Date(sprintEndDate) - new Date(sprintStartDate)) / (1000 * 60 * 60 * 24);
 
     const idealData = [];
     for (let i = 0; i <= totalDays; i++) {
-        idealData.push(totalTasks - (totalTasks / totalDays) * i);
+        const remainingTasks = totalTasks - (totalTasks / totalDays) * i;
+        idealData.push(remainingTasks);
     }
 
-    const actualDataMap = Array.isArray(tasks) ? tasks.reduce((acc, task) => {
-        const date = new Date(task.updatedAt).toLocaleDateString();
-        acc[date] = acc[date] || 0;
-        if (task.status === 'DONE') {
-            acc[date] += 1;
-        }
+    const actualDataMap = doneStoryPoints.reduce((acc, task) => {
+        const doneDate = new Date(task.doneDate).toLocaleDateString();
+        acc[doneDate] = acc[doneDate] || 0;
+        acc[doneDate] += 1;
         return acc;
-    }, {}) : {};
+    }, {});
 
     const actualData = [];
     let remainingTasks = totalTasks;
     for (let i = 0; i <= totalDays; i++) {
-        const date = new Date(new Date(sprintStartDate).getTime() + i * 24 * 60 * 60 * 1000).toLocaleDateString();
-        remainingTasks -= actualDataMap[date] || 0;
+        const currentDate = new Date(new Date(sprintStartDate).getTime() + i * 24 * 60 * 60 * 1000).toLocaleDateString();
+        remainingTasks -= actualDataMap[currentDate] || 0;
         actualData.push(remainingTasks);
     }
 
