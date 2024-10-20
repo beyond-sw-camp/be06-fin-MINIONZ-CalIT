@@ -2,6 +2,10 @@ import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
 import { useRoute } from 'vue-router';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export const useSprintStore = defineStore('sprintStore', () => {
   const sprint = ref([]);
@@ -29,9 +33,19 @@ export const useSprintStore = defineStore('sprintStore', () => {
         startDate,
         endDate,
       });
-      sprints.value.push(response.data.result);
+
+      if (response.data.success) {
+        sprints.value.push(response.data.result);
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error adding label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error adding label:', error);
+      }
     }
   };
 
@@ -43,9 +57,21 @@ export const useSprintStore = defineStore('sprintStore', () => {
       const response = await axiosInstance.get(
         `/api/sprint/${workspaceId}/${sprintId}`
       );
-      sprint.value = response.data.result;
+
+      if (response.data.success) {
+        sprint.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
+
+      console.log('응답 코드', response.status);
     } catch (error) {
-      console.log('Error getting Sprint', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.log('Error getting Sprint', error);
+      }
     }
   };
 
@@ -54,9 +80,19 @@ export const useSprintStore = defineStore('sprintStore', () => {
       const response = await axiosInstance.get(
         `/api/sprint/all/${workspaceId}`
       );
-      sprints.value = response.data.result;
+
+      if (response.data.success) {
+        sprints.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.log('Error getting Sprint List', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.log('Error getting Sprint List', error);
+      }
     }
   };
 
@@ -73,9 +109,19 @@ export const useSprintStore = defineStore('sprintStore', () => {
         sprintContents,
         labelId,
       });
-      sprints.value = response.data.result;
+
+      if (response.data.success) {
+        sprints.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.log('Error updating Sprint', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.log('Error updating Sprint', error);
+      }
     }
   };
 
@@ -85,9 +131,19 @@ export const useSprintStore = defineStore('sprintStore', () => {
         `/api/sprint/${sprintId}/status`,
         status
       );
-      sprints.value = response.data.result;
+
+      if (response.data.success) {
+        sprints.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.log('Error updating Sprint State', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.log('Error updating Sprint State', error);
+      }
     }
   };
 
@@ -96,7 +152,12 @@ export const useSprintStore = defineStore('sprintStore', () => {
       await axiosInstance.delete(`/api/sprint/${sprintId}`);
       sprints.value = sprints.value.filter((sprint) => sprint.id !== sprintId);
     } catch (error) {
-      console.error('Error deleting sprint:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error deleting sprint:', error);
+      }
     }
   };
 

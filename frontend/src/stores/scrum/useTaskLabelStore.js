@@ -2,6 +2,10 @@ import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
 import { labelColorPalette } from '@/utils/labelUtils';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export const useTaskLabelStore = defineStore('labelStore', () => {
   const labels = ref([]);
@@ -18,9 +22,19 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
         `/api/label/${workspaceId}/task`,
         { workspaceId, labelName, description, color }
       );
-      labels.value.push(response.data.result);
+
+      if (response.data.success) {
+        labels.value.push(response.data.result);
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error adding label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error adding label:', error);
+      }
     }
   };
 
@@ -29,9 +43,19 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
       const response = await axiosInstance.get(
         `/api/label/${workspaceId}/task`
       );
-      labels.value = response.data.result;
+
+      if (response.data.success) {
+        labels.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error fetching labels:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error fetching labels:', error);
+      }
     }
   };
 
@@ -50,9 +74,19 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
           description,
         }
       );
-      labels.value = response.data.result;
+
+      if (response.data.success) {
+        labels.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error updating label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error updating label:', error);
+      }
     }
   };
 
@@ -61,9 +95,15 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
       await axiosInstance.delete(
         `/api/label/${workspaceId}/task/${taskLabelId}`
       );
+
       labels.value = labels.value.filter((label) => label.id !== taskLabelId);
     } catch (error) {
-      console.error('Error deleting label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error deleting label:', error);
+      }
     }
   };
 
