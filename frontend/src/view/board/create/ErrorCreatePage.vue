@@ -3,33 +3,30 @@ import { ref, onMounted } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
-
+import router from "@/router";
+import { Notyf } from 'notyf';
 
 const taskStore = useTaskStore();
+const notyf = new Notyf();
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
-// 게시글 제목, 내용, 언어 선택, 파일 업로드 관련 변수들
 const errTitle = ref('');
-const errContent = ref('');  // 게시글 내용은 그냥 텍스트로 처리
+const errContent = ref('');
 const errLanguage = ref('');
 const tasks = ref([]);
 const selectedTask = ref(null);
 
-// 파일 업로드를 위한 ref
 const files = ref([]);
 
-// 파일 선택 핸들러
 const handleFileChange = (event) => {
   files.value = Array.from(event.target.files);
 };
 
-// 게시글 저장 로직
 const savePost = async () => {
   try {
     const formData = new FormData();
 
-    // JSON 데이터를 문자열로 변환하여 FormData에 추가
     formData.append('request', JSON.stringify({
       taskId: selectedTask.value,
       errboardTitle: errTitle.value,
@@ -37,29 +34,27 @@ const savePost = async () => {
       category: errLanguage.value
     }));
 
-    // 파일이 있을 때만 파일 추가
     if (files.value.length > 0) {
       files.value.forEach((file) => {
         formData.append('files', file);
       });
     }
 
-    // 요청 전송 - Content-Type을 설정하지 않음
     const response = await axiosInstance.post(`/api/errboard/write?workspaceId=${workspaceId}`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'  // 이 부분은 자동으로 설정되지만 명시적으로 추가해봅니다
+        'Content-Type': 'multipart/form-data'
       }
     });
 
     console.log('게시글 저장 성공:', response.data);
+    router.push(`/workspace/${workspaceId}/board/error/list`);
+    notyf.success('게시글이 성공적으로 저장되었습니다.');
   } catch (error) {
     console.error('게시글 저장 중 오류가 발생했습니다:', error);
   }
 };
 
 
-
-// 태스크 목록 불러오기
 onMounted(async () => {
   try {
     const response = await taskStore.getWorkspaceTaskList(workspaceId);

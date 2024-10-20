@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
-import { weeklySettingUtils } from '@/utils/scheduleDateSettingUtils';
+// import { weeklySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
