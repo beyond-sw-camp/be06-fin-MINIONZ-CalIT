@@ -11,6 +11,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
   const sprint = ref([]);
   const sprints = ref([]);
   const sprintId = ref(null);
+  const nowSprintId = ref(null);
 
   const route = useRoute();
 
@@ -174,10 +175,15 @@ export const useSprintStore = defineStore('sprintStore', () => {
     }
   };
 
+  const setNowSprintId = (id) => {
+    nowSprintId.value = id;
+  };
+
   return {
     sprint,
     sprints,
     sprintId,
+    nowSprintId,
     addSprint,
     getSprint,
     getSprintList,
@@ -185,5 +191,6 @@ export const useSprintStore = defineStore('sprintStore', () => {
     updateSprintState,
     deleteSprint,
     setSprintId,
+    setNowSprintId,
   };
 });
