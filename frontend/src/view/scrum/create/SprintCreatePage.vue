@@ -102,13 +102,13 @@ const onSubmit = handleSubmit(async (values) => {
   }
 });
 
-const fetchLabels = async () => {
-  await sprintLabelStore.getSprintLabel(workspaceId);
-  availableLabels.value = sprintLabelStore.labels;
-};
+
 
 onMounted(() => {
-  searchFriends();
+  searchFriends();const fetchLabels = async () => {
+    await sprintLabelStore.getSprintLabel(workspaceId);
+    availableLabels.value = sprintLabelStore.labels;
+  };
   fetchLabels();
   watch(selectedParticipant, (newParticipant) => {
     if (newParticipant) {

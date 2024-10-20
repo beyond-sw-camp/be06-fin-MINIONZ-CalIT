@@ -9,8 +9,10 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 const dashboardStore = useWorkspaceDashboardStore();
+
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
+
 contentsTitle.value = 'Workspace Dashboard';
 contentsDescription.value = '워크스페이스의 대시보드를 살펴보세요!';
 
@@ -45,7 +47,7 @@ onMounted(async () => {
           :total-tasks="dashboard.progress.allTaskCount"
           :issue-count="dashboard.progress.issueCount"
       />
-      <BurndownChart />
+      <BurndownChart/>
       <MeetingList
           v-if="dashboard.upcomingMeetings"
           :meetings="dashboard.upcomingMeetings"
