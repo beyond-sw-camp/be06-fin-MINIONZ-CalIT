@@ -30,7 +30,7 @@ export const useTaskStore = defineStore('taskStore', () => {
     }
   };
 
-  const updateTaskStatus = async ({ sprintId, taskId, status }) => {
+  const updateTaskStatus = async (sprintId, taskId, status) => {
     try {
       const response = await axiosInstance.patch(
         `/api/task/${sprintId}/status/${taskId}`,
