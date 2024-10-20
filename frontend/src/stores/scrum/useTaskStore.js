@@ -190,7 +190,7 @@ export const useTaskStore = defineStore('taskStore', () => {
 
   const getMyTask = async () => {
     try {
-      const response = await axiosInstance.get(`/api/sprint/my/all`);
+      const response = await axiosInstance.get(`/api/task/my/all`);
 
       if (response.data.success) {
         taskData.value = response.data.result;
