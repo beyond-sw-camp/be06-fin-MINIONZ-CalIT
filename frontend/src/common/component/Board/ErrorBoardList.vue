@@ -1,7 +1,7 @@
 <script setup>
-import {defineProps} from 'vue';
-import router from "@/router";
-import {useRoute} from "vue-router";
+import { defineProps } from 'vue';
+import router from '@/router';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -14,36 +14,45 @@ defineProps({
 });
 
 function navigateToDetailPage(item) {
-  router.push(`/workspace/${workspaceId}/scrum/board/error/detail/${item.errBoardId}`);
+  router.push(
+    `/workspace/${workspaceId}/scrum/board/error/detail/${item.errorBoardId}`
+  );
 }
 </script>
 
 <template>
   <table class="board-table">
     <thead>
-    <tr>
-      <th>게시글 제목</th>
-      <th>작성자</th>
-      <th>{{ thcolumn }}</th>
-      <th>작성 시간</th>
-      <th></th>
-    </tr>
+      <tr>
+        <th>게시글 제목</th>
+        <th>작성자</th>
+        <th>{{ thcolumn }}</th>
+        <th>작성 시간</th>
+        <th></th>
+      </tr>
     </thead>
     <tbody>
-    <tr v-for="(item, index) in items" :key="index" @click="navigateToDetailPage">
-      <td class="title">{{ item.errboardTitle }}</td>
-      <td>{{ item.userName }}</td>
-      <td>{{ item.errboardCategory }}</td>
-      <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
-      <td class="action-bundle">
-        <button @click="$emit('edit-item', item)" class="action-btn edit-btn">
-          <i class="edit-icon"></i>
-        </button>
-        <button @click="$emit('delete-item', item)" class="action-btn delete-btn">
-          <i class="delete-icon"></i>
-        </button>
-      </td>
-    </tr>
+      <tr
+        v-for="(item, index) in items"
+        :key="index"
+        @click="navigateToDetailPage(item)"
+      >
+        <td class="title">{{ item.errboardTitle }}</td>
+        <td>{{ item.userName }}</td>
+        <td>{{ item.errboardCategory }}</td>
+        <td>{{ new Date(item.createdAt).toLocaleString() }}</td>
+        <td class="action-bundle">
+          <button @click="$emit('edit-item', item)" class="action-btn edit-btn">
+            <i class="edit-icon"></i>
+          </button>
+          <button
+            @click="$emit('delete-item', item)"
+            class="action-btn delete-btn"
+          >
+            <i class="delete-icon"></i>
+          </button>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>
@@ -51,7 +60,7 @@ function navigateToDetailPage(item) {
 <style scoped>
 a {
   text-decoration: none;
-  color: #28303F;
+  color: #28303f;
 }
 
 .board-table {
@@ -64,29 +73,29 @@ a {
 .board-table td {
   padding: 10px;
   text-align: center;
-  border-bottom: 1px solid #E6E9F4;
+  border-bottom: 1px solid #e6e9f4;
 }
 
 .board-table th {
   background-color: #fff;
   font-size: 14px;
   font-weight: 400;
-  color: #5A607F;
+  color: #5a607f;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: none;
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 1px solid #D7DBEC;
+  border: 1px solid #d7dbec;
   position: relative;
 }
 
-input[id="check"]:checked + label::after {
+input[id='check']:checked + label::after {
   content: '✔';
   font-size: 15px;
   width: 20px;
@@ -117,13 +126,13 @@ input[id="check"]:checked + label::after {
   width: 40px;
   height: 40px;
   display: block;
-  background-image: url("@/assets/icon/boardIcon/boardEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/boardEdit.svg');
 }
 
 .delete-icon {
   width: 40px;
   height: 40px;
   display: block;
-  background-image: url("@/assets/icon/boardIcon/boardDelete.svg");
+  background-image: url('@/assets/icon/boardIcon/boardDelete.svg');
 }
 </style>
