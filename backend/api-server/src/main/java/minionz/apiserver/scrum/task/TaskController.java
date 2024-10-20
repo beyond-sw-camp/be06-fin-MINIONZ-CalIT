@@ -39,8 +39,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
     }
 
-    @GetMapping("/{sprintId}/{taskId}")
-    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId, @PathVariable Long sprintId) {
+    @GetMapping("/{workspaceId}/{taskId}")
+    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId, @PathVariable Long workspaceId) {
         ReadTaskResponse response;
 
         try {
@@ -52,8 +52,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_SUCCESS, response);
     }
 
-    @GetMapping("/{sprintId}/all/status")
-    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatus(@PathVariable Long sprintId) {
+    @GetMapping("/{workspaceId}/{sprintId}/all/status")
+    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatus(@PathVariable Long workspaceId,@PathVariable Long sprintId) {
 
         List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
 
@@ -66,8 +66,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_BY_STATUS_SUCCESS, response);
     }
 
-    @GetMapping("/{sprintId}/all/status/{userId}")
-    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatusAndUser(@PathVariable Long sprintId, @PathVariable Long userId) {
+    @GetMapping("/{workspaceId}/{sprintId}/all/status/{userId}")
+    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatusAndUser(@PathVariable Long workspaceId,@PathVariable Long sprintId, @PathVariable Long userId) {
 
         List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
 
@@ -80,8 +80,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_BY_STATUS_SUCCESS, response);
     }
 
-    @GetMapping("/{sprintId}/all")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long sprintId) {
+    @GetMapping("/{workspaceId}/{sprintId}/all")
+    public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long workspaceId,@PathVariable Long sprintId) {
 
         List<ReadAllTaskResponse> response;
 
