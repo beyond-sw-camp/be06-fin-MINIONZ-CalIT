@@ -2,6 +2,10 @@ import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
 import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export const useWorkspaceStore = defineStore('workspaceStore', () => {
   const workspace = ref([]);
@@ -17,10 +21,21 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
         participants,
         avatar,
       });
-      workspace.value = response.data.result;
-      return response.data;
+
+      if (response.data.success) {
+        workspace.value = response.data.result;
+        return response.data;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Failed to add workspace', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Failed to add workspace', error);
+      }
+
       throw error;
     }
   };
@@ -34,10 +49,21 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
       const response = await axiosInstance.get('/api/workspace/my/all', {
         withCredentials: true,
       });
-      workspace.value = response.data.result;
-      return response.data.result;
+
+      if (response.data.success) {
+        workspace.value = response.data.result;
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Failed to fetch workspace', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Failed to fetch workspace', error);
+      }
+
       return [];
     }
   };
@@ -57,10 +83,21 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
           participants,
         }
       );
-      workspace.value = response.data.result;
-      return response.data.result;
+
+      if (response.data.success) {
+        workspace.value = response.data.result;
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Failed to update workspace', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Failed to update workspace', error);
+      }
+
       throw error;
     }
   };
@@ -83,7 +120,13 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
 
       return response.data;
     } catch (error) {
-      console.error('Failed to delete workspace', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Failed to delete workspace', error);
+      }
+
       throw error;
     }
   };
@@ -115,10 +158,21 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
       const response = await axiosInstance.patch(
         `/api/workspace/accept/${workspaceId}`
       );
-      workspace.value = response.data;
-      return response.data;
+
+      if (response.data.success) {
+        workspace.value = response.data;
+        return response.data;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Failed to accept workspace', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Failed to accept workspace', error);
+      }
+
       throw error;
     }
   };
@@ -130,11 +184,22 @@ export const useWorkspaceStore = defineStore('workspaceStore', () => {
       const response = await axiosInstance.delete(
         `/api/workspace/reject/${workspaceId}`
       );
-      workspace.value = response.data;
-      await alarmStore.deleteAlarm(workspaceId);
-      return response.data;
+
+      if (response.data.success) {
+        workspace.value = response.data;
+        await alarmStore.deleteAlarm(workspaceId);
+        return response.data;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Failed to reject workspace', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Failed to reject workspace', error);
+      }
+
       throw error;
     }
   };

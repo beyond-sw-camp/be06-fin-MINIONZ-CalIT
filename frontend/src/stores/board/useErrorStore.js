@@ -1,62 +1,113 @@
+import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
-import { axiosInstance } from '@/utils/axiosInstance';  // axiosInstance를 가져옵니다
+import { ref } from 'vue';
 
-export const useErrorStore = defineStore('errorBoard', {
-  state: () => ({
-    errorBoards: [],  // 게시판 리스트를 저장하는 상태
-  }),
-  actions: {
-    // 게시글 생성
-    async getErrorBoardList(workspaceId, page, size) {
-      try {
-        const response = await axiosInstance.get('/api/errboard/search-all', {
-          params: { workspaceId: workspaceId, page: page - 1, size: size }
-        });
-        this.errorBoards = response.data.result.content;
-        return this.errorBoards;
-      } catch (error) {
-        console.error('게시글 목록 조회 중 오류가 발생했습니다:', error);
-        throw error;
-      }
-    },
-    
-    // 게시글 하나 조회
-    async getErrorBoard(boardId) {
-      try {
-        const response = await axiosInstance.get('/api/errboard/search', {
-          params: { boardId }
-        });
-        return response.data.result;
-      } catch (error) {
-        console.error('게시글 조회 중 오류가 발생했습니다:', error);
-        throw error;
-      }
-    },
-    
-    // 키워드로 게시글 검색
-    async searchErrorBoardByKeyword(workspaceId, page, size, keyword) {
-      try {
-        const response = await axiosInstance.get('/api/errboard/search-keyword', {
-          params: { workspaceId, page, size, keyword }
-        });
-        return response.data.result.content;
-      } catch (error) {
-        console.error('키워드로 게시글 검색 중 오류가 발생했습니다:', error);
-        throw error;
-      }
-    },
+export const useErrorStore = defineStore('errorBoard', () => {
+  const errorBoards = ref([]);
+  const errorDetail = ref({});
 
-    // 카테고리별로 게시글 검색
-    async searchErrorBoardByCategory(workspaceId, page, size, category) {
-      try {
-        const response = await axiosInstance.get('/api/errboard/search-category', {
-          params: { workspaceId, page, size, category }
-        });
-        return response.data.result.content;
-      } catch (error) {
-        console.error('카테고리별 게시글 검색 중 오류가 발생했습니다:', error);
-        throw error;
-      }
+  // [GET] 게시글 목록 조회
+  const getErrorBoardList = async (workspaceId, page, size) => {
+    try {
+      page = page - 1; // 페이지 번호를 0부터 시작하도록 조정
+      const response = await axiosInstance.get('/api/errboard/search-all', {
+        params: { workspaceId, page, size },
+      });
+      errorBoards.value = response.data.result.content;
+      return errorBoards.value;
+    } catch (error) {
+      console.error('게시글 목록 조회 중 오류가 발생했습니다:', error);
+      return error.response?.data || { message: 'Unknown error occurred' };
     }
-  }
+  };
+
+  // [GET] 게시글 상세 조회
+  const getErrorBoard = async (boardId) => {
+    try {
+      const response = await axiosInstance.get('/api/errboard/search', {
+        params: { boardId },
+      });
+      errorDetail.value = response.data.result;
+      return response.data.result;
+    } catch (error) {
+      console.error('게시글 조회 중 오류가 발생했습니다:', error);
+      return error.response?.data || { message: 'Unknown error occurred' };
+    }
+  };
+
+  // [GET] 키워드로 게시글 검색
+  const searchErrorBoardByKeyword = async (
+    workspaceId,
+    page,
+    size,
+    keyword
+  ) => {
+    try {
+      const response = await axiosInstance.get('/api/errboard/search-keyword', {
+        params: { workspaceId, page, size, keyword },
+      });
+      errorBoards.value = response.data.result.content;
+      return errorBoards.value;
+    } catch (error) {
+      console.error('키워드로 게시글 검색 중 오류가 발생했습니다:', error);
+      return error.response?.data || { message: 'Unknown error occurred' };
+    }
+  };
+
+  // [GET] 카테고리별로 게시글 검색
+  const searchErrorBoardByCategory = async (
+    workspaceId,
+    page,
+    size,
+    category
+  ) => {
+    try {
+      const response = await axiosInstance.get(
+        '/api/errboard/search-category',
+        {
+          params: { workspaceId, page, size, category },
+        }
+      );
+      errorBoards.value = response.data.result.content;
+      return errorBoards.value;
+    } catch (error) {
+      console.error('카테고리별 게시글 검색 중 오류가 발생했습니다:', error);
+      return error.response?.data || { message: 'Unknown error occurred' };
+    }
+  };
+
+  // [PUT] 게시글 업데이트
+  const updateErrorBoard = async (data) => {
+    try {
+      const response = await axiosInstance.put('/api/errboard/update', data);
+      return response.data.result;
+    } catch (error) {
+      console.error('게시글 업데이트 중 오류가 발생했습니다:', error);
+      return error.response?.data || { message: 'Unknown error occurred' };
+    }
+  };
+
+  // [DELETE] 게시글 삭제
+  const deleteErrorBoard = async (id) => {
+    try {
+      const response = await axiosInstance.delete('/api/errboard/delete', {
+        data: { id },
+      });
+      return response.data.result;
+    } catch (error) {
+      console.error('게시글 삭제 중 오류가 발생했습니다:', error);
+      return error.response?.data || { message: 'Unknown error occurred' };
+    }
+  };
+
+  return {
+    errorBoards,
+    errorDetail,
+    getErrorBoardList,
+    getErrorBoard,
+    searchErrorBoardByKeyword,
+    searchErrorBoardByCategory,
+    updateErrorBoard,
+    deleteErrorBoard,
+  };
 });
