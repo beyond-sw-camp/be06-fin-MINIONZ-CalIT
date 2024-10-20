@@ -68,18 +68,19 @@ public class DashboardService {
                 .build();
     }
 
-    public ReadWorkspaceDashboardResponse readWorkspaceDashboard(Long workspaceId, ReadMyDashboardRequest request) {
+    public ReadWorkspaceDashboardResponse readWorkspaceDashboard(Long workspaceId) {
 
         WorkspaceProgressResponse progress = WorkspaceProgressResponse
                 .builder()
                 .allSprintCount(sprintRepository.findAllSprintCount(workspaceId))
-                .sprintCount(sprintRepository.findInprogressSprintCount(workspaceId, request.getStartDate(), request.getEndDate()))
+                .sprintCount(sprintRepository.findInprogressSprintCount(workspaceId))
                 .allTaskCount(taskRepository.findAllTaskCount(workspaceId))
                 .successTaskCount(taskRepository.findSuccessTaskCount(workspaceId))
                 .issueCount(issueRepository.findWorkspaceIssuesCount(workspaceId))
                 .build();
 
-        List<Meeting> meetings = meetingRepository.findMeetingsInPeriod(workspaceId, request.getStartDate(), request.getEndDate());
+        Pageable pageable = PageRequest.of(0, 8);
+        List<Meeting> meetings = meetingRepository.findUpcomingMeetingsInWorkDashboard(workspaceId,pageable);
 
         return ReadWorkspaceDashboardResponse
                 .builder()
