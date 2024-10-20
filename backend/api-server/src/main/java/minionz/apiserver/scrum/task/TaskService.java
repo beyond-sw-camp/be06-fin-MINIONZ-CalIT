@@ -167,13 +167,19 @@ public class TaskService {
         return response;
     }
 
-    public List<ReadAllTaskResponse> readAllMyTask(User user) {
-
+    public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllMyTask(User user) {
         List<Task> result = taskRepository.findMyTask(user.getUserId());
 
-        List<ReadAllTaskResponse> response = result.stream().map(
-                task -> ReadAllTaskResponse
-                        .builder()
+        // 상태별로 기본 빈 리스트를 미리 준비
+        Map<TaskStatus, List<ReadAllTaskResponse>> groupedByStatus = new HashMap<>();
+        groupedByStatus.put(TaskStatus.NO_STATUS, new ArrayList<>());
+        groupedByStatus.put(TaskStatus.TODO, new ArrayList<>());
+        groupedByStatus.put(TaskStatus.IN_PROGRESS, new ArrayList<>());
+        groupedByStatus.put(TaskStatus.DONE, new ArrayList<>());
+
+        // Task들을 ReadAllTaskResponse로 변환하고 상태별로 그룹화
+        result.stream()
+                .map(task -> ReadAllTaskResponse.builder()
                         .id(task.getTaskId())
                         .status(task.getStatus())
                         .title(task.getTaskTitle())
@@ -185,10 +191,42 @@ public class TaskService {
                         .priority(task.getPriority())
                         .workspaceName(task.getSprint().getWorkspace().getWorkspaceName())
                         .build()
-        ).toList();
+                )
+                .forEach(response -> {
+                    // TaskStatus 타입 그대로 유지
+                    TaskStatus statusKey = Optional.ofNullable(response.getStatus()).orElse(TaskStatus.NO_STATUS);
+                    groupedByStatus.get(statusKey).add(response); // 상태에 해당하는 리스트에 추가
+                });
 
-        return response;
+        // Map을 List로 변환하여 반환
+        return groupedByStatus.entrySet().stream()
+                .map(entry -> Map.of(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
+
+
+//    public List<ReadAllTaskResponse> readAllMyTask(User user) {
+//
+//        List<Task> result = taskRepository.findMyTask(user.getUserId());
+//
+//        List<ReadAllTaskResponse> response = result.stream().map(
+//                task -> ReadAllTaskResponse
+//                        .builder()
+//                        .id(task.getTaskId())
+//                        .status(task.getStatus())
+//                        .title(task.getTaskTitle())
+//                        .labels(findLabels(task))
+//                        .startDate(task.getStartDate())
+//                        .endDate(task.getEndDate())
+//                        .taskNumber(task.getTaskNumber())
+//                        .participants(findParticipants(task))
+//                        .priority(task.getPriority())
+//                        .workspaceName(task.getSprint().getWorkspace().getWorkspaceName())
+//                        .build()
+//        ).toList();
+//
+//        return response;
+//    }
 
     public List<Map<TaskStatus, List<ReadAllTaskResponse>>> readAllTaskByStatus(Long sprintId, Long userId) {
         // 스프린트 ID로 모든 Task 가져오기
@@ -213,6 +251,7 @@ public class TaskService {
                         .title(task.getTaskTitle())
                         .labels(findLabels(task))
                         .startDate(task.getStartDate())
+                        .doneDate(task.getDoneDate())
                         .endDate(task.getEndDate())
                         .taskNumber(task.getTaskNumber())
                         .participants(findParticipants(task))
