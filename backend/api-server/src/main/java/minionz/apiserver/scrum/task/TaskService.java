@@ -43,7 +43,7 @@ public class TaskService {
     @Transactional
     public void createTask(User user, CreateTaskRequest request) throws JsonProcessingException {
 
-        Meeting meeting = request.getMeetingId() != null ? Meeting.builder().meetingId(request.getMeetingId()).build() : null;
+//        Meeting meeting = request.getMeetingId() != null ? Meeting.builder().meetingId(request.getMeetingId()).build() : null;
 
         Task task = taskRepository.save(Task
                 .builder()
@@ -56,7 +56,6 @@ public class TaskService {
                 .priority(request.getPriority())
                 .status(TaskStatus.NO_STATUS)
                 .taskNumber(makeTaskNumber(request.getSprintId()))
-                .meeting(meeting)
                 .build());
 
         alarmService.sendEventsToClients(request.getParticipants(), user.getUserId(), 3L, task.getTaskId());
