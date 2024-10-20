@@ -1,12 +1,22 @@
 <script setup>
-import { computed, defineProps, watch } from 'vue';
+import { computed, defineProps, watch, defineEmits } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import TaskCard from './KanbanCard.vue';
-import { getTaskCountBackgroundColor, getTaskCountColor } from '@/utils/taskUtils';
+import {
+  getTaskCountBackgroundColor,
+  getTaskCountColor,
+} from '@/utils/taskUtils';
 import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
+
+const sprintStore = useSprintStore();
+const taskStore = useTaskStore();
+
+const emit = defineEmits(['taskUpdated']);
 
 const props = defineProps({
   data: {
@@ -32,24 +42,47 @@ watch(
     tasks.value = [...newTasks];
   }
 );
+
+const handleDragEnd = async (event) => {
+  const newStatus = event.to.getAttribute('item-key');
+  const taskId = event.item.getAttribute('id');
+
+  await taskStore.updateTaskStatus(sprintStore.nowSprintId, taskId, newStatus);
+
+  emit('taskUpdated');
+};
 </script>
 
 <template>
   <div class="task-column">
     <div class="column-header">
       <p>{{ getTaskCountColor(status).text }}</p>
-      <span class="task-count" :style="{ backgroundColor: taskCountBgStyle, color: taskCountColorStyle }"> {{ tasks.length }} </span>
+      <span
+        class="task-count"
+        :style="{
+          backgroundColor: taskCountBgStyle,
+          color: taskCountColorStyle,
+        }"
+      >
+        {{ tasks.length }}
+      </span>
     </div>
 
     <!-- 드래그 가능한 Task 카드들 -->
     <VueDraggableNext
       :list="tasks"
-      item-key="id"
+      :item-key="status"
       group="tasks"
       draggable=".task-card"
       handle=".task-card"
+      @end="handleDragEnd"
     >
-      <TaskCard v-for="task in tasks" :key="task.id" :task="task" />
+      <TaskCard
+        v-for="task in tasks"
+        :key="task.id"
+        :task="task"
+        :id="task.id"
+      />
     </VueDraggableNext>
 
     <router-link
@@ -73,12 +106,12 @@ watch(
   justify-content: space-between;
   align-items: center;
   margin: 0 0 10px 5px;
-  p{
+  p {
     font-size: 14px;
     font-weight: 500;
   }
 }
-.task-count{
+.task-count {
   padding: 0 10px;
   border-radius: 30px;
   font-size: 14px;
@@ -95,7 +128,7 @@ watch(
   gap: 5px;
 }
 
-.plus{
+.plus {
   font-weight: 700;
   background-color: #c7ced9;
   color: #fff;
@@ -103,11 +136,11 @@ watch(
   border-radius: 50%;
 }
 
-.add-text{
+.add-text {
   font-size: 12px;
 }
 
-a{
+a {
   text-decoration: none;
   color: #28303f;
 }
