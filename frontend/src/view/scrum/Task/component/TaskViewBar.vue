@@ -76,8 +76,7 @@ watch(selectedSprintId, async (newSprintId) => {
       </option>
     </select>
     <div v-if="showAvatarGroup" class="avatar-group">
-      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar"
-           @click="emitGetTaskListByUser"/>
+      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" @click="emitGetTaskListByUser"/>
     </div>
     <div class="view-toggle-buttons">
       <router-link
@@ -88,7 +87,7 @@ watch(selectedSprintId, async (newSprintId) => {
         <i class="icon-kanban"></i>
         Kanban
       </router-link>
-      <div class="v-line"/>
+      <div class="v-line" />
       <router-link
           :to="'list'"
           :class="{ active: currentView === 'list' }"
@@ -97,7 +96,7 @@ watch(selectedSprintId, async (newSprintId) => {
         <i class="icon-list"></i>
         List
       </router-link>
-      <div class="v-line"/>
+      <div class="v-line" />
       <router-link
           :to="
           to.startsWith('my')
@@ -125,13 +124,11 @@ watch(selectedSprintId, async (newSprintId) => {
   border-radius: 4px;
   box-sizing: border-box;
 }
-
 i {
   width: 24px;
   display: block;
   height: 24px;
 }
-
 a {
   display: flex;
   text-decoration: none;
@@ -140,25 +137,20 @@ a {
   border-radius: 4px;
   margin: 5px 10px;
   padding: 5px;
-
   &:hover,
   &:focus {
     background-color: #c6d2fd;
   }
 }
-
 .icon-kanban {
   background-image: url('@/assets/icon/menu/kanban.svg');
 }
-
 .icon-list {
   background-image: url('@/assets/icon/menu/list.svg');
 }
-
 .icon-timeline {
   background-image: url('@/assets/icon/menu/timeline.svg');
 }
-
 .view-toggle-bar {
   display: flex;
   justify-content: space-between;
