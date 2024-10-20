@@ -5,12 +5,15 @@ import MeetingList from '@/view/dashboard/component/MeetingList.vue';
 import BurndownChart from '@/view/dashboard/component/BurndownChart.vue';
 import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
 import { useRoute } from 'vue-router';
+import PriorityTask from "@/view/dashboard/component/PriorityTask.vue";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 const dashboardStore = useWorkspaceDashboardStore();
+
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
+
 contentsTitle.value = 'Workspace Dashboard';
 contentsDescription.value = '워크스페이스의 대시보드를 살펴보세요!';
 
