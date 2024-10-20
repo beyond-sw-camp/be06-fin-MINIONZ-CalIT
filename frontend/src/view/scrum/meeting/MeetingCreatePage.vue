@@ -6,7 +6,7 @@ import RightSideComponent from "@/common/component/RightSide/RightSideComponent.
 import { timeInputUtils } from '@/utils/timeInputUtils';
 import { setPersona } from "@/utils/personaUtils";
 import router from "@/router";
-import { useFriendsStore } from "@/stores/user/useFriendsStore";
+// import { useFriendsStore } from "@/stores/user/useFriendsStore";
 import { useSprintLabelStore } from "@/stores/scrum/useSprintLabelStore";
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
@@ -19,7 +19,7 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'Meeting Create';
 contentsDescription.value = '회의를 만들어 보세요!';
 
-const friendsStore = useFriendsStore();
+// const friendsStore = useFriendsStore();
 const sprintLabelStore = useSprintLabelStore();
 const meetingStore = useMeetingStore();
 const rightSideVisible = ref(false);

@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
 import Multiselect from 'vue-multiselect';
-import { useErrorStore } from '@/stores/board/useErrorStore'; // 에러 게시판 스토어
+import { useErrorStore } from '@/stores/board/useErrorStore';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { useRoute } from 'vue-router';
 
@@ -9,7 +9,7 @@ const selectedLanguage = ref('');
 const searchKeyword = ref('');
 const errorStore = useErrorStore();
 const route = useRoute();
-const workspaceId = ref(route.params.workspaceId); // URL에서 workspaceId 가져오기
+const workspaceId = ref(route.params.workspaceId);
 
 defineProps({
   link: String,
@@ -17,7 +17,6 @@ defineProps({
 
 defineEmits(['update:selectedLanguage']);
 
-// 현재 페이지가 Error 리스트 페이지인지 확인
 const isErrorPage = ref(false);
 
 onMounted(() => {
@@ -26,26 +25,20 @@ onMounted(() => {
   }
 });
 
-// 언어 또는 검색어가 변경될 때 API 호출
 watch([selectedLanguage, searchKeyword], async () => {
   if (isErrorPage.value && workspaceId.value) {
-    const page = 0; // 첫 페이지로 설정
-    const size = 10; // 페이지당 게시글 수
+    const page = 0;
+    const size = 10;
 
     if (selectedLanguage.value) {
-      // 언어 필터로 게시글 검색
       await errorStore.searchErrorBoardByCategory(workspaceId.value, page, size, selectedLanguage.value);
     }
-
     if (searchKeyword.value.trim() !== '') {
-      // 검색어로 게시글 검색
       await errorStore.searchErrorBoardByKeyword(workspaceId.value, page, size, searchKeyword.value);
     }
   }
 });
 </script>
-
-
 
 <template>
   <div class="toolbar">

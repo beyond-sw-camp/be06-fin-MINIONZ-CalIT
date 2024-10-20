@@ -14,13 +14,9 @@ defineProps({
 });
 
 function navigateToDetailPage(item) {
-<<<<<<< HEAD
-  router.push(`/workspace/${workspaceId}/scrum/board/error/detail/${item.errorBoardId}`);
-=======
   router.push(
     `/workspace/${workspaceId}/scrum/board/error/detail/${item.errorBoardId}`
   );
->>>>>>> 8cd5def3b9deee51bba7a05ed28419897d2ac353
 }
 </script>
 
