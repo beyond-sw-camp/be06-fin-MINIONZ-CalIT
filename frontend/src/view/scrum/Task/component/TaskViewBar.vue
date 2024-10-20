@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, defineEmits } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
@@ -10,11 +10,11 @@ const showAvatarGroup = ref(true);
 const workspaceId = route.params.workspaceId;
 
 watch(
-  () => route.path,
-  (newPath) => {
-    showAvatarGroup.value = !newPath.startsWith('/my');
-  },
-  { immediate: true }
+    () => route.path,
+    (newPath) => {
+      showAvatarGroup.value = !newPath.startsWith('/my');
+    },
+    { immediate: true }
 );
 
 const currentView = ref('board');
@@ -48,6 +48,14 @@ const getTasks = async (sprintId) => {
   taskLists.value = await taskStore.getTaskList(workspaceId, sprintId);
 };
 
+const emit = defineEmits(['update-kanban-cards']);
+
+const emitGetTaskListByUser = async () => {
+  const taskStore = useTaskStore();
+  const tasks = await taskStore.getTaskListByUser();
+  emit('update-kanban-cards', tasks);
+};
+
 watch(selectedSprintId, async (newSprintId) => {
   if (newSprintId) {
     sprintStore.setNowSprintId(newSprintId);
@@ -60,52 +68,50 @@ watch(selectedSprintId, async (newSprintId) => {
   <div class="view-toggle-bar">
     <select v-model="selectedSprintId" class="input-field">
       <option
-        v-for="sprint in sprintOptions"
-        :key="sprint.sprintId"
-        :value="sprint.sprintId"
+          v-for="sprint in sprintOptions"
+          :key="sprint.sprintId"
+          :value="sprint.sprintId"
       >
         {{ sprint.title }}
       </option>
     </select>
+    <div v-if="showAvatarGroup" class="avatar-group">
+      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" @click="emitGetTaskListByUser"/>
+    </div>
     <div class="view-toggle-buttons">
       <router-link
-        :to="'kanban'"
-        :class="{ active: currentView === 'kanban' }"
-        @click="setView('kanban')"
+          :to="'kanban'"
+          :class="{ active: currentView === 'kanban' }"
+          @click="setView('kanban')"
       >
         <i class="icon-kanban"></i>
         Kanban
       </router-link>
       <div class="v-line" />
       <router-link
-        :to="'list'"
-        :class="{ active: currentView === 'list' }"
-        @click="setView('list')"
+          :to="'list'"
+          :class="{ active: currentView === 'list' }"
+          @click="setView('list')"
       >
         <i class="icon-list"></i>
         List
       </router-link>
       <div class="v-line" />
       <router-link
-        :to="
+          :to="
           to.startsWith('my')
             ? `/my/task/${currentView}`
             : to.startsWith('workspace')
             ? `/workspace/task/${currentView}`
             : to
         "
-        :class="{ active: currentView === 'timeline' }"
-        @click="setView('timeline')"
+          :class="{ active: currentView === 'timeline' }"
+          @click="setView('timeline')"
       >
         <i class="icon-timeline"></i>
         TimeLine
       </router-link>
     </div>
-
-    <!--    <div v-if="showAvatarGroup" class="avatar-group">-->
-    <!--      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" />-->
-    <!--      <button class="add-avatar-btn">+</button>-->
-    <!--    </div>-->
   </div>
 </template>
 

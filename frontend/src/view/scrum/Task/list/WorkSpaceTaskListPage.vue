@@ -20,19 +20,17 @@ onMounted(() => {
   tasksByStatus.value = taskStore.taskList;
 });
 
-// watch로 taskList의 변화를 감지하고 처리
 watch(
-  () => taskStore.taskList,
-  (newTaskList) => {
-    tasksByStatus.value = newTaskList; // taskList가 변경되면 상태별로 업데이트
-  },
-  { immediate: true }
+    () => taskStore.taskList,
+    (newTaskList) => {
+      tasksByStatus.value = newTaskList;
+    },
+    { immediate: true }
 );
 
-// tasksByStatus 배열 중 값이 있는지 확인하는 computed property
 const hasTasks = computed(() => {
   return tasksByStatus.value.some(
-    (statusObject) => Object.values(statusObject)[0].length > 0
+      (statusObject) => Object.values(statusObject)[0].length > 0
   );
 });
 </script>
@@ -41,15 +39,15 @@ const hasTasks = computed(() => {
   <div class="list">
     <div v-if="hasTasks">
       <ListContainer
-        v-for="task in tasksByStatus"
-        :key="task.key"
-        :data="task"
+          v-for="task in tasksByStatus"
+          :key="task.key"
+          :data="task"
       />
     </div>
     <div v-else class="initial-wrap">
       <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
       <router-link :to="`/workspace/${workspaceId}/scrum/task/create`"
-        >태스크 추가하기</router-link
+      >태스크 추가하기</router-link
       >
     </div>
   </div>

@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from 'vue';
 import TaskColumn from './component/KanbanColumn.vue';
-import { useTaskStore} from "@/stores/scrum/useTaskStore";
+import { useTaskStore } from "@/stores/scrum/useTaskStore";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
