@@ -41,25 +41,25 @@ const closeWorkspaceModal = () => {
 
 const handleClickOutside = (event) => {
   if (
-    showChatModal.value &&
-    !event.target.closest('.chat') &&
-    !event.target.closest('.notification-item') &&
-    !event.target.closest('.chat-modal')
+      showChatModal.value &&
+      !event.target.closest('.chat') &&
+      !event.target.closest('.notification-item') &&
+      !event.target.closest('.chat-modal')
   ) {
     closeChatModal();
   }
   if (
-    showAlarmModal.value &&
-    !event.target.closest('.alarm') &&
-    !event.target.closest('.notification-item') &&
-    !event.target.closest('.alarm-modal')
+      showAlarmModal.value &&
+      !event.target.closest('.alarm') &&
+      !event.target.closest('.notification-item') &&
+      !event.target.closest('.alarm-modal')
   ) {
     closeAlarmModal();
   }
   if (
-    showWorkspaceModal.value &&
-    !event.target.closest('.workspace-bundle') &&
-    !event.target.closest('.workspace-list-container')
+      showWorkspaceModal.value &&
+      !event.target.closest('.workspace-bundle') &&
+      !event.target.closest('.workspace-list-container')
   ) {
     closeWorkspaceModal();
   }
@@ -92,41 +92,41 @@ const loginId = computed(() => {
         <div>
           <router-link :to="`/my/chatbot`">
             <img
-              :src="chatbot"
-              alt="chatbot"
-              style="width: 27px; height: 27px"
+                :src="chatbot"
+                alt="chatbot"
+                style="width: 27px; height: 27px"
             />
           </router-link>
         </div>
         <div class="chat" @click="toggleChatModal">
-          <img :src="message" alt="chat" />
+          <img :src="message" alt="chat"/>
         </div>
         <div class="alarm" @click="toggleAlarmModal">
-          <img :src="alarm" alt="alarm" />
+          <img :src="alarm" alt="alarm"/>
           <span
-            v-show="alarmStore.alarms.length > 0"
-            class="alarm-indicator"
+              v-show="alarmStore.alarms.length > 0"
+              class="alarm-indicator"
           ></span>
         </div>
       </div>
       <div class="workspace-bundle" @click="toggleWorkspaceModal">
         <div>
-          <img :src="user1" alt="persona" class="workspace-persona" />
+          <img :src="user1" alt="persona" class="workspace-persona"/>
         </div>
         <div>
           <img
-            :src="arrow"
-            alt="arrow"
-            :class="{ 'arrow-rotated': showWorkspaceModal }"
-            class="arrow"
+              :src="arrow"
+              alt="arrow"
+              :class="{ 'arrow-rotated': showWorkspaceModal }"
+              class="arrow"
           />
         </div>
       </div>
-      <ChatModal v-if="showChatModal" :close-modal="closeChatModal" />
-      <AlarmModal v-if="showAlarmModal" :close-modal="closeAlarmModal" />
+      <ChatModal v-if="showChatModal" :close-modal="closeChatModal"/>
+      <AlarmModal v-if="showAlarmModal" :close-modal="closeAlarmModal"/>
       <WorkspaceModal
-        v-if="showWorkspaceModal"
-        :close-modal="closeWorkspaceModal"
+          v-if="showWorkspaceModal"
+          :close-modal="closeWorkspaceModal"
       />
     </div>
   </div>

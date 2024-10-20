@@ -14,7 +14,7 @@ defineProps({
 });
 
 function navigateToDetailPage(item) {
-  router.push(`/workspace/${workspaceId}/scrum/board/error/detail/${item.errBoardId}`);
+  router.push(`/workspace/${workspaceId}/scrum/board/error/detail/${item.errorBoardId}`);
 }
 </script>
 

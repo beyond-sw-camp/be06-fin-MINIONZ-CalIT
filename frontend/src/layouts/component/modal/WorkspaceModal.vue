@@ -29,11 +29,12 @@ onMounted(async () => {
 });
 
 watch(
-    () => route.query.wsId,
+    () => route.query.workspaceId,
     async (newWorkspaceId) => {
       if (newWorkspaceId) {
         await getAllWorkspace();
         setWorkspaceId(newWorkspaceId);
+        workspaceStore.workspace = [...workspaceStore.workspace];
       }
     }
 );

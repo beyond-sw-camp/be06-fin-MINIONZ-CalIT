@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed, onMounted, defineProps, defineEmits } from 'vue';
+import {ref, computed, onMounted, defineProps, defineEmits, watch} from 'vue';
 import { useRoute } from "vue-router";
 import { formatUtil, getWeekRange, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
+import {useCalendar} from "@/utils/calendarUtils";
 
 const props = defineProps({
   selectedWeek: {
@@ -65,20 +66,13 @@ const goToToday = () => {
   const todayDate = new Date();
   emit('update:selectedWeek', [todayDate]);
 };
-const daysInWeek = computed(() =>
-    getWeekDaysUtil(
-        props.selectedWeek.length ? props.selectedWeek[0] : today.value
-    ));
-const prevWeek = () => {
-  const prevDate = new Date(props.selectedWeek[0]);
-  prevDate.setDate(prevDate.getDate() - 7);
-  emit('update:selectedWeek', [prevDate]);
+
+const handlePrevWeek = () => {
+  emit('prevWeek')
 };
 
-const nextWeek = () => {
-  const nextDate = new Date(props.selectedWeek[0]);
-  nextDate.setDate(nextDate.getDate() + 7);
-  emit('update:selectedWeek', [nextDate]);
+const handleNextWeek = () => {
+  emit('nextWeek')
 };
 
 const events = ref([]);
@@ -89,7 +83,7 @@ const eventsForDay = (day) => {
 
 function getEventTop(startDate) {
   const startHour = new Date(startDate).getHours();
-  return (startHour * 80)+10;
+  return (startHour * 80) + 10;
 }
 
 
@@ -127,6 +121,38 @@ const sprintsForWeek = (weekStart) => {
   }) || [];
 };
 
+const daysInWeek = computed(() => {
+  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
+  return getWeekDaysUtil(startDate instanceof Date ? startDate : new Date());
+});
+
+const weekRange = computed(() => {
+  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
+  return getWeekRange(startDate);
+});
+
+const {
+  currentYear,
+  currentMonth,
+  weekDays,
+  daysInMonth,
+  startBlankDays,
+} = useCalendar();
+
+const currentStartDate = ref(props.startDate);
+const currentEndDate = ref(props.endDate);
+
+watch(() => props.selectedWeek, () => {
+  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
+  currentStartDate.value = startDate;
+  currentEndDate.value = new Date(startDate);
+  currentEndDate.value.setDate(currentEndDate.value.getDate() + 6);
+  currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
+  currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10);
+  daysInMonth.value = parseInt(formatUtil(startDate, 't'), 10);
+  startBlankDays.value = parseInt(formatUtil(startDate, 'i'), 10);
+  weekDays.value = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+}, { immediate: true });
 </script>
 
 <template>
@@ -136,11 +162,11 @@ const sprintsForWeek = (weekStart) => {
         <button @click="goToToday" class="today-btn">Today</button>
       </div>
       <div class="calendar-nav">
-        <button @click="prevWeek" class="week-clicker">
+        <button @click="handlePrevWeek" class="week-clicker">
           <i class="arrowL-icon"></i>
         </button>
-        <span>{{ getWeekRange(props.selectedWeek.length ? props.selectedWeek[0] : today) }}</span>
-        <button @click="nextWeek" class="week-clicker">
+        <span>{{ weekRange }}</span>
+        <button @click="handleNextWeek" class="week-clicker">
           <i class="arrowR-icon"></i>
         </button>
       </div>
@@ -215,6 +241,7 @@ const sprintsForWeek = (weekStart) => {
   justify-content: space-between;
   align-items: flex-end;
   padding-bottom: 10px;
+
   button {
     background: #e0e8ff;
     color: #28303f;
@@ -222,10 +249,12 @@ const sprintsForWeek = (weekStart) => {
     cursor: pointer;
     font-size: 14px;
   }
+
   .today-btn {
     border-radius: 20px;
     padding: 5px 10px;
   }
+
   .week-clicker {
     border-radius: 50%;
     display: flex;
@@ -249,12 +278,14 @@ const sprintsForWeek = (weekStart) => {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  i{
+
+  i {
     width: 24px;
     height: 24px;
     background-size: cover;
     display: inline-block;
   }
+
   span {
     font-size: 18px;
     font-weight: 500;
@@ -269,6 +300,7 @@ const sprintsForWeek = (weekStart) => {
   padding: 5px 10px;
   border-radius: 25px;
   font-size: 14px;
+
   a {
     color: #666daf;
     text-decoration: none;
@@ -312,9 +344,11 @@ const sprintsForWeek = (weekStart) => {
   justify-content: center;
   font-size: 14px;
   color: #555;
+
   &:nth-child(2) {
     border-radius: 15px 15px 0 0;
   }
+
   &:nth-child(n+2) {
     background-color: rgba(224, 232, 255, 0.5);
   }
@@ -334,7 +368,7 @@ const sprintsForWeek = (weekStart) => {
   flex-direction: column;
 }
 
-.day-header-wrap{
+.day-header-wrap {
   background-color: #fff;
   position: sticky;
   top: 0;
@@ -355,7 +389,7 @@ const sprintsForWeek = (weekStart) => {
   flex-wrap: wrap;
 }
 
-.sprints-column{
+.sprints-column {
   height: 70px;
   display: flex;
   flex-direction: column;
@@ -394,7 +428,7 @@ const sprintsForWeek = (weekStart) => {
   margin-left: 5%;
 }
 
-.event.meetings{
+.event.meetings {
   border: 2px solid #2196f3;
   background-color: rgba(33, 150, 243, 0.1);
   margin: 0 10px;
@@ -432,14 +466,14 @@ const sprintsForWeek = (weekStart) => {
   border-radius: 0;
 }
 
-.event.sprint.start{
+.event.sprint.start {
   border-left: 2px solid #db2777;
   margin-left: 10px;
   border-radius: 5px 0 0 5px;
   width: calc(100% - 10px);
 }
 
-.event.sprint.end{
+.event.sprint.end {
   border-right: 2px solid #db2777;
   margin-right: 10px;
   border-radius: 0 5px 5px 0;

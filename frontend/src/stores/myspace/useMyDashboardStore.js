@@ -31,8 +31,7 @@ export const useMyDashboardStore = defineStore('mypageStore', () => {
     }
   };
 
-  const getMyWeekly = async () => {
-    const { startDate, endDate } = weeklySettingUtils();
+  const getMyWeekly = async ({startDate, endDate}) => {
     const response = await axiosInstance.get(
       `/api/schedule/my/weekly?startDate=${startDate}&endDate=${endDate}`
     );
