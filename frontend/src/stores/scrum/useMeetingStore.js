@@ -1,7 +1,10 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
+const notyf = new Notyf();
 export const useMeetingStore = defineStore('meetingStore', () => {
   const meetings = ref([]);
   const meetingId = ref(null);
@@ -12,9 +15,18 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         `/api/meeting/${sprintId}`,
         data
       );
-      meetings.value.push(response.data.result);
+      if (response.data.success) {
+        meetings.value.push(response.data.result);
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error(error);
+      }
     }
   };
 
@@ -23,9 +35,19 @@ export const useMeetingStore = defineStore('meetingStore', () => {
       const response = await axiosInstance.get(
         `/api/meeting/${workspaceId}/${meetingId}`
       );
-      return response.data.result;
+
+      if (response.data.success) {
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error(error);
+      }
     }
   };
 
@@ -37,7 +59,12 @@ export const useMeetingStore = defineStore('meetingStore', () => {
       meetings.value = response.data.result.content;
       return response.data.result.content;
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error(error);
+      }
     }
   };
 
@@ -54,7 +81,12 @@ export const useMeetingStore = defineStore('meetingStore', () => {
       });
       return response.data.result;
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error(error);
+      }
     }
   };
 
@@ -63,7 +95,12 @@ export const useMeetingStore = defineStore('meetingStore', () => {
       const response = await axiosInstance.delete(`/api/meeting/${meetingId}`);
       return response.data.result;
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error(error);
+      }
     }
   };
 
@@ -85,7 +122,12 @@ export const useMeetingStore = defineStore('meetingStore', () => {
       });
       return response.data.result;
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error(error);
+      }
     }
   };
 

@@ -44,12 +44,12 @@ onMounted(async () => {
 });
 
 const getTasks = async (sprintId) => {
-  taskLists.value = await taskStore.getTaskList(sprintId);
+  taskLists.value = await taskStore.getTaskList(workspaceId, sprintId);
 };
 
 watch(selectedSprintId, async (newSprintId) => {
   if (newSprintId) {
-    taskLists.value = await taskStore.getTaskList(newSprintId);
+    taskLists.value = await taskStore.getTaskList(workspaceId, newSprintId);
   }
 });
 </script>

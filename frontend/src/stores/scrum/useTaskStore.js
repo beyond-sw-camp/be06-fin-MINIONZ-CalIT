@@ -1,6 +1,10 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export const useTaskStore = defineStore('taskStore', () => {
   const taskData = ref([]);
@@ -9,10 +13,20 @@ export const useTaskStore = defineStore('taskStore', () => {
   const addTask = async (data, sprintId) => {
     try {
       const response = await axiosInstance.post(`/api/task/${sprintId}`, data);
-      console.log(response.data.result);
-      taskData.value.push(response.data.result);
+
+      if (response.data.success) {
+        taskData.value.push(response.data.result);
+        notyf.success('Task가 추가되었습니다.');
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error adding task:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('Task 추가에 실패했습니다.');
+        console.error('Error adding task:', error);
+      }
     }
   };
 
@@ -22,45 +36,85 @@ export const useTaskStore = defineStore('taskStore', () => {
         `/api/task/${sprintId}/status/${taskId}`,
         { taskId, status }
       );
-      taskData.value = response.data.result;
+
+      if (response.data.success) {
+        taskData.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error updating task status:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error updating task status:', error);
+      }
     }
   };
 
-  const getTask = async ({ sprintId, taskId }) => {
+  const getTask = async ({ workspaceId, sprintId, taskId }) => {
     try {
       const response = await axiosInstance.get(
-        `/api/task/${sprintId}/${taskId}`
+        `/api/task/${workspaceId}/${sprintId}/${taskId}`
       );
-      return response.data.result.result;
+
+      if (response.data.success) {
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error getting task:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error getting task:', error);
+      }
     }
   };
 
-  const getTaskList = async (sprintId) => {
+  const getTaskList = async (workspaceId, sprintId) => {
     try {
       const response = await axiosInstance.get(
-        `/api/task/${sprintId}/all/status`
+        `/api/task/${workspaceId}/${sprintId}/all/status`
       );
-      taskList.value = response.data.result;
-      return response.data.result;
+
+      if (response.data.success) {
+        taskList.value = response.data.result;
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error getting task list:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error getting task list:', error);
+      }
     }
   };
 
   // 유저 별 태스크 칸반 조회
-  const getTaskListByUser = async (sprintId, userId) => {
+  const getTaskListByUser = async (workspaceId, sprintId, userId) => {
     try {
       const response = await axiosInstance.get(
-        `/api/task/${sprintId}/all/status/${userId}`
+        `/api/task/${workspaceId}/${sprintId}/all/status/${userId}`
       );
-      taskList.value = response.data.result;
-      return response.data.result;
+
+      if (response.data.success) {
+        taskList.value = response.data.result;
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error getting task list:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error getting task list:', error);
+      }
     }
   };
 
@@ -69,10 +123,19 @@ export const useTaskStore = defineStore('taskStore', () => {
       const response = await axiosInstance.get(
         `/api/workspace/${workspaceId}/tasks`
       );
-      console.log('API 응답:', response); // 응답 전체 확인
-      return response.data.result; // 응답 데이터 반환
+
+      if (response.data.success) {
+        return response.data.result; // 응답 데이터 반환
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error getting task list:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error getting task list:', error);
+      }
       return [];
     }
   };
@@ -96,9 +159,18 @@ export const useTaskStore = defineStore('taskStore', () => {
         labels,
         participants,
       });
-      taskData.value = response.data.result;
+      if (response.data.success) {
+        taskData.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error updating task:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error updating task:', error);
+      }
     }
   };
 
@@ -107,18 +179,32 @@ export const useTaskStore = defineStore('taskStore', () => {
       await axiosInstance.delete(`api/task/${sprintId}/${taskId}`);
       taskData.value = taskData.value.filter((task) => task.id !== taskId);
     } catch (error) {
-      console.error('Error deleting task:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error deleting task:', error);
+      }
     }
   };
 
   const getMyTask = async () => {
     try {
       const response = await axiosInstance.get(`/api/sprint/my/all`);
-      taskData.value = response.data.result;
 
-      return response.data.result;
+      if (response.data.success) {
+        taskData.value = response.data.result;
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error getting task list:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error getting task list:', error);
+      }
     }
   };
 

@@ -2,6 +2,10 @@ import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
 import { labelColorPalette } from '@/utils/labelUtils';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export const useSprintLabelStore = defineStore('labelStore', () => {
   const labels = ref([]);
@@ -18,9 +22,18 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
         `/api/label/${workspaceId}/sprint`,
         { labelName, description, color }
       );
-      labels.value.push(response.data.result);
+      if (response.data.success) {
+        labels.value.push(response.data.result);
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error adding label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error adding label:', error);
+      }
     }
   };
 
@@ -29,9 +42,19 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
       const response = await axiosInstance.get(
         `/api/label/${workspaceId}/sprint`
       );
-      labels.value = response.data.result;
+
+      if (response.data.success) {
+        labels.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error fetching labels:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error fetching labels:', error);
+      }
     }
   };
 
@@ -47,9 +70,19 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
         labelName,
         description,
       });
-      labels.value = response.data.result;
+
+      if (response.data.success) {
+        labels.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     } catch (error) {
-      console.error('Error updating label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error updating label:', error);
+      }
     }
   };
 
@@ -58,7 +91,12 @@ export const useSprintLabelStore = defineStore('labelStore', () => {
       await axiosInstance.delete(`/api/label/${workspaceId}/${sprintLabelId}`);
       labels.value = labels.value.filter((label) => label.id !== sprintLabelId);
     } catch (error) {
-      console.error('Error deleting label:', error);
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error deleting label:', error);
+      }
     }
   };
 
