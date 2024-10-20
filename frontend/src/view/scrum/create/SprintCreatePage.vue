@@ -174,21 +174,10 @@ onMounted(() => {
             <p class="error-message" v-if="errors.participants">
               {{ errors.participants }}
             </p>
-            <div
-              class="selections participants"
-              v-if="participants && participants.length"
-            >
-              <span
-                class="item"
-                v-for="participant in participants"
-                :key="participant.searchUserIdx"
-              >
+            <div class="selections participants" v-if="participants && participants.length">
+              <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
                 {{ participant.userName }}
-                <span
-                  @click="deleteParticipant(participant.searchUserIdx)"
-                  style="cursor: pointer; margin: 0 10px; padding: 0"
-                  >x</span
-                >
+                <span @click="deleteParticipant(participant.searchUserIdx)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
               </span>
             </div>
           </div>

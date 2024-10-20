@@ -1,10 +1,11 @@
 <script setup>
-import { inject, ref } from 'vue';
-import { useMyDashboardStore } from '@/stores/myspace/useMyDashboardStore';
+import {inject, ref} from 'vue';
+import {useMyDashboardStore} from '@/stores/myspace/useMyDashboardStore';
 import WeeklyComponent from '@/view/schedule/weekly/component/WeeklyComponent.vue';
 import WeeklyIssues from '@/view/schedule/weekly/component/WeeklyIssues.vue';
 import WeeklyTasks from '@/view/schedule/weekly/component/WeeklyTasks.vue';
 import MiniCalendar from '@/view/schedule/weekly/component/MiniCalendar.vue';
+import {formatUtil} from '@/utils/scheduleDateFnsUtils';
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,40 +13,50 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Space Weekly';
 contentsDescription.value = '나의 이번주 일정을 살펴보세요!';
 
-const myWeek = ref({
-  sprints: [],
-  meetings: [],
-  tasks: [],
-  issues: [],
-});
 
 const mypageStore = useMyDashboardStore();
-const selectedWeek = ref(mypageStore.getMyWeekly());
+const selectedWeek = ref(mypageStore.myWeeklyData);
 const myWeeklyMeeting = ref(selectedWeek.value.meetings);
 const updateSelectedWeek = (week) => {
   selectedWeek.value = week;
 };
+
+const currentStartDate = ref(new Date());
+const currentEndDate = ref(new Date());
+
+const fetchWeeklyData = async () => {
+  const formattedStartDate = formatUtil(currentStartDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  const formattedEndDate = formatUtil(currentEndDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  await mypageStore.getMyWeekly({
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
+  });
+  selectedWeek.value = mypageStore.myWeeklyData;
+  myWeeklyMeeting.value = selectedWeek.value.meetings;
+};
+
+fetchWeeklyData();
 </script>
 
 <template>
   <div class="weekly">
     <WeeklyComponent
-      :selected-week="selectedWeek"
-      @update:selected-week="updateSelectedWeek"
-      :sprints="myWeek.sprints"
-      :meetings="myWeek.meetings"
+        :selected-week="selectedWeek"
+        @update:selected-week="updateSelectedWeek"
+        :meeting-data="myWeeklyMeeting"
+        :sprint-data="mypageStore.mySprintData.sprints"
     />
     <div class="week-data">
-      <MiniCalendar @update:selected-week="updateSelectedWeek" />
+      <MiniCalendar @update:selected-week="updateSelectedWeek"/>
       <div class="mini-lists">
         <WeeklyIssues
-          :selected-week="selectedWeek"
-          :meetings="myWeeklyMeeting"
-          :issues="mypageStore.mySprintData.issues"
+            :selected-week="selectedWeek"
+            :meetings="myWeeklyMeeting"
+            :issues="mypageStore.myWeeklyData.issues"
         />
         <WeeklyTasks
-          :selected-week="selectedWeek"
-          :tasks="mypageStore.mySprintData.tasks"
+            :selected-week="selectedWeek"
+            :tasks="mypageStore.myWeeklyData.tasks"
         />
       </div>
     </div>

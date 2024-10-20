@@ -1,16 +1,58 @@
 <script setup>
-import {ref, defineEmits} from "vue";
-import SearchFriends from "@/common/component/search/SearchFriends.vue";
+import {ref, defineEmits, onMounted, watch} from 'vue';
+import Multiselect from 'vue-multiselect';
+import {useFriendsStore} from '@/stores/user/useFriendsStore';
+import {useRoute} from 'vue-router';
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const friendStore = useFriendsStore();
 
 const participants = ref([]);
-const emit = defineEmits(['update-participants']);
-const updateSelectedParticipants = (newParticipants) => {
-  participants.value = newParticipants;
+const filteredFriends = ref([]);
+const selectedParticipant = ref(null);
+const emit = defineEmits(['update-meeting-participants']);
+
+const searchFriends = async () => {
+  try {
+    await friendStore.getFriendsList(workspaceId);
+    filteredFriends.value = friendStore.friends;
+  } catch (error) {
+    console.error('Error fetching Friends:', error);
+    filteredFriends.value = [];
+  }
+};
+
+const deleteParticipant = (searchUserIdx) => {
+  participants.value = participants.value.filter(
+      (participant) => participant.searchUserIdx !== searchUserIdx
+  );
 };
 
 const saveParticipantsToUserList = () => {
-  emit('update-participants', participants.value);
+  console.log('saveParticipantsToUserList called', selectedParticipant.value);
+  emit('update-meeting-participants', selectedParticipant.value);
 };
+
+onMounted(() => {
+  searchFriends();
+});
+
+watch(selectedParticipant, (newParticipant) => {
+  if (newParticipant) {
+    if (!participants.value) {
+      participants.value = [];
+    }
+    if (
+        !participants.value.some(
+            (p) => p.searchUserIdx === newParticipant.searchUserIdx
+        )
+    ) {
+      participants.value.push(newParticipant);
+    }
+  }
+});
 </script>
 
 <template>
@@ -18,7 +60,27 @@ const saveParticipantsToUserList = () => {
     <h2>participants 추가하기</h2>
     <hr/>
     <div class="participants-wrap">
-      <SearchFriends @update-selected-participants="updateSelectedParticipants" />
+      <div>
+        <label>참여자 검색</label>
+        <multiselect
+            v-model="selectedParticipant"
+            :options="filteredFriends"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            placeholder="참여자를 선택하세요"
+            label="userName"
+            track-by="searchUserIdx"
+        />
+        <div class="selections participants" v-if="participants && participants.length">
+          <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
+            {{ participant.userName }}
+            <span @click="deleteParticipant(participant.searchUserIdx)"
+                  style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+          </span>
+        </div>
+      </div>
+
       <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
     </div>
   </div>
@@ -36,7 +98,7 @@ h2 {
   margin: 0;
 }
 
-hr{
+hr {
   border: 1px solid #dfe5f1;
   width: 100%;
   margin: 10px 0;
@@ -49,7 +111,7 @@ label {
   font-size: 16px;
 }
 
-.participants-wrap{
+.participants-wrap {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -60,16 +122,14 @@ label {
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
-  //margin-top: 5px;
-  //margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
 }
 
 .participants-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -79,47 +139,47 @@ label {
 }
 
 .participants-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 
-.del-btn{
+.del-btn {
   width: 60px;
 }
 
-.input-btn-wrap{
+.input-btn-wrap {
   display: flex;
   gap: 10px;
 }
 
-.participants-item{
+.participants-item {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 10px;
-  border:  1px solid #ccc;
+  border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
   justify-content: space-between;
-  img{
+
+  img {
     width: 36px;
   }
 }
 
-.participants-item-info{
+.participants-item-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.search-results{
+.search-results {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
-  //position: absolute;
-  //top: 60px;
   background-color: #fff;
-  div{
+
+  div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -127,13 +187,31 @@ label {
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
-    img{
+
+    img {
       width: 36px;
     }
-    &:hover{
+
+    &:hover {
       background-color: #e0e8ff;
-      border: 1px solid #C6D2FD;
+      border: 1px solid #c6d2fd;
     }
   }
+}
+
+.selections {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.item {
+  font-size: 12px;
+  font-weight: 500;
+  color: #606c80;
+  padding: 5px 8px;
+  border-radius: 15px;
+  background-color: #e0f7fa;
 }
 </style>

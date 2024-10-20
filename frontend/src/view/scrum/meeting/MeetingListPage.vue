@@ -44,9 +44,7 @@ onMounted(() => {
           :title="meeting.title"
           :labels="meeting.labels"
           :contents="meeting.contents"
-          :participants="
-            meeting.participants.map((participant) => participant.persona)
-          "
+          :participants="meeting.participants?.map((participant) => participant.persona) || []"
           :startDate="meeting.startDate"
         />
         <PaginationComponent

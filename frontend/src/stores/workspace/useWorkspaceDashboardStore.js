@@ -41,8 +41,7 @@ export const useWorkspaceDashboardStore = defineStore(
       }
     };
 
-    const getWorkspaceWeekly = async (workspaceId) => {
-      const { startDate, endDate } = weeklySettingUtils();
+    const getWorkspaceWeekly = async ({workspaceId, startDate, endDate}) => {
       const response = await axiosInstance.get(
         `/api/schedule/${workspaceId}/weekly?startDate=${startDate}&endDate=${endDate}`,
         { withCredentials: true }

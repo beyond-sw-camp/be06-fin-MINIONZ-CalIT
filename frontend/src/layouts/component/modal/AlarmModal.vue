@@ -21,12 +21,14 @@ const handleReject = (alarm) => {
   workspaceStore.rejectWorkspace(alarm.idx);
   alarmStore.deleteAlarm(alarm.userAlarmId);
   alarmStore.getAlarmData();
+  window.location.reload();
 };
 
 const handleAccept = (alarm) => {
   workspaceStore.acceptWorkspace(alarm.idx);
   alarmStore.deleteAlarm(alarm.userAlarmId);
   alarmStore.getAlarmData();
+  window.location.reload();
 };
 
 const handleRead = (alarm) => {
@@ -88,6 +90,8 @@ const handleRead = (alarm) => {
   border-radius: 10px;
   padding: 15px;
   width: 350px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 p {
