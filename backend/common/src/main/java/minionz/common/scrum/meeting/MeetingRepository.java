@@ -19,6 +19,13 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> findMeetingsInPeriod(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("SELECT m FROM Meeting m " +
+            "JOIN FETCH m.sprint s " +
+            "JOIN FETCH s.workspace w " +
+            "WHERE w.workspaceId = :workspaceId "
+          )
+    List<Meeting> findUpcomingMeetingsInWorkDashboard(Long workspaceId, Pageable pageable);
+
+    @Query("SELECT m FROM Meeting m " +
             "JOIN FETCH m.meetingParticipations mp " +
             "WHERE mp.user.userId = :userId " +
             "AND m.startDate <= :endDate " +
