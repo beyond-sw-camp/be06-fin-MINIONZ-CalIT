@@ -11,11 +11,20 @@
         :owner="postDetail.userName"
         :taskName="postDetail.taskName"
       />
-      
+
       <!-- 이미지 목록을 렌더링하는 부분 -->
-      <div v-if="postDetail.getErrorBoardImageResponsesList && postDetail.getErrorBoardImageResponsesList.length">
+      <div
+        v-if="
+          postDetail.getErrorBoardImageResponsesList &&
+          postDetail.getErrorBoardImageResponsesList.length
+        "
+      >
         <h3>첨부 파일:</h3>
-        <div v-for="image in postDetail.getErrorBoardImageResponsesList" :key="image.errorBoardImageId" class="image-container">
+        <div
+          v-for="image in postDetail.getErrorBoardImageResponsesList"
+          :key="image.errorBoardImageId"
+          class="image-container"
+        >
           <img :src="image.imageUrl" alt="게시글 이미지" class="error-image" />
         </div>
       </div>
