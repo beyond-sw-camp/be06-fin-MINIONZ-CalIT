@@ -37,12 +37,11 @@ public class DashboardController {
   }
 
   @GetMapping("/{workspaceId}")
-  public BaseResponse<ReadWorkspaceDashboardResponse> readWorkspaceDashboard(@PathVariable Long workspaceId,
-      ReadMyDashboardRequest request) {
+  public BaseResponse<ReadWorkspaceDashboardResponse> readWorkspaceDashboard(@PathVariable Long workspaceId) {
     ReadWorkspaceDashboardResponse response;
 
     try {
-      response = dashboardService.readWorkspaceDashboard(workspaceId, request);
+      response = dashboardService.readWorkspaceDashboard(workspaceId);
     } catch (BaseException e) {
       return new BaseResponse<>(e.getStatus());
     }
