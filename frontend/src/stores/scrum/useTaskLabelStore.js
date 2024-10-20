@@ -11,16 +11,11 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
   const labels = ref([]);
   const labelColors = ref(labelColorPalette);
 
-  const addTaskLabel = async ({
-    workspaceId,
-    labelName,
-    description,
-    color,
-  }) => {
+  const addTaskLabel = async ({ workspaceId, labelName, description, color }) => {
     try {
       const response = await axiosInstance.post(
-        `/api/label/${workspaceId}/task`,
-        { workspaceId, labelName, description, color }
+          `/api/label/${workspaceId}/task`,
+          { workspaceId, labelName, description, color }
       );
 
       if (response.data.success) {
@@ -38,11 +33,9 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
     }
   };
 
-  const getTaskLabel = async (workspaceId) => {
+  const getTaskLabels = async (workspaceId) => {
     try {
-      const response = await axiosInstance.get(
-        `/api/label/${workspaceId}/task`
-      );
+      const response = await axiosInstance.get(`/api/label/${workspaceId}/task`);
 
       if (response.data.success) {
         labels.value = response.data.result;
@@ -59,20 +52,11 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
     }
   };
 
-  const updateLabel = async ({
-    workspaceId,
-    taskLabelId,
-    labelName,
-    description,
-  }) => {
+  const updateLabel = async ({ workspaceId, taskLabelId, labelName, description }) => {
     try {
       const response = await axiosInstance.patch(
-        `/api/label/${workspaceId}/task`,
-        {
-          taskLabelId,
-          labelName,
-          description,
-        }
+          `/api/label/${workspaceId}/task`,
+          { taskLabelId, labelName, description }
       );
 
       if (response.data.success) {
@@ -92,9 +76,7 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
 
   const deleteLabel = async (workspaceId, taskLabelId) => {
     try {
-      await axiosInstance.delete(
-        `/api/label/${workspaceId}/task/${taskLabelId}`
-      );
+      await axiosInstance.delete(`/api/label/${workspaceId}/task/${taskLabelId}`);
 
       labels.value = labels.value.filter((label) => label.id !== taskLabelId);
     } catch (error) {
@@ -111,7 +93,7 @@ export const useTaskLabelStore = defineStore('labelStore', () => {
     labels,
     labelColors,
     addTaskLabel,
-    getTaskLabel,
+    getTaskLabels,
     updateLabel,
     deleteLabel,
   };
