@@ -6,6 +6,7 @@ import { useTaskStore } from '@/stores/scrum/useTaskStore';
 const route = useRoute();
 
 const taskId = route.params.tasktId;
+const workspaceId = route.params.workspaceId;
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -16,7 +17,7 @@ const taskStore = useTaskStore();
 const task = ref(null);
 
 onMounted(async () => {
-  await taskStore.getTask(taskId);
+  await taskStore.getTask(workspaceId, taskId);
   task.value = taskStore.tasks.values;
 });
 </script>
@@ -46,9 +47,9 @@ onMounted(async () => {
           </span>
           <div class="users-list">
             <div
-                class="user-profile"
-                v-for="participant in task.value.participants"
-                :key="participant.id"
+              class="user-profile"
+              v-for="participant in task.value.participants"
+              :key="participant.id"
             >
               <img :src="participant.avatar" alt="참여자" />
               <span>{{ participant.name }}</span>
@@ -63,9 +64,9 @@ onMounted(async () => {
         </span>
         <div class="label-list">
           <button
-              class="label-button"
-              v-for="label in task.value.labels"
-              :key="label.id"
+            class="label-button"
+            v-for="label in task.value.labels"
+            :key="label.id"
           >
             {{ label.name }}
           </button>
