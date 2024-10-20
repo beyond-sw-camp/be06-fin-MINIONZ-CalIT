@@ -8,10 +8,10 @@ export const getBurndownData = async (workspaceId, sprintId) => {
         const progressResponse = await axiosInstance.get(`/api/dashboard/${workspaceId}`);
         const progress = progressResponse.data?.result?.progress;
 
-        const taskResponse = await axiosInstance.get(`/api/task/${sprintId}/all/status`);
+        const taskResponse = await axiosInstance.get(`/api/task/${workspaceId}/${sprintId}/all/status`);
         const tasks = taskResponse.data?.result;
 
-        const doneResponse = await axiosInstance.get(`/api/task/${sprintId}/all`);
+        const doneResponse = await axiosInstance.get(`/api/task/${workspaceId}/${sprintId}/all`);
         const doneTasks = doneResponse.data?.result;
 
         return {
@@ -36,14 +36,14 @@ export const calculateBurndownData = (tasks, sprintStartDate, sprintEndDate) => 
         idealData.push(totalTasks - (totalTasks / totalDays) * i);
     }
 
-    const actualDataMap = tasks.reduce((acc, task) => {
+    const actualDataMap = Array.isArray(tasks) ? tasks.reduce((acc, task) => {
         const date = new Date(task.updatedAt).toLocaleDateString();
         acc[date] = acc[date] || 0;
         if (task.status === 'DONE') {
             acc[date] += 1;
         }
         return acc;
-    }, {});
+    }, {}) : {};
 
     const actualData = [];
     let remainingTasks = totalTasks;

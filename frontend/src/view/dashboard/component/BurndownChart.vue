@@ -23,11 +23,8 @@ const fetchBurndownData = async () => {
   const data = await getBurndownData(workspaceId, selectedSprintId.value);
   console.log('Data:', data);
 
-  if (data && data.result) {
-    console.log('Data Result:', data.result);
-    console.log('Data Result Length:', data.result.length);
-    console.log('Data Sprint:', data.sprint);
-    const result = calculateBurndownData(data.doneTaskCount[0].DONE, data.sprint.startDate, data.sprint.endDate);
+  if (data.sprint) {
+    const result = calculateBurndownData(data.doneTaskCount, data.sprint.startDate, data.sprint.endDate);
     console.log('Calculated Burndown Data:', result);
     idealData = result.idealData;
     actualData = result.actualData;
