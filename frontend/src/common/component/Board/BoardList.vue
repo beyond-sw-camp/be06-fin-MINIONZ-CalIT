@@ -14,13 +14,7 @@ defineProps({
 });
 
 function navigateToDetailPage(item) {
-  router.push({
-    name: 'ErrorDetailPage',
-    params: {
-      workspaceId: workspaceId,
-      boardId: item.errorBoardId,
-    }
-  });
+  router.push(`/workspace/${workspaceId}/scrum/board/error/detail/${item.errBoardId}`);
 }
 </script>
 
