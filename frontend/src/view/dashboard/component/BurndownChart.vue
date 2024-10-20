@@ -1,9 +1,9 @@
 <script setup>
 import * as echarts from 'echarts';
-import { onMounted, ref, watch } from 'vue';
-import { useRoute } from "vue-router";
-import { useSprintStore } from "@/stores/scrum/useSprintStore";
-import { getBurndownData, calculateBurndownData } from "@/utils/burndownChartUtils";
+import {onMounted, ref, watch} from 'vue';
+import {useRoute} from "vue-router";
+import {useSprintStore} from "@/stores/scrum/useSprintStore";
+import {getBurndownData, calculateBurndownData} from "@/utils/burndownChartUtils";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -31,7 +31,7 @@ const fetchBurndownData = async () => {
   if (chartInstance) {
     chartInstance.setOption({
       xAxis: {
-        data: Array.from({ length: idealData.length }, (_, i) => `Day ${i + 1}`)
+        data: Array.from({length: idealData.length}, (_, i) => `Day ${i + 1}`)
       },
       series: [
         {

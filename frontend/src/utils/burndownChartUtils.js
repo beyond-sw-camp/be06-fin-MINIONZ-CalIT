@@ -28,6 +28,7 @@ export const getBurndownData = async (workspaceId, sprintId) => {
 
 export const calculateBurndownData = (tasks, sprintStartDate, sprintEndDate) => {
     const totalTasks = tasks.length;
+    console.log( sprintStartDate, sprintEndDate);
     const totalDays = (new Date(sprintEndDate) - new Date(sprintStartDate)) / (1000 * 60 * 60 * 24);
 
     const idealData = [];

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, defineEmits } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
@@ -48,6 +48,14 @@ const getTasks = async (sprintId) => {
   taskLists.value = await taskStore.getTaskList(workspaceId, sprintId);
 };
 
+const emit = defineEmits(['update-kanban-cards']);
+
+const emitGetTaskListByUser = async () => {
+  const taskStore = useTaskStore();
+  const tasks = await taskStore.getTaskListByUser();
+  emit('update-kanban-cards', tasks);
+};
+
 watch(selectedSprintId, async (newSprintId) => {
   if (newSprintId) {
     sprintStore.setNowSprintId(newSprintId);
@@ -67,6 +75,9 @@ watch(selectedSprintId, async (newSprintId) => {
         {{ sprint.title }}
       </option>
     </select>
+    <div v-if="showAvatarGroup" class="avatar-group">
+      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" @click="emitGetTaskListByUser"/>
+    </div>
     <div class="view-toggle-buttons">
       <router-link
         :to="'kanban'"
@@ -101,11 +112,6 @@ watch(selectedSprintId, async (newSprintId) => {
         TimeLine
       </router-link>
     </div>
-
-    <!--    <div v-if="showAvatarGroup" class="avatar-group">-->
-    <!--      <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" />-->
-    <!--      <button class="add-avatar-btn">+</button>-->
-    <!--    </div>-->
   </div>
 </template>
 
