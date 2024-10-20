@@ -1,9 +1,10 @@
 <script setup>
 import { computed, defineProps } from 'vue';
+import { formatDate } from '@/utils/timeUtils';
 
 const props = defineProps({
   date: String,
-  comments: Number
+  comments: Number,
 });
 
 const formattedDate = computed(() => {
@@ -13,7 +14,7 @@ const formattedDate = computed(() => {
 
 <template>
   <div class="date-comment">
-    <span class="date">{{ formattedDate }}</span>
+    <span class="date">{{ formatDate(formattedDate) }}</span>
     <div class="comments">
       <i class="comment-icon"></i>
       <span class="comment-count">{{ comments }}</span>
@@ -41,7 +42,7 @@ const formattedDate = computed(() => {
 }
 
 .comment-icon {
-  background-image: url("@/assets/icon/boardIcon/boardComment.svg");
+  background-image: url('@/assets/icon/boardIcon/boardComment.svg');
   width: 24px;
   height: 24px;
   margin-right: 5px;
