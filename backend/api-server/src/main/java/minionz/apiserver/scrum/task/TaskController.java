@@ -95,10 +95,10 @@ public class TaskController {
     }
 
     @GetMapping("/my/all")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
+    public BaseResponse< List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllMyTask(
             @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
-        List<ReadAllTaskResponse> response;
+        List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
 
         try {
             response = taskService.readAllMyTask(customUserDetails.getUser());
