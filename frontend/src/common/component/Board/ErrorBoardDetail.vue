@@ -1,16 +1,17 @@
 <script setup>
 import { computed, defineProps } from 'vue';
 
-defineProps({
+const props = defineProps({
   title: String,
   status: String,
   subheading: String,
   descriptionList: Array,
   owner: String,
+  taskName: String,
 });
 
 const statusClass = computed(() => {
-  return status === 'In Progress' ? 'in-progress' : 'done';
+  return props.status === 'In Progress' ? 'in-progress' : 'done';
 });
 </script>
 
@@ -23,11 +24,18 @@ const statusClass = computed(() => {
     <div class="description">
       <p class="sub-heading">{{ subheading }}</p>
       <ul>
-        <li v-for="(item, index) in descriptionList" :key="index" class="description-content">{{ item }}</li>
+        <li
+          v-for="(item, index) in descriptionList"
+          :key="index"
+          class="description-content"
+        >
+          {{ item }}
+        </li>
       </ul>
     </div>
     <div class="footer">
       <p><strong>담당자:</strong> {{ owner }}</p>
+      <p><strong>관련 태스크:</strong> {{ taskName }}</p>
     </div>
   </div>
 </template>
@@ -63,7 +71,7 @@ const statusClass = computed(() => {
   margin: 0;
 }
 
-.description-content{
+.description-content {
   font-size: 14px;
   margin-top: 10px;
 }
