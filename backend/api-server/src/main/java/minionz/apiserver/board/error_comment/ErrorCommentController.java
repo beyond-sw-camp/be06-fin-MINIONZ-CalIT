@@ -48,6 +48,7 @@ public class ErrorCommentController {
             ? cloudFileUpload.multipleUpload(files)
             : Collections.emptyList();  // 파일이 없으면 빈 리스트 반환
 
+
     Long userId = userDetails.getUserId();
 
     // 댓글 생성 서비스 호출

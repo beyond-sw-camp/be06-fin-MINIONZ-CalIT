@@ -37,6 +37,7 @@ public class QaCommentController {
 
     // JSON 문자열을 객체로 변환
     CreateQaCommentRequest request;
+
     try {
       request = objectMapper.readValue(requestJson, CreateQaCommentRequest.class);
     } catch (JsonProcessingException e) {
