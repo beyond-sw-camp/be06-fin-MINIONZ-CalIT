@@ -5,7 +5,6 @@ import MeetingList from '@/view/dashboard/component/MeetingList.vue';
 import BurndownChart from '@/view/dashboard/component/BurndownChart.vue';
 import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
 import { useRoute } from 'vue-router';
-import PriorityTask from "@/view/dashboard/component/PriorityTask.vue";
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;

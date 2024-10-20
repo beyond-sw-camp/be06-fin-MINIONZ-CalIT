@@ -1,3 +1,34 @@
+<template>
+  <div v-if="loading" class="loading-indicator">
+    <p>로딩 중...</p>
+  </div>
+  <div v-else class="error-detail-container">
+    <div>
+      <BoardDetail
+        :title="postDetail.errboardTitle"
+        :status="postDetail.errboardCategory"
+        :subheading="postDetail.errboardContent"
+        :owner="postDetail.userName"
+        :taskName="postDetail.taskName"
+      />
+      
+      <!-- 이미지 목록을 렌더링하는 부분 -->
+      <div v-if="postDetail.getErrorBoardImageResponsesList && postDetail.getErrorBoardImageResponsesList.length">
+        <h3>첨부 파일:</h3>
+        <div v-for="image in postDetail.getErrorBoardImageResponsesList" :key="image.errorBoardImageId" class="image-container">
+          <img :src="image.imageUrl" alt="게시글 이미지" class="error-image" />
+        </div>
+      </div>
+
+      <DateComment
+        :date="postDetail.createdAt"
+        :comments="postDetail.comments"
+      />
+    </div>
+    <CommentComponent />
+  </div>
+</template>
+
 <script setup>
 import { ref, inject, onMounted } from 'vue';
 import BoardDetail from '@/common/component/Board/ErrorBoardDetail.vue';
@@ -29,29 +60,6 @@ const fetchErrorDetail = async () => {
 onMounted(fetchErrorDetail);
 </script>
 
-<template>
-  <div v-if="loading" class="loading-indicator">
-    <p>로딩 중...</p>
-  </div>
-  <div v-else class="error-detail-container">
-    <div>
-      <BoardDetail
-        :title="postDetail.errboardTitle"
-        :status="postDetail.errboardCategory"
-        :subheading="postDetail.errboardContent"
-        :descriptionList="postDetail.getErrorBoardImageResponsesList"
-        :owner="postDetail.userName"
-        :taskName="postDetail.taskName"
-      />
-      <DateComment
-        :date="postDetail.createdAt"
-        :comments="postDetail.comments"
-      />
-    </div>
-    <CommentComponent />
-  </div>
-</template>
-
 <style scoped>
 .error-detail-container {
   padding: 30px;
@@ -60,5 +68,14 @@ onMounted(fetchErrorDetail);
   text-align: center;
   padding: 50px;
   font-size: 18px;
+}
+.image-container {
+  margin-top: 15px;
+}
+.error-image {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 </style>
