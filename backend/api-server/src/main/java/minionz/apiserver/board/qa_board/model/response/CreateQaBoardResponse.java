@@ -21,7 +21,7 @@ public class CreateQaBoardResponse {
     private LocalDateTime modifiedAt;
     private List<GetQaBoardImageResponse> getQaBoardImageResponseList;
     private Long workspaceId;
-
+    private String assignUser;
     private String userName;
     private String taskName;
 }
