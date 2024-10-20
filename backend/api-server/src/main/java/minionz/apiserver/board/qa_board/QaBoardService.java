@@ -90,6 +90,7 @@ public class QaBoardService {
                 .workspaceId(qaBoard.getWorkSpace().getWorkspaceId())
                 .userName(qaBoard.getUser().getUserName())
                 .taskName(qaBoard.getTask().getTaskTitle())
+                .assignUser(qaBoard.getWorkspaceParticipation().getUser().getUserName())
                 .build();
 
     }
