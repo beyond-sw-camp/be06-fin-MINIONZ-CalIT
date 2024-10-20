@@ -12,7 +12,7 @@ const friendStore = useFriendsStore();
 const participants = ref([]);
 const filteredFriends = ref([]);
 const selectedParticipant = ref(null);
-const emit = defineEmits(['update-participants']);
+const emit = defineEmits(['update-meeting-participants']);
 
 const searchFriends = async () => {
   try {
@@ -31,26 +31,27 @@ const deleteParticipant = (searchUserIdx) => {
 };
 
 const saveParticipantsToUserList = () => {
-  emit('update-participants', selectedParticipant.value);
+  console.log('saveParticipantsToUserList called', selectedParticipant.value);
+  emit('update-meeting-participants', selectedParticipant.value);
 };
 
 onMounted(() => {
   searchFriends();
+});
 
-  watch(selectedParticipant, (newParticipant) => {
-    if (newParticipant) {
-      if (!participants.value) {
-        participants.value = [];
-      }
-      if (
-          !participants.value.some(
-              (p) => p.searchUserIdx === newParticipant.searchUserIdx
-          )
-      ) {
-        participants.value.push(newParticipant);
-      }
+watch(selectedParticipant, (newParticipant) => {
+  if (newParticipant) {
+    if (!participants.value) {
+      participants.value = [];
     }
-  });
+    if (
+        !participants.value.some(
+            (p) => p.searchUserIdx === newParticipant.searchUserIdx
+        )
+    ) {
+      participants.value.push(newParticipant);
+    }
+  }
 });
 </script>
 
@@ -196,5 +197,21 @@ label {
       border: 1px solid #c6d2fd;
     }
   }
+}
+
+.selections {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.item {
+  font-size: 12px;
+  font-weight: 500;
+  color: #606c80;
+  padding: 5px 8px;
+  border-radius: 15px;
+  background-color: #e0f7fa;
 }
 </style>

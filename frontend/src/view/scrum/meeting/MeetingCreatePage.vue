@@ -26,6 +26,7 @@ const rightSideVisible = ref(false);
 const activeComponentId = ref('');
 const editor = ref(null);
 const isQuillVisible = ref(false);
+const participants = ref([]);
 
 const { handleSubmit, errors } = useForm({
   validationSchema: yup.object({
@@ -47,7 +48,7 @@ const onSubmit = handleSubmit(async () => {
     meetingDescription: meetingDescription.value,
     startTime: timeInputUtils.validateTime(startTime.value),
     endTime: timeInputUtils.validateTime(endTime.value),
-    participants: friendsStore.selectedParticipants.map((participant) => participant.id),
+    participants: participants.value.map((participant) => participant.id),
     labels: sprintLabelStore.labels.map((label) => label.labelId),
   };
   await meetingStore.addMeeting(meeting, workspaceId);
@@ -65,9 +66,12 @@ const rightSideOn = (id) => {
     meetingNoteContainer.style.transition = 'width 0.5s ease';
     meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
   }
-  console.log('Add issue button clicked');
   activeComponentId.value = id;
   rightSideVisible.value = !rightSideVisible.value;
+};
+
+const saveParticipantsToUserList = (newParticipants) => {
+  participants.value = newParticipants;
 };
 </script>
 
@@ -115,10 +119,10 @@ const rightSideOn = (id) => {
             </span>
             <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
             <div class="users-list">
-              <div class="user-profile" v-for="participant in friendsStore.selectedParticipants"
-                   :key="participant.id">
+              <div class="user-profile" v-for="participant in participants"
+                   :key="participant.searchUserIdx">
                 <img :src="setPersona(participant.persona)" alt="참여자">
-                <span>{{ participant.username }}</span>
+                <span>{{ participant.userName }}</span>
               </div>
             </div>
           </div>
@@ -152,7 +156,7 @@ const rightSideOn = (id) => {
         <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
       </div>
     </div>
-    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
+    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId" @update-meeting-participants="saveParticipantsToUserList" />
   </div>
 </template>
 
