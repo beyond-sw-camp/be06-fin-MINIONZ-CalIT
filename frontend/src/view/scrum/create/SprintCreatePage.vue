@@ -1,15 +1,14 @@
 <script setup>
-import {inject, ref, onMounted, watch} from 'vue';
+import { inject, ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useSprintLabelStore } from '@/stores/scrum/useSprintLabelStore';
-import { useFriendsStore } from "@/stores/user/useFriendsStore";
-import { timeInputUtils } from "@/utils/timeInputUtils";
-import { getLabelColors } from "@/utils/labelUtils";
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import { timeInputUtils } from '@/utils/timeInputUtils';
+import { getLabelColors } from '@/utils/labelUtils';
 import { useField, useForm } from 'vee-validate';
-import { Notyf } from 'notyf';
 import * as yup from 'yup';
-import router from "@/router";
+import router from '@/router';
 import Multiselect from 'vue-multiselect';
 
 const contentsTitle = inject('contentsTitle');
@@ -24,9 +23,8 @@ const workspaceId = route.params.workspaceId;
 const sprintStore = useSprintStore();
 const sprintLabelStore = useSprintLabelStore();
 const friendStore = useFriendsStore();
-const notyf = new Notyf();
 
-const {handleSubmit, errors} = useForm({
+const { handleSubmit, errors } = useForm({
   validationSchema: yup.object({
     sprintTitle: yup.string().required('스프린트 이름을 입력하세요'),
     sprintContent: yup.string().required('스프린트 내용을 입력하세요'),
@@ -36,12 +34,12 @@ const {handleSubmit, errors} = useForm({
   }),
 });
 
-const {value: sprintTitle} = useField('sprintTitle');
-const {value: sprintContent} = useField('sprintContent');
-const {value: participants} = useField('participants', { initialValue: [] });
-const {value: startDate} = useField('startDate');
-const {value: endDate} = useField('endDate');
-const {value: selectedLabels} = useField('sprintLabels');
+const { value: sprintTitle } = useField('sprintTitle');
+const { value: sprintContent } = useField('sprintContent');
+const { value: participants } = useField('participants', { initialValue: [] });
+const { value: startDate } = useField('startDate');
+const { value: endDate } = useField('endDate');
+const { value: selectedLabels } = useField('sprintLabels');
 
 const filteredFriends = ref([]);
 const selectedParticipant = ref(null);
@@ -49,7 +47,6 @@ const labels = ref([]);
 const availableLabels = ref([]);
 const selectedLabel = ref([]);
 const labelDetails = ref([]);
-
 
 const searchFriends = async () => {
   try {
@@ -62,15 +59,23 @@ const searchFriends = async () => {
 };
 
 const deleteParticipant = (searchUserIdx) => {
-  participants.value = participants.value.filter(participant => participant.searchUserIdx !== searchUserIdx);
+  participants.value = participants.value.filter(
+    (participant) => participant.searchUserIdx !== searchUserIdx
+  );
 };
 
 function deleteLabelByName(labelName) {
-  const index = labels.value.findIndex(label => label.labelName === labelName);
+  const index = labels.value.findIndex(
+    (label) => label.labelName === labelName
+  );
   if (index !== -1) {
     sprintLabelStore.deleteLabel(index);
-    selectedLabel.value = selectedLabel.value.filter(name => name !== labelName);
-    labelDetails.value = labelDetails.value.filter(label => label.labelName !== labelName);
+    selectedLabel.value = selectedLabel.value.filter(
+      (name) => name !== labelName
+    );
+    labelDetails.value = labelDetails.value.filter(
+      (label) => label.labelName !== labelName
+    );
   }
 }
 
@@ -84,15 +89,16 @@ const onSubmit = handleSubmit(async (values) => {
       sprintTitle: values.sprintTitle,
       sprintContents: values.sprintContent,
       labels: values.sprintLabels,
-      participants: values.participants.map(participant => participant.searchUserIdx),
+      participants: values.participants.map(
+        (participant) => participant.searchUserIdx
+      ),
       startDate: validatedStartDate,
       endDate: validatedEndDate,
     });
-    notyf.success('스프린트가 성공적으로 추가되습니다.')
+
     router.push(`/workspace/${workspaceId}/scrum/sprint/list`);
   } catch (error) {
     console.error('Error adding sprint:', error);
-    notyf.error('스프린트 추가에 실패하였습니다.');
   }
 });
 
@@ -109,7 +115,11 @@ onMounted(() => {
       if (!participants.value) {
         participants.value = [];
       }
-      if (!participants.value.some(p => p.searchUserIdx === newParticipant.searchUserIdx)) {
+      if (
+        !participants.value.some(
+          (p) => p.searchUserIdx === newParticipant.searchUserIdx
+        )
+      ) {
         participants.value.push(newParticipant);
       }
     }
@@ -122,36 +132,63 @@ onMounted(() => {
     <div class="workspace-wrap">
       <div class="input-wrap">
         <div>
-
           <div>
             <label for="sprintTitle">Sprint 이름</label>
-            <input type="text" id="sprintTitle" v-model="sprintTitle" placeholder="스프린트 이름을 입력하세요" class="input-field"/>
-            <p class="error-message" v-if="errors.sprintTitle">{{ errors.sprintTitle }}</p>
+            <input
+              type="text"
+              id="sprintTitle"
+              v-model="sprintTitle"
+              placeholder="스프린트 이름을 입력하세요"
+              class="input-field"
+            />
+            <p class="error-message" v-if="errors.sprintTitle">
+              {{ errors.sprintTitle }}
+            </p>
           </div>
           <div>
             <label for="sprintContent">Sprint 내용</label>
-            <input type="text" id="sprintContent" v-model="sprintContent" placeholder="스프린트 내용을 입력하세요" class="input-field"/>
-            <p class="error-message" v-if="errors.sprintContent">{{ errors.sprintContent }}</p>
+            <input
+              type="text"
+              id="sprintContent"
+              v-model="sprintContent"
+              placeholder="스프린트 내용을 입력하세요"
+              class="input-field"
+            />
+            <p class="error-message" v-if="errors.sprintContent">
+              {{ errors.sprintContent }}
+            </p>
           </div>
 
           <div>
             <label for="participants">참여자 선택</label>
             <multiselect
-                v-model="selectedParticipant"
-                :options="filteredFriends"
-                :searchable="true"
-                :close-on-select="true"
-                :show-labels="false"
-                placeholder="참여자를 선택하세요"
-                label="userName"
-                track-by="searchUserIdx"
+              v-model="selectedParticipant"
+              :options="filteredFriends"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="참여자를 선택하세요"
+              label="userName"
+              track-by="searchUserIdx"
             />
-            <p class="error-message" v-if="errors.participants">{{ errors.participants }}</p>
-            <div class="selections participants" v-if="participants && participants.length">
-              <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
+            <p class="error-message" v-if="errors.participants">
+              {{ errors.participants }}
+            </p>
+            <div
+              class="selections participants"
+              v-if="participants && participants.length"
+            >
+              <span
+                class="item"
+                v-for="participant in participants"
+                :key="participant.searchUserIdx"
+              >
                 {{ participant.userName }}
-                <span @click="deleteParticipant(participant.searchUserIdx)"
-                      style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+                <span
+                  @click="deleteParticipant(participant.searchUserIdx)"
+                  style="cursor: pointer; margin: 0 10px; padding: 0"
+                  >x</span
+                >
               </span>
             </div>
           </div>
@@ -162,36 +199,64 @@ onMounted(() => {
                 <label>시작 날짜</label>
                 <span>* 시간 지정은 10분 단위로 저장됩니다.</span>
               </div>
-              <input type="datetime-local" id="startDate" v-model="startDate" class="input-field"/>
-              <p class="error-message" v-if="errors.startDate">{{ errors.startDate }}</p>
+              <input
+                type="datetime-local"
+                id="startDate"
+                v-model="startDate"
+                class="input-field"
+              />
+              <p class="error-message" v-if="errors.startDate">
+                {{ errors.startDate }}
+              </p>
             </div>
             <div>
               <div class="time-info">
                 <label>종료 날짜</label>
                 <span>* 시간 지정은 10분 단위로 저장됩니다.</span>
               </div>
-              <input type="datetime-local" id="endDate" v-model="endDate" class="input-field"/>
-              <p class="error-message" v-if="errors.endDate">{{ errors.endDate }}</p>
+              <input
+                type="datetime-local"
+                id="endDate"
+                v-model="endDate"
+                class="input-field"
+              />
+              <p class="error-message" v-if="errors.endDate">
+                {{ errors.endDate }}
+              </p>
             </div>
           </div>
 
           <div>
-<!--            TODO 라벨 추가 기능 넣을까?-->
+            <!--            TODO 라벨 추가 기능 넣을까?-->
             <div>
               <label>라벨 선택</label>
               <select v-model="selectedLabels" class="input-field">
                 <option disabled value="">라벨을 선택하세요</option>
-                <option v-for="label in availableLabels" :key="label.labelName" :value="label">
+                <option
+                  v-for="label in availableLabels"
+                  :key="label.labelName"
+                  :value="label"
+                >
                   {{ label.labelName }}
                 </option>
               </select>
-              <p class="error-message" v-if="errors.sprintLabels">{{ errors.sprintLabels }}</p>
+              <p class="error-message" v-if="errors.sprintLabels">
+                {{ errors.sprintLabels }}
+              </p>
             </div>
             <div v-if="selectedLabel" class="label-details">
-              <div v-for="(label, index) in labelDetails" :key="index" class="label-detail-item">
+              <div
+                v-for="(label, index) in labelDetails"
+                :key="index"
+                class="label-detail-item"
+              >
                 <span :style="getLabelColors(label)">
                   {{ label.labelName }}
-                  <span @click="deleteLabelByName(label.labelName)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+                  <span
+                    @click="deleteLabelByName(label.labelName)"
+                    style="cursor: pointer; margin: 0 10px; padding: 0"
+                    >x</span
+                  >
                 </span>
               </div>
             </div>
@@ -255,8 +320,8 @@ label {
 }
 
 .add-workspace-btn {
-  background-color: #C6D2FD;
-  color: #28303F;
+  background-color: #c6d2fd;
+  color: #28303f;
   padding: 10px;
   width: 100%;
   border: none;
@@ -267,7 +332,7 @@ label {
 }
 
 .add-workspace-btn:hover {
-  background-color: #93AAFD;
+  background-color: #93aafd;
 }
 
 .error-message {
@@ -306,10 +371,10 @@ label {
   margin-top: 10px;
 }
 
-.item{
+.item {
   font-size: 12px;
   font-weight: 500;
-  color: #606C80;
+  color: #606c80;
   padding: 5px 8px;
   border-radius: 15px;
   background-color: #e0f7fa;

@@ -37,6 +37,7 @@ export const useSprintStore = defineStore('sprintStore', () => {
 
       if (response.data.success) {
         sprints.value.push(response.data.result);
+        notyf.success('스프린트가 성공적으로 추가되습니다.');
       } else {
         notyf.error(response.data.message);
       }
@@ -44,8 +45,8 @@ export const useSprintStore = defineStore('sprintStore', () => {
       if (error.response && error.response.status === 403) {
         notyf.error('접근 권한이 없습니다.');
       } else {
-        notyf.error('알 수 없는 오류가 발생했습니다.');
         console.error('Error adding label:', error);
+        notyf.error('스프린트 추가에 실패하였습니다.');
       }
     }
   };
