@@ -10,7 +10,7 @@ public interface SprintRepositoryCustom {
 
     List<Sprint> findMySprintsInPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 
-    int findInprogressSprintCount(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate);
+    int findInprogressSprintCount(Long workspaceId);
 
     int findAllSprintCount(Long workspaceId);
 }

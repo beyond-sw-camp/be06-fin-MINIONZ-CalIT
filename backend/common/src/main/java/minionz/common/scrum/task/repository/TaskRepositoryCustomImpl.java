@@ -71,8 +71,7 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
                 .select(task.count())
                 .from(task)
                 .join(task.sprint)
-                .where(task.sprint.workspace.workspaceId.eq(workspaceId)
-                        .and(task.sprint.endDate.after(LocalDateTime.now())))
+                .where(task.sprint.workspace.workspaceId.eq(workspaceId))
                 .fetchOne();
 
         return (count != null) ? count.intValue() : 0;
@@ -86,7 +85,6 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
                 .from(task)
                 .join(task.sprint)
                 .where(task.sprint.workspace.workspaceId.eq(workspaceId)
-                        .and(task.sprint.endDate.after(LocalDateTime.now()))
                         .and(task.status.eq(TaskStatus.DONE)))
                 .fetchOne();
 
