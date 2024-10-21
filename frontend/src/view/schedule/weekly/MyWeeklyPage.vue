@@ -1,5 +1,5 @@
 <script setup>
-import {inject, ref} from 'vue';
+import {inject, onMounted, ref} from 'vue';
 import {useMyDashboardStore} from '@/stores/myspace/useMyDashboardStore';
 import WeeklyComponent from '@/view/schedule/weekly/component/WeeklyComponent.vue';
 import WeeklyIssues from '@/view/schedule/weekly/component/WeeklyIssues.vue';
@@ -35,7 +35,9 @@ const fetchWeeklyData = async () => {
   myWeeklyMeeting.value = selectedWeek.value.meetings;
 };
 
-fetchWeeklyData();
+onMounted(() => {
+  fetchWeeklyData();
+});
 </script>
 
 <template>

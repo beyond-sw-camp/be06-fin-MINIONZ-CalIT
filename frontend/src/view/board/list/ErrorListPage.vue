@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, onMounted, ref, toRef, watch } from 'vue';
+import { computed, inject, onMounted, ref,  watch } from 'vue';
 import { useErrorStore } from '@/stores/board/useErrorStore';
 import Pagination from '@/common/component/PaginationComponent.vue';
 import BoardList from '@/common/component/Board/ErrorBoardList.vue';
@@ -43,7 +43,7 @@ const deleteItem = (item) => {
 
 const errorStore = useErrorStore();
 const postList = ref([]);
-const selectedLanguage = toRef(route.query, 'selectedLanguage');
+const selectedLanguage = ref('');
 
 const fetchPostList = async () => {
   try {
@@ -54,6 +54,9 @@ const fetchPostList = async () => {
     }
     if (searchKeyword.value) {
       const result = await errorStore.searchErrorBoardByKeyword(workspaceId, page, itemsPerPage, searchKeyword.value);
+      postList.value = result || [];
+    } else if (selectedLanguage.value) {
+      const result = await errorStore.searchErrorBoardByCategory(workspaceId, page, itemsPerPage, selectedLanguage.value);
       postList.value = result || [];
     } else {
       await errorStore.getErrorBoardList(workspaceId, page, itemsPerPage);
@@ -93,9 +96,10 @@ watch(currentPage, async () => {
 });
 
 watch(searchKeyword, async () => {
-  currentPage.value = 1; // 검색 시 첫 페이지로 초기화
+  currentPage.value = 1;
   await fetchPostList();
 });
+
 </script>
 
 <template>
@@ -105,6 +109,7 @@ watch(searchKeyword, async () => {
         <SearchComponent
             :link="`/workspace/${workspaceId}/scrum/board/error/create`"
             @search="searchKeyword = $event"
+            @update:selectedLanguage="filterByLanguage"
         />
       </div>
       <BoardList
