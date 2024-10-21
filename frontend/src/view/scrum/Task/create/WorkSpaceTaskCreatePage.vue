@@ -1,13 +1,13 @@
 <script setup>
-import {inject, ref, onMounted, watch} from 'vue';
-import {useTaskStore} from '@/stores/scrum/useTaskStore';
+import { inject, ref, onMounted, watch } from 'vue';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import Multiselect from 'vue-multiselect';
-import {useFriendsStore} from '@/stores/user/useFriendsStore';
-import {useRoute} from 'vue-router';
-import {useSprintStore} from '@/stores/scrum/useSprintStore';
-import {timeInputUtils} from '@/utils/timeInputUtils';
-import {getLabelColors} from '@/utils/labelUtils';
-import {useField, useForm} from 'vee-validate';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { timeInputUtils } from '@/utils/timeInputUtils';
+import { getLabelColors } from '@/utils/labelUtils';
+import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import router from '@/router';
 import { useTaskLabelStore } from '@/stores/scrum/useTaskLabelStore';
@@ -36,7 +36,20 @@ const friendStore = useFriendsStore();
 const taskStore = useTaskStore();
 const taskLabelStore = useTaskLabelStore();
 
-const {handleSubmit, errors} = useForm({
+const filteredLabels = ref([]);
+const selectedLabel = ref([]);
+
+const fetchLabels = async () => {
+  try {
+    await taskLabelStore.getTaskLabels(workspaceId);
+    filteredLabels.value = taskLabelStore.labels;
+  } catch (error) {
+    console.log(error);
+    filteredLabels.value = [];
+  }
+};
+
+const { handleSubmit, errors } = useForm({
   validationSchema: yup.object({
     selectedSprintId: yup.string().required('스프린트를 선택해주세요'),
     taskName: yup.string().required('Task 제목을 입력해주세요'),
@@ -49,22 +62,21 @@ const {handleSubmit, errors} = useForm({
   }),
 });
 
-const {value: selectedSprintId} = useField('selectedSprintId');
-const {value: taskName} = useField('taskName');
-const {value: taskContent} = useField('taskContent');
-const {value: participants} = useField('participants', {initialValue: []});
-const {value: selectedLevel} = useField('selectedLevel');
-const {value: selectedPriority} = useField('selectedPriority');
-const {value: startTime} = useField('startTime');
-const {value: endTime} = useField('endTime');
+const { value: selectedSprintId } = useField('selectedSprintId');
+const { value: taskName } = useField('taskName');
+const { value: taskContent } = useField('taskContent');
+const { value: participants } = useField('participants', { initialValue: [] });
+const { value: selectedLevel } = useField('selectedLevel');
+const { value: selectedPriority } = useField('selectedPriority');
+const { value: startTime } = useField('startTime');
+const { value: endTime } = useField('endTime');
+const { value: labels } = useField('labels', {
+  initialValue: [],
+});
 
 const sprintOptions = ref([]);
 const filteredFriends = ref([]);
 const selectedParticipant = ref(null);
-const labels = ref([]);
-const availableLabels = ref([]);
-const selectedLabel = ref([]);
-const labelDetails = ref([]);
 
 const searchFriends = async () => {
   try {
@@ -78,24 +90,9 @@ const searchFriends = async () => {
 
 const deleteParticipant = (searchUserIdx) => {
   participants.value = participants.value.filter(
-      (participant) => participant.searchUserIdx !== searchUserIdx
+    (participant) => participant.searchUserIdx !== searchUserIdx
   );
 };
-
-function deleteLabelByName(labelName) {
-  const index = labels.value.findIndex(
-      (label) => label.labelName === labelName
-  );
-  if (index !== -1) {
-    taskLabelStore.deleteLabel(index);
-    selectedLabel.value = selectedLabel.value.filter(
-        (name) => name !== labelName
-    );
-    labelDetails.value = labelDetails.value.filter(
-        (label) => label.labelName !== labelName
-    );
-  }
-}
 
 const onSubmit = handleSubmit(async (values) => {
   try {
@@ -103,20 +100,20 @@ const onSubmit = handleSubmit(async (values) => {
     const validatedEndTime = timeInputUtils.validateTime(values.endTime);
 
     await taskStore.addTask(
-        {
-          sprintId: selectedSprintId.value,
-          title: values.taskName,
-          contents: values.taskContent,
-          participants: values.participants.map(
-              (participant) => participant.searchUserIdx
-          ),
-          difficulty: levelMap[values.selectedLevel],
-          priority: priorityMap[values.selectedPriority],
-          startDate: validatedStartTime,
-          endDate: validatedEndTime,
-          labels: selectedLabel.value.map((label) => label.id),
-        },
-        selectedSprintId.value
+      {
+        sprintId: selectedSprintId.value,
+        title: values.taskName,
+        contents: values.taskContent,
+        participants: values.participants.map(
+          (participant) => participant.searchUserIdx
+        ),
+        difficulty: levelMap[values.selectedLevel],
+        priority: priorityMap[values.selectedPriority],
+        startDate: validatedStartTime,
+        endDate: validatedEndTime,
+        labels: values.labels.map((label) => label.labelId),
+      },
+      selectedSprintId.value
     );
 
     router.push(`/workspace/${workspaceId}/scrum/task/list`);
@@ -131,14 +128,40 @@ const fetchSprints = async () => {
   sprintOptions.value = sprintStore.sprints;
 };
 
-const fetchLabels = async () => {
-  await taskLabelStore.getTaskLabels(workspaceId);
-  availableLabels.value = taskLabelStore.labels;
+const deleteLabel = (labelId) => {
+  labels.value = labels.value.filter((label) => label.labelId !== labelId);
 };
 
-onMounted(async () => {
-  await searchFriends();
-  await fetchSprints();
+// onMounted(async () => {
+//   await searchFriends();
+//   await fetchSprints();
+
+//   watch(selectedParticipant, (newParticipant) => {
+//     if (newParticipant) {
+//       if (!participants.value) {
+//         participants.value = [];
+//       }
+//       if (
+//         !participants.value.some(
+//           (p) => p.searchUserIdx === newParticipant.searchUserIdx
+//         )
+//       ) {
+//         participants.value.push(newParticipant);
+//       }
+//     }
+//   });
+// });
+
+// watch(selectedSprintId, async (newSprintId) => {
+//   if (newSprintId) {
+//     await fetchLabels();
+//   }
+// });
+
+onMounted(() => {
+  searchFriends();
+  fetchLabels();
+  fetchSprints();
 
   watch(selectedParticipant, (newParticipant) => {
     if (newParticipant) {
@@ -146,11 +169,23 @@ onMounted(async () => {
         participants.value = [];
       }
       if (
-          !participants.value.some(
-              (p) => p.searchUserIdx === newParticipant.searchUserIdx
-          )
+        !participants.value.some(
+          (p) => p.searchUserIdx === newParticipant.searchUserIdx
+        )
       ) {
         participants.value.push(newParticipant);
+      }
+    }
+  });
+
+  watch(selectedLabel, (newLabel) => {
+    if (newLabel) {
+      if (!labels.value) {
+        labels.value = [];
+      }
+
+      if (!labels.value.some((l) => l.labelId === newLabel.labelId)) {
+        labels.value.push(newLabel);
       }
     }
   });
@@ -171,9 +206,9 @@ watch(selectedSprintId, async (newSprintId) => {
           <label>스프린트 선택하기</label>
           <select v-model="selectedSprintId" class="input-field">
             <option
-                v-for="sprint in sprintOptions"
-                :key="sprint.sprintId"
-                :value="sprint.sprintId"
+              v-for="sprint in sprintOptions"
+              :key="sprint.sprintId"
+              :value="sprint.sprintId"
             >
               {{ sprint.title }}
             </option>
@@ -185,11 +220,11 @@ watch(selectedSprintId, async (newSprintId) => {
         <div>
           <label for="task-name">Task 제목</label>
           <input
-              type="text"
-              id="task-name"
-              v-model="taskName"
-              placeholder="Task 제목을 적어주세요"
-              class="input-field"
+            type="text"
+            id="task-name"
+            v-model="taskName"
+            placeholder="Task 제목을 적어주세요"
+            class="input-field"
           />
           <p class="error-message" v-if="errors.taskName">
             {{ errors.taskName }}
@@ -198,11 +233,11 @@ watch(selectedSprintId, async (newSprintId) => {
         <div>
           <label for="task-content">Task 내용</label>
           <textarea
-              id="task-content"
-              v-model="taskContent"
-              placeholder="Task 내용을 적어주세요"
-              class="input-field"
-              style="margin: 0"
+            id="task-content"
+            v-model="taskContent"
+            placeholder="Task 내용을 적어주세요"
+            class="input-field"
+            style="margin: 0"
           />
           <p class="error-message" v-if="errors.taskContent">
             {{ errors.taskContent }}
@@ -212,32 +247,32 @@ watch(selectedSprintId, async (newSprintId) => {
           <div>
             <label for="participants">참여자 선택</label>
             <multiselect
-                v-model="selectedParticipant"
-                :options="filteredFriends"
-                :searchable="true"
-                :close-on-select="true"
-                :show-labels="false"
-                placeholder="참여자를 선택하세요"
-                label="userName"
-                track-by="searchUserIdx"
+              v-model="selectedParticipant"
+              :options="filteredFriends"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="참여자를 선택하세요"
+              label="userName"
+              track-by="searchUserIdx"
             />
             <p class="error-message" v-if="errors.participants">
               {{ errors.participants }}
             </p>
             <div
-                class="selections participants"
-                v-if="participants && participants.length"
+              class="selections participants"
+              v-if="participants && participants.length"
             >
               <span
-                  class="item"
-                  v-for="participant in participants"
-                  :key="participant.searchUserIdx"
+                class="item"
+                v-for="participant in participants"
+                :key="participant.searchUserIdx"
               >
                 {{ participant.userName }}
                 <span
-                    @click="deleteParticipant(participant.searchUserIdx)"
-                    style="cursor: pointer; margin: 0 10px; padding: 0"
-                >x</span
+                  @click="deleteParticipant(participant.searchUserIdx)"
+                  style="cursor: pointer; margin: 0 10px; padding: 0"
+                  >x</span
                 >
               </span>
             </div>
@@ -250,10 +285,10 @@ watch(selectedSprintId, async (newSprintId) => {
               <span>* 시간 지정은 10분 단위로 저장됩니다.</span>
             </div>
             <input
-                type="datetime-local"
-                id="startDate"
-                v-model="startTime"
-                class="input-field"
+              type="datetime-local"
+              id="startDate"
+              v-model="startTime"
+              class="input-field"
             />
             <p class="error-message" v-if="errors.startDate">
               {{ errors.startDate }}
@@ -265,10 +300,10 @@ watch(selectedSprintId, async (newSprintId) => {
               <span>* 시간 지정은 10분 단위로 저장됩니다.</span>
             </div>
             <input
-                type="datetime-local"
-                id="endDate"
-                v-model="endTime"
-                class="input-field"
+              type="datetime-local"
+              id="endDate"
+              v-model="endTime"
+              class="input-field"
             />
             <p class="error-message" v-if="errors.endDate">
               {{ errors.endDate }}
@@ -278,9 +313,9 @@ watch(selectedSprintId, async (newSprintId) => {
         <div>
           <label for="level">난이도</label>
           <multiselect
-              v-model="selectedLevel"
-              :options="['Easy', 'Medium', 'Hard']"
-              placeholder="Level"
+            v-model="selectedLevel"
+            :options="['Easy', 'Medium', 'Hard']"
+            placeholder="Level"
           />
           <p class="error-message" v-if="errors.selectedLevel">
             {{ errors.selectedLevel }}
@@ -289,19 +324,64 @@ watch(selectedSprintId, async (newSprintId) => {
         <div>
           <label for="priority">중요도</label>
           <multiselect
-              v-model="selectedPriority"
-              :options="['Low', 'Medium', 'High']"
-              placeholder="Priority"
+            v-model="selectedPriority"
+            :options="['Low', 'Medium', 'High']"
+            placeholder="Priority"
           />
           <p class="error-message" v-if="errors.selectedPriority">
             {{ errors.selectedPriority }}
           </p>
         </div>
+
         <div>
+          <label for="labels">라벨 선택</label>
+          <multiselect
+            v-model="selectedLabel"
+            :options="filteredLabels"
+            :searchable="true"
+            :close-on-select="true"
+            :show-labels="false"
+            placeholder="라벨을 선택하세요"
+            label="labelName"
+            track-by="labelId"
+          />
+          <p class="error-message" v-if="errors.labels">
+            {{ errors.labels }}
+          </p>
+          <div class="selections labels" v-if="labels && labels.length">
+            <span class="item" v-for="label in labels" :key="label.labelId">
+              {{ label.labelName }}
+              <span
+                @click="deleteLabel(label.labelId)"
+                style="cursor: pointer; margin: 0 10px; padding: 0"
+                >x</span
+              >
+            </span>
+          </div>
+        </div>
+
+        <div v-if="selectedLabel.length" class="label-details">
+          <div
+            v-for="(label, index) in selectedLabel"
+            :key="index"
+            class="label-detail-item"
+          >
+            <span :style="getLabelColors(label)">
+              {{ label.labelName }}
+              <span
+                @click="deleteLabelByName(label.labelName)"
+                style="cursor: pointer; margin: 0 10px; padding: 0"
+                >x</span
+              >
+            </span>
+          </div>
+        </div>
+
+        <!-- <div>
           <label>라벨 선택</label>
           <multiselect
-              v-model="selectedLabels"
-              :options="availableLabels || []"
+            v-model="selectedLabels"
+            :options="availableLabels || []"
           ></multiselect>
           <p class="error-message" v-if="errors.sprintLabels">
             {{ errors.sprintLabels }}
@@ -309,20 +389,20 @@ watch(selectedSprintId, async (newSprintId) => {
         </div>
         <div v-if="selectedLabel" class="label-details">
           <div
-              v-for="(label, index) in labelDetails"
-              :key="index"
-              class="label-detail-item"
+            v-for="(label, index) in labelDetails"
+            :key="index"
+            class="label-detail-item"
           >
             <span :style="getLabelColors(label)">
               {{ label.labelName }}
               <span
-                  @click="deleteLabelByName(label.labelName)"
-                  style="cursor: pointer; margin: 0 10px; padding: 0"
-              >x</span
+                @click="deleteLabelByName(label.labelName)"
+                style="cursor: pointer; margin: 0 10px; padding: 0"
+                >x</span
               >
             </span>
           </div>
-        </div>
+        </div> -->
       </div>
       <button type="button" @click="onSubmit" class="add-task-btn">
         Task 추가하기

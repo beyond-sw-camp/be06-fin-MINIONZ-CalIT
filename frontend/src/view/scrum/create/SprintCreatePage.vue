@@ -39,14 +39,14 @@ const { value: sprintContent } = useField('sprintContent');
 const { value: participants } = useField('participants', { initialValue: [] });
 const { value: startDate } = useField('startDate');
 const { value: endDate } = useField('endDate');
-const { value: selectedLabels } = useField('sprintLabels');
+const { value: labels } = useField('labels', {
+  initialValue: [],
+});
 
 const filteredFriends = ref([]);
 const selectedParticipant = ref(null);
-const labels = ref([]);
-const availableLabels = ref([]);
+const filteredLabels = ref([]);
 const selectedLabel = ref([]);
-const labelDetails = ref([]);
 
 const searchFriends = async () => {
   try {
@@ -58,26 +58,25 @@ const searchFriends = async () => {
   }
 };
 
+const fetchLabels = async () => {
+  try {
+    await sprintLabelStore.getSprintLabel(workspaceId);
+    filteredLabels.value = sprintLabelStore.labels;
+  } catch (error) {
+    console.log(error);
+    filteredLabels.value = [];
+  }
+};
+
 const deleteParticipant = (searchUserIdx) => {
   participants.value = participants.value.filter(
     (participant) => participant.searchUserIdx !== searchUserIdx
   );
 };
 
-function deleteLabelByName(labelName) {
-  const index = labels.value.findIndex(
-    (label) => label.labelName === labelName
-  );
-  if (index !== -1) {
-    sprintLabelStore.deleteLabel(index);
-    selectedLabel.value = selectedLabel.value.filter(
-      (name) => name !== labelName
-    );
-    labelDetails.value = labelDetails.value.filter(
-      (label) => label.labelName !== labelName
-    );
-  }
-}
+const deleteLabel = (labelId) => {
+  labels.value = labels.value.filter((label) => label.labelId !== labelId);
+};
 
 const onSubmit = handleSubmit(async (values) => {
   try {
@@ -88,7 +87,7 @@ const onSubmit = handleSubmit(async (values) => {
       workspaceId: workspaceId,
       sprintTitle: values.sprintTitle,
       sprintContents: values.sprintContent,
-      labels: values.sprintLabels,
+      labels: values.labels.map((label) => label.labelId),
       participants: values.participants.map(
         (participant) => participant.searchUserIdx
       ),
@@ -102,14 +101,10 @@ const onSubmit = handleSubmit(async (values) => {
   }
 });
 
-const fetchLabels = async () => {
-  await sprintLabelStore.getSprintLabel(workspaceId);
-  availableLabels.value = sprintLabelStore.labels;
-};
-
 onMounted(() => {
   searchFriends();
   fetchLabels();
+
   watch(selectedParticipant, (newParticipant) => {
     if (newParticipant) {
       if (!participants.value) {
@@ -121,6 +116,18 @@ onMounted(() => {
         )
       ) {
         participants.value.push(newParticipant);
+      }
+    }
+  });
+
+  watch(selectedLabel, (newLabel) => {
+    if (newLabel) {
+      if (!labels.value) {
+        labels.value = [];
+      }
+
+      if (!labels.value.some((l) => l.labelId === newLabel.labelId)) {
+        labels.value.push(newLabel);
       }
     }
   });
@@ -174,10 +181,21 @@ onMounted(() => {
             <p class="error-message" v-if="errors.participants">
               {{ errors.participants }}
             </p>
-            <div class="selections participants" v-if="participants && participants.length">
-              <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
+            <div
+              class="selections participants"
+              v-if="participants && participants.length"
+            >
+              <span
+                class="item"
+                v-for="participant in participants"
+                :key="participant.searchUserIdx"
+              >
                 {{ participant.userName }}
-                <span @click="deleteParticipant(participant.searchUserIdx)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+                <span
+                  @click="deleteParticipant(participant.searchUserIdx)"
+                  style="cursor: pointer; margin: 0 10px; padding: 0"
+                  >x</span
+                >
               </span>
             </div>
           </div>
@@ -215,39 +233,48 @@ onMounted(() => {
             </div>
           </div>
 
+          <!-- 라벨 선택 -->
           <div>
-            <!--            TODO 라벨 추가 기능 넣을까?-->
-            <div>
-              <label>라벨 선택</label>
-              <select v-model="selectedLabels" class="input-field">
-                <option disabled value="">라벨을 선택하세요</option>
-                <option
-                  v-for="label in availableLabels"
-                  :key="label.labelName"
-                  :value="label"
+            <label for="labels">라벨 선택</label>
+            <multiselect
+              v-model="selectedLabel"
+              :options="filteredLabels"
+              :searchable="true"
+              :close-on-select="true"
+              :show-labels="false"
+              placeholder="라벨을 선택하세요"
+              label="labelName"
+              track-by="labelId"
+            />
+            <p class="error-message" v-if="errors.labels">
+              {{ errors.labels }}
+            </p>
+            <div class="selections labels" v-if="labels && labels.length">
+              <span class="item" v-for="label in labels" :key="label.labelId">
+                {{ label.labelName }}
+                <span
+                  @click="deleteLabel(label.labelId)"
+                  style="cursor: pointer; margin: 0 10px; padding: 0"
+                  >x</span
                 >
-                  {{ label.labelName }}
-                </option>
-              </select>
-              <p class="error-message" v-if="errors.sprintLabels">
-                {{ errors.sprintLabels }}
-              </p>
+              </span>
             </div>
-            <div v-if="selectedLabel" class="label-details">
-              <div
-                v-for="(label, index) in labelDetails"
-                :key="index"
-                class="label-detail-item"
-              >
-                <span :style="getLabelColors(label)">
-                  {{ label.labelName }}
-                  <span
-                    @click="deleteLabelByName(label.labelName)"
-                    style="cursor: pointer; margin: 0 10px; padding: 0"
-                    >x</span
-                  >
-                </span>
-              </div>
+          </div>
+
+          <div v-if="selectedLabel.length" class="label-details">
+            <div
+              v-for="(label, index) in selectedLabel"
+              :key="index"
+              class="label-detail-item"
+            >
+              <span :style="getLabelColors(label)">
+                {{ label.labelName }}
+                <span
+                  @click="deleteLabelByName(label.labelName)"
+                  style="cursor: pointer; margin: 0 10px; padding: 0"
+                  >x</span
+                >
+              </span>
             </div>
           </div>
         </div>
