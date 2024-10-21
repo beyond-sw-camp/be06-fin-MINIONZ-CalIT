@@ -2,10 +2,7 @@
 import { computed, defineProps, watch, defineEmits } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import TaskCard from './KanbanCard.vue';
-import {
-  getTaskCountBackgroundColor,
-  getTaskCountColor,
-} from '@/utils/taskUtils';
+import { getTaskCountBackgroundColor, getTaskCountColor} from '@/utils/taskUtils';
 import { useRoute } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
@@ -64,28 +61,31 @@ const handleDragEnd = async (event) => {
           color: taskCountColorStyle,
         }"
       >
-        {{ tasks.length }}
+        {{ tasks ? tasks.length : 0 }}
       </span>
     </div>
 
     <!-- 드래그 가능한 Task 카드들 -->
     <VueDraggableNext
-      :list="tasks"
-      :item-key="status"
-      group="tasks"
-      draggable=".task-card"
-      handle=".task-card"
-      @end="handleDragEnd"
+        v-if="tasks && tasks.length > 0"
+        :list="tasks"
+        :item-key="status"
+        group="tasks"
+        draggable=".task-card"
+        handle=".task-card"
+        @end="handleDragEnd"
     >
       <TaskCard
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        :id="task.id"
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          :id="task.id"
       />
     </VueDraggableNext>
+    <p v-else class="task-card">현재 할당된 task가 없습니다.</p>
 
     <router-link
+        v-if="!route.path.startsWith('/my')"
       :to="`/workspace/${workspaceId}/scrum/task/create`"
       class="add-task-card"
     >
@@ -143,5 +143,14 @@ const handleDragEnd = async (event) => {
 a {
   text-decoration: none;
   color: #28303f;
+}
+
+.task-card {
+  background-color: #f7f8fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
 }
 </style>

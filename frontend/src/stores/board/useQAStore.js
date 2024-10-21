@@ -159,14 +159,14 @@ export const useQAStore = defineStore('qaStore', () => {
     }
   };
 
-  const searchQaBoardByKeyword = async ({
+  const searchQaBoardByKeyword = async (
     workspaceId,
     page,
     size,
     keyword,
-  }) => {
+  ) => {
     try {
-      const response = await axiosInstance.get('/api/qa/search-keyword', {
+      const response = await axiosInstance.get('/api/qaboard/search-keyword', {
         params: { workspaceId, page, size, keyword },
       });
       return response.data.result.content;

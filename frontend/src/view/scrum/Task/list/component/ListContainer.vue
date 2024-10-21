@@ -1,11 +1,19 @@
 <script setup>
 import ListItem from './ListItem.vue';
-import { computed, defineProps, watch } from 'vue';
+import {computed, defineEmits, defineProps, watch} from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
-import {
-  getTaskCountBackgroundColor,
-  getTaskCountColor,
-} from '@/utils/taskUtils';
+import { getTaskCountBackgroundColor, getTaskCountColor,} from '@/utils/taskUtils';
+import {useRoute} from "vue-router";
+import {useSprintStore} from "@/stores/scrum/useSprintStore";
+import {useTaskStore} from "@/stores/scrum/useTaskStore";
+
+const route = useRoute();
+const workspaceId = route.params.workspaceId;
+
+const sprintStore = useSprintStore();
+const taskStore = useTaskStore();
+
+const emit = defineEmits(['taskUpdated']);
 
 const props = defineProps({
   data: {
@@ -15,11 +23,12 @@ const props = defineProps({
 });
 
 const taskCountBgStyle = computed(() => {
-  return getTaskCountBackgroundColor(props.data.status);
+  return getTaskCountBackgroundColor(status);
 });
 
+
 const taskCountColorStyle = computed(() => {
-  return getTaskCountColor(props.data.status);
+  return getTaskCountColor(status).color;
 });
 
 const status = computed(() => Object.keys(props.data)[0]);
@@ -31,13 +40,22 @@ watch(
     tasks.value = [...newTasks];
   }
 );
+
+const handleDragEnd = async (event) => {
+  const newStatus = event.to.getAttribute('item-key');
+  const taskId = event.item.getAttribute('id');
+
+  await taskStore.updateTaskStatus(sprintStore.nowSprintId, taskId, newStatus);
+
+  emit('taskUpdated');
+};
 </script>
 
 <template>
   <div class="task-column">
     <div class="column-header">
       <div class="column-title">
-        <p>{{ status }}</p>
+        <p>{{ getTaskCountColor(status).text }}</p>
         <span
           class="task-count"
           :style="{
@@ -48,18 +66,29 @@ watch(
         >
       </div>
       <div class="add-task-card">
-        <span class="plus">+</span> <span class="add-text">Add Task</span>
+        <router-link v-if="!route.path.startsWith('/my')" :to='`/workspace/${workspaceId}/scrum/task/create`'>
+          <span class="plus">+</span> <span class="add-text">Add Task</span>
+        </router-link>
       </div>
     </div>
+
     <VueDraggableNext
-      :list="tasks"
-      item-key="id"
-      group="tasks"
-      draggable=".task-card"
-      handle=".task-card"
+        v-if="tasks && tasks.length > 0"
+        :list="tasks"
+        :item-key="status"
+        group="tasks"
+        draggable=".task-card"
+        handle=".task-card"
+        @end="handleDragEnd"
     >
-      <ListItem v-for="task in tasks" :key="task.id" :task="task" />
+      <ListItem
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          :id="task.id"
+      />
     </VueDraggableNext>
+    <p v-else class="task-card">현재 할당된 task가 없습니다.</p>
   </div>
 </template>
 
@@ -90,5 +119,15 @@ p {
 .task-count {
   padding: 0 10px;
   border-radius: 30px;
+}
+
+.task-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f7f8fa;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 </style>

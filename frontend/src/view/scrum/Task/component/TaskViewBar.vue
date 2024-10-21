@@ -25,7 +25,7 @@ const setView = (view) => {
   router.push(`${basePath}/${view}`);
 };
 
-const to = ref('kanban');
+// const to = ref('kanban');
 
 const sprintStore = useSprintStore();
 const taskStore = useTaskStore();
@@ -34,12 +34,14 @@ const taskLists = ref([]);
 const selectedSprintId = ref(null);
 
 onMounted(async () => {
-  await sprintStore.getSprintList(workspaceId);
-  sprintOptions.value = sprintStore.sprints;
+  if (!route.path.startsWith('/my')) {
+    await sprintStore.getSprintList(workspaceId);
+    sprintOptions.value = sprintStore.sprints;
 
-  if (sprintOptions.value.length > 0) {
-    selectedSprintId.value = sprintOptions.value[0].sprintId;
-    await getTasks(selectedSprintId.value);
+    if (sprintOptions.value.length > 0) {
+      selectedSprintId.value = sprintOptions.value[0].sprintId;
+      await getTasks(selectedSprintId.value);
+    }
   }
 });
 
@@ -66,15 +68,17 @@ watch(selectedSprintId, async (newSprintId) => {
 
 <template>
   <div class="view-toggle-bar">
-    <select v-model="selectedSprintId" class="input-field">
-      <option
-          v-for="sprint in sprintOptions"
-          :key="sprint.sprintId"
-          :value="sprint.sprintId"
-      >
-        {{ sprint.title }}
-      </option>
-    </select>
+    <div v-if="!route.path.startsWith('/my')" class="view-toggle-bar">
+      <select v-model="selectedSprintId" class="input-field">
+        <option
+            v-for="sprint in sprintOptions"
+            :key="sprint.sprintId"
+            :value="sprint.sprintId"
+        >
+          {{ sprint.title }}
+        </option>
+      </select>
+    </div>
     <div v-if="showAvatarGroup" class="avatar-group">
       <img v-for="(avatar, index) in avatars" :key="index" :src="avatar.src" :alt="avatar.alt" class="avatar" @click="emitGetTaskListByUser"/>
     </div>
@@ -96,21 +100,21 @@ watch(selectedSprintId, async (newSprintId) => {
         <i class="icon-list"></i>
         List
       </router-link>
-      <div class="v-line" />
-      <router-link
-          :to="
-          to.startsWith('my')
-            ? `/my/task/${currentView}`
-            : to.startsWith('workspace')
-            ? `/workspace/task/${currentView}`
-            : to
-        "
-          :class="{ active: currentView === 'timeline' }"
-          @click="setView('timeline')"
-      >
-        <i class="icon-timeline"></i>
-        TimeLine
-      </router-link>
+<!--      <div class="v-line" />-->
+<!--      <router-link-->
+<!--          :to="-->
+<!--          to.startsWith('my')-->
+<!--            ? `/my/task/${currentView}`-->
+<!--            : to.startsWith('workspace')-->
+<!--            ? `/workspace/task/${currentView}`-->
+<!--            : to-->
+<!--        "-->
+<!--          :class="{ active: currentView === 'timeline' }"-->
+<!--          @click="setView('timeline')"-->
+<!--      >-->
+<!--        <i class="icon-timeline"></i>-->
+<!--        TimeLine-->
+<!--      </router-link>-->
     </div>
   </div>
 </template>
