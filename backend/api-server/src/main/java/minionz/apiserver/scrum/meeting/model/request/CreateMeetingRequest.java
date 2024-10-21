@@ -15,4 +15,5 @@ public class CreateMeetingRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<Long> participants;
+    private List<Long> labels;
 }
