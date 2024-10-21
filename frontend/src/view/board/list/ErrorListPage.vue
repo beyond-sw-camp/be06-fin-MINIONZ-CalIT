@@ -47,13 +47,13 @@ const selectedLanguage = ref('');
 
 const fetchPostList = async () => {
   try {
-    const page = Number(currentPage.value);
+    const page = Number(currentPage.value) ;
     if (isNaN(page) || page < 1) {
       console.error('유효하지 않은 페이지 번호:', currentPage.value);
       return;
     }
     if (searchKeyword.value) {
-      const result = await errorStore.searchErrorBoardByKeyword(workspaceId, page, itemsPerPage, searchKeyword.value);
+      const result = await errorStore.searchErrorBoardByKeyword(workspaceId, page -1, itemsPerPage, searchKeyword.value);
       postList.value = result || [];
     } else if (selectedLanguage.value) {
       const result = await errorStore.searchErrorBoardByCategory(workspaceId, page, itemsPerPage, selectedLanguage.value);
@@ -86,9 +86,7 @@ watch(selectedLanguage, async (newLanguage) => {
 });
 
 onMounted(async () => {
-  if (window.location.href.endsWith('/error/list')) {
-    await fetchPostList();
-  }
+  await fetchPostList();
 });
 
 watch(currentPage, async () => {
@@ -116,8 +114,6 @@ watch(searchKeyword, async () => {
               <span class="search-icon">🔍</span>
             </div>
           </div>
-
-          <!-- Create 버튼 -->
           <router-link :to="`/workspace/${workspaceId}/scrum/board/error/create`" class="create-button">
             <span class="create-icon">+</span> Create
           </router-link>
