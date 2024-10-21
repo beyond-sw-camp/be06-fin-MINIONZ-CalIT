@@ -2,10 +2,7 @@
 import { computed, defineProps, watch, defineEmits } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import TaskCard from './KanbanCard.vue';
-import {
-  getTaskCountBackgroundColor,
-  getTaskCountColor,
-} from '@/utils/taskUtils';
+import { getTaskCountBackgroundColor, getTaskCountColor} from '@/utils/taskUtils';
 import { useRoute } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
@@ -153,5 +150,7 @@ a {
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
 }
 </style>
