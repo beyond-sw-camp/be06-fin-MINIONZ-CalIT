@@ -16,11 +16,13 @@ const userStore = useUserStore();
 const notyf = new Notyf();
 const isSubmitting = ref(false);
 
+console.log('윤슬');
+
 const authenticate = async (loginId, password) => {
   try {
     const response = await axios.post('/api/user/login', {
       loginId: loginId,
-      password: password
+      password: password,
     });
     return response.headers['authorization']?.split(' ')[1];
   } catch (error) {
@@ -62,8 +64,18 @@ const login = async () => {
       <h1>로그인</h1>
     </div>
     <form @submit.prevent="login">
-      <UserInput v-model="loginId" input-placeholder="아이디를 입력하세요" label="아이디" type="text"/>
-      <UserInput v-model="password" input-placeholder="비밀번호를 입력하세요" label="비밀번호" type="password"/>
+      <UserInput
+        v-model="loginId"
+        input-placeholder="아이디를 입력하세요"
+        label="아이디"
+        type="text"
+      />
+      <UserInput
+        v-model="password"
+        input-placeholder="비밀번호를 입력하세요"
+        label="비밀번호"
+        type="password"
+      />
       <UserButton type="submit" button-ment="Login" class="btn"></UserButton>
     </form>
     <div class="link-wrap">
