@@ -56,7 +56,7 @@ const fetchPostList = async () => {
       const result = await errorStore.searchErrorBoardByKeyword(workspaceId, page, itemsPerPage, searchKeyword.value);
       postList.value = result || [];
     } else if (selectedLanguage.value) {
-      const result = await errorStore.searchErrorBoardByCategory(workspaceId, page, itemsPerPage, selectedLanguage.value);
+      const result = await errorStore.searchErrorBoardByCategory(workspaceId, currentPage.value, itemsPerPage, selectedLanguage.value);
       postList.value = result || [];
     } else {
       await errorStore.getErrorBoardList(workspaceId, page, itemsPerPage);

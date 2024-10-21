@@ -8,7 +8,7 @@ import { useSprintStore } from '@/stores/scrum/useSprintStore';
 const sprintStore = useSprintStore();
 
 const reorderTasksByStatus = (tasksArray) => {
-  if (!tasksArray) return []; // tasksArray가 null 또는 undefined일 경우 빈 배열 반환
+  if (!tasksArray) return [];
 
   const reorderedTasks = { NO_STATUS: [], TODO: [], IN_PROGRESS: [], DONE: [] };
 
