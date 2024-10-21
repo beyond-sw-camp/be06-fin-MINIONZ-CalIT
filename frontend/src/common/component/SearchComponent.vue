@@ -1,18 +1,82 @@
 <script setup>
-import { defineProps, } from 'vue';
+import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
+import Multiselect from 'vue-multiselect';
+import { useErrorStore } from '@/stores/board/useErrorStore';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
+import { useRoute } from 'vue-router';
+
+const selectedLanguage = ref('');
+const searchKeyword = ref('');
+const errorStore = useErrorStore();
+const route = useRoute();
+const workspaceId = ref(route.params.workspaceId);
 
 defineProps({
   link: String,
 });
 
+defineEmits(['update:selectedLanguage']);
+
+const isErrorPage = ref(false);
+const isSprintPage = ref(false);
+const isIssuePage = ref(false);
+
+onMounted(() => {
+  if (window.location.href.endsWith('/error/list')) {
+    isErrorPage.value = true;
+  }
+
+  if (window.location.href.endsWith('/sprint/list')) {
+    isSprintPage.value = true;
+  }
+
+  if (window.location.href.endsWith('/issue/list')) {
+    isSprintPage.value = true;
+  }
+});
+
+watch([selectedLanguage, searchKeyword], async () => {
+  if (isErrorPage.value && workspaceId.value) {
+    const page = 0;
+    const size = 10;
+
+    if (selectedLanguage.value) {
+      await errorStore.searchErrorBoardByCategory(
+        workspaceId.value,
+        page,
+        size,
+        selectedLanguage.value
+      );
+    }
+    if (searchKeyword.value.trim() !== '') {
+      await errorStore.searchErrorBoardByKeyword(
+        workspaceId.value,
+        page,
+        size,
+        searchKeyword.value
+      );
+    }
+  }
+});
 </script>
 
 <template>
   <div class="toolbar">
     <div class="filter-search">
+      <div v-if="isErrorPage" class="filter">
+        <multiselect
+          v-model="selectedLanguage"
+          :options="['JAVA', 'C', 'PYTHON', 'JS', 'SQL']"
+          @input="$emit('update:selectedLanguage', selectedLanguage)"
+        />
+      </div>
       <div class="search">
-        <input type="text" class="search-input" placeholder="Search..." />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search..."
+          :disabled="isSprintPage || isIssuePage"
+        />
         <span class="search-icon">🔍</span>
       </div>
     </div>

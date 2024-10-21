@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
-import { useRoute  } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useQAStore } from '@/stores/board/useQAStore'; // QA Store 사용
 import Multiselect from 'vue-multiselect';
 import router from '@/router';
@@ -21,7 +21,7 @@ const tasks = ref([]);
 const qaFiles = ref([]); // 파일 업로드를 위한 ref
 
 // 참여자 및 친구 목록 관리
-const selectedParticipants = ref([]);
+const selectedParticipant = ref(null); // 단일 선택
 const friendStore = useFriendsStore();
 const filteredFriends = ref([]);
 
@@ -44,6 +44,12 @@ const handleFileChange = (event) => {
 // 게시글 저장 로직 (파일 포함)
 const savePost = async () => {
   try {
+    // 참여자가 선택되지 않았을 경우 처리
+    if (!selectedParticipant.value) {
+      console.error('참여자가 선택되지 않았습니다.');
+      return;
+    }
+
     const formData = new FormData();
 
     // 게시글 데이터 추가 (JSON 형태로 전송)
@@ -51,8 +57,7 @@ const savePost = async () => {
       qaboardTitle: qaTitle.value,
       qaboardContent: qaContent.value,
       taskId: selectedTask.value,
-      workspaceParticipationId: 3, // 필요에 따라 수정
-      participants: selectedParticipants.value // 선택한 참여자 추가
+      workspaceParticipationId: selectedParticipant.value.searchUserIdx, // 선택한 참여자 ID
     }));
 
     // 파일이 있을 경우에만 파일 추가
@@ -68,9 +73,11 @@ const savePost = async () => {
       taskId: selectedTask.value,
       qaboardTitle: qaTitle.value,
       qaboardContent: qaContent.value,
-      workspaceParticipationId: 3, // 필요에 따라 수정
+      workspaceParticipationId: selectedParticipant.value.searchUserIdx, // 선택한 참여자 ID 전송
       files: qaFiles.value, // 파일 배열
     });
+
+    // 페이지 이동
     router.push(`/workspace/${workspaceId}/scrum/board/qa/list`);
     console.log('게시글 저장 성공:', response);
   } catch (error) {
@@ -105,7 +112,7 @@ onMounted(async () => {
           <div class="participants">
             <span class="column">담당자</span>
             <multiselect
-              v-model="selectedParticipants"
+              v-model="selectedParticipant"
               :options="filteredFriends"
               :searchable="true"
               :close-on-select="true"
@@ -114,14 +121,6 @@ onMounted(async () => {
               label="userName"
               track-by="searchUserIdx"
             />
-            <div class="users-list">
-              <div class="selections participants" v-if="selectedParticipants.length">
-                <span class="item" v-for="participant in selectedParticipants" :key="participant.searchUserIdx">
-                  {{ participant.userName }}
-                  <span @click="deleteParticipant(participant.searchUserIdx)" style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
-                </span>
-              </div>
-            </div>
           </div>
         </div>
 

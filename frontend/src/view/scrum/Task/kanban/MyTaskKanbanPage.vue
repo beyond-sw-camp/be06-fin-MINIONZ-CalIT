@@ -26,7 +26,6 @@ const reorderTasksByStatus = (tasksArray) => {
   });
 
   return [
-    { NO_STATUS: reorderedTasks.NO_STATUS },
     { TODO: reorderedTasks.TODO },
     { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
     { DONE: reorderedTasks.DONE },

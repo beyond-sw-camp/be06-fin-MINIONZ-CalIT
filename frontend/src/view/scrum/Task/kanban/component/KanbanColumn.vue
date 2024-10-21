@@ -64,7 +64,7 @@ const handleDragEnd = async (event) => {
           color: taskCountColorStyle,
         }"
       >
-        {{ tasks.length }}
+        {{ tasks ? tasks.length : 0 }}
       </span>
     </div>
 
