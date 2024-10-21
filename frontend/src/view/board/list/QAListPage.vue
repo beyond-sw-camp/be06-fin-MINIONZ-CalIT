@@ -19,17 +19,30 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const searchKeyword = ref('');
 
-const totalPages = computed(() => Math.ceil(( postList.value?.length || 0) / itemsPerPage));
-const prevPage = () => { if (currentPage.value > 1) { currentPage.value--; }};
-const nextPage = () => { if (currentPage.value < totalPages.value) { currentPage.value++; }}
-const goToPage = (page) => { currentPage.value = page };
+// 총 페이지 계산 (총 게시글 수를 받아와야 함)
+const totalPages = computed(() => Math.ceil((qaStore.totalItems || 0) / itemsPerPage));
 
-// const editItem = (item) => { console.log('Editing:', item)};
-// const deleteItem = (item) => { console.log('Deleting:', item)};
+// 페이지 이동 함수
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
 
 const qaStore = useQAStore();
 const postList = ref([]);
 
+// 게시글 목록 가져오는 함수
 const fetchPostList = async () => {
   try {
     const page = Number(currentPage.value);
@@ -39,7 +52,7 @@ const fetchPostList = async () => {
     }
 
     if (searchKeyword.value) {
-      const result = await qaStore.searchQaBoardByKeyword({workspaceId, page, itemsPerPage, searchKeyword});
+      const result = await qaStore.searchQaBoardByKeyword({workspaceId, page, itemsPerPage, searchKeyword: searchKeyword.value});
       postList.value = result || [];
     } else {
       await qaStore.getPostList(workspaceId, page, itemsPerPage);
@@ -49,13 +62,10 @@ const fetchPostList = async () => {
     console.error('게시글 목록을 가져오는 중 오류가 발생했습니다:', error);
   }
 }
-onMounted(async () => { await fetchPostList() });
-watch(currentPage, async () => { await fetchPostList() });
 
-watch(currentPage, async () => {
-  await fetchPostList();
-});
-
+// 페이지 또는 검색 키워드 변경 시 게시글 목록 다시 가져오기
+onMounted(async () => { await fetchPostList(); });
+watch(currentPage, async () => { await fetchPostList(); });
 watch(searchKeyword, async () => {
   currentPage.value = 1;
   await fetchPostList();
@@ -66,17 +76,17 @@ watch(searchKeyword, async () => {
   <div class="board-list-container">
     <div v-if="postList.length > 0">
       <div class="header">
-        <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" />
+        <SearchComponent :link="`/workspace/${workspaceId}/scrum/board/qa/create`" v-model:search="searchKeyword"/>
       </div>
       <BoardList :items="postList"/>
       <Pagination
-          :currentPage="currentPage"
-          :totalPages="totalPages"
-          @prev-page="prevPage"
-          @next-page="nextPage"
-          @go-to-page="goToPage"
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @prev-page="prevPage"
+        @next-page="nextPage"
+        @go-to-page="goToPage"
       />
-  </div>
+    </div>
     <div v-else class="initial-wrap">
       <p>QA를 추가하고 관리를 시작해보세요!</p>
       <router-link :to="`/workspace/${workspaceId}/scrum/board/qa/create`">QA 추가하기</router-link>
