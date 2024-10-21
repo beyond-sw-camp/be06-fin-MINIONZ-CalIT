@@ -47,8 +47,8 @@ onMounted(async () => {
 
 <template>
   <div class="board-list-container">
-    <div v-if="isLoading">
-      <p>데이터를 불러오는 중입니다...</p>
+    <div v-if="isLoading" class="initial-wrap">
+      <p>이슈 데이터를 불러오는 중입니다...</p>
     </div>
     <div v-else-if="issueStore.issues && issueStore.issues.length > 0">
       <SearchComponent :link="`/workspace/${workspaceId}/scrum/issue/create`" />

@@ -47,8 +47,8 @@ onMounted(async () => {
 
 <template>
   <div class="board-list-container">
-    <div v-if="isLoading">
-      <p>데이터를 불러오는 중입니다...</p>
+    <div v-if="isLoading" class="initial-wrap">
+      <p>스프린트 데이터를 불러오는 중입니다...</p>
     </div>
     <div v-else-if="sprintStore.sprints && sprintStore.sprints.length > 0">
       <SearchComponent
