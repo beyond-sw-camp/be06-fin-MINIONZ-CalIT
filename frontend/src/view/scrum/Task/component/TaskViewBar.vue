@@ -34,12 +34,14 @@ const taskLists = ref([]);
 const selectedSprintId = ref(null);
 
 onMounted(async () => {
-  await sprintStore.getSprintList(workspaceId);
-  sprintOptions.value = sprintStore.sprints;
+  if (!route.path.startsWith('/my')) {
+    await sprintStore.getSprintList(workspaceId);
+    sprintOptions.value = sprintStore.sprints;
 
-  if (sprintOptions.value.length > 0) {
-    selectedSprintId.value = sprintOptions.value[0].sprintId;
-    await getTasks(selectedSprintId.value);
+    if (sprintOptions.value.length > 0) {
+      selectedSprintId.value = sprintOptions.value[0].sprintId;
+      await getTasks(selectedSprintId.value);
+    }
   }
 });
 

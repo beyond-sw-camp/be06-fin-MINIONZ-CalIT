@@ -70,22 +70,25 @@ const handleDragEnd = async (event) => {
 
     <!-- 드래그 가능한 Task 카드들 -->
     <VueDraggableNext
-      :list="tasks"
-      :item-key="status"
-      group="tasks"
-      draggable=".task-card"
-      handle=".task-card"
-      @end="handleDragEnd"
+        v-if="tasks && tasks.length > 0"
+        :list="tasks"
+        :item-key="status"
+        group="tasks"
+        draggable=".task-card"
+        handle=".task-card"
+        @end="handleDragEnd"
     >
       <TaskCard
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        :id="task.id"
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          :id="task.id"
       />
     </VueDraggableNext>
+    <p v-else class="task-card">현재 할당된 task가 없습니다.</p>
 
     <router-link
+        v-if="!route.path.startsWith('/my')"
       :to="`/workspace/${workspaceId}/scrum/task/create`"
       class="add-task-card"
     >
@@ -143,5 +146,12 @@ const handleDragEnd = async (event) => {
 a {
   text-decoration: none;
   color: #28303f;
+}
+
+.task-card {
+  background-color: #f7f8fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
 }
 </style>
