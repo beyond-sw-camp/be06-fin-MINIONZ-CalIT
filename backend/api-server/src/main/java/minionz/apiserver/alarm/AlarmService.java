@@ -134,7 +134,7 @@ public class AlarmService {
 
 
     public SseEmitter addEmitter(Long receiverId) throws JsonProcessingException {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter emitter = new SseEmitter(0L);
         emitters.put(String.valueOf(receiverId), emitter);
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> alarmData = new HashMap<>();
