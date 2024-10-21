@@ -12,6 +12,18 @@ springdoc:
 spring:
   profiles:
     include: oauth
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ""
+      timeout: 5000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -104,17 +116,6 @@ logging:
     kafka: OFF
     org.springframework.kafka: OFF
 
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ""
-    timeout: 5000
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        min-idle: 0
-        max-wait: -1
 cloud:
   aws:
     credentials:
