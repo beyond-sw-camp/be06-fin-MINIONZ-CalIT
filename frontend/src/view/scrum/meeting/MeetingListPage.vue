@@ -18,11 +18,14 @@ const meetingStore = useMeetingStore();
 
 const currentPage = ref(0);
 const itemsPerPage = ref(10);
+const isLoading = ref(false);
 
 const fetchMeetings = async () => {
+  isLoading.value = true;
   const page = currentPage.value;
   const size = itemsPerPage.value;
   await meetingStore.getMeetingList({ workspaceId, page, size });
+  isLoading.value = false;
 };
 
 onMounted(() => {
@@ -32,7 +35,10 @@ onMounted(() => {
 
 <template>
   <div class="meeting-container">
-    <div v-if="meetingStore.meetings && meetingStore.meetings.length > 0">
+    <div v-if="isLoading" class="loading-message">
+      <p>회의 데이터를 불러오는 중입니다...</p>
+    </div>
+    <div v-else-if="meetingStore.meetings && meetingStore.meetings.length > 0">
       <SearchComponent
         :link="`/workspace/${workspaceId}/scrum/meeting/create`"
       />
@@ -44,7 +50,10 @@ onMounted(() => {
           :title="meeting.title"
           :labels="meeting.labels"
           :contents="meeting.contents"
-          :participants="meeting.participants?.map((participant) => participant.persona) || []"
+          :participants="
+            meeting.participants?.map((participant) => participant.persona) ||
+            []
+          "
           :startDate="meeting.startDate"
         />
         <PaginationComponent
@@ -73,6 +82,13 @@ onMounted(() => {
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
+}
+
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
 }
 
 .initial-wrap {
