@@ -75,6 +75,8 @@ watch(
 <template>
   <div class="weekly">
     <WeeklyComponent
+        :startDate="currentStartDate"
+        :endDate="currentEndDate"
         :selected-week="selectedWeek"
         @update:selected-week="updateSelectedWeek"
         :meeting-data="dashboardStore.workspaceWeeklyData.meetings"

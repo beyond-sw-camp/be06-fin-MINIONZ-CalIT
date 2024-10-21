@@ -6,7 +6,17 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
 import {useCalendar} from "@/utils/calendarUtils";
 
+const emit = defineEmits(['prevMonth', 'nextMonth', 'update:selectedWeek']);
+
 const props = defineProps({
+  startDate: {
+    type: String,
+    required: true,
+  },
+  endDate: {
+    type: String,
+    required: true,
+  },
   selectedWeek: {
     type: Array,
     required: true
@@ -18,10 +28,8 @@ const props = defineProps({
   meetingData: {
     type: Array,
     required: true,
-  },
+  }
 });
-
-const emit = defineEmits(['update:selectedWeek']);
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -33,7 +41,7 @@ onMounted(() => {
   }
 });
 
-const today = ref(new Date());
+// const today = ref(new Date());
 const hours = ['7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM'];
 
 const isVisible = ref(false);
@@ -122,13 +130,11 @@ const sprintsForWeek = (weekStart) => {
 };
 
 const daysInWeek = computed(() => {
-  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
-  return getWeekDaysUtil(startDate instanceof Date ? startDate : new Date());
+  return getWeekDaysUtil( props.startDate );
 });
 
 const weekRange = computed(() => {
-  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
-  return getWeekRange(startDate);
+  return props.startDate ? getWeekRange(new Date(props.startDate)) : '';
 });
 
 const {
@@ -143,10 +149,9 @@ const currentStartDate = ref(props.startDate);
 const currentEndDate = ref(props.endDate);
 
 watch(() => props.selectedWeek, () => {
-  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
+  const { startDate, endDate } = props;
   currentStartDate.value = startDate;
-  currentEndDate.value = new Date(startDate);
-  currentEndDate.value.setDate(currentEndDate.value.getDate() + 6);
+  currentEndDate.value = endDate;
   currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
   currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10);
   daysInMonth.value = parseInt(formatUtil(startDate, 't'), 10);
@@ -194,8 +199,8 @@ watch(() => props.selectedWeek, () => {
         <div class="events-column">
           <div class="sprint-period">
             <div class="sprints-column">
-              <div v-for="sprint in sprintsForWeek(day)" :key="sprint.id" :class="['event', 'sprint', sprint.class]">
-                {{ sprint.title }}
+              <div v-for="sprint in sprintsForWeek(day)" :key="sprint.id" :class="['event', 'sprint', sprint.class]" class="sprint-title">
+                <span class="sprint-title-text">{{ sprint.title }}</span>
               </div>
             </div>
           </div>
@@ -453,7 +458,6 @@ watch(() => props.selectedWeek, () => {
 }
 
 .event.sprint {
-  //border: 2px solid #db2777;
   background-color: rgba(219, 39, 119, 0.1);
   grid-column: span 2;
   height: 30px;
@@ -464,16 +468,27 @@ watch(() => props.selectedWeek, () => {
   text-align: center;
   width: 100%;
   border-radius: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.event.sprint.start {
+.sprint-title-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event.sprint.end {
   border-left: 2px solid #db2777;
   margin-left: 10px;
   border-radius: 5px 0 0 5px;
   width: calc(100% - 10px);
 }
 
-.event.sprint.end {
+.event.sprint.start {
   border-right: 2px solid #db2777;
   margin-right: 10px;
   border-radius: 0 5px 5px 0;
