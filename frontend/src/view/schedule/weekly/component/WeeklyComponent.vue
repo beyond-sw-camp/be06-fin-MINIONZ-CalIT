@@ -6,7 +6,17 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
 import {useCalendar} from "@/utils/calendarUtils";
 
+const emit = defineEmits(['prevMonth', 'nextMonth', 'update:selectedWeek']);
+
 const props = defineProps({
+  startDate: {
+    type: String,
+    required: true,
+  },
+  endDate: {
+    type: String,
+    required: true,
+  },
   selectedWeek: {
     type: Array,
     required: true
@@ -18,10 +28,8 @@ const props = defineProps({
   meetingData: {
     type: Array,
     required: true,
-  },
+  }
 });
-
-const emit = defineEmits(['update:selectedWeek']);
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -33,7 +41,7 @@ onMounted(() => {
   }
 });
 
-const today = ref(new Date());
+// const today = ref(new Date());
 const hours = ['7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM'];
 
 const isVisible = ref(false);
@@ -122,13 +130,11 @@ const sprintsForWeek = (weekStart) => {
 };
 
 const daysInWeek = computed(() => {
-  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
-  return getWeekDaysUtil(startDate instanceof Date ? startDate : new Date());
+  return getWeekDaysUtil( props.startDate );
 });
 
 const weekRange = computed(() => {
-  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
-  return getWeekRange(startDate);
+  return props.startDate ? getWeekRange(new Date(props.startDate)) : '';
 });
 
 const {
@@ -143,10 +149,9 @@ const currentStartDate = ref(props.startDate);
 const currentEndDate = ref(props.endDate);
 
 watch(() => props.selectedWeek, () => {
-  const startDate = props.selectedWeek.length ? props.selectedWeek[0] : today.value;
+  const { startDate, endDate } = props;
   currentStartDate.value = startDate;
-  currentEndDate.value = new Date(startDate);
-  currentEndDate.value.setDate(currentEndDate.value.getDate() + 6);
+  currentEndDate.value = endDate;
   currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
   currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10);
   daysInMonth.value = parseInt(formatUtil(startDate, 't'), 10);
