@@ -9,6 +9,7 @@ import send from '@/assets/icon/chatIcon/sendIcon.svg';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { useUserStore } from '@/stores/user/useUserStore';
+import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
 import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 
@@ -26,10 +27,19 @@ const page = ref(0);
 const size = 20;
 
 const chatMessageStore = useChatMessageStore();
+const chatRoomStore = useChatRoomStore();
 const route = useRoute();
 const chatroomId = route.params.chatroomId;
 
+const chatRoom = ref(null);
+
 onMounted(async () => {
+  await chatRoomStore.fetchChatRooms(route.params.workspaceId);
+
+  chatRoom.value = chatRoomStore.chatRoom.find(
+    (room) => room.chatroomId == chatroomId
+  );
+
   const initialMessages = await chatMessageStore.fetchChatMessages(
     chatroomId,
     page.value,
@@ -172,7 +182,7 @@ const triggerFileInput = () => {
   <div class="chat-container">
     <div class="chat-header">
       <img :src="space3" alt="img" />
-      <p>{{ userName }}</p>
+      <p>{{ chatRoom?.chatRoomName || '채팅방' }}</p>
     </div>
 
     <div class="chat-messages">
@@ -187,6 +197,7 @@ const triggerFileInput = () => {
           "
           :created-at="getTimeDifference(message.createdAt)"
           :message-contents="message.messageContents"
+          :userName="message.userName"
           :file="message.file && message.file.length ? message.file : null"
         />
       </div>
