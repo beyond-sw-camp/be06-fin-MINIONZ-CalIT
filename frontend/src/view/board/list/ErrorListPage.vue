@@ -20,14 +20,16 @@ const currentPage = ref(1);
 const searchKeyword = ref('');
 
 const totalPages = computed(() => Math.ceil((postList.value?.length || 0) / itemsPerPage));
-const prevPage = () => {
+const prevPage = async () => {
   if (currentPage.value > 1) {
     currentPage.value--;
+    await fetchPostList();
   }
 };
-const nextPage = () => {
+const nextPage = async () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
+    await errorStore.getErrorBoardList(workspaceId, currentPage.value, itemsPerPage);
   }
 };
 const goToPage = (page) => {

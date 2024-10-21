@@ -269,6 +269,12 @@ watch(() => props.startDate, () => {
   min-height: 150px;
   position: relative;
   overflow: visible;
+  overflow-x: hidden;
+  width: inherit;
+  box-sizing: border-box;
+  height: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .day-number {
