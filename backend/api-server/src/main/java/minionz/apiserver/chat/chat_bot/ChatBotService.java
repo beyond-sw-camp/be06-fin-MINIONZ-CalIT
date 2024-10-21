@@ -32,6 +32,10 @@ public class ChatBotService {
     @Value("${chatbot.webhook.etc-url}")
     private String etcWebhookUrl;
 
+    @Value("${chatbot.webhook.list-url}")
+    private String listWebhookUrl;
+
+
     private final ChatBotRepository chatBotRepository;
     private final UserRepository userRepository;
     private final RestTemplate restTemplate = new RestTemplate();
@@ -60,9 +64,10 @@ public class ChatBotService {
         if (message.contains("회의록")) {
             // 회의록 요약에 대한 요청
             webhookUrl = noteWebhookUrl;
-        } else if (message.contains("회의")) {
-            // 일반 회의에 대한 요청
+        } else if (message.contains("회의") && !message.contains("목록")) {
             webhookUrl = meetingWebhookUrl;
+        } else if (message.contains("목록")) {
+            webhookUrl = listWebhookUrl;
         } else {
             // 기타 메시지에 대한 처리
             webhookUrl = etcWebhookUrl;
