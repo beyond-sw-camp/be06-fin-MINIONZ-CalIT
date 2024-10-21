@@ -90,11 +90,17 @@ defineProps({
 
 .task-id {
   font-size: 14px;
-  color: #6b7280;
+  color: #28303F;
+  background-color: #fff;
+  padding: 3px 8px;
+  border-radius: 15px;
+  font-weight: 500;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.08);
 }
 .due-date {
-  font-size: 10px;
+  font-size: 12px;
   min-width: 80px;
+  text-align: end;
 }
 .avatars {
   display: flex;
@@ -106,6 +112,7 @@ defineProps({
   height: 30px;
   border-radius: 50%;
   margin-right: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.08);
 }
 
 .list-items {
@@ -116,13 +123,13 @@ defineProps({
 }
 
 .list-item-bundle {
-  width: 30%;
+  width: 40%;
   display: flex;
   justify-content: space-between;
 }
 
 .list-item-end {
-  width: 30%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;

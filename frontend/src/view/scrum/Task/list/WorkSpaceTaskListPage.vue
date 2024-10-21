@@ -16,6 +16,26 @@ const workspaceId = route.params.workspaceId;
 const taskStore = useTaskStore();
 const tasksByStatus = ref(null);
 
+const reorderTasksByStatus = (tasksArray) => {
+  if (!tasksArray) return [];
+
+  const reorderedTasks = { NO_STATUS: [], TODO: [], IN_PROGRESS: [], DONE: [] };
+
+  tasksArray.forEach((statusObject) => {
+    const [status, tasks] = Object.entries(statusObject)[0];
+    if (reorderedTasks[status] !== undefined) {
+      reorderedTasks[status].push(...tasks);
+    }
+  });
+
+  return [
+    { NO_STATUS: reorderedTasks.NO_STATUS },
+    { TODO: reorderedTasks.TODO },
+    { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
+    { DONE: reorderedTasks.DONE },
+  ];
+};
+
 onMounted(() => {
   tasksByStatus.value = taskStore.taskList;
 });
@@ -39,7 +59,7 @@ const hasTasks = computed(() => {
   <div class="list">
     <div v-if="hasTasks">
       <ListContainer
-          v-for="task in tasksByStatus"
+          v-for="task in reorderTasksByStatus(tasksByStatus)"
           :key="task.key"
           :data="task"
       />

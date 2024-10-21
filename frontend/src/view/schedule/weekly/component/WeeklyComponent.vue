@@ -371,6 +371,7 @@ watch(() => props.selectedWeek, () => {
 .days-column {
   display: flex;
   flex-direction: column;
+  min-width: 200px;
 }
 
 .day-header-wrap {
@@ -395,15 +396,23 @@ watch(() => props.selectedWeek, () => {
 }
 
 .sprints-column {
-  height: 70px;
+  //height: 70px;
   display: flex;
   flex-direction: column;
   gap: 5px;
   align-items: center;
   overflow: scroll;
-  margin-top: 10px;
   border-bottom: 1px solid;
+  padding: 10px 0;
+  box-shadow: 2px -4px 4px rgba(0, 0, 0, 0.1) inset
+}
 
+.sprint-period{
+  overflow-x: hidden;
+  width: inherit;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: 70px;
 }
 
 .events-column {
@@ -479,6 +488,7 @@ watch(() => props.selectedWeek, () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  height: 30px;
 }
 
 .event.sprint.end {

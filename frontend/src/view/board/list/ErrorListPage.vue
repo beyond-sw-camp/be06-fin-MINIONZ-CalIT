@@ -47,13 +47,13 @@ const selectedLanguage = ref('');
 
 const fetchPostList = async () => {
   try {
-    const page = Number(currentPage.value);
+    const page = Number(currentPage.value) ;
     if (isNaN(page) || page < 1) {
       console.error('유효하지 않은 페이지 번호:', currentPage.value);
       return;
     }
     if (searchKeyword.value) {
-      const result = await errorStore.searchErrorBoardByKeyword(workspaceId, page, itemsPerPage, searchKeyword.value);
+      const result = await errorStore.searchErrorBoardByKeyword(workspaceId, page -1, itemsPerPage, searchKeyword.value);
       postList.value = result || [];
     } else if (selectedLanguage.value) {
       const result = await errorStore.searchErrorBoardByCategory(workspaceId, page, itemsPerPage, selectedLanguage.value);
@@ -69,15 +69,15 @@ const fetchPostList = async () => {
 
 const filterByLanguage = async (language) => {
   try {
-    const page = Number(currentPage.value);
-    if (isNaN(page) || page < 1) {
+    const page = Number(currentPage.value) - 1;
+    if (isNaN(page) || page < 0) {
       console.error('유효하지 않은 페이지 번호:', currentPage.value);
       return;
     }
     const result = await errorStore.searchErrorBoardByCategory(workspaceId, page, itemsPerPage, language);
     postList.value = result || [];
   } catch (error) {
-    console.error('언어별 게���글 검색 중 오류가 발생했습니다:', error);
+    console.error('언어별 게시글 검색 중 오류가 발생했습니다:', error);
   }
 };
 
@@ -86,9 +86,7 @@ watch(selectedLanguage, async (newLanguage) => {
 });
 
 onMounted(async () => {
-  if (window.location.href.endsWith('/error/list')) {
-    await fetchPostList();
-  }
+  await fetchPostList();
 });
 
 watch(currentPage, async () => {
@@ -103,7 +101,7 @@ watch(searchKeyword, async () => {
 
 <template>
   <div class="board-list-container">
-    <div v-if="postList.length > 0">
+    <div>
       <div class="header">
         <div class="toolbar">
           <div class="filter-search">
@@ -116,37 +114,39 @@ watch(searchKeyword, async () => {
               <span class="search-icon">🔍</span>
             </div>
           </div>
-
-          <!-- Create 버튼 -->
           <router-link :to="`/workspace/${workspaceId}/scrum/board/error/create`" class="create-button">
             <span class="create-icon">+</span> Create
           </router-link>
         </div>
       </div>
-      <BoardList
-          :items="postList"
-          thcolumn="언어"
-          column="language"
-          board-type="error"
-          @edit-item="editItem"
-          @delete-item="deleteItem"
-          @search="searchKeyword = $event"
-          @filter="filterByLanguage($event)"
-      />
-      <Pagination
-          :currentPage="currentPage"
-          :totalPages="totalPages"
-          @prev-page="prevPage"
-          @next-page="nextPage"
-          @go-to-page="goToPage"
-      />
-    </div>
-    <div v-else>
-      <div class="initial-wrap">
-        <p>Error를 추가하고 관리를 시작해보세요!</p>
-        <router-link :to="`/workspace/${workspaceId}/scrum/board/error/create`">Error 추가하기</router-link>
+      <div v-if="postList.length > 0">
+        <BoardList
+
+            :items="postList"
+            thcolumn="언어"
+            column="language"
+            board-type="error"
+            @edit-item="editItem"
+            @delete-item="deleteItem"
+            @search="searchKeyword = $event"
+            @filter="filterByLanguage($event)"
+        />
+        <Pagination
+            :currentPage="currentPage"
+            :totalPages="totalPages"
+            @prev-page="prevPage"
+            @next-page="nextPage"
+            @go-to-page="goToPage"
+        />
+      </div>
+      <div v-else>
+        <div class="initial-wrap">
+          <p>Error를 추가하고 관리를 시작해보세요!</p>
+          <router-link :to="`/workspace/${workspaceId}/scrum/board/error/create`">Error 추가하기</router-link>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 

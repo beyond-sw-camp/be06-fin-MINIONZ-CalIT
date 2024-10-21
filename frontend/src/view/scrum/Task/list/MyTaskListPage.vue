@@ -1,6 +1,5 @@
 <script setup>
-import {inject, onMounted} from 'vue';
-import {useRoute} from 'vue-router';
+import {inject, onMounted, ref, watch} from 'vue';
 import { useTaskStore } from "@/stores/scrum/useTaskStore";
 import ListContainer from './component/ListContainer.vue';
 
@@ -10,25 +9,50 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Kanban';
 contentsDescription.value = '나의 태스크를 살펴보세요!';
 
+const tasks = ref(null);
 const taskStore = useTaskStore();
+const tasksByStatus = ref(null);
 
-const route = useRoute();
-const workspaceId = route.params.workspaceId;
+const reorderTasksByStatus = (tasksArray) => {
+  if (!tasksArray) return [];
+
+  const reorderedTasks = { NO_STATUS: [], TODO: [], IN_PROGRESS: [], DONE: [] };
+
+  tasksArray.forEach((statusObject) => {
+    const [status, tasks] = Object.entries(statusObject)[0];
+    if (reorderedTasks[status] !== undefined) {
+      reorderedTasks[status].push(...tasks);
+    }
+  });
+
+  return [
+    { NO_STATUS: reorderedTasks.NO_STATUS },
+    { TODO: reorderedTasks.TODO },
+    { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
+    { DONE: reorderedTasks.DONE },
+  ];
+};
+
+const fetchTasks = async () => {
+  tasks.value = await taskStore.getMyTask()
+};
 
 onMounted(() => {
-  taskStore.getMyTask()
+  fetchTasks();
 });
+
+watch(
+    () => taskStore.taskList,
+    (newTaskList) => {
+      tasksByStatus.value = newTaskList;
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
   <div class="list">
-    <div v-if="taskStore && taskStore.taskData && taskStore.taskData.length > 0">
-      <ListContainer  v-for="task in tasks" :key="task.id" :data="task"/>
-    </div>
-    <div v-else class="initial-wrap">
-      <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`">회의 추가하기</router-link>
-    </div>
+    <ListContainer v-for="task in reorderTasksByStatus(tasksByStatus)" :key="task.id" :data="task"/>
   </div>
 </template>
 
