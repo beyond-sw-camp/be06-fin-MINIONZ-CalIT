@@ -199,8 +199,8 @@ watch(() => props.selectedWeek, () => {
         <div class="events-column">
           <div class="sprint-period">
             <div class="sprints-column">
-              <div v-for="sprint in sprintsForWeek(day)" :key="sprint.id" :class="['event', 'sprint', sprint.class]">
-                {{ sprint.title }}
+              <div v-for="sprint in sprintsForWeek(day)" :key="sprint.id" :class="['event', 'sprint', sprint.class]" class="sprint-title">
+                <span class="sprint-title-text">{{ sprint.title }}</span>
               </div>
             </div>
           </div>
@@ -458,7 +458,6 @@ watch(() => props.selectedWeek, () => {
 }
 
 .event.sprint {
-  //border: 2px solid #db2777;
   background-color: rgba(219, 39, 119, 0.1);
   grid-column: span 2;
   height: 30px;
@@ -469,16 +468,27 @@ watch(() => props.selectedWeek, () => {
   text-align: center;
   width: 100%;
   border-radius: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.event.sprint.start {
+.sprint-title-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event.sprint.end {
   border-left: 2px solid #db2777;
   margin-left: 10px;
   border-radius: 5px 0 0 5px;
   width: calc(100% - 10px);
 }
 
-.event.sprint.end {
+.event.sprint.start {
   border-right: 2px solid #db2777;
   margin-right: 10px;
   border-radius: 0 5px 5px 0;
