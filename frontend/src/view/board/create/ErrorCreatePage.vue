@@ -47,7 +47,7 @@ const savePost = async () => {
     });
 
     console.log('게시글 저장 성공:', response.data);
-    router.push(`/workspace/${workspaceId}/board/error/list`);
+    router.push(`/workspace/${workspaceId}/scrum/board/error/list`);
     notyf.success('게시글이 성공적으로 저장되었습니다.');
   } catch (error) {
     console.error('게시글 저장 중 오류가 발생했습니다:', error);

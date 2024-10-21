@@ -1,5 +1,5 @@
 <script setup>
-import { inject, ref, watch } from 'vue';
+import {inject, onMounted, ref, watch} from 'vue';
 import { useRoute } from 'vue-router';
 import { useWorkspaceDashboardStore } from '@/stores/workspace/useWorkspaceDashboardStore';
 import WeeklyComponent from '@/view/schedule/weekly/component/WeeklyComponent.vue';
@@ -55,6 +55,10 @@ const handleNextWeek = async () => {
   currentEndDate.value = new Date(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate() + 6);
   await fetchWeeklyData();
 };
+
+onMounted(() => {
+  fetchWeeklyData();
+});
 
 watch(
     () => route.query.workspaceId,
