@@ -13,10 +13,8 @@ const contentsDescription = inject('contentsDescription');
 contentsTitle.value = 'My Space Weekly';
 contentsDescription.value = '나의 이번주 일정을 살펴보세요!';
 
-
 const mypageStore = useMyDashboardStore();
-const selectedWeek = ref(mypageStore.myWeeklyData);
-const myWeeklyMeeting = ref(selectedWeek.value.meetings);
+const selectedWeek = ref(mypageStore.mySprintData);
 const updateSelectedWeek = (week) => {
   selectedWeek.value = week;
 };
@@ -31,8 +29,23 @@ const fetchWeeklyData = async () => {
     startDate: formattedStartDate,
     endDate: formattedEndDate,
   });
-  selectedWeek.value = mypageStore.myWeeklyData;
-  myWeeklyMeeting.value = selectedWeek.value.meetings;
+  selectedWeek.value = mypageStore.mySprintData;
+};
+
+const handlePrevWeek = async () => {
+  const prevDate = new Date(currentStartDate.value);
+  prevDate.setDate(prevDate.getDate() - 7);
+  currentStartDate.value = prevDate;
+  currentEndDate.value = new Date(prevDate.getFullYear(), prevDate.getMonth(), prevDate.getDate() + 6);
+  await fetchWeeklyData();
+};
+
+const handleNextWeek = async () => {
+  const nextDate = new Date(currentStartDate.value);
+  nextDate.setDate(nextDate.getDate() + 7);
+  currentStartDate.value = nextDate;
+  currentEndDate.value = new Date(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate() + 6);
+  await fetchWeeklyData();
 };
 
 onMounted(() => {
@@ -57,12 +70,11 @@ onMounted(() => {
       <div class="mini-lists">
         <WeeklyIssues
             :selected-week="selectedWeek"
-            :meetings="myWeeklyMeeting"
-            :issues="mypageStore.myWeeklyData.issues"
+            :issues="mypageStore.mySprintData.issues"
         />
         <WeeklyTasks
             :selected-week="selectedWeek"
-            :tasks="mypageStore.myWeeklyData.tasks"
+            :tasks="mypageStore.mySprintData.tasks"
         />
       </div>
     </div>
