@@ -4,41 +4,25 @@ metadata:
   name: calit-meeting
 spec:
   schedule: "*/10 * * * *"
-  successfulJobsHistoryLimit: 2
-  failedJobsHistoryLimit: 0
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 60
       template:
         spec:
           containers:
             - name: meeting-reminder-container
               image: minionz/calit-batch:latest
               imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: calit-backend-configmap
+                - secretRef:
+                    name: calit-backend-secrets
               env:
                 - name: SPRING_BATCH_JOB_NAME
                   value: "meetingReminderJob"
                 - name: TZ
                   value: "Asia/Seoul"
-                - name: DB_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: DB_URL
-                - name: DB_USERNAME
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: DB_USERNAME
-                - name: DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: calit-backend-secrets
-                      key: DB_PASSWORD
-                - name: KAFKA_SERVER
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: KAFKA_SERVER
           restartPolicy: OnFailure
 
 ---
@@ -49,41 +33,25 @@ metadata:
   name: calit-task
 spec:
   schedule: "0 0 * * *"
-  successfulJobsHistoryLimit: 2
-  failedJobsHistoryLimit: 0
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 60
       template:
         spec:
           containers:
             - name: task-reminder-container
               image: minionz/calit-batch:latest
               imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: calit-backend-configmap
+                - secretRef:
+                    name: calit-backend-secrets
               env:
                 - name: SPRING_BATCH_JOB_NAME
                   value: "taskReminderJob"
                 - name: TZ
                   value: "Asia/Seoul"
-                - name: DB_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: DB_URL
-                - name: DB_USERNAME
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: DB_USERNAME
-                - name: DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: calit-backend-secrets
-                      key: DB_PASSWORD
-                - name: KAFKA_SERVER
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: KAFKA_SERVER
           restartPolicy: OnFailure
 
 ---
@@ -94,39 +62,23 @@ metadata:
   name: calit-sprint
 spec:
   schedule: "0 0 * * *"
-  successfulJobsHistoryLimit: 2
-  failedJobsHistoryLimit: 0
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 60
       template:
         spec:
           containers:
             - name: sprint-reminder-container
               image: minionz/calit-batch:latest
               imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: calit-backend-configmap
+                - secretRef:
+                    name: calit-backend-secrets
               env:
                 - name: SPRING_BATCH_JOB_NAME
                   value: "sprintReminderJob"
                 - name: TZ
                   value: "Asia/Seoul"
-                - name: DB_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: DB_URL
-                - name: DB_USERNAME
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: DB_USERNAME
-                - name: DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: calit-backend-secrets
-                      key: DB_PASSWORD
-                - name: KAFKA_SERVER
-                  valueFrom:
-                    configMapKeyRef:
-                      name: calit-backend-configmap
-                      key: KAFKA_SERVER
           restartPolicy: OnFailure
