@@ -16,7 +16,7 @@ const tasksByStatus = ref(null);
 const reorderTasksByStatus = (tasksArray) => {
   if (!tasksArray) return [];
 
-  const reorderedTasks = { TODO: [], IN_PROGRESS: [], DONE: [] };
+  const reorderedTasks = { NO_STATUS: [], TODO: [], IN_PROGRESS: [], DONE: [] };
 
   tasksArray.forEach((statusObject) => {
     const [status, tasks] = Object.entries(statusObject)[0];
@@ -26,6 +26,7 @@ const reorderTasksByStatus = (tasksArray) => {
   });
 
   return [
+    { NO_STATUS: reorderedTasks.NO_STATUS },
     { TODO: reorderedTasks.TODO },
     { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
     { DONE: reorderedTasks.DONE },
@@ -51,7 +52,7 @@ watch(
 
 <template>
   <div class="kanban-board">
-    <TaskColumn v-for="task in reorderTasksByStatus(tasksByStatus)" :key="task.id" :data="task"/>
+    <TaskColumn v-for="task in reorderTasksByStatus(tasksByStatus)" :key="task.id" :data="task"  @taskUpdated="fetchTasks"/>
   </div>
 </template>
 

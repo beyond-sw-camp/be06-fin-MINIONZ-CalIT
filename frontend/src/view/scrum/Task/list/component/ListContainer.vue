@@ -23,13 +23,12 @@ const props = defineProps({
 });
 
 const taskCountBgStyle = computed(() => {
-  console.log(props.status);
   console.log(props);
-  return getTaskCountBackgroundColor(props.status);
+  return getTaskCountBackgroundColor(props.data);
 });
 
 const taskCountColorStyle = computed(() => {
-  return getTaskCountColor(props.status).color;
+  return getTaskCountColor(props.data).color;
 });
 
 const status = computed(() => Object.keys(props.data)[0]);
