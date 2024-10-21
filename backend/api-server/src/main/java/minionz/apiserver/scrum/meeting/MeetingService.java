@@ -7,6 +7,9 @@ import minionz.apiserver.scrum.meeting.model.request.CreateMeetingRequest;
 import minionz.apiserver.scrum.meeting.model.response.CreateMeetingResponse;
 import minionz.apiserver.scrum.meeting.model.response.ReadAllMeetingResponse;
 import minionz.apiserver.scrum.meeting.model.response.ReadMeetingResponse;
+import minionz.common.scrum.label.model.NoteLabel;
+import minionz.common.scrum.label_select.NoteLabelSelectRepository;
+import minionz.common.scrum.label_select.model.NoteLabelSelect;
 import minionz.common.scrum.meeting_participation.MeetingParticipationRepository;
 import minionz.common.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.apiserver.scrum.sprint.model.response.Label;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +34,7 @@ public class MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final MeetingParticipationRepository meetingParticipationRepository;
+    private final NoteLabelSelectRepository noteLabelSelectRepository;
 
     @Transactional
     public CreateMeetingResponse createMeeting(User user, CreateMeetingRequest request, Long sprintId) {
@@ -44,8 +49,14 @@ public class MeetingService {
                         .build()
         );
 
+        List<Long> meetings = request.getLabels();
+
+        if(request.getLabels() == null){
+            meetings = new ArrayList<>();
+        }
+
         meetingParticipationRepository.save(MeetingParticipation.builder().meeting(meeting).user(user).build());
-        request.getParticipants().forEach(participantId ->
+        meetings.forEach(participantId ->
                 meetingParticipationRepository.save(MeetingParticipation
                         .builder()
                         .meeting(meeting)
@@ -53,7 +64,22 @@ public class MeetingService {
                         .build())
         );
 
-//        TODO: 알람 보내야 합니다.
+        List<Long> labels = request.getLabels();
+
+        if(request.getLabels() == null){
+            labels = new ArrayList<>();
+        }
+
+        labels.forEach(labelId ->
+                noteLabelSelectRepository.save(NoteLabelSelect.builder()
+                        .meeting(Meeting.builder().meetingId(meeting.getMeetingId()).build())
+                        .noteLabel(NoteLabel.builder()
+                                .noteLabelId(labelId)
+                                .build())
+                        .build())
+        );
+
+
         return CreateMeetingResponse.builder()
                 .id(meeting.getMeetingId())
                 .title(meeting.getMeetingTitle())
