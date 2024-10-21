@@ -12,7 +12,7 @@ contentsDescription.value = '스프린트 정보를 확인해보세요!';
 const sprintStore = useSprintStore();
 
 const filteredLabels = computed(() => {
-  return (sprintStore.sprint.labels || []).filter(label => label.name);
+  return (sprintStore.sprint.labels || []).filter((label) => label.labelName);
 });
 
 onMounted(async () => {
@@ -44,7 +44,11 @@ onMounted(async () => {
             스프린트 참여자
           </span>
           <div class="users-list text">
-            <div class="user-profile" v-for="participant in sprintStore.sprint.participants" :key="participant.id">
+            <div
+              class="user-profile"
+              v-for="participant in sprintStore.sprint.participants"
+              :key="participant.id"
+            >
               <img :src="setPersona(participant.persona)" alt="참여자" />
               <span>{{ participant.userName }}</span>
             </div>
@@ -57,8 +61,12 @@ onMounted(async () => {
           라벨
         </span>
         <div class="label-list text">
-          <button class="label-button" v-for="label in filteredLabels" :key="label.id">
-            {{ label.name }}
+          <button
+            class="label-button"
+            v-for="label in filteredLabels"
+            :key="label.id"
+          >
+            {{ label.labelName }}
           </button>
           <span v-if="filteredLabels.length === 0">라벨이 없습니다.</span>
         </div>
@@ -154,6 +162,7 @@ a {
   padding: 5px 10px;
   border-radius: 15px;
   cursor: pointer;
+  margin-right: 5px;
 }
 
 .sprint-button {
@@ -216,7 +225,7 @@ a {
   flex-wrap: wrap;
 }
 
-.text{
+.text {
   margin: 10px 0 0 30px;
   background-color: #f7f8f9;
   padding: 20px;
