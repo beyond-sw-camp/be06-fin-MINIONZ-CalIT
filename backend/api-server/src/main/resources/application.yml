@@ -131,6 +131,7 @@ cloud:
 
 chatbot:
   webhook:
-    note-url: ${CHATBOT_NOTE_WEBHOOK_URL}
-    meeting-url: ${CHATBOT_MEETING_WEBHOOK_URL}
-    etc-url: ${CHATBOT_ETC_WEBHOOK_URL}
+    note-url: ${CHATBOT_WEBHOOK_NOTE_URL}
+    meeting-url: ${CHATBOT_WEBHOOK_MEETING_URL}
+    etc-url: ${CHATBOT_WEBHOOK_ETC_URL}
+    list-url: ${CHATBOT_WEBHOOK_LIST_URL}
