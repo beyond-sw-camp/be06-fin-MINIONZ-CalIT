@@ -43,10 +43,14 @@ onMounted(() => {
 <template>
   <div class="weekly">
     <WeeklyComponent
+        :start-date="currentStartDate"
+        :end-date="currentEndDate"
         :selected-week="selectedWeek"
         @update:selected-week="updateSelectedWeek"
-        :meeting-data="myWeeklyMeeting"
+        :meeting-data="mypageStore.mySprintData.meetings"
         :sprint-data="mypageStore.mySprintData.sprints"
+        @prevWeek="handlePrevWeek"
+        @nextWeek="handleNextWeek"
     />
     <div class="week-data">
       <MiniCalendar @update:selected-week="updateSelectedWeek"/>

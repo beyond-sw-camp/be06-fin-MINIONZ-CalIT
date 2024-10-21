@@ -8,7 +8,7 @@ defineProps({
 
 <template>
   <div class="pagination">
-    <button @click="$emit('prev-page')" :disabled="currentPage === 1">
+    <button @click="$emit('prev-page')">
       &lt;
     </button>
     <button
@@ -19,7 +19,7 @@ defineProps({
     >
       {{ page }}
     </button>
-    <button @click="$emit('next-page')" :disabled="currentPage === totalPages">
+    <button @click="$emit('next-page')">
       &gt;
     </button>
   </div>
