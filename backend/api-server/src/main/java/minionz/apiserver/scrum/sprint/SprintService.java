@@ -67,14 +67,16 @@ public class SprintService {
             participants = new ArrayList<>();
         }
 
-        participants.forEach(participantId ->
+        participants.forEach(participantId -> {
+            if (!participantId.equals(user.getUserId())) {
                 sprintParticipationRepository.save(SprintParticipation
                         .builder()
                         .sprint(sprint)
                         .user(User.builder().userId(participantId).build())
                         .isManager(false)
-                        .build())
-        );
+                        .build());
+            }
+        });
 
         labels.forEach(labelId ->
                 sprintLabelSelectRepository.save(SprintLabelSelect
