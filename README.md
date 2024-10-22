@@ -138,6 +138,8 @@ API 서버, 데이터베이스 연동, 사용자 인증 및 권한 관리, 실�
 * Kafka를 이용해 메시지 브로커 역할을 하며, 이를 통해 Spring Boot 애플리케이션이 실시간 데이터와 Pub/Sub 시스템을 관리합니다.
 * Ingress Controller를 사용하여 외부로부터 들어오는 요청을 처리하며, AI 챗봇과 스크럼 관리, 알람 시스템 등을 처리합니다.
 
+🔗 [🕊️ Backend 더 자세한 설명](https://github.com/beyond-sw-camp/be06-fin-MINIONZ-CalIT/blob/develop/backend/README.md)
+
 ### 🔍 Frontend
 
 #### 💻 기능
@@ -155,3 +157,5 @@ API 서버, 데이터베이스 연동, 사용자 인증 및 권한 관리, 실�
 * Jenkins는 GitHub에서 코드를 클론한 후, 빌드하고 도커 이미지를 생성해 Docker Hub에 푸시합니다.
 * 푸시된 이미지는 Kubernetes 환경에서 배포되며, AWS S3를 통해 정적 파일을 관리합니다. 또한, 배포 상태 및 결과는 Discord를 통해 알림을 받습니다.
 * 서비스는 블루 그린 방식으로 무중단 배포가 이루어집니다.
+
+🔗 [🕊️ CI/CD 더 자세한 설명](https://github.com/beyond-sw-camp/be06-fin-MINIONZ-CalIT/tree/develop/cicd)
