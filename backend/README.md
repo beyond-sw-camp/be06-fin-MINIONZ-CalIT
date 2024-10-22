@@ -1,5 +1,5 @@
 
-![header](https://capsule-render.vercel.app/api?type=venom&color=auto&height=300&section=header&text=CalIT&fontSize=50&desc=Optimize%20Your%20Workspace%20Scrum%20Management&descAlignY=60)
+![header](https://capsule-render.vercel.app/api?type=venom&color=auto&height=300&section=header&text=CalIT&fontSize=50&desc=📆Optimize%20Your%20Workspace%20Scrum%20Management&descAlignY=60)
 
 # 👀 팀원 구성
 
