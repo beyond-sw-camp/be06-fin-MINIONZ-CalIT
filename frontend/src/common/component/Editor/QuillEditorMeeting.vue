@@ -15,7 +15,10 @@ let stompClient = null;
 let timeoutId;
 let editorChangeFromRemote = false;
 const route = useRoute();
-const meetingId = route.params.meetingId || route.params.id || route.params[route.params.length - 1];
+const meetingId =
+  route.params.meetingId ||
+  route.params.id ||
+  route.params[route.params.length - 1];
 
 // 세션 스토리지에서 사용자 정보 가져오기
 function getUserFromSession() {
@@ -27,34 +30,36 @@ function getUserFromSession() {
 function connectWebSocket() {
   const user = getUserFromSession();
   if (!user || !user.loginId) {
-    console.warn("사용자 정보가 세션 스토리지에 없습니다.");
+    console.warn('사용자 정보가 세션 스토리지에 없습니다.');
     return;
   }
 
   const socket = new SockJS('/api/note');
   stompClient = Stomp.over(socket);
   stompClient.connect(
-  { Authorization: `Bearer ${user.loginId}` },  // 여기를 수정했습니다
-  (frame) => {
-    console.log('Connected: ' + frame);
+    { Authorization: `Bearer ${user.loginId}` }, // 여기를 수정했습니다
+    (frame) => {
+      console.log('Connected: ' + frame);
+      // 노트 업데이트 구독
+      stompClient.subscribe(`/topic/note/${meetingId}`, (noteMessage) => {
+        showNoteUpdate(JSON.parse(noteMessage.body));
+      });
 
-    // 노트 업데이트 구독
-    stompClient.subscribe(`/topic/note/${meetingId}`, (noteMessage) => {
-      showNoteUpdate(JSON.parse(noteMessage.body));
-    });
-
-    // 커서 위치 업데이트 구독
-    stompClient.subscribe(`/topic/note/cursor/${meetingId}`, (cursorMessage) => {
-      updateCursor(JSON.parse(cursorMessage.body));
-    });
-  }
-);
-
+      // 커서 위치 업데이트 구독
+      stompClient.subscribe(
+        `/topic/note/cursor/${meetingId}`,
+        (cursorMessage) => {
+          updateCursor(JSON.parse(cursorMessage.body));
+        }
+      );
+    }
+  );
 }
 
 // 노트 저장 요청
 function saveNoteToDB() {
-  axios.post('/api/note/save', null, { params: { meetingId } })
+  axios
+    .post('/api/note/save', null, { params: { meetingId } })
     .then((response) => {
       if (response.data.success) {
         alert(response.data.message || '회의록이 성공적으로 저장되었습니다.');
@@ -80,44 +85,42 @@ function sendNoteUpdate() {
 
   const user = getUserFromSession();
   if (!user) {
-    console.warn("사용자 정보가 세션 스토리지에 없습니다.");
+    console.warn('사용자 정보가 세션 스토리지에 없습니다.');
     return;
   }
 
   const noteMessage = {
     noteId: meetingId,
     noteContents: plainText,
-    sender: user.userName
+    sender: user.userName,
   };
 
   stompClient.send(
-  `/app/note/save/${meetingId}`,  // 백틱 추가
-  {},
-  JSON.stringify(noteMessage)
-);
-
+    `/app/note/save/${meetingId}`, // 백틱 추가
+    {},
+    JSON.stringify(noteMessage)
+  );
 }
 
 // 커서 위치 전송
 function sendCursorUpdate(range) {
   const user = getUserFromSession();
   if (!user) {
-    console.warn("사용자 정보가 세션 스토리지에 없습니다.");
+    console.warn('사용자 정보가 세션 스토리지에 없습니다.');
     return;
   }
 
   const cursorMessage = {
     senderId: user.userName,
     index: range.index,
-    length: range.length
+    length: range.length,
   };
 
   stompClient.send(
-  `/app/cursor/${meetingId}`,  // 백틱 추가
-  {},
-  JSON.stringify(cursorMessage)
-);
-
+    `/app/cursor/${meetingId}`, // 백틱 추가
+    {},
+    JSON.stringify(cursorMessage)
+  );
 }
 
 // 커서 위치 업데이트 처리
@@ -125,7 +128,7 @@ function updateCursor(cursorMessage) {
   const cursors = quillEditor.getModule('cursors');
   cursors.moveCursor(cursorMessage.senderId, {
     index: cursorMessage.index,
-    length: cursorMessage.length
+    length: cursorMessage.length,
   });
 }
 
@@ -134,7 +137,11 @@ function showNoteUpdate(noteMessage) {
   const user = getUserFromSession();
   const currentRange = quillEditor.getSelection();
 
-  if (user.userName !== noteMessage.sender && noteMessage && noteMessage.noteContents) {
+  if (
+    user.userName !== noteMessage.sender &&
+    noteMessage &&
+    noteMessage.noteContents
+  ) {
     const currentText = quillEditor.getText();
     if (currentText.trim() !== noteMessage.noteContents.trim()) {
       const delta = JSON.parse(noteMessage.noteContents);
@@ -143,7 +150,7 @@ function showNoteUpdate(noteMessage) {
       if (delta.ops.length > 1) {
         const range = {
           index: delta.ops[0].retain,
-          length: 0
+          length: 0,
         };
         cursors.moveCursor(noteMessage.sender, range);
       }
@@ -242,7 +249,7 @@ onMounted(() => {
         const noteMessage = {
           noteId: meetingId,
           noteContents: JSON.stringify(delta),
-          sender: user.userName
+          sender: user.userName,
         };
 
         stompClient.send(

@@ -52,6 +52,28 @@ export const useTaskStore = defineStore('taskStore', () => {
     }
   };
 
+  const updateMyTaskStatus = async (taskId, status) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/api/task/my/status/${taskId}`,
+        { taskId, status }
+      );
+
+      if (response.data.success) {
+        taskData.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        notyf.error('접근 권한이 없습니다.');
+      } else {
+        notyf.error('알 수 없는 오류가 발생했습니다.');
+        console.error('Error updating task status:', error);
+      }
+    }
+  };
+
   const getTask = async ({ workspaceId, sprintId, taskId }) => {
     try {
       const response = await axiosInstance.get(
@@ -225,5 +247,6 @@ export const useTaskStore = defineStore('taskStore', () => {
     taskList,
     getWorkspaceTaskList,
     getTaskListByUser,
+    updateMyTaskStatus,
   };
 });

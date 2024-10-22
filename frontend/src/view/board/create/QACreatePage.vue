@@ -53,12 +53,15 @@ const savePost = async () => {
     const formData = new FormData();
 
     // 게시글 데이터 추가 (JSON 형태로 전송)
-    formData.append('request', JSON.stringify({
-      qaboardTitle: qaTitle.value,
-      qaboardContent: qaContent.value,
-      taskId: selectedTask.value,
-      workspaceParticipationId: selectedParticipant.value.searchUserIdx, // 선택한 참여자 ID
-    }));
+    formData.append(
+      'request',
+      JSON.stringify({
+        qaboardTitle: qaTitle.value,
+        qaboardContent: qaContent.value,
+        taskId: selectedTask.value,
+        workspaceParticipationId: selectedParticipant.value.searchUserIdx, // 선택한 참여자 ID
+      })
+    );
 
     // 파일이 있을 경우에만 파일 추가
     if (qaFiles.value.length > 0) {
@@ -68,7 +71,7 @@ const savePost = async () => {
     }
 
     // QA 글 작성 API 호출
-    const response = await qaStore.writePost({
+    await qaStore.writePost({
       workspaceId,
       taskId: selectedTask.value,
       qaboardTitle: qaTitle.value,
@@ -79,7 +82,6 @@ const savePost = async () => {
 
     // 페이지 이동
     router.push(`/workspace/${workspaceId}/scrum/board/qa/list`);
-    console.log('게시글 저장 성공:', response);
   } catch (error) {
     console.error('게시글 저장 중 오류가 발생했습니다:', error);
   }
@@ -90,9 +92,12 @@ onMounted(async () => {
   try {
     const response = await taskStore.getWorkspaceTaskList(workspaceId);
     tasks.value = Array.isArray(response) ? response : [];
-    await fetchFriends(); // 친구 목록 불러오기
+    await fetchFriends();
   } catch (error) {
-    console.error('태스크 목록을 불러오는 중 오류가 발생했습니다.', error.message);
+    console.error(
+      '태스크 목록을 불러오는 중 오류가 발생했습니다.',
+      error.message
+    );
   }
 });
 </script>
@@ -104,7 +109,11 @@ onMounted(async () => {
         <!-- 게시글 제목 입력 -->
         <div class="qa-title-container">
           <span class="column">게시글 제목</span>
-          <input v-model="qaTitle" class="title-editor" placeholder="게시글 제목" />
+          <input
+            v-model="qaTitle"
+            class="title-editor"
+            placeholder="게시글 제목"
+          />
         </div>
 
         <!-- 참여자 지정하기 -->
@@ -142,7 +151,11 @@ onMounted(async () => {
 
         <!-- 게시글 내용 입력 -->
         <div class="content-section">
-          <textarea v-model="qaContent" placeholder="게시글 내용을 입력하세요..." class="content-editor"></textarea>
+          <textarea
+            v-model="qaContent"
+            placeholder="게시글 내용을 입력하세요..."
+            class="content-editor"
+          ></textarea>
         </div>
       </div>
     </div>

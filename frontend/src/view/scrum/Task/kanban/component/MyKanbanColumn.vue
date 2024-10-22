@@ -1,19 +1,17 @@
 <script setup>
 import { computed, defineProps, watch, defineEmits } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
-import TaskCard from './KanbanCard.vue';
+import TaskCard from './MyKanbanCard.vue';
 import {
   getTaskCountBackgroundColor,
   getTaskCountColor,
 } from '@/utils/taskUtils';
 import { useRoute } from 'vue-router';
-import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
-const sprintStore = useSprintStore();
 const taskStore = useTaskStore();
 
 const emit = defineEmits(['taskUpdated']);
@@ -47,7 +45,7 @@ const handleDragEnd = async (event) => {
   const newStatus = event.to.getAttribute('item-key');
   const taskId = event.item.getAttribute('id');
 
-  await taskStore.updateTaskStatus(sprintStore.nowSprintId, taskId, newStatus);
+  await taskStore.updateMyTaskStatus(taskId, newStatus);
 
   emit('taskUpdated');
 };
@@ -157,5 +155,15 @@ a {
   margin-bottom: 15px;
   font-size: 14px;
   font-weight: 500;
+}
+
+.empty-drop-zone {
+  background-color: #f0f0f0;
+  border: 2px dashed #c7ced9;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #9e9e9e;
+  margin-bottom: 15px;
 }
 </style>

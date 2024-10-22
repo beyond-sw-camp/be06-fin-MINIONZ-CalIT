@@ -18,7 +18,6 @@ export const useChatBotStore = defineStore('chatBot', {
           '/api/receiveFromN8n',
           payload
         );
-        console.log(response.data.result);
         return response.data.result;
       } catch (error) {
         console.error(
@@ -34,7 +33,6 @@ export const useChatBotStore = defineStore('chatBot', {
       try {
         const response = await axiosInstance.get(`/api/botMessage/${userId}`);
         this.botMessageList = response.data;
-        console.log('들어오는 데이터값 확인:' + response.data);
         return response.data; // 데이터를 반환
       } catch (error) {
         console.error(
