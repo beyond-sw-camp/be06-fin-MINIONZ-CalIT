@@ -44,7 +44,6 @@ const fetchLabels = async () => {
     await taskLabelStore.getTaskLabels(workspaceId);
     filteredLabels.value = taskLabelStore.labels;
   } catch (error) {
-    console.log(error);
     filteredLabels.value = [];
   }
 };

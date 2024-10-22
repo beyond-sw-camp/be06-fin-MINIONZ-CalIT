@@ -33,7 +33,6 @@ export const useChatMessageStore = defineStore('chatMessage', {
     // [GET] 채팅 내역 조회 /message/{chatroomId}
     async fetchChatMessages(chatroomId, page = 0, size = 20) {
       try {
-        console.log(`페이지 요청 중: page=${page}, size=${size}`);
         const response = await axiosInstance.get(`/api/message/${chatroomId}`, {
           params: {
             page: page,

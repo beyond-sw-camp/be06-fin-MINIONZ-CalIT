@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
-import router from "@/router";
+import router from '@/router';
 import { Notyf } from 'notyf';
 
 const taskStore = useTaskStore();
@@ -27,12 +27,15 @@ const savePost = async () => {
   try {
     const formData = new FormData();
 
-    formData.append('request', JSON.stringify({
-      taskId: selectedTask.value,
-      errboardTitle: errTitle.value,
-      errboardContent: errContent.value,
-      category: errLanguage.value
-    }));
+    formData.append(
+      'request',
+      JSON.stringify({
+        taskId: selectedTask.value,
+        errboardTitle: errTitle.value,
+        errboardContent: errContent.value,
+        category: errLanguage.value,
+      })
+    );
 
     if (files.value.length > 0) {
       files.value.forEach((file) => {
@@ -40,13 +43,16 @@ const savePost = async () => {
       });
     }
 
-    const response = await axiosInstance.post(`/api/errboard/write?workspaceId=${workspaceId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+    await axiosInstance.post(
+      `/api/errboard/write?workspaceId=${workspaceId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       }
-    });
+    );
 
-    console.log('게시글 저장 성공:', response.data);
     router.push(`/workspace/${workspaceId}/scrum/board/error/list`);
     notyf.success('게시글이 성공적으로 저장되었습니다.');
   } catch (error) {
@@ -54,13 +60,15 @@ const savePost = async () => {
   }
 };
 
-
 onMounted(async () => {
   try {
     const response = await taskStore.getWorkspaceTaskList(workspaceId);
     tasks.value = Array.isArray(response) ? response : [];
   } catch (error) {
-    console.error('태스크 목록을 불러오는 중 오류가 발생했습니다.', error.message);
+    console.error(
+      '태스크 목록을 불러오는 중 오류가 발생했습니다.',
+      error.message
+    );
   }
 });
 </script>
@@ -74,7 +82,11 @@ onMounted(async () => {
             <i class="error-title column-icon"></i>
             게시글 제목
           </span>
-          <input v-model="errTitle" class="title-editor" placeholder="게시글 제목" />
+          <input
+            v-model="errTitle"
+            class="title-editor"
+            placeholder="게시글 제목"
+          />
         </div>
 
         <div class="language-section">
@@ -112,7 +124,11 @@ onMounted(async () => {
         </div>
 
         <div class="content-section">
-          <textarea v-model="errContent" placeholder="게시글 내용을 입력하세요..." class="content-editor"></textarea>
+          <textarea
+            v-model="errContent"
+            placeholder="게시글 내용을 입력하세요..."
+            class="content-editor"
+          ></textarea>
         </div>
       </div>
     </div>

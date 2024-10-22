@@ -1,10 +1,14 @@
 <script setup>
-import {ref, computed, onMounted, defineProps, defineEmits, watch} from 'vue';
-import { useRoute } from "vue-router";
-import { formatUtil, getWeekRange, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
+import { ref, computed, onMounted, defineProps, defineEmits, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import {
+  formatUtil,
+  getWeekRange,
+  getWeekDaysUtil,
+} from '@/utils/scheduleDateFnsUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
-import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import { useCalendar } from "@/utils/calendarUtils";
+import ScheduleModal from '@/view/schedule/component/ScheduleModal.vue';
+import { useCalendar } from '@/utils/calendarUtils';
 
 const emit = defineEmits(['prevMonth', 'nextMonth', 'update:selectedWeek']);
 
@@ -19,7 +23,7 @@ const props = defineProps({
   },
   selectedWeek: {
     type: Array,
-    required: true
+    required: true,
   },
   sprintData: {
     type: Array,
@@ -28,7 +32,7 @@ const props = defineProps({
   meetingData: {
     type: Array,
     required: true,
-  }
+  },
 });
 
 const route = useRoute();
@@ -42,7 +46,23 @@ onMounted(() => {
 });
 
 // const today = ref(new Date());
-const hours = ['7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM'];
+const hours = [
+  '7 AM',
+  '8 AM',
+  '9 AM',
+  '10 AM',
+  '11 AM',
+  '12 PM',
+  '1 PM',
+  '2 PM',
+  '3 PM',
+  '4 PM',
+  '5 PM',
+  '6 PM',
+  '7 PM',
+  '8 PM',
+  '9 PM',
+];
 
 const isVisible = ref(false);
 const modalProps = ref({
@@ -52,7 +72,7 @@ const modalProps = ref({
   contents: '',
   participants: [],
   top: 0,
-  left: 0
+  left: 0,
 });
 
 const show = (clickEvent, event) => {
@@ -63,11 +83,9 @@ const show = (clickEvent, event) => {
     contents: event.contents,
     participants: event.participants,
     top: clickEvent.clientY,
-    left: clickEvent.clientX
+    left: clickEvent.clientX,
   };
   isVisible.value = true;
-  console.log(clickEvent.clientY, clickEvent.clientX);
-  console.log(modalProps.value);
 };
 
 const goToToday = () => {
@@ -76,24 +94,26 @@ const goToToday = () => {
 };
 
 const handlePrevWeek = () => {
-  emit('prevWeek')
+  emit('prevWeek');
 };
 
 const handleNextWeek = () => {
-  emit('nextWeek')
+  emit('nextWeek');
 };
 
 const events = ref([]);
 
 const eventsForDay = (day) => {
-  return events.value.filter(event => formatUtil(event.date, 'yyyy-MM-dd') === formatUtil(day, 'yyyy-MM-dd'));
+  return events.value.filter(
+    (event) =>
+      formatUtil(event.date, 'yyyy-MM-dd') === formatUtil(day, 'yyyy-MM-dd')
+  );
 };
 
 function getEventTop(startDate) {
   const startHour = new Date(startDate).getHours();
-  return (startHour * 80) + 10;
+  return startHour * 80 + 10;
 }
-
 
 function getEventWidth(startDate, endDate) {
   const start = new Date(startDate);
@@ -106,58 +126,65 @@ function getEventWidth(startDate, endDate) {
 const sprintsForWeek = (weekStart) => {
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 6);
-  return props.sprintData?.filter(sprint => {
-    const sprintStart = new Date(sprint.startDate);
-    const sprintEnd = new Date(sprint.endDate);
-    return (sprintStart >= weekStart && sprintStart <= weekEnd) || (sprintEnd >= weekStart && sprintEnd <= weekEnd) || (sprintStart <= weekStart && sprintEnd >= weekEnd);
-  }).map(sprint => {
-    const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
-    const endDay = parseInt(formatUtil(sprint.endDate, 'd'), 10);
-    const duration = endDay - startDay + 1;
-    const sprintClass = {
-      ...sprint,
-      gridColumnStart: startDay,
-      gridColumnEnd: `span ${duration}`,
-    };
-    if (new Date(sprint.startDate) < weekStart) {
-      sprintClass.class = 'start';
-    }
-    if (new Date(sprint.endDate) > weekEnd) {
-      sprintClass.class = 'end';
-    }
-    return sprintClass;
-  }) || [];
+  return (
+    props.sprintData
+      ?.filter((sprint) => {
+        const sprintStart = new Date(sprint.startDate);
+        const sprintEnd = new Date(sprint.endDate);
+        return (
+          (sprintStart >= weekStart && sprintStart <= weekEnd) ||
+          (sprintEnd >= weekStart && sprintEnd <= weekEnd) ||
+          (sprintStart <= weekStart && sprintEnd >= weekEnd)
+        );
+      })
+      .map((sprint) => {
+        const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
+        const endDay = parseInt(formatUtil(sprint.endDate, 'd'), 10);
+        const duration = endDay - startDay + 1;
+        const sprintClass = {
+          ...sprint,
+          gridColumnStart: startDay,
+          gridColumnEnd: `span ${duration}`,
+        };
+        if (new Date(sprint.startDate) < weekStart) {
+          sprintClass.class = 'start';
+        }
+        if (new Date(sprint.endDate) > weekEnd) {
+          sprintClass.class = 'end';
+        }
+        return sprintClass;
+      }) || []
+  );
 };
 
 const daysInWeek = computed(() => {
-  return getWeekDaysUtil( props.startDate );
+  return getWeekDaysUtil(props.startDate);
 });
 
 const weekRange = computed(() => {
   return props.startDate ? getWeekRange(new Date(props.startDate)) : '';
 });
 
-const {
-  currentYear,
-  currentMonth,
-  weekDays,
-  daysInMonth,
-  startBlankDays,
-} = useCalendar();
+const { currentYear, currentMonth, weekDays, daysInMonth, startBlankDays } =
+  useCalendar();
 
 const currentStartDate = ref(props.startDate);
 const currentEndDate = ref(props.endDate);
 
-watch(() => props.selectedWeek, () => {
-  const { startDate, endDate } = props;
-  currentStartDate.value = startDate;
-  currentEndDate.value = endDate;
-  currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
-  currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10);
-  daysInMonth.value = parseInt(formatUtil(startDate, 't'), 10);
-  startBlankDays.value = parseInt(formatUtil(startDate, 'i'), 10);
-  weekDays.value = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-}, { immediate: true });
+watch(
+  () => props.selectedWeek,
+  () => {
+    const { startDate, endDate } = props;
+    currentStartDate.value = startDate;
+    currentEndDate.value = endDate;
+    currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
+    currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10);
+    daysInMonth.value = parseInt(formatUtil(startDate, 't'), 10);
+    startBlankDays.value = parseInt(formatUtil(startDate, 'i'), 10);
+    weekDays.value = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -176,16 +203,22 @@ watch(() => props.selectedWeek, () => {
         </button>
       </div>
       <div class="calendar-tab">
-        <router-link :to="`/workspace/${workspaceId}/schedule/monthly`" class="off">Month</router-link>
-        <router-link :to="`/workspace/${workspaceId}/schedule/weekly`" class="on">Week</router-link>
+        <router-link
+          :to="`/workspace/${workspaceId}/schedule/monthly`"
+          class="off"
+          >Month</router-link
+        >
+        <router-link
+          :to="`/workspace/${workspaceId}/schedule/weekly`"
+          class="on"
+          >Week</router-link
+        >
       </div>
     </div>
 
     <div class="calendar-grid">
       <div class="time-column">
-        <div class="time-slot sprint-column">
-          Sprint
-        </div>
+        <div class="time-slot sprint-column">Sprint</div>
         <div class="time-slot" v-for="hour in hours" :key="hour">
           {{ hour }}
         </div>
@@ -199,18 +232,27 @@ watch(() => props.selectedWeek, () => {
         <div class="events-column">
           <div class="sprint-period">
             <div class="sprints-column">
-              <div v-for="sprint in sprintsForWeek(day)" :key="sprint.id" :class="['event', 'sprint', sprint.class]" class="sprint-title">
+              <div
+                v-for="sprint in sprintsForWeek(day)"
+                :key="sprint.id"
+                :class="['event', 'sprint', sprint.class]"
+                class="sprint-title"
+              >
                 <span class="sprint-title-text">{{ sprint.title }}</span>
               </div>
             </div>
           </div>
-          <div v-for="event in eventsForDay(day)" :key="event.id" class="event meetings"
-               :style="{
-                  top: getEventTop(event.startDate) + 'px',
-                  gridColumn: 'span ' + getEventWidth(event.startDate, event.endDate),
-                  backgroundColor: event.color
-               }"
-               @click="show(clickEvent, event)"
+          <div
+            v-for="event in eventsForDay(day)"
+            :key="event.id"
+            class="event meetings"
+            :style="{
+              top: getEventTop(event.startDate) + 'px',
+              gridColumn:
+                'span ' + getEventWidth(event.startDate, event.endDate),
+              backgroundColor: event.color,
+            }"
+            @click="show(clickEvent, event)"
           >
             <div class="event-title">
               {{ event.title }}
@@ -223,15 +265,16 @@ watch(() => props.selectedWeek, () => {
       </div>
     </div>
     <ScheduleModal
-        v-if="isVisible"
-        :title="modalProps.title"
-        :contents="modalProps.contents"
-        :start-date="modalProps.startDate"
-        :end-date="modalProps.endDate"
-        :participants="modalProps.participants"
-        :top="30"
-        :left="modalProps.left"
-        @close="isVisible = false"/>
+      v-if="isVisible"
+      :title="modalProps.title"
+      :contents="modalProps.contents"
+      :start-date="modalProps.startDate"
+      :end-date="modalProps.endDate"
+      :participants="modalProps.participants"
+      :top="30"
+      :left="modalProps.left"
+      @close="isVisible = false"
+    />
   </div>
 </template>
 
@@ -354,7 +397,7 @@ watch(() => props.selectedWeek, () => {
     border-radius: 15px 15px 0 0;
   }
 
-  &:nth-child(n+2) {
+  &:nth-child(n + 2) {
     background-color: rgba(224, 232, 255, 0.5);
   }
 }
@@ -386,8 +429,8 @@ watch(() => props.selectedWeek, () => {
   font-weight: 500;
   height: 35px;
   display: flex;
-  color: #28303F;
-  background-color: #F6F8FF;
+  color: #28303f;
+  background-color: #f6f8ff;
   border-radius: 15px 15px 0 0;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   align-content: center;
@@ -404,10 +447,10 @@ watch(() => props.selectedWeek, () => {
   overflow: scroll;
   border-bottom: 1px solid;
   padding: 10px 0;
-  box-shadow: 2px -2px 2px rgba(0, 0, 0, 0.1) inset
+  box-shadow: 2px -2px 2px rgba(0, 0, 0, 0.1) inset;
 }
 
-.sprint-period{
+.sprint-period {
   overflow-x: hidden;
   width: inherit;
   box-sizing: border-box;
@@ -430,7 +473,7 @@ watch(() => props.selectedWeek, () => {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 8px;
-  color: #28303F;
+  color: #28303f;
   font-size: 14px;
   cursor: pointer;
   font-weight: 500;

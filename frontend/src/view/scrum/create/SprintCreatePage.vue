@@ -63,7 +63,6 @@ const fetchLabels = async () => {
     await sprintLabelStore.getSprintLabel(workspaceId);
     filteredLabels.value = sprintLabelStore.labels;
   } catch (error) {
-    console.log(error);
     filteredLabels.value = [];
   }
 };

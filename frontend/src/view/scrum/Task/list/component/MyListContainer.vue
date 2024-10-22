@@ -1,5 +1,5 @@
 <script setup>
-import ListItem from './ListItem.vue';
+import ListItem from './MyListItem.vue';
 import { computed, defineEmits, defineProps, watch } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import {
@@ -7,13 +7,11 @@ import {
   getTaskCountColor,
 } from '@/utils/taskUtils';
 import { useRoute } from 'vue-router';
-import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
-const sprintStore = useSprintStore();
 const taskStore = useTaskStore();
 
 const emit = defineEmits(['taskUpdated']);
@@ -47,7 +45,7 @@ const handleDragEnd = async (event) => {
   const newStatus = event.to.getAttribute('item-key');
   const taskId = event.item.getAttribute('id');
 
-  await taskStore.updateTaskStatus(sprintStore.nowSprintId, taskId, newStatus);
+  await taskStore.updateMyTaskStatus(taskId, newStatus);
 
   emit('taskUpdated');
 };
