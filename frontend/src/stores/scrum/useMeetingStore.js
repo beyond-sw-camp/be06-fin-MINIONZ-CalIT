@@ -8,6 +8,7 @@ const notyf = new Notyf();
 export const useMeetingStore = defineStore('meetingStore', () => {
   const meetings = ref([]);
   const meetingId = ref(null);
+  const meetingParticipants = ref([]);
 
   const addMeeting = async (data, sprintId) => {
     try {
@@ -57,7 +58,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         `/api/meeting/${workspaceId}/search-all?page=${page}&size=${size}`
       );
       meetings.value = response.data.result.content;
-      return response.data.result.content;
+      return response.data.result;
     } catch (error) {
       if (error.response && error.response.status === 403) {
         notyf.error('접근 권한이 없습니다.');
@@ -138,6 +139,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
   return {
     meetings,
     meetingId,
+    meetingParticipants,
     addMeeting,
     getMeeting,
     getMeetingList,

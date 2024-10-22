@@ -4,16 +4,13 @@ import { useRouter } from 'vue-router';
 import { axiosInstance } from '@/utils/axiosInstance';
 
 // 상태 변수들 정의
-const newComment = ref('');  // 새 댓글 내용
-const newAttachment = ref(null);  // 첨부 파일
-const comments = ref([]);  // 댓글 목록
+const newComment = ref(''); // 새 댓글 내용
+const newAttachment = ref(null); // 첨부 파일
+const comments = ref([]); // 댓글 목록
 
 // useRouter로 현재 라우터 정보 가져오기
 const router = useRouter();
 const errorBoardId = router.currentRoute.value.params.boardId;
-
-// errorBoardId 콘솔로 출력하여 값 확인
-console.log('errorBoardId:', errorBoardId);
 
 // 날짜를 yyyy-MM-dd 형식으로 변환하는 함수
 const formatDate = (dateString) => {
@@ -30,7 +27,7 @@ const fetchComments = async () => {
     const response = await axiosInstance.get(`/api/errcomment/search`, {
       params: { errorBoardId },
     });
-    comments.value = response.data.result;  // 서버에서 반환된 댓글 목록 저장
+    comments.value = response.data.result; // 서버에서 반환된 댓글 목록 저장
   } catch (error) {
     console.error('댓글 목록 불러오기 중 오류가 발생했습니다:', error);
   }
@@ -45,23 +42,24 @@ const publishComment = async () => {
     formData.append(
       'request',
       JSON.stringify({
-        errCommentContent: newComment.value,  
+        errCommentContent: newComment.value,
       })
     );
 
     // 파일이 있을 때만 파일을 FormData에 추가 (files)
     if (newAttachment.value) {
-      formData.append('files', newAttachment.value);  
+      formData.append('files', newAttachment.value);
     }
 
-    console.log('POST 요청 전송 중 errorBoardId:', errorBoardId);
-    const response = await axiosInstance.post(`/api/errcomment/write?errorBoardId=${errorBoardId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',  
-      },
-    });
-
-    console.log('댓글 등록 성공:', response.data);
+    await axiosInstance.post(
+      `/api/errcomment/write?errorBoardId=${errorBoardId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
 
     // 댓글 등록 후 목록 갱신
     fetchComments();
@@ -69,7 +67,6 @@ const publishComment = async () => {
     // 상태 초기화
     newComment.value = '';
     newAttachment.value = null;
-
   } catch (error) {
     console.error('댓글 등록 중 오류가 발생했습니다:', error);
   }
@@ -92,17 +89,28 @@ onMounted(fetchComments);
     <div class="comment-input">
       <div class="input-wrap">
         <!-- 댓글 입력창 -->
-        <textarea v-model="newComment" placeholder="답글을 작성하세요" rows="2"></textarea>
+        <textarea
+          v-model="newComment"
+          placeholder="답글을 작성하세요"
+          rows="2"
+        ></textarea>
 
         <div class="input-footer">
           <!-- 파일 첨부 버튼 -->
           <button class="attachment-button">
             <label class="file-input-icon" for="file"></label>
-            <input type="file" id="file" style="display: none" @change="handleFileUpload" />
+            <input
+              type="file"
+              id="file"
+              style="display: none"
+              @change="handleFileUpload"
+            />
           </button>
 
           <!-- 댓글 게시 버튼 -->
-          <button class="publish-button" @click="publishComment">Publish</button>
+          <button class="publish-button" @click="publishComment">
+            Publish
+          </button>
         </div>
       </div>
 
@@ -115,12 +123,18 @@ onMounted(fetchComments);
 
     <!-- 댓글 목록 표시 -->
     <div class="comment-list" v-if="comments.length > 0">
-      <div v-for="comment in comments" :key="comment.errorCommentId" class="comment-item">
+      <div
+        v-for="comment in comments"
+        :key="comment.errorCommentId"
+        class="comment-item"
+      >
         <div class="comment-header">
           <!-- 사용자 이름 및 작성 시간 표시 -->
           <div class="comment-info">
             <span class="user-name">{{ comment.userName }}</span>
-            <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
+            <span class="comment-time">{{
+              formatDate(comment.createdAt)
+            }}</span>
           </div>
         </div>
 
@@ -129,9 +143,19 @@ onMounted(fetchComments);
           <p>{{ comment.errorCommentContent }}</p>
 
           <!-- 첨부된 이미지가 있는 경우 표시 -->
-          <div v-if="comment.images && comment.images.length > 0" class="comment-images">
-            <div v-for="image in comment.images" :key="image.errorCommentImageId">
-              <img :src="image.imageUrl" alt="Comment Image" class="comment-image" />
+          <div
+            v-if="comment.images && comment.images.length > 0"
+            class="comment-images"
+          >
+            <div
+              v-for="image in comment.images"
+              :key="image.errorCommentImageId"
+            >
+              <img
+                :src="image.imageUrl"
+                alt="Comment Image"
+                class="comment-image"
+              />
             </div>
           </div>
         </div>
@@ -182,7 +206,7 @@ textarea {
 }
 
 .file-input-icon {
-  background-image: url("@/assets/icon/chatIcon/clip.svg"); /* 아이콘 경로 */
+  background-image: url('@/assets/icon/chatIcon/clip.svg'); /* 아이콘 경로 */
   display: inline-block;
   height: 30px;
   width: 30px;
@@ -253,7 +277,7 @@ textarea {
 }
 
 .file-icon {
-  background-image: url("@/assets/icon/boardIcon/pdf.svg"); /* 아이콘 경로 */
+  background-image: url('@/assets/icon/boardIcon/pdf.svg'); /* 아이콘 경로 */
   display: inline-block;
   height: 20px;
   width: 20px;

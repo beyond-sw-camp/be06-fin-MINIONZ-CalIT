@@ -1,19 +1,17 @@
 <script setup>
-import ListItem from './ListItem.vue';
-import { computed, defineEmits, defineProps, watch } from 'vue';
+import { computed, defineProps, watch, defineEmits } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
+import TaskCard from './MyKanbanCard.vue';
 import {
   getTaskCountBackgroundColor,
   getTaskCountColor,
 } from '@/utils/taskUtils';
 import { useRoute } from 'vue-router';
-import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
-const sprintStore = useSprintStore();
 const taskStore = useTaskStore();
 
 const emit = defineEmits(['taskUpdated']);
@@ -26,11 +24,11 @@ const props = defineProps({
 });
 
 const taskCountBgStyle = computed(() => {
-  return getTaskCountBackgroundColor(status);
+  return getTaskCountBackgroundColor(props.data.status);
 });
 
 const taskCountColorStyle = computed(() => {
-  return getTaskCountColor(status).color;
+  return getTaskCountColor(props.data.status).color;
 });
 
 const status = computed(() => Object.keys(props.data)[0]);
@@ -47,7 +45,7 @@ const handleDragEnd = async (event) => {
   const newStatus = event.to.getAttribute('item-key');
   const taskId = event.item.getAttribute('id');
 
-  await taskStore.updateTaskStatus(sprintStore.nowSprintId, taskId, newStatus);
+  await taskStore.updateMyTaskStatus(taskId, newStatus);
 
   emit('taskUpdated');
 };
@@ -56,25 +54,16 @@ const handleDragEnd = async (event) => {
 <template>
   <div class="task-column">
     <div class="column-header">
-      <div class="column-title">
-        <p>{{ getTaskCountColor(status).text }}</p>
-        <span
-          class="task-count"
-          :style="{
-            backgroundColor: taskCountBgStyle,
-            color: taskCountColorStyle,
-          }"
-          >{{ tasks.length }}</span
-        >
-      </div>
-      <div class="add-task-card">
-        <router-link
-          v-if="!route.path.startsWith('/my')"
-          :to="`/workspace/${workspaceId}/scrum/task/create`"
-        >
-          <span class="plus">+</span> <span class="add-text">Add Task</span>
-        </router-link>
-      </div>
+      <p>{{ getTaskCountColor(status).text }}</p>
+      <span
+        class="task-count"
+        :style="{
+          backgroundColor: taskCountBgStyle,
+          color: taskCountColorStyle,
+        }"
+      >
+        {{ tasks ? tasks.length : 0 }}
+      </span>
     </div>
 
     <VueDraggableNext
@@ -86,7 +75,7 @@ const handleDragEnd = async (event) => {
       @end="handleDragEnd"
     >
       <template v-if="tasks && tasks.length > 0">
-        <ListItem
+        <TaskCard
           v-for="task in tasks"
           :key="task.id"
           :task="task"
@@ -97,45 +86,84 @@ const handleDragEnd = async (event) => {
         <div class="task-card">현재 할당된 task가 없습니다.</div>
       </template>
     </VueDraggableNext>
+
+    <router-link
+      v-if="!route.path.startsWith('/my')"
+      :to="`/workspace/${workspaceId}/scrum/task/create`"
+      class="add-task-card"
+    >
+      <span class="plus">+</span> <span class="add-text">Add Task</span>
+    </router-link>
   </div>
 </template>
 
 <style scoped>
 .task-column {
+  width: 100%;
   background-color: #fff;
-  padding: 20px;
+  border-radius: 8px;
+  padding: 10px;
 }
-
 .column-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 0 10px 5px;
+  p {
+    font-size: 14px;
+    font-weight: 500;
+  }
 }
-
-.column-title {
+.task-count {
+  padding: 0 10px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.add-task-card {
+  background-color: #f7f8fa;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 5px;
 }
 
-p {
+.plus {
+  font-weight: 700;
+  background-color: #c7ced9;
+  color: #fff;
+  padding: 0 7px;
+  border-radius: 50%;
+}
+
+.add-text {
+  font-size: 12px;
+}
+
+a {
+  text-decoration: none;
+  color: #28303f;
+}
+
+.task-card {
+  background-color: #f7f8fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
   font-size: 14px;
   font-weight: 500;
 }
 
-.task-count {
-  padding: 0 10px;
-  border-radius: 30px;
-}
-
-.task-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #f7f8fa;
+.empty-drop-zone {
+  background-color: #f0f0f0;
+  border: 2px dashed #c7ced9;
   border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #9e9e9e;
   margin-bottom: 15px;
 }
 </style>

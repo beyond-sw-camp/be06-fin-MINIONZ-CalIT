@@ -45,7 +45,6 @@ export const useSprintStore = defineStore('sprintStore', () => {
       if (error.response && error.response.status === 403) {
         notyf.error('접근 권한이 없습니다.');
       } else {
-        console.error('Error adding label:', error);
         notyf.error('스프린트 추가에 실패하였습니다.');
       }
     }
@@ -65,14 +64,11 @@ export const useSprintStore = defineStore('sprintStore', () => {
       } else {
         notyf.error(response.data.message);
       }
-
-      console.log('응답 코드', response.status);
     } catch (error) {
       if (error.response && error.response.status === 403) {
         notyf.error('접근 권한이 없습니다.');
       } else {
         notyf.error('알 수 없는 오류가 발생했습니다.');
-        console.log('Error getting Sprint', error);
       }
     }
   };
@@ -122,7 +118,6 @@ export const useSprintStore = defineStore('sprintStore', () => {
         notyf.error('접근 권한이 없습니다.');
       } else {
         notyf.error('알 수 없는 오류가 발생했습니다.');
-        console.log('Error updating Sprint', error);
       }
     }
   };

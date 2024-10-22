@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import UserButton from "@/view/user/component/UserButton.vue";
-import UserInput from "@/view/user/component/UserInput.vue";
+import UserButton from '@/view/user/component/UserButton.vue';
+import UserInput from '@/view/user/component/UserInput.vue';
 
 const email = ref('');
 
@@ -10,7 +10,6 @@ const sendPasswordResetLink = () => {
     console.log('Email is required');
     return;
   }
-  console.log('Sending password reset link to', email.value);
 };
 </script>
 
@@ -23,14 +22,24 @@ const sendPasswordResetLink = () => {
       </div>
     </div>
     <form @submit.prevent="sendPasswordResetLink">
-      <UserInput v-model="email" input-placeholder="이메일을 입력하세요" label="이메일"/>
-      <UserButton type="submit" button-ment="비밀번호 초기화 링크 전송"></UserButton>
+      <UserInput
+        v-model="email"
+        input-placeholder="이메일을 입력하세요"
+        label="이메일"
+      />
+      <UserButton
+        type="submit"
+        button-ment="비밀번호 초기화 링크 전송"
+      ></UserButton>
     </form>
-    <hr>
+    <hr />
     <p>비밀번호가 생각나셨나요?</p>
     <div style="width: 100%">
       <router-link to="/user/login">
-        <UserButton button-ment="로그인으로 돌아가기" class="btn-ver2"></UserButton>
+        <UserButton
+          button-ment="로그인으로 돌아가기"
+          class="btn-ver2"
+        ></UserButton>
       </router-link>
     </div>
   </div>
@@ -43,14 +52,14 @@ const sendPasswordResetLink = () => {
   align-items: center;
   width: 100%;
 }
-h1{
+h1 {
   margin: 0;
 }
-a{
-  color: #1E5EFF;
+a {
+  color: #1e5eff;
   margin-left: 10px;
 }
-.password-header{
+.password-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,17 +73,17 @@ form {
   gap: 15px;
   width: 100%;
 }
-p{
+p {
   margin: 0;
   color: #5a607f;
 }
-hr{
-  border: 1px solid #D7DBEC;
+hr {
+  border: 1px solid #d7dbec;
   width: 100%;
 }
-.btn-ver2{
+.btn-ver2 {
   width: 100%;
-  color: #1E5EFF;
+  color: #1e5eff;
   background-color: #fff;
   border: 1px solid #d9e1ec;
   text-decoration: none;

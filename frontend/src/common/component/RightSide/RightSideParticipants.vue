@@ -1,13 +1,15 @@
 <script setup>
-import {ref, defineEmits, onMounted, watch} from 'vue';
+import { ref, defineEmits, onMounted, watch } from 'vue';
 import Multiselect from 'vue-multiselect';
-import {useFriendsStore} from '@/stores/user/useFriendsStore';
-import {useRoute} from 'vue-router';
+import { useFriendsStore } from '@/stores/user/useFriendsStore';
+import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
 const friendStore = useFriendsStore();
+const meetingStore = useMeetingStore();
 
 const participants = ref([]);
 const filteredFriends = ref([]);
@@ -26,13 +28,16 @@ const searchFriends = async () => {
 
 const deleteParticipant = (searchUserIdx) => {
   participants.value = participants.value.filter(
-      (participant) => participant.searchUserIdx !== searchUserIdx
+    (participant) => participant.searchUserIdx !== searchUserIdx
   );
 };
 
 const saveParticipantsToUserList = () => {
-  console.log('saveParticipantsToUserList called', selectedParticipant.value);
   emit('update-meeting-participants', selectedParticipant.value);
+
+  meetingStore.meetingParticipants = participants.value.map(
+    (participant) => participant.searchUserIdx
+  );
 };
 
 onMounted(() => {
@@ -45,9 +50,9 @@ watch(selectedParticipant, (newParticipant) => {
       participants.value = [];
     }
     if (
-        !participants.value.some(
-            (p) => p.searchUserIdx === newParticipant.searchUserIdx
-        )
+      !participants.value.some(
+        (p) => p.searchUserIdx === newParticipant.searchUserIdx
+      )
     ) {
       participants.value.push(newParticipant);
     }
@@ -58,30 +63,45 @@ watch(selectedParticipant, (newParticipant) => {
 <template>
   <div class="form-container">
     <h2>participants 추가하기</h2>
-    <hr/>
+    <hr />
     <div class="participants-wrap">
       <div>
         <label>참여자 검색</label>
         <multiselect
-            v-model="selectedParticipant"
-            :options="filteredFriends"
-            :searchable="true"
-            :close-on-select="true"
-            :show-labels="false"
-            placeholder="참여자를 선택하세요"
-            label="userName"
-            track-by="searchUserIdx"
+          v-model="selectedParticipant"
+          :options="filteredFriends"
+          :searchable="true"
+          :close-on-select="true"
+          :show-labels="false"
+          placeholder="참여자를 선택하세요"
+          label="userName"
+          track-by="searchUserIdx"
         />
-        <div class="selections participants" v-if="participants && participants.length">
-          <span class="item" v-for="participant in participants" :key="participant.searchUserIdx">
+        <div
+          class="selections participants"
+          v-if="participants && participants.length"
+        >
+          <span
+            class="item"
+            v-for="participant in participants"
+            :key="participant.searchUserIdx"
+          >
             {{ participant.userName }}
-            <span @click="deleteParticipant(participant.searchUserIdx)"
-                  style="cursor: pointer; margin: 0 10px; padding: 0">x</span>
+            <span
+              @click="deleteParticipant(participant.searchUserIdx)"
+              style="cursor: pointer; margin: 0 10px; padding: 0"
+              >x</span
+            >
           </span>
         </div>
       </div>
 
-      <button @click="saveParticipantsToUserList" class="save-btn participants-btn">저장하기</button>
+      <button
+        @click="saveParticipantsToUserList"
+        class="save-btn participants-btn"
+      >
+        저장하기
+      </button>
     </div>
   </div>
 </template>

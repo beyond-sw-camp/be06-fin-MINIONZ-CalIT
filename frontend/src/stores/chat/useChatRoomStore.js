@@ -11,9 +11,6 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
 
   // [POST] 그룹 채팅 방 생성 /chat/room
   const addChatRoom = async (data) => {
-    // `chatRoomName` 값이 올바르게 전달되는지 로그 출력
-    // console.log('전달된 chatRoomName:', chatRoomName);
-
     if (!Array.isArray(data.participants) || data.participants.length === 0) {
       throw new Error('Invalid data: participants are required.');
     }
@@ -33,7 +30,6 @@ export const useChatRoomStore = defineStore('chatRoomStore', () => {
           participants: response.data.result.participants,
         });
         newChatRoomId.value = response.data.result.chatRoomId;
-        console.log('New chat room created:', response.data.result);
       } else {
         throw new Error('Failed to create chat room');
       }

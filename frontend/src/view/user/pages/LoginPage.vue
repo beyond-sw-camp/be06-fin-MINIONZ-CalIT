@@ -16,8 +16,6 @@ const userStore = useUserStore();
 const notyf = new Notyf();
 const isSubmitting = ref(false);
 
-console.log('윤슬');
-
 const authenticate = async (loginId, password) => {
   try {
     const response = await axios.post('/api/user/login', {

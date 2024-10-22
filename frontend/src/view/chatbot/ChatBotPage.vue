@@ -125,7 +125,6 @@ const sendMessage = () => {
     JSON.stringify(messagePayload)
   );
 
-  console.log('Message Sent:', messagePayload);
   messages.value.push(messagePayload);
 
   newMessage.value = '';

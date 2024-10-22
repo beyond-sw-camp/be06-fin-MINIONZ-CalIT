@@ -76,7 +76,7 @@ defineProps({
   background-color: #f1f1f1;
   padding: 10px;
   border-radius: 20px;
-  max-width: 250px;
+  max-width: 450px;
 }
 
 .own .message-bubble {
