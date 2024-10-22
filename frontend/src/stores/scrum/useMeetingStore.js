@@ -57,7 +57,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
         `/api/meeting/${workspaceId}/search-all?page=${page}&size=${size}`
       );
       meetings.value = response.data.result.content;
-      return response.data.result.content;
+      return response.data.result;
     } catch (error) {
       if (error.response && error.response.status === 403) {
         notyf.error('접근 권한이 없습니다.');
