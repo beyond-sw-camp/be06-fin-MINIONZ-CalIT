@@ -8,6 +8,7 @@ const notyf = new Notyf();
 export const useMeetingStore = defineStore('meetingStore', () => {
   const meetings = ref([]);
   const meetingId = ref(null);
+  const meetingParticipants = ref([]);
 
   const addMeeting = async (data, sprintId) => {
     try {
@@ -138,6 +139,7 @@ export const useMeetingStore = defineStore('meetingStore', () => {
   return {
     meetings,
     meetingId,
+    meetingParticipants,
     addMeeting,
     getMeeting,
     getMeetingList,
