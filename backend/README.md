@@ -45,7 +45,8 @@
 2. 각 모듈이 독립적으로 개발되고 배포될 수 있어 개발 및 테스트의 효율성이 향상됨
 3. 기존 모듈을 확장하기 쉽기 때문에 전체 시스템의 복잡성을 효율적으로 관리 가능함
 
-   ![image](https://github.com/user-attachments/assets/783d2315-00cb-44b4-aa6e-b7dc81bf6205)
+   ![image](https://github.com/user-attachments/assets/82bd3499-57d8-4351-ba8d-20ab1c13213b)
+
    
   ### 레이어드 아키텍처 + 멀티모듈 아키텍처
   > 레이어드 아키텍처를 기반으로 API 서버와 공통 모듈로 구성된 멀티 모듈 구조를 채택 함으로써 API 서버는
