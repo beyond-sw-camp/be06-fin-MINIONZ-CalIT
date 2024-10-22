@@ -1,9 +1,12 @@
 <script setup>
 import * as echarts from 'echarts';
-import {onMounted, ref, watch} from 'vue';
-import {useRoute} from "vue-router";
-import {useSprintStore} from "@/stores/scrum/useSprintStore";
-import {getBurndownData, calculateBurndownData} from "@/utils/burndownChartUtils";
+import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import {
+  getBurndownData,
+  calculateBurndownData,
+} from '@/utils/burndownChartUtils';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -14,17 +17,23 @@ const selectedSprintId = ref(null);
 const chartRef = ref(null);
 let chartInstance = null;
 
+const isLoading = ref(false);
+
 const fetchBurndownData = async () => {
   if (!selectedSprintId.value) return;
 
+  isLoading.value = true;
   let idealData = [];
   let actualData = [];
 
   const data = await getBurndownData(workspaceId, selectedSprintId.value);
-  console.log('Data:', data);
 
   if (data.sprint) {
-    const result = calculateBurndownData(data.doneStoryPoints, data.sprint.startDate, data.sprint.endDate);
+    const result = calculateBurndownData(
+      data.doneStoryPoints,
+      data.sprint.startDate,
+      data.sprint.endDate
+    );
     console.log('Calculated Burndown Data:', result);
     idealData = result.idealData;
     actualData = result.actualData;
@@ -33,20 +42,25 @@ const fetchBurndownData = async () => {
   if (chartInstance) {
     chartInstance.setOption({
       xAxis: {
-        data: Array.from({ length: idealData.length }, (_, i) => `Day ${i + 1}`)
+        data: Array.from(
+          { length: idealData.length },
+          (_, i) => `Day ${i + 1}`
+        ),
       },
       series: [
         {
           name: 'Ideal',
-          data: idealData
+          data: idealData,
         },
         {
           name: 'Actual',
-          data: actualData
-        }
-      ]
+          data: actualData,
+        },
+      ],
     });
   }
+
+  isLoading.value = false;
 };
 
 onMounted(async () => {
@@ -61,7 +75,6 @@ onMounted(async () => {
   chartInstance = echarts.init(chartRef.value);
   chartInstance.setOption({
     title: {
-      text: 'Sprint Burndown Chart',
       left: 'center',
       textStyle: {
         color: '#2c3e50',
@@ -176,16 +189,25 @@ watch(selectedSprintId, fetchBurndownData);
 
 <template>
   <div class="burndown-chart">
-    <div>
-      <select v-model="selectedSprintId" @change="fetchBurndownData" class="input-field">
-        <option v-for="sprint in sprintOptions" :key="sprint.sprintId" :value="sprint.sprintId">
+    <div v-if="isLoading" class="loading-message">차트를 로딩 중입니다...</div>
+    <div v-else>
+      <select
+        v-model="selectedSprintId"
+        @change="fetchBurndownData"
+        class="input-field"
+      >
+        <option
+          v-for="sprint in sprintOptions"
+          :key="sprint.sprintId"
+          :value="sprint.sprintId"
+        >
           {{ sprint.title }}
         </option>
       </select>
-    </div>
-    <div>
-      <h3>Sprint Burndown Chart</h3>
-      <div ref="chartRef" style="width: 100%; height: 400px;"></div>
+      <div>
+        <h3>Sprint Burndown Chart</h3>
+        <div ref="chartRef" style="width: 100%; height: 400px"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -206,5 +228,15 @@ h3 {
   border-radius: 8px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
   max-width: 800px;
+}
+
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  font-size: 18px;
+  color: #34495e;
+  text-align: center;
 }
 </style>
