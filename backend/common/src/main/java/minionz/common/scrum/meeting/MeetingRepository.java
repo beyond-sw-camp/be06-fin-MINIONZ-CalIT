@@ -35,10 +35,11 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     Page<Meeting> findMeetingByStartDateAfter(LocalDateTime startDate, Pageable pageable);
 
     @Query("SELECT m FROM Meeting m " +
-    "JOIN FETCH m.meetingParticipations mp " +
-    "JOIN FETCH m.sprint s " +
-    "JOIN FETCH s.workspace w " +
-    "WHERE w.workspaceId = :workspaceId")
+            "JOIN FETCH m.meetingParticipations mp " +
+            "JOIN FETCH m.sprint s " +
+            "JOIN FETCH s.workspace w " +
+            "WHERE w.workspaceId = :workspaceId " +
+            "ORDER BY m.meetingId")
     Page<Meeting> findMeetingByWorkspace(Long workspaceId, Pageable pageable);
 
     @Query("SELECT COUNT(m) FROM Meeting m JOIN m.sprint s WHERE s.workspace.workspaceId = :workspaceId")
