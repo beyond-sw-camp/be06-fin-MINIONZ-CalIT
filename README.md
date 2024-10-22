@@ -21,6 +21,7 @@ https://calit.kro.kr
 
 # 🌟 프로젝트 목표
 
+### 모든 일정 관리를 하나로! 체계적이고 효율적인 애자일 기반 일정 관리 시스템
 ```
 1. 모든 일정 관리를 하나로
 2. 체계적인 알람 기능
@@ -28,13 +29,16 @@ https://calit.kro.kr
 4. 실시간 피드백과 소통
 5. 동시 편집 가능한 회의록
 ```
+
+캘릿(CalIT)은 Calendar와 IT의 합성어로, 모든 프로젝트 일정을 하나로 통합하여 관리할 수 있는 애자일 일정 관리 시스템입니다. 체계적인 알람 기능을 통해 중요한 업무를 놓치지 않도록 돕고, 스크럼 관리에 최적화된 기능을 제공합니다. 또한, 실시간 피드백과 소통을 통해 팀원 간 원활한 협업이 가능하며, 동시 편집이 가능한 회의록으로 언제 어디서나 함께 기록할 수 있습니다. 이 시스템은 개발자들을 위한 효율적인 협업 도구로, 팀의 생산성을 극대화하고 성공적인 프로젝트 관리를 지원합니다.
+
 <br/>
 
 # ⚒️ 기술 스택
 
 
 ### 프론트엔드
-<img src="https://img.shields.io/badge/Vue.js-181717?style=flat&logo=Vue.js&logoColor=4FC08D&color=white" alt=""> <img src="https://img.shields.io/badge/HTML5-181717?style=flat&logo=html5&logoColor=E34F26&color=white" alt=""> <img src="https://img.shields.io/badge/CSS3-181717?style=flat&logo=css3&logoColor=1572B6&color=white" alt=""> <img src="https://img.shields.io/badge/JavaScript-181717?style=flat&logo=javascript&logoColor=F7DF1E&color=white" alt=""> <img src="https://img.shields.io/badge/Nginx-181717?style=flat&logo=nginx&logoColor=009639&color=white" alt=""> <img src="https://img.shields.io/badge/Axios-181717?style=flat&logo=axios&logoColor=5A29E4&color=white" alt=""> <img src="https://img.shields.io/badge/Pinia-181717?style=flat&logo=Pinia&logoColor=FEDD00&color=white" alt="">
+<img src="https://img.shields.io/badge/Vue.js-181717?style=flat&logo=Vue.js&logoColor=4FC08D&color=white" alt=""> <img src="https://img.shields.io/badge/HTML5-181717?style=flat&logo=html5&logoColor=E34F26&color=white" alt=""> <img src="https://img.shields.io/badge/CSS3-181717?style=flat&logo=css3&logoColor=1572B6&color=white" alt=""> <img src="https://img.shields.io/badge/JavaScript-181717?style=flat&logo=javascript&logoColor=F7DF1E&color=white" alt=""> <img src="https://img.shields.io/badge/Nginx-181717?style=flat&logo=nginx&logoColor=009639&color=white" alt=""> <img src="https://img.shields.io/badge/Axios-181717?style=flat&logo=axios&logoColor=5A29E4&color=white" alt=""> <img src="https://img.shields.io/badge/Pinia-181717?style=flat&logo=pinia&logoColor=FEDD00&color=white" alt="">
 
 ### 백엔드
 <img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Security-181717?style=flat&logo=SpringSecurity&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/JSON_Web_Tokens-181717?style=flat&logo=JSONWebTokens&logoColor=000000&color=white" alt=""> <img src="https://img.shields.io/badge/Spring-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Batch-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Apache_Kafka-181717?style=flat&logo=ApacheKafka&logoColor=231F20&color=white" alt=""> <img src="https://img.shields.io/badge/n8n-181717?style=flat&logo=n8n&logoColor=0F74E2&color=white" alt="">
