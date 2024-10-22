@@ -185,7 +185,7 @@ watch(selectedSprintId, fetchBurndownData);
     </div>
     <div>
       <h3>Sprint Burndown Chart</h3>
-      <div ref="chartRef" style="width: 100%; height: 400px;"></div>
+      <div ref="chartRef" style="width: 100%; height: 25rem;"></div>
     </div>
   </div>
 </template>
@@ -205,6 +205,6 @@ h3 {
   background: #fff;
   border-radius: 8px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  //max-width: 800px;
 }
 </style>
