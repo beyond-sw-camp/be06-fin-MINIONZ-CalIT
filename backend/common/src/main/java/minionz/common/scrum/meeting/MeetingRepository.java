@@ -40,4 +40,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     "JOIN FETCH s.workspace w " +
     "WHERE w.workspaceId = :workspaceId")
     Page<Meeting> findMeetingByWorkspace(Long workspaceId, Pageable pageable);
+
+    @Query("SELECT COUNT(m) FROM Meeting m JOIN m.sprint s WHERE s.workspace.workspaceId = :workspaceId")
+    long countMeetingsByWorkspaceId(Long workspaceId);
 }

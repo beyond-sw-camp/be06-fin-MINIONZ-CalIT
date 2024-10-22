@@ -19,6 +19,7 @@ import minionz.common.scrum.meeting.model.Meeting;
 import minionz.common.scrum.sprint.model.Sprint;
 import minionz.common.user.model.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -49,14 +50,14 @@ public class MeetingService {
                         .build()
         );
 
-        List<Long> meetings = request.getLabels();
+        List<Long> participants = request.getParticipants();
 
-        if(request.getLabels() == null){
-            meetings = new ArrayList<>();
+        if(request.getParticipants() == null){
+            participants = new ArrayList<>();
         }
 
         meetingParticipationRepository.save(MeetingParticipation.builder().meeting(meeting).user(user).build());
-        meetings.forEach(participantId ->
+        participants.forEach(participantId ->
                 meetingParticipationRepository.save(MeetingParticipation
                         .builder()
                         .meeting(meeting)
@@ -127,7 +128,9 @@ public class MeetingService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Meeting> result = meetingRepository.findMeetingByWorkspace(workspaceId, pageable);
 
-        Page<ReadAllMeetingResponse> readMeetingResponses = result.map(meeting -> {
+        Long meetingCount = meetingRepository.countMeetingsByWorkspaceId(workspaceId);
+
+        List<ReadAllMeetingResponse> readMeetingResponses = result.stream().map(meeting -> {
             List<Participant> participants = findParticipants(meeting);
             int participantCount = participants.size();  // 참여자 명수 계산
 
@@ -142,9 +145,13 @@ public class MeetingService {
                     .participantCount(participantCount)// 참여자 명수 추가
                     .labels(findLabels(meeting))
                     .build();
-        });
+        }).toList();
 
-        return readMeetingResponses;
+
+        Page<ReadAllMeetingResponse> readMeetingResponsesPage = new PageImpl<>(readMeetingResponses, pageable, meetingCount);
+
+
+        return readMeetingResponsesPage;
     }
 
     public List<Label> findLabels(Meeting meeting) {

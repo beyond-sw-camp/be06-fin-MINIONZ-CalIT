@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ReadIssueResponse {
+    private Long issueId;
     private String title;
     private String contents;
 
