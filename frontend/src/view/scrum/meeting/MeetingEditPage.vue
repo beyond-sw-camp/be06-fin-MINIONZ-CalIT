@@ -1,13 +1,13 @@
 <script setup>
-import {useRoute} from 'vue-router';
-import {inject, ref} from 'vue';
+import { useRoute } from 'vue-router';
+import { inject, ref } from 'vue';
 // import {useUserStore} from "@/stores/user/useUserStore";
-import {useMeetingStore} from "@/stores/scrum/useMeetingStore";
-import RightSideComponent from "@/common/component/RightSide/RightSideComponent.vue";
-import QuillEditor from "@/common/component/Editor/QuillEditorMeeting.vue";
-import {timeInputUtils} from '@/utils/timeInputUtils';
-import {setPersona} from "@/utils/personaUtils";
-import router from "@/router";
+import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
+import RightSideComponent from '@/common/component/RightSide/RightSideComponent.vue';
+import QuillEditor from '@/common/component/Editor/QuillEditorMeeting.vue';
+import { timeInputUtils } from '@/utils/timeInputUtils';
+import { setPersona } from '@/utils/personaUtils';
+import router from '@/router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -30,7 +30,10 @@ const participants = ref([]);
 
 const adjustTime = () => {
   if (startTime.value && endTime.value) {
-    const {start, end} = timeInputUtils.adjustTime(startTime.value, endTime.value);
+    const { start, end } = timeInputUtils.adjustTime(
+      startTime.value,
+      endTime.value
+    );
     startTime.value = start;
     endTime.value = end;
   }
@@ -53,12 +56,15 @@ const addNote = () => {
 };
 
 const rightSideOn = (id) => {
-  const meetingNoteContainer = document.querySelector('.meeting-note-container');
+  const meetingNoteContainer = document.querySelector(
+    '.meeting-note-container'
+  );
   if (meetingNoteContainer) {
     meetingNoteContainer.style.transition = 'width 0.5s ease';
-    meetingNoteContainer.style.width = rightSideVisible.value ? '100%' : 'calc(100% - 300px)';
+    meetingNoteContainer.style.width = rightSideVisible.value
+      ? '100%'
+      : 'calc(100% - 300px)';
   }
-  console.log('Add issue button clicked');
   activeComponentId.value = id;
   rightSideVisible.value = !rightSideVisible.value;
 };
@@ -69,32 +75,49 @@ const rightSideOn = (id) => {
     <div class="meeting-note-container">
       <div class="meeting-input-wrap">
         <div class="meeting-title-container">
-        <span class="column">
-          <i class="meeting-title column-icon"></i>
-          회의 제목
-        </span>
-          <input v-model="meetingTitle" class="title-editor" placeholder="회의록 제목"/>
+          <span class="column">
+            <i class="meeting-title column-icon"></i>
+            회의 제목
+          </span>
+          <input
+            v-model="meetingTitle"
+            class="title-editor"
+            placeholder="회의록 제목"
+          />
         </div>
         <div class="issue-section">
-        <span class="column">
-          <i class="meeting-description column-icon"></i>
-          설명 추가하기
-        </span>
-          <input v-model="meetingDescription" class="description-editor" placeholder="회의록 상세"/>
+          <span class="column">
+            <i class="meeting-description column-icon"></i>
+            설명 추가하기
+          </span>
+          <input
+            v-model="meetingDescription"
+            class="description-editor"
+            placeholder="회의록 상세"
+          />
         </div>
 
         <div class="issue-section">
-        <span class="column">
-          <i class="meeting-time column-icon"></i>
-          회의 시간
-        </span>
+          <span class="column">
+            <i class="meeting-time column-icon"></i>
+            회의 시간
+          </span>
           <div class="meeting-time-input">
             <span>시작 시간</span>
-            <input v-model="startTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
+            <input
+              v-model="startTime"
+              type="datetime-local"
+              class="time-editor"
+              @change="adjustTime"
+            />
             <span>~ 종료 시간</span>
-            <input v-model="endTime" type="datetime-local" class="time-editor" @change="adjustTime"/>
+            <input
+              v-model="endTime"
+              type="datetime-local"
+              class="time-editor"
+              @change="adjustTime"
+            />
           </div>
-
         </div>
         <!--        <div class="author-section">-->
         <!--          <div class="author">-->
@@ -111,58 +134,75 @@ const rightSideOn = (id) => {
 
         <div class="author-section">
           <div class="participants">
-          <span class="column">
-            <i class="user-multiple column-icon"></i>
-            회의 참여자
-          </span>
-            <button class="issue-button" @click="rightSideOn('participants')">참여자 추가하기</button>
+            <span class="column">
+              <i class="user-multiple column-icon"></i>
+              회의 참여자
+            </span>
+            <button class="issue-button" @click="rightSideOn('participants')">
+              참여자 추가하기
+            </button>
             <div class="users-list">
-              <div class="user-profile" v-for="participant in participants" :key="participant.id">
-                <img :src="setPersona(participant.persona)" alt="참여자">
+              <div
+                class="user-profile"
+                v-for="participant in participants"
+                :key="participant.id"
+              >
+                <img :src="setPersona(participant.persona)" alt="참여자" />
                 <span>{{ participant.username }}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="issue-section">
-        <span class="column">
-          <i class="label-add column-icon"></i>
-          라벨 추가하기
-        </span>
-          <button class="issue-button" @click="rightSideOn('label')">라벨 추가하기</button>
+          <span class="column">
+            <i class="label-add column-icon"></i>
+            라벨 추가하기
+          </span>
+          <button class="issue-button" @click="rightSideOn('label')">
+            라벨 추가하기
+          </button>
           <button class="label-button">Frontend</button>
         </div>
 
         <!-- 태스크 추가하기 -->
         <div class="issue-section">
-        <span class="column">
-          <i class="task-add column-icon"></i>
-          태스크 추가하기
-        </span>
-          <button class="issue-button" @click="rightSideOn('task')">태스크 추가하기</button>
+          <span class="column">
+            <i class="task-add column-icon"></i>
+            태스크 추가하기
+          </span>
+          <button class="issue-button" @click="rightSideOn('task')">
+            태스크 추가하기
+          </button>
           <span class="issue-id">User_001</span>
         </div>
 
         <!-- 이슈 추가하기 -->
         <div class="issue-section">
-        <span class="column">
-          <i class="issue-add column-icon"></i>
-          이슈 추가하기
-        </span>
-          <button class="issue-button" @click="rightSideOn('issue')">이슈 추가하기</button>
+          <span class="column">
+            <i class="issue-add column-icon"></i>
+            이슈 추가하기
+          </span>
+          <button class="issue-button" @click="rightSideOn('issue')">
+            이슈 추가하기
+          </button>
           <span class="issue-id">User_001</span>
         </div>
       </div>
 
       <div class="btn-sector">
         <button class="save-button" @click="addMeeting">회의 저장하기</button>
-        <button class="save-button btn-ver2" @click="addNote">회의록 추가하기</button>
+        <button class="save-button btn-ver2" @click="addNote">
+          회의록 추가하기
+        </button>
       </div>
       <div v-show="isQuillVisible" class="quill-wrap">
-        <QuillEditor ref="editor" class="content-editor" v-model="editor"/>
+        <QuillEditor ref="editor" class="content-editor" v-model="editor" />
       </div>
     </div>
-    <RightSideComponent v-show="rightSideVisible" :activeComponentId="activeComponentId"/>
+    <RightSideComponent
+      v-show="rightSideVisible"
+      :activeComponentId="activeComponentId"
+    />
   </div>
 </template>
 
@@ -194,7 +234,7 @@ const rightSideOn = (id) => {
 }
 
 .user-multiple {
-  background-image: url("@/assets/icon/boardIcon/userMultiple.svg");
+  background-image: url('@/assets/icon/boardIcon/userMultiple.svg');
 }
 
 .column {
@@ -213,21 +253,22 @@ const rightSideOn = (id) => {
   display: flex;
 }
 
-.author, .participants {
+.author,
+.participants {
   display: flex;
   align-items: center;
 }
 
 .meeting-title {
-  background-image: url("@/assets/icon/boardIcon/titleEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/titleEdit.svg');
 }
 
 .meeting-description {
-  background-image: url("@/assets/icon/boardIcon/quillDescription.svg");
+  background-image: url('@/assets/icon/boardIcon/quillDescription.svg');
 }
 
 .meeting-time {
-  background-image: url("@/assets/icon/boardIcon/calendar.svg");
+  background-image: url('@/assets/icon/boardIcon/calendar.svg');
 }
 
 .meeting-time-input {
@@ -243,22 +284,23 @@ const rightSideOn = (id) => {
 }
 
 .user-editor {
-  background-image: url("@/assets/icon/boardIcon/userEdit.svg");
+  background-image: url('@/assets/icon/boardIcon/userEdit.svg');
 }
 
-.author img, .participants img {
+.author img,
+.participants img {
   border-radius: 50%;
   width: 30px;
   height: 30px;
 }
 
 .label-add {
-  background-image: url("@/assets/icon/boardIcon/labelIcon.svg");
+  background-image: url('@/assets/icon/boardIcon/labelIcon.svg');
 }
 
 .label-button {
-  background-color: #FBDBEA;
-  color: #DB2777;
+  background-color: #fbdbea;
+  color: #db2777;
   border: none;
   padding: 5px 10px;
   border-radius: 15px;
@@ -276,19 +318,19 @@ const rightSideOn = (id) => {
 }
 
 .issue-id {
-  color: #28303F;
-  background-color: #F3F6FF;
+  color: #28303f;
+  background-color: #f3f6ff;
   padding: 5px 10px;
   border-radius: 15px;
   font-size: 12px;
 }
 
 .issue-add {
-  background-image: url("@/assets/icon/boardIcon/issueAdd.svg");
+  background-image: url('@/assets/icon/boardIcon/issueAdd.svg');
 }
 
 .task-add {
-  background-image: url("@/assets/icon/boardIcon/taskAdd.svg");
+  background-image: url('@/assets/icon/boardIcon/taskAdd.svg');
 }
 
 .title-editor {
@@ -304,13 +346,12 @@ const rightSideOn = (id) => {
   //margin-left: 15px;
 }
 
-
 .content-editor {
   min-height: 500px;
   padding: 10px;
   background-color: white;
   margin-top: 10px;
-  border-top: 1px solid #28303F;
+  border-top: 1px solid #28303f;
   position: relative;
 }
 
@@ -353,16 +394,19 @@ const rightSideOn = (id) => {
   border: none;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: transform 0.5s, opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   transform: translateX(100%);
   opacity: 0;
 }
 
-.fade-enter-to, .fade-leave {
+.fade-enter-to,
+.fade-leave {
   transform: translateX(0);
   opacity: 1;
 }

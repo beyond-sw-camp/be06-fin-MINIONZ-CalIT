@@ -53,8 +53,6 @@ function sendNoteUpdate() {
 
 // 다른 사용자가 보낸 노트 업데이트를 화면에 반영
 function showNoteUpdate(noteMessage) {
-  console.log(noteMessage);
-
   // Quill 에디터의 내용을 업데이트
   const currentRange = quillEditor.getSelection();
   quillEditor.setContents(noteMessage.noteContents);

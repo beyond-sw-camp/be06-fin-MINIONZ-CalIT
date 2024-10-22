@@ -4,15 +4,14 @@ import { useRouter } from 'vue-router';
 import { axiosInstance } from '@/utils/axiosInstance';
 
 // 상태 변수들 정의
-const newCommentTitle = ref('');  
-const newCommentContent = ref('');  
-const progressStatus = ref('NOT_STARTED');  
-const newAttachment = ref(null);  
-const comments = ref([]);  
+const newCommentTitle = ref('');
+const newCommentContent = ref('');
+const progressStatus = ref('NOT_STARTED');
+const newAttachment = ref(null);
+const comments = ref([]);
 
 const router = useRouter();
-const qaBoardId = router.currentRoute.value.params.boardId;  
-
+const qaBoardId = router.currentRoute.value.params.boardId;
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -22,18 +21,16 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
-
 const fetchComments = async () => {
   try {
     const response = await axiosInstance.get(`/api/qacomment/search`, {
       params: { qaBoardId },
     });
-    comments.value = response.data.result;  // 서버에서 반환된 댓글 목록 저장
+    comments.value = response.data.result; // 서버에서 반환된 댓글 목록 저장
   } catch (error) {
     console.error('댓글 목록 불러오기 중 오류가 발생했습니다:', error);
   }
 };
-
 
 const publishComment = async () => {
   try {
@@ -43,25 +40,27 @@ const publishComment = async () => {
     formData.append(
       'request',
       JSON.stringify({
-        qaCommentTitle: newCommentTitle.value,  // 댓글 제목
-        qaCommentContent: newCommentContent.value,  // 댓글 내용
-        progressStatus: progressStatus.value,  // 진행 상태
+        qaCommentTitle: newCommentTitle.value, // 댓글 제목
+        qaCommentContent: newCommentContent.value, // 댓글 내용
+        progressStatus: progressStatus.value, // 진행 상태
       })
     );
 
     // 파일이 있을 때만 파일을 FormData에 추가 (files)
     if (newAttachment.value) {
-      formData.append('files', newAttachment.value);  // 서버에서 받는 MultipartFile[] 배열
+      formData.append('files', newAttachment.value); // 서버에서 받는 MultipartFile[] 배열
     }
 
     // POST 요청 전송
-    const response = await axiosInstance.post(`/api/qacomment/write?qaBoardId=${qaBoardId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('댓글 등록 성공:', response.data);
+    await axiosInstance.post(
+      `/api/qacomment/write?qaBoardId=${qaBoardId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
 
     // 댓글 등록 후 목록 갱신
     fetchComments();
@@ -71,7 +70,6 @@ const publishComment = async () => {
     newCommentContent.value = '';
     progressStatus.value = 'NOT_STARTED';
     newAttachment.value = null;
-
   } catch (error) {
     console.error('댓글 등록 중 오류가 발생했습니다:', error);
   }
@@ -94,14 +92,26 @@ onMounted(fetchComments);
     <div class="comment-input">
       <div class="input-wrap">
         <!-- 댓글 제목 입력창 -->
-        <input v-model="newCommentTitle" placeholder="댓글 제목을 입력하세요" class="comment-title" />
+        <input
+          v-model="newCommentTitle"
+          placeholder="댓글 제목을 입력하세요"
+          class="comment-title"
+        />
 
         <!-- 댓글 내용 입력창 -->
-        <textarea v-model="newCommentContent" placeholder="댓글 내용을 입력하세요" rows="2"></textarea>
+        <textarea
+          v-model="newCommentContent"
+          placeholder="댓글 내용을 입력하세요"
+          rows="2"
+        ></textarea>
 
         <!-- 진행 상태 드롭다운 -->
         <label for="progress-status">진행 상태</label>
-        <select v-model="progressStatus" class="progress-status" id="progress-status">
+        <select
+          v-model="progressStatus"
+          class="progress-status"
+          id="progress-status"
+        >
           <option value="NOT_STARTED">Not Started</option>
           <option value="IN_PROGRESS">In Progress</option>
           <option value="DONE">Done</option>
@@ -111,11 +121,18 @@ onMounted(fetchComments);
           <!-- 파일 첨부 버튼 -->
           <button class="attachment-button">
             <label class="file-input-icon" for="file"></label>
-            <input type="file" id="file" style="display: none" @change="handleFileUpload" />
+            <input
+              type="file"
+              id="file"
+              style="display: none"
+              @change="handleFileUpload"
+            />
           </button>
 
           <!-- 댓글 게시 버튼 -->
-          <button class="publish-button" @click="publishComment">Publish</button>
+          <button class="publish-button" @click="publishComment">
+            Publish
+          </button>
         </div>
       </div>
 
@@ -128,18 +145,24 @@ onMounted(fetchComments);
 
     <!-- 댓글 목록 표시 -->
     <div class="comment-list" v-if="comments.length > 0">
-      <div v-for="comment in comments" :key="comment.qaCommentId" class="comment-item">
+      <div
+        v-for="comment in comments"
+        :key="comment.qaCommentId"
+        class="comment-item"
+      >
         <div class="comment-header">
           <!-- 사용자 이름 및 작성 시간 표시 -->
           <div class="comment-info">
             <span class="user-name">{{ comment.userName }}</span>
-            <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
+            <span class="comment-time">{{
+              formatDate(comment.createdAt)
+            }}</span>
           </div>
         </div>
 
         <!-- 댓글 제목과 진행 상태 표시 -->
         <div class="comment-title-status">
-          <strong>제목:</strong> {{ comment.qaCommentTitle }}<br/>
+          <strong>제목:</strong> {{ comment.qaCommentTitle }}<br />
           <strong>진행 상태:</strong> {{ comment.progressStatus }}
         </div>
 
@@ -148,9 +171,16 @@ onMounted(fetchComments);
           <p>{{ comment.qaCommentContent }}</p>
 
           <!-- 첨부된 이미지가 있는 경우 표시 -->
-          <div v-if="comment.images && comment.images.length > 0" class="comment-images">
+          <div
+            v-if="comment.images && comment.images.length > 0"
+            class="comment-images"
+          >
             <div v-for="image in comment.images" :key="image.qaCommentImageId">
-              <img :src="image.imageUrl" alt="Comment Image" class="comment-image" />
+              <img
+                :src="image.imageUrl"
+                alt="Comment Image"
+                class="comment-image"
+              />
             </div>
           </div>
         </div>

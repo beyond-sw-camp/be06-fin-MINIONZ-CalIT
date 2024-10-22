@@ -34,7 +34,6 @@ const fetchBurndownData = async () => {
       data.sprint.startDate,
       data.sprint.endDate
     );
-    console.log('Calculated Burndown Data:', result);
     idealData = result.idealData;
     actualData = result.actualData;
   }
