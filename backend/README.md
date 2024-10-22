@@ -107,8 +107,9 @@
   <summary><b>회의록 공동작성</b></summary>
   <div markdown="1">
 설명
-    
-![calit](https://github.com/user-attachments/assets/082d561a-744e-4db4-99f6-8a764ceba503)
+
+![image](https://github.com/user-attachments/assets/960b02a8-bf5a-4765-88b3-e10a04cc727f)
+
 
   </div>
 </details>
