@@ -106,7 +106,7 @@ public class TaskController {
             return new BaseResponse<>(e.getStatus());
         }
 
-        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
+        return new BaseResponse<>(BaseResponseStatus.MY_TASK_READ_SUCCESS, response);
     }
 
     @PatchMapping("/{sprintId}/status/{taskId}")
@@ -120,6 +120,19 @@ public class TaskController {
         }
 
         return new BaseResponse<>(BaseResponseStatus.TASK_STATUS_UPDATE_SUCCESS);
+    }
+
+    @PatchMapping("/my/status/{taskId}")
+    public BaseResponse<BaseResponseStatus> updateMyTaskStatus(@PathVariable Long taskId,
+                                                             @RequestBody UpdateTaskStatusRequest request) {
+
+        try {
+            taskService.updateTaskStatus(taskId, request);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+
+        return new BaseResponse<>(BaseResponseStatus.MY_TASK_CHANGE_STATUS_SUCCESS);
     }
 
 }
