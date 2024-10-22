@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { formatUtil, getWeekRange, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
-import {useCalendar} from "@/utils/calendarUtils";
+import { useCalendar } from "@/utils/calendarUtils";
 
 const emit = defineEmits(['prevMonth', 'nextMonth', 'update:selectedWeek']);
 
@@ -404,7 +404,7 @@ watch(() => props.selectedWeek, () => {
   overflow: scroll;
   border-bottom: 1px solid;
   padding: 10px 0;
-  box-shadow: 2px -4px 4px rgba(0, 0, 0, 0.1) inset
+  box-shadow: 2px -2px 2px rgba(0, 0, 0, 0.1) inset
 }
 
 .sprint-period{
