@@ -40,7 +40,8 @@ public enum BaseResponseStatus {
     MY_WEEKLY_READ_SUCCESS(true, 3003, "나의 주간 캘린더 조회에 성공했습니다."),
     MY_DASHBOARD_READ_SUCCESS(true, 3004, "나의 대시보드 조회에 성공했습니다."),
     MY_ALARM_READ_SUCCESS(true, 3005, "나의 알람 조회에 성공했습니다."),
-
+    MY_TASK_READ_SUCCESS(true, 3006, "나의 태스크 목록 조회를 성공했습니다."),
+    MY_TASK_CHANGE_STATUS_SUCCESS(true, 3007, "나의 태스크 상태 변경을 성공했습니다."),
 
     /**
      * 4000: 워크스페이스
@@ -78,6 +79,7 @@ public enum BaseResponseStatus {
     NOTE_LABEL_SEARCH_SUCCESS(true,4030,"회의록 라벨 조회에 성공했습니다."),
     TASK_READ_ALL_BY_STATUS_SUCCESS(true, 4031, "태스크 목록을 상태 별 조회에 성공했습니다."),
     NOTE_SAVE_SUCCESS(true,4032,"회의록 저장에 성공했습니다."),
+
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
     WORKSPACE_NOT_EXISTS(false, 4102, "존재하지 않는 워크스페이스입니다."),
