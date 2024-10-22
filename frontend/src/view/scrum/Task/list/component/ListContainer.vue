@@ -1,11 +1,14 @@
 <script setup>
 import ListItem from './ListItem.vue';
-import {computed, defineEmits, defineProps, watch} from 'vue';
+import { computed, defineEmits, defineProps, watch } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
-import { getTaskCountBackgroundColor, getTaskCountColor,} from '@/utils/taskUtils';
-import {useRoute} from "vue-router";
-import {useSprintStore} from "@/stores/scrum/useSprintStore";
-import {useTaskStore} from "@/stores/scrum/useTaskStore";
+import {
+  getTaskCountBackgroundColor,
+  getTaskCountColor,
+} from '@/utils/taskUtils';
+import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -25,7 +28,6 @@ const props = defineProps({
 const taskCountBgStyle = computed(() => {
   return getTaskCountBackgroundColor(status);
 });
-
 
 const taskCountColorStyle = computed(() => {
   return getTaskCountColor(status).color;
@@ -66,29 +68,35 @@ const handleDragEnd = async (event) => {
         >
       </div>
       <div class="add-task-card">
-        <router-link v-if="!route.path.startsWith('/my')" :to='`/workspace/${workspaceId}/scrum/task/create`'>
+        <router-link
+          v-if="!route.path.startsWith('/my')"
+          :to="`/workspace/${workspaceId}/scrum/task/create`"
+        >
           <span class="plus">+</span> <span class="add-text">Add Task</span>
         </router-link>
       </div>
     </div>
 
     <VueDraggableNext
-        v-if="tasks && tasks.length > 0"
-        :list="tasks"
-        :item-key="status"
-        group="tasks"
-        draggable=".task-card"
-        handle=".task-card"
-        @end="handleDragEnd"
+      :list="tasks"
+      :item-key="status"
+      group="tasks"
+      draggable=".task-card"
+      handle=".task-card"
+      @end="handleDragEnd"
     >
-      <ListItem
+      <template v-if="tasks && tasks.length > 0">
+        <ListItem
           v-for="task in tasks"
           :key="task.id"
           :task="task"
           :id="task.id"
-      />
+        />
+      </template>
+      <template v-else>
+        <div class="task-card">현재 할당된 task가 없습니다.</div>
+      </template>
     </VueDraggableNext>
-    <p v-else class="task-card">현재 할당된 task가 없습니다.</p>
   </div>
 </template>
 

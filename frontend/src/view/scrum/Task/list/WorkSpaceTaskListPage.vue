@@ -3,6 +3,9 @@ import { inject, ref, watch, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import ListContainer from './component/ListContainer.vue';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+
+const sprintStore = useSprintStore();
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -12,6 +15,7 @@ contentsDescription.value = '워크스페이스의 태스크를 살펴보세요!
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
+const isLoading = ref(false);
 
 const taskStore = useTaskStore();
 const tasksByStatus = ref(null);
@@ -36,39 +40,54 @@ const reorderTasksByStatus = (tasksArray) => {
   ];
 };
 
+const fetchTasks = async () => {
+  isLoading.value = true;
+  tasksByStatus.value = await taskStore.getTaskList(
+    workspaceId,
+    sprintStore.nowSprintId
+  );
+  isLoading.value = false;
+};
+
 onMounted(() => {
   tasksByStatus.value = taskStore.taskList;
 });
 
 watch(
-    () => taskStore.taskList,
-    (newTaskList) => {
-      tasksByStatus.value = newTaskList;
-    },
-    { immediate: true }
+  () => taskStore.taskList,
+  (newTaskList) => {
+    tasksByStatus.value = newTaskList;
+  },
+  { immediate: true }
 );
 
 const hasTasks = computed(() => {
   return tasksByStatus.value.some(
-      (statusObject) => Object.values(statusObject)[0].length > 0
+    (statusObject) => Object.values(statusObject)[0].length > 0
   );
 });
 </script>
 
 <template>
   <div class="list">
-    <div v-if="hasTasks">
-      <ListContainer
+    <div v-if="isLoading" class="loading-message">
+      나의 칸반을 조회하는 중입니다..
+    </div>
+    <div v-else>
+      <div v-if="hasTasks">
+        <ListContainer
           v-for="task in reorderTasksByStatus(tasksByStatus)"
           :key="task.key"
           :data="task"
-      />
-    </div>
-    <div v-else class="initial-wrap">
-      <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
-      <router-link :to="`/workspace/${workspaceId}/scrum/task/create`"
-      >태스크 추가하기</router-link
-      >
+          @taskUpdated="fetchTasks"
+        />
+      </div>
+      <div v-else class="initial-wrap">
+        <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
+        <router-link :to="`/workspace/${workspaceId}/scrum/task/create`"
+          >태스크 추가하기</router-link
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -101,5 +120,14 @@ const hasTasks = computed(() => {
       background-color: #6f8ffc;
     }
   }
+}
+
+.loading-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #333;
 }
 </style>
