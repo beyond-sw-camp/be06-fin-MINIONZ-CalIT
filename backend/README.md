@@ -1,5 +1,5 @@
 
-![캘릿 배경](https://github.com/user-attachments/assets/fc9a224e-d6c7-4836-b4b4-f7f6f0a67b18)
+![header](https://capsule-render.vercel.app/api?type=venom&color=auto&height=300&section=header&text=CalIT&fontSize=50&desc=Optimize%20Your%20Workspace%20Scrum%20Management&descAlignY=60)
 
 # 👀 팀원 구성
 
