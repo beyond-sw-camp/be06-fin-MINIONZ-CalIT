@@ -22,7 +22,9 @@
 <br>
 
 ## 📆 CalIT 운영 환경
-![캘릿 추후 변경 예정](https://github.com/user-attachments/assets/5fc18c69-96fc-4415-99df-f7eca2411e3c)
+
+![CalIT 운영 환경](https://github.com/user-attachments/assets/72eb170f-9e90-4a0b-9734-fdc686eb67dc)
+
 
 | 항목                | 설명                                                                                                                                                   |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -63,7 +65,7 @@ CalIT은 Kubernetes 클러스터의 성능을 배치 작업 전후로 비교하�
 <br>
 
 ## ⛓️‍💥 젠킨스 파이프라인
-![캘릿 추후 변경 예정](https://github.com/user-attachments/assets/e2b26a94-5d7c-4caa-bcac-a968d11bf796)
+![CalIT 배포 환경](https://github.com/user-attachments/assets/72ae96ab-2860-4f5f-ad7a-f8ad757230e9)
 
 <details>
   <summary><b>백엔드 배포 시나리오</b></summary>
