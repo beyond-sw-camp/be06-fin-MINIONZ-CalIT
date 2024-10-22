@@ -69,12 +69,12 @@ https://calit.kro.kr
 ---
 
 # 1️⃣ 화면설계서
-[피그마 바로가기](https://www.figma.com/design/V59MNrd8govUfzrRPHeKZa/Wireframe?t=edCLfpAgm0v3cAhY-0)
+🔗 [🎨 피그마 바로가기](https://www.figma.com/design/V59MNrd8govUfzrRPHeKZa/Wireframe?t=edCLfpAgm0v3cAhY-0)
 
 <br>
 
 # 2️⃣ API 명세서
-[API 명세서 바로가기](https://tropical-ferry-82d.notion.site/API-33445269d61e4c0183bcecd43e44ee61?pvs=74)
+🔗 [💌 API 명세서 바로가기](https://tropical-ferry-82d.notion.site/API-33445269d61e4c0183bcecd43e44ee61?pvs=74)
 
 <br>
 
@@ -109,7 +109,8 @@ https://calit.kro.kr
   <summary><b>시스템 아키텍처 보기</b></summary>
   <div markdown="1">
 
-![CalIt 시스템 아키텍처_v1](https://github.com/user-attachments/assets/23248bec-3991-4626-a003-3daf5d836a67)
+![CalIT_시스템 아키텍처_V2](https://github.com/user-attachments/assets/5edb89af-c3fa-4db7-bfd8-4690a3d0c065)
+
 
 
   </div>
