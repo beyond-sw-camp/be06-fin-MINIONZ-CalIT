@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long>, TaskRepositoryCustom {
-//    List<Task> findAllBySprintSprintId(Long sprintId);
-    List<Task> findAllByWorkspaceWorkspaceId(Long workspaceId);
     Page<Task> findTasksByEndDateAfter(LocalDateTime endDate, Pageable pageable);
 
 }

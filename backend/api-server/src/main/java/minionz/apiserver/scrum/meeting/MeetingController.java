@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/meeting")
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class MeetingController {
     }
 
     @GetMapping("/{workspaceId}/{meetingId}")
-    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long meetingId) {
+    public BaseResponse<ReadMeetingResponse> readMeeting(@PathVariable Long workspaceId,@PathVariable Long meetingId) {
         ReadMeetingResponse response;
         try {
             response = meetingService.readMeeting(meetingId);

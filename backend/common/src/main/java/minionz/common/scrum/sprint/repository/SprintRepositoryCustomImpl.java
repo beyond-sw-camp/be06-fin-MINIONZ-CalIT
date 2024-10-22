@@ -37,19 +37,17 @@ public class SprintRepositoryCustomImpl implements SprintRepositoryCustom {
     }
 
     @Override
-    public int findInprogressSprintCount(Long workspaceId, LocalDateTime startDate, LocalDateTime endDate) {
+    public int findInprogressSprintCount(Long workspaceId) {
         QSprint sprint = QSprint.sprint;
         BooleanBuilder builder = new BooleanBuilder();
+        LocalDateTime today = LocalDateTime.now();
 
         if (workspaceId != null) {
             builder.and(sprint.workspace.workspaceId.eq(workspaceId));
         }
-        if (startDate != null) {
-            builder.and(sprint.startDate.loe(endDate));
-        }
-        if (endDate != null) {
-            builder.and(sprint.endDate.goe(startDate));
-        }
+        // 오늘 날짜가 포함된 스프린트 카운트
+        builder.and(sprint.startDate.loe(today))
+                .and(sprint.endDate.goe(today));
 
         Long count = queryFactory.select(sprint.count())
                 .from(sprint)
@@ -58,6 +56,7 @@ public class SprintRepositoryCustomImpl implements SprintRepositoryCustom {
 
         return (count != null) ? count.intValue() : 0;
     }
+
 
     @Override
     public int findAllSprintCount(Long workspaceId) {

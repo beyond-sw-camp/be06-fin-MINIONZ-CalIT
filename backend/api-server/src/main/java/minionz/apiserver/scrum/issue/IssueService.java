@@ -59,6 +59,7 @@ public class IssueService {
         List<Issue> issues = issueRepository.findByWorkspace_WorkspaceId(workspaceId);
 
         return issues.stream().map(issue -> ReadIssueResponse.builder()
+                        .issueId(issue.getIssueId())
                         .title(issue.getIssueTitle())
                         .contents(issue.getIssueContents())
                         .startDate(issue.getStartDate())

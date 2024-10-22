@@ -77,7 +77,7 @@ public enum BaseResponseStatus {
     NOTE_LABEL_CREATE_SUCCESS(true,4029,"회의록 라벨 생성에 성공했습니다."),
     NOTE_LABEL_SEARCH_SUCCESS(true,4030,"회의록 라벨 조회에 성공했습니다."),
     TASK_READ_ALL_BY_STATUS_SUCCESS(true, 4031, "태스크 목록을 상태 별 조회에 성공했습니다."),
-
+    NOTE_SAVE_SUCCESS(true,4032,"회의록 저장에 성공했습니다."),
 
     WORKSPACE_ACCESS_DENIED(false, 4101, "워크스페이스에 접근 권한이 없습니다."),
     WORKSPACE_NOT_EXISTS(false, 4102, "존재하지 않는 워크스페이스입니다."),
@@ -89,7 +89,7 @@ public enum BaseResponseStatus {
     SPRINT_NOT_EXISTS(false, 4108, "스프린트가 존재하지 않습니다."),
     WORKSPACE_INVITE_NOT_EXISTS(false, 4109, "해당 워크스페이스에 초대를 받지 않았습니다."),
     WORKSPACE_INVITE_END(false, 4110, "이미 처리 완료된 요청입니다."),
-
+    NOTE_NOT_FOUND(false,4111,"회의록이 존재하지 않습니다."),
     /**
      * 5000: 게시판
      */
@@ -103,6 +103,7 @@ public enum BaseResponseStatus {
     QABOARD_SEARCH_SUCCESS(true,5101,"게시판 검색에 성공했습니다."),
     QABOARD_SERACH_FAIL(true,5102,"게시판 검색에 실패했습니다."),
     QACOMMENT_CREATE_SUCCESS(true,5201,"댓글 등록에 성공했습니다."),
+    QACOMMENT_SEARCH_SUCCESS(true,5202,"댓글 검색에 성공했습니다."),
 
 
     ERRORBOARD_CREATE_FAIL(false, 5002, "게시판 등록에 실패했습니다."),
@@ -112,7 +113,7 @@ public enum BaseResponseStatus {
     QABOARD_CREATE_FAIL(false, 5003, "질문 게시판 등록에 실패했습니다."),
     QABOARD_SEARCH_FAIL(false, 5103, "질문 게시판 검색에 실패했습니다."),
     QACOMMENT_CREATE_FAIL(false, 5202, "질문 댓글 등록에 실패했습니다."),
-
+    TASK_ALREADY_ASSIGNED(false,5203,"이미 지정된 태스크입니다."),
     /**
      * 6000: 채팅
      */

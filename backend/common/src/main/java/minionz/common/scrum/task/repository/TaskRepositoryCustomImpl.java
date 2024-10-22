@@ -57,7 +57,8 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
         return queryFactory.selectFrom(task)
                 .join(task.taskParticipations).fetchJoin()
                 .where(task.taskParticipations.any().user.userId.eq(userId)
-                        .and(task.sprint.endDate.after(LocalDateTime.now())))
+                        .and(task.sprint.endDate.after(LocalDateTime.now()))
+                        .and(task.status.ne(TaskStatus.DONE)))
                 .orderBy(task.endDate.asc(), priorityOrder.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -71,8 +72,7 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
                 .select(task.count())
                 .from(task)
                 .join(task.sprint)
-                .where(task.sprint.workspace.workspaceId.eq(workspaceId)
-                        .and(task.sprint.endDate.after(LocalDateTime.now())))
+                .where(task.sprint.workspace.workspaceId.eq(workspaceId))
                 .fetchOne();
 
         return (count != null) ? count.intValue() : 0;
@@ -86,7 +86,6 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
                 .from(task)
                 .join(task.sprint)
                 .where(task.sprint.workspace.workspaceId.eq(workspaceId)
-                        .and(task.sprint.endDate.after(LocalDateTime.now()))
                         .and(task.status.eq(TaskStatus.DONE)))
                 .fetchOne();
 
@@ -163,5 +162,23 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom{
                 .where(builder)
                 .fetch();
     }
+
+    @Override
+    public List<Task> findAllByWorkspaceId(Long workspaceId) {
+        QTask task = QTask.task;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // Null 체크 추가
+        if (workspaceId != null) {
+            builder.and(task.sprint.workspace.workspaceId.eq(workspaceId));
+        }
+
+        return queryFactory.selectFrom(task)
+                .join(task.sprint).fetchJoin()
+                .join(task.sprint.workspace).fetchJoin()
+                .where(builder)
+                .fetch();
+    }
+
 
 }

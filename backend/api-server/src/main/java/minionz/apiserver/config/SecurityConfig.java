@@ -112,8 +112,10 @@ public class SecurityConfig {
                         // 태스크 관련 요청
                         .requestMatchers(HttpMethod.DELETE, "/task/**")
                         .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_ADMIN, context, response))
-                        .requestMatchers("/task/**")
-                        .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context, response))
+                        .requestMatchers(HttpMethod.GET,"/task/**")
+                        .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_MEMBER, context, response))
+                        .requestMatchers( "/task/**")
+                        .access((auth,context) -> hasAuthorities(auth, RoleConstants.ROLE_SPRINT_MEMBER, context,response))
                         // 이슈 관련 요청
                         .requestMatchers(HttpMethod.DELETE, "/issue/**")
                         .access((auth, context) -> hasAuthorities(auth, RoleConstants.ROLE_WORKSPACE_ADMIN, context, response))

@@ -25,8 +25,8 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("/{sprintId}")
-    public BaseResponse<BaseResponseStatus> createTask(
-            @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
+    public BaseResponse<BaseResponseStatus> createTask(@PathVariable Long sprintId,
+                                                       @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateTaskRequest request) {
 
         try {
             taskService.createTask(customUserDetails.getUser(), request);
@@ -39,8 +39,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_CREATE_SUCCESS);
     }
 
-    @GetMapping("/{sprintId}/{taskId}")
-    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId) {
+    @GetMapping("/{workspaceId}/{taskId}")
+    public BaseResponse<ReadTaskResponse> readTask(@PathVariable Long taskId, @PathVariable Long workspaceId) {
         ReadTaskResponse response;
 
         try {
@@ -52,8 +52,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_SUCCESS, response);
     }
 
-    @GetMapping("/{sprintId}/all/status")
-    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatus(@PathVariable Long sprintId) {
+    @GetMapping("/{workspaceId}/{sprintId}/all/status")
+    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatus(@PathVariable Long workspaceId,@PathVariable Long sprintId) {
 
         List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
 
@@ -66,8 +66,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_BY_STATUS_SUCCESS, response);
     }
 
-    @GetMapping("/{sprintId}/all/status/{userId}")
-    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatusAndUser(@PathVariable Long sprintId, @PathVariable Long userId) {
+    @GetMapping("/{workspaceId}/{sprintId}/all/status/{userId}")
+    public BaseResponse<List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllTaskByStatusAndUser(@PathVariable Long workspaceId,@PathVariable Long sprintId, @PathVariable Long userId) {
 
         List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
 
@@ -80,8 +80,8 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_BY_STATUS_SUCCESS, response);
     }
 
-    @GetMapping("/{sprintId}/all")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long sprintId) {
+    @GetMapping("/{workspaceId}/{sprintId}/all")
+    public BaseResponse<List<ReadAllTaskResponse>> readAllTask(@PathVariable Long workspaceId,@PathVariable Long sprintId) {
 
         List<ReadAllTaskResponse> response;
 
@@ -94,26 +94,11 @@ public class TaskController {
         return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALL_SUCCESS, response);
     }
 
-    @GetMapping("/{workspaceId}/workspaceall")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllWorkspaceTask(@PathVariable Long workspaceId) {
-
-        List<ReadAllTaskResponse> response;
-
-        try {
-            response = taskService.readAllWorkspaceTask(workspaceId);
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-
-        return new BaseResponse<>(BaseResponseStatus.TASK_READ_ALLWORKSPACE_SUCCESS, response);
-    }
-
-
     @GetMapping("/my/all")
-    public BaseResponse<List<ReadAllTaskResponse>> readAllMyTask(
+    public BaseResponse< List<Map<TaskStatus, List<ReadAllTaskResponse>>>> readAllMyTask(
             @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails) {
 
-        List<ReadAllTaskResponse> response;
+        List<Map<TaskStatus, List<ReadAllTaskResponse>>> response;
 
         try {
             response = taskService.readAllMyTask(customUserDetails.getUser());
@@ -125,7 +110,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{sprintId}/status/{taskId}")
-    public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId,
+    public BaseResponse<BaseResponseStatus> updateTaskStatus(@PathVariable Long taskId, @PathVariable Long sprintId,
                                                              @RequestBody UpdateTaskStatusRequest request) {
 
         try {

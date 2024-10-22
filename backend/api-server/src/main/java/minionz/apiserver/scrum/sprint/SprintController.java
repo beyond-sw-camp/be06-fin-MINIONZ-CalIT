@@ -26,7 +26,7 @@ public class SprintController {
   private final UserService userService;
 
   @PostMapping("/{workspaceId}")
-  public BaseResponse<BaseResponseStatus> createSprint(
+  public BaseResponse<BaseResponseStatus> createSprint(@PathVariable Long workspaceId,
           @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @RequestBody CreateSprintRequest request, HttpServletResponse response) {
 
     try {
@@ -43,7 +43,7 @@ public class SprintController {
 
   @GetMapping("/{workspaceId}/{sprintId}")
   public BaseResponse<ReadSprintResponse> readSprint(
-      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId) {
+      @AuthenticationPrincipal CustomSecurityUserDetails customUserDetails, @PathVariable Long sprintId, @PathVariable Long workspaceId) {
     ReadSprintResponse response;
 
     try {

@@ -7,6 +7,9 @@ import minionz.apiserver.scrum.meeting.model.request.CreateMeetingRequest;
 import minionz.apiserver.scrum.meeting.model.response.CreateMeetingResponse;
 import minionz.apiserver.scrum.meeting.model.response.ReadAllMeetingResponse;
 import minionz.apiserver.scrum.meeting.model.response.ReadMeetingResponse;
+import minionz.common.scrum.label.model.NoteLabel;
+import minionz.common.scrum.label_select.NoteLabelSelectRepository;
+import minionz.common.scrum.label_select.model.NoteLabelSelect;
 import minionz.common.scrum.meeting_participation.MeetingParticipationRepository;
 import minionz.common.scrum.meeting_participation.model.MeetingParticipation;
 import minionz.apiserver.scrum.sprint.model.response.Label;
@@ -16,11 +19,13 @@ import minionz.common.scrum.meeting.model.Meeting;
 import minionz.common.scrum.sprint.model.Sprint;
 import minionz.common.user.model.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +35,7 @@ public class MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final MeetingParticipationRepository meetingParticipationRepository;
+    private final NoteLabelSelectRepository noteLabelSelectRepository;
 
     @Transactional
     public CreateMeetingResponse createMeeting(User user, CreateMeetingRequest request, Long sprintId) {
@@ -44,8 +50,14 @@ public class MeetingService {
                         .build()
         );
 
+        List<Long> participants = request.getParticipants();
+
+        if(request.getParticipants() == null){
+            participants = new ArrayList<>();
+        }
+
         meetingParticipationRepository.save(MeetingParticipation.builder().meeting(meeting).user(user).build());
-        request.getParticipants().forEach(participantId ->
+        participants.forEach(participantId ->
                 meetingParticipationRepository.save(MeetingParticipation
                         .builder()
                         .meeting(meeting)
@@ -53,7 +65,22 @@ public class MeetingService {
                         .build())
         );
 
-//        TODO: 알람 보내야 합니다.
+        List<Long> labels = request.getLabels();
+
+        if(request.getLabels() == null){
+            labels = new ArrayList<>();
+        }
+
+        labels.forEach(labelId ->
+                noteLabelSelectRepository.save(NoteLabelSelect.builder()
+                        .meeting(Meeting.builder().meetingId(meeting.getMeetingId()).build())
+                        .noteLabel(NoteLabel.builder()
+                                .noteLabelId(labelId)
+                                .build())
+                        .build())
+        );
+
+
         return CreateMeetingResponse.builder()
                 .id(meeting.getMeetingId())
                 .title(meeting.getMeetingTitle())
@@ -80,6 +107,7 @@ public class MeetingService {
                 .endDate(meeting.getEndDate())
                 .createdAt(meeting.getCreatedAt())
                 .participants(findParticipants(meeting))
+                .labels(findLabels(meeting))
                 .build();
     }
 
@@ -95,23 +123,14 @@ public class MeetingService {
         ).toList();
     }
 
-    public List<Label> findLabels(Meeting meeting) {
-        return meeting.getNoteLabelSelects().stream().map(
-                label -> Label
-                        .builder()
-                        .id(label.getNoteLabel().getNoteLabelId())
-                        .labelName(label.getNoteLabel().getLabelName())
-                        .color(label.getNoteLabel().getColor())
-                        .build()
-        ).toList();
-    }
-
 
     public Page<ReadAllMeetingResponse> readAll(Long workspaceId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Meeting> result = meetingRepository.findMeetingByWorkspace(workspaceId, pageable);
 
-        Page<ReadAllMeetingResponse> readMeetingResponses = result.map(meeting -> {
+        Long meetingCount = meetingRepository.countMeetingsByWorkspaceId(workspaceId);
+
+        List<ReadAllMeetingResponse> readMeetingResponses = result.stream().map(meeting -> {
             List<Participant> participants = findParticipants(meeting);
             int participantCount = participants.size();  // 참여자 명수 계산
 
@@ -126,8 +145,23 @@ public class MeetingService {
                     .participantCount(participantCount)// 참여자 명수 추가
                     .labels(findLabels(meeting))
                     .build();
-        });
+        }).toList();
 
-        return readMeetingResponses;
+
+        Page<ReadAllMeetingResponse> readMeetingResponsesPage = new PageImpl<>(readMeetingResponses, pageable, meetingCount);
+
+
+        return readMeetingResponsesPage;
+    }
+
+    public List<Label> findLabels(Meeting meeting) {
+        return meeting.getNoteLabelSelects().stream().map(
+                label -> Label
+                        .builder()
+                        .id(label.getNoteLabel().getNoteLabelId())
+                        .labelName(label.getNoteLabel().getLabelName())
+                        .color(label.getNoteLabel().getColor())
+                        .build()
+        ).toList();
     }
 }

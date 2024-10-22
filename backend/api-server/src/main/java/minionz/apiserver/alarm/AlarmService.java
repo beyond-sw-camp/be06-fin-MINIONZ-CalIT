@@ -54,7 +54,7 @@ public class AlarmService {
         }
     }
 
-    public void sendScheduledEventsToClients(List<Long> receiverIds, Long alarmId, Long type) {
+    public void sendScheduledEventsToClients(List<Long> receiverIds, Long alarmId, Long type) throws JsonProcessingException {
         Optional<Alarm> sendAlarm = alarmRepository.findById(alarmId);
 
         if (!sendAlarm.isPresent()) {
@@ -104,9 +104,15 @@ public class AlarmService {
         }
     }
 
-    private void sendScheduledAlarmToReceiver(User receiver, Alarm sendAlarm, Long type) {
+    private void sendScheduledAlarmToReceiver(User receiver, Alarm sendAlarm, Long type) throws JsonProcessingException {
         SseEmitter emitter = emitters.get(String.valueOf(receiver.getUserId()));
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> alarmData = new HashMap<>();
+        alarmData.put("AlarmTitle", sendAlarm.getAlarmTitle());
+        alarmData.put("AlarmContents", sendAlarm.getAlarmContents());
+        alarmData.put("idx", String.valueOf(type));
 
+        String jsonData = objectMapper.writeValueAsString(alarmData);
         // 알림 객체 생성 및 저장
         UserAlarm userAlarm = UserAlarm.builder()
                 .receiver(receiver)
@@ -119,7 +125,7 @@ public class AlarmService {
 
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("message").data("AlarmContents : " + sendAlarm.getAlarmContents() + ",type : " + type));
+                emitter.send(SseEmitter.event().name("message").data(jsonData));
             } catch (IOException e) {
                 emitters.remove(receiver.getUserId()); // 오류 시 emitter 제거
             }
@@ -128,7 +134,7 @@ public class AlarmService {
 
 
     public SseEmitter addEmitter(Long receiverId) throws JsonProcessingException {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter emitter = new SseEmitter(0L);
         emitters.put(String.valueOf(receiverId), emitter);
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> alarmData = new HashMap<>();
