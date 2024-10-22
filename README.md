@@ -73,27 +73,17 @@ https://calit.kro.kr
 
 <br>
 
-# 2️⃣ 요구사항 정의서
-[요구사항 정의서 바로가기](https://docs.google.com/spreadsheets/d/1fKXnSxpzsYMWNJNASGVPXZmYl_KfQdj1/edit?usp=sharing&ouid=115137222118175399190&rtpof=true&sd=true)
-
-<br>
-
-# 3️⃣ WBS (Work Breakdown Structure)
-[WES 바로가기](https://docs.google.com/spreadsheets/d/1yd5FvkzXTpMNiSMW4Sv1cNizuwWCCDNQ/edit?usp=sharing&ouid=115137222118175399190&rtpof=true&sd=true)
-
-<br>
-
-# 4️⃣ API 명세서
+# 2️⃣ API 명세서
 [API 명세서 바로가기](https://tropical-ferry-82d.notion.site/API-33445269d61e4c0183bcecd43e44ee61?pvs=74)
 
 <br>
 
-# 5️⃣ ERD (Entity Relationship Diagram)
+# 3️⃣ ERD (Entity Relationship Diagram)
 <details>
   <summary><b>ERD 보기</b></summary>
   <div markdown="1">
     
-![CalIT_v2 ERD](https://github.com/user-attachments/assets/0026a620-5e1d-4970-90f7-bff35c3ffb66)
+![CalIT_v2 ERD](https://github.com/user-attachments/assets/db0e189b-f9f6-486a-87f6-96b50d10d6ca) 
 
 <div style="border:1px solid black; padding:10px; width: 250px; font-size: 12px; margin-top: 10px;">
   <b>🔍 ERD 설명</b><br>
@@ -114,7 +104,7 @@ https://calit.kro.kr
 
 <br>
 
-# 6️⃣ 시스템 아키텍처
+# 4️⃣ 시스템 아키텍처
 <details>
   <summary><b>시스템 아키텍처 보기</b></summary>
   <div markdown="1">
@@ -127,7 +117,7 @@ https://calit.kro.kr
 
 <br>
 
-# 7️⃣ 추가 설명
+# 5️⃣ 추가 설명
 
 ### 🔍 Backend
 
