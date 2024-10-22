@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 
 const sprintStore = useSprintStore();
+const isLoading = ref(false);
 
 const reorderTasksByStatus = (tasksArray) => {
   if (!tasksArray) return [];
@@ -28,10 +29,12 @@ const reorderTasksByStatus = (tasksArray) => {
 };
 
 const fetchTasks = async () => {
+  isLoading.value = true;
   tasksByStatus.value = await taskStore.getTaskList(
     workspaceId,
     sprintStore.nowSprintId
   );
+  isLoading.value = false;
 };
 
 const contentsTitle = inject('contentsTitle');
@@ -68,7 +71,11 @@ const hasTasks = computed(() => {
 <template>
   <div class="kanban-container">
     <div class="kanban-board" v-if="hasTasks">
+      <div v-if="isLoading" class="loading-message">
+        칸반을 조회하는 중입니다..
+      </div>
       <TaskColumn
+        v-else
         v-for="task in reorderTasksByStatus(tasksByStatus)"
         :key="task.key"
         :data="task"
@@ -111,5 +118,14 @@ const hasTasks = computed(() => {
       background-color: #6f8ffc;
     }
   }
+}
+
+.loading-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #333;
 }
 </style>
