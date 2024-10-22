@@ -1,8 +1,38 @@
 <script setup>
 import { inject, ref, watch, onMounted, computed } from 'vue';
-import TaskColumn from './component/KanbanColumn.vue'; // TaskColumn 컴포넌트
+import TaskColumn from './component/KanbanColumn.vue';
 import { useTaskStore } from '@/stores/scrum/useTaskStore';
 import { useRoute } from 'vue-router';
+import { useSprintStore } from '@/stores/scrum/useSprintStore';
+
+const sprintStore = useSprintStore();
+
+const reorderTasksByStatus = (tasksArray) => {
+  if (!tasksArray) return [];
+
+  const reorderedTasks = { NO_STATUS: [], TODO: [], IN_PROGRESS: [], DONE: [] };
+
+  tasksArray.forEach((statusObject) => {
+    const [status, tasks] = Object.entries(statusObject)[0];
+    if (reorderedTasks[status] !== undefined) {
+      reorderedTasks[status].push(...tasks);
+    }
+  });
+
+  return [
+    { NO_STATUS: reorderedTasks.NO_STATUS },
+    { TODO: reorderedTasks.TODO },
+    { IN_PROGRESS: reorderedTasks.IN_PROGRESS },
+    { DONE: reorderedTasks.DONE },
+  ];
+};
+
+const fetchTasks = async () => {
+  tasksByStatus.value = await taskStore.getTaskList(
+    workspaceId,
+    sprintStore.nowSprintId
+  );
+};
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -20,16 +50,14 @@ onMounted(() => {
   tasksByStatus.value = taskStore.taskList;
 });
 
-// watch로 taskList의 변화를 감지하고 처리
 watch(
   () => taskStore.taskList,
   (newTaskList) => {
-    tasksByStatus.value = newTaskList; // taskList가 변경되면 상태별로 업데이트
+    tasksByStatus.value = newTaskList;
   },
   { immediate: true }
 );
 
-// tasksByStatus 배열 중 값이 있는지 확인하는 computed property
 const hasTasks = computed(() => {
   return tasksByStatus.value.some(
     (statusObject) => Object.values(statusObject)[0].length > 0
@@ -38,9 +66,14 @@ const hasTasks = computed(() => {
 </script>
 
 <template>
-  <div class="kanban-board">
-    <div style="display: flex" v-if="hasTasks">
-      <TaskColumn v-for="task in tasksByStatus" :key="task.key" :data="task" />
+  <div class="kanban-container">
+    <div class="kanban-board" v-if="hasTasks">
+      <TaskColumn
+        v-for="task in reorderTasksByStatus(tasksByStatus)"
+        :key="task.key"
+        :data="task"
+        @taskUpdated="fetchTasks"
+      />
     </div>
     <div class="initial-wrap" v-else>
       <p>태스크를 추가하고 일정 관리를 시작해보세요!</p>
@@ -52,6 +85,13 @@ const hasTasks = computed(() => {
 </template>
 
 <style scoped>
+.kanban-board {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  overflow-x: auto;
+}
+
 .initial-wrap {
   display: flex;
   flex-direction: column;

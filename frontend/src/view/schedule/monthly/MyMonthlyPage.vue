@@ -4,6 +4,7 @@ import { useMyDashboardStore } from '@/stores/myspace/useMyDashboardStore';
 import MonthlyComponent from '@/view/schedule/monthly/component/MonthlyComponent.vue';
 import { monthlySettingUtils } from '@/utils/scheduleDateSettingUtils';
 import { useCalendar } from '@/utils/calendarUtils';
+import {formatUtil} from "@/utils/scheduleDateFnsUtils";
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -19,9 +20,11 @@ const currentStartDate = ref(startDate);
 const currentEndDate = ref(endDate);
 
 const fetchMonthlyData = async () => {
+  const formattedStartDate = formatUtil(currentStartDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
+  const formattedEndDate = formatUtil(currentEndDate.value, 'yyyy-MM-dd\'T\'HH:mm:ss');
   await mypageStore.getMyMonthly({
-    startDate: currentStartDate.value,
-    endDate: currentEndDate.value
+    startDate: formattedStartDate,
+    endDate: formattedEndDate,
   });
 };
 

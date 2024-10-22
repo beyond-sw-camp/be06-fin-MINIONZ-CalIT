@@ -9,8 +9,10 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 const dashboardStore = useWorkspaceDashboardStore();
+
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
+
 contentsTitle.value = 'Workspace Dashboard';
 contentsDescription.value = '워크스페이스의 대시보드를 살펴보세요!';
 
@@ -33,22 +35,22 @@ onMounted(async () => {
   <div class="dashboard">
     <div v-if="dashboard && dashboard.progress.allSprintCount > 0">
       <WorkspaceTaskOverview
-        :sprint-count="dashboard.progress.allSprintCount"
-        :completion-rate="
+          :sprint-count="dashboard.progress.allSprintCount"
+          :completion-rate="
           dashboard.progress.allTaskCount === 0
             ? 0
             : (dashboard.progress.successTaskCount /
                 dashboard.progress.allTaskCount) *
               100
         "
-        :tasks-completed="dashboard.progress.successTaskCount"
-        :total-tasks="dashboard.progress.allTaskCount"
-        :issue-count="dashboard.progress.issueCount"
+          :tasks-completed="dashboard.progress.successTaskCount"
+          :total-tasks="dashboard.progress.allTaskCount"
+          :issue-count="dashboard.progress.issueCount"
       />
-      <BurndownChart />
+      <BurndownChart/>
       <MeetingList
-        v-if="dashboard.upcomingMeetings"
-        :meetings="dashboard.upcomingMeetings"
+          v-if="dashboard.upcomingMeetings"
+          :meetings="dashboard.upcomingMeetings"
       />
     </div>
     <div v-else class="initial-wrap">

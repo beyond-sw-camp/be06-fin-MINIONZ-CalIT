@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import { setPersona } from '@/utils/personaUtils';
+import { formatDate } from '@/utils/timeUtils';
 
 defineProps({
   task: {
@@ -21,7 +22,7 @@ defineProps({
     <div class="list-items">
       <div class="labels">
         <span v-for="label in task.labels" :key="label" class="label">{{
-          label
+          label.labelName
         }}</span>
       </div>
       <div class="list-item-bundle">
@@ -38,7 +39,7 @@ defineProps({
         </div>
         <div class="list-item-end">
           <span class="task-id">{{ task.taskNumber }}</span>
-          <span class="due-date">{{ task.endDate }}</span>
+          <span class="due-date">{{ formatDate(task.endDate) }}</span>
         </div>
       </div>
     </div>
@@ -89,10 +90,17 @@ defineProps({
 
 .task-id {
   font-size: 14px;
-  color: #6b7280;
+  color: #28303F;
+  background-color: #fff;
+  padding: 3px 8px;
+  border-radius: 15px;
+  font-weight: 500;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.08);
 }
 .due-date {
-  font-size: 10px;
+  font-size: 12px;
+  min-width: 80px;
+  text-align: end;
 }
 .avatars {
   display: flex;
@@ -104,6 +112,7 @@ defineProps({
   height: 30px;
   border-radius: 50%;
   margin-right: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.08);
 }
 
 .list-items {
@@ -114,13 +123,13 @@ defineProps({
 }
 
 .list-item-bundle {
-  width: 30%;
+  width: 40%;
   display: flex;
   justify-content: space-between;
 }
 
 .list-item-end {
-  width: 30%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;

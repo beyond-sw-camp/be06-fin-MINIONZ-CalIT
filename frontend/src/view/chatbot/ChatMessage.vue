@@ -1,9 +1,10 @@
 <script setup>
-import space6 from '@/assets/icon/persona/space6.svg';
+import space6 from '@/assets/icon/persona/chatbot.svg';
 import { defineProps } from 'vue';
+import { getTimeDifference } from '@/utils/timeUtils';
 
 defineProps({
-  message:{
+  message: {
     type: Object,
     default: () => ({}),
   },
@@ -11,36 +12,36 @@ defineProps({
     type: Boolean,
     required: true,
   },
-  messageContents: {
-    type: String,
-    default: '',
-  },
-  file: {
-    type: Object,
-    default: () => ({}),
-  },
-  createdAt: {
-    type: String,
+  isFromChatBot: {
+    type: Boolean,
     required: true,
   },
 });
-
 </script>
 
 <template>
-  <div :class="['message-container', isOwnMessage ? 'own' : '']">
-    <img v-if="!isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
+  <div
+    :class="[
+      'message-container',
+      isFromChatBot ? 'chatbot' : isOwnMessage ? 'own' : '',
+    ]"
+  >
+    <img v-if="isFromChatBot" class="profile-pic" :src="space6" alt="profile" />
+
     <div class="message-content">
       <div class="message-bubble">
-        <img v-if="message.file && message.file.fileUrl && message.file.fileType.startsWith('image/')" :src="message.file.fileUrl" alt="file" style="max-width: 230px"/>
-        <a v-else-if="message.file && message.file.fileUrl" :href="message.file.fileUrl" target="_blank">{{ message.file.fileName || '파일 보기' }}</a>
-
-        <!-- 메시지가 있을 경우 메시지 표시 -->
-        <p v-else>{{ messageContents || 'No message' }}</p>
+        <p
+          v-html="
+            message.messageContents
+              ? message.messageContents.replace(/\n/g, '<br>')
+              : 'No message'
+          "
+        ></p>
       </div>
-      <span class="timestamp">{{ createdAt || 'No time' }}</span>
+      <span class="timestamp">{{
+        getTimeDifference(message.createdAt) || 'No time'
+      }}</span>
     </div>
-    <img v-if="isOwnMessage" class="profile-pic" :src="space6" alt="profile"/>
   </div>
 </template>
 
@@ -51,6 +52,9 @@ defineProps({
   margin-bottom: 15px;
 }
 
+.chatbot {
+  flex-direction: row;
+}
 
 .own {
   flex-direction: row-reverse;
@@ -72,12 +76,16 @@ defineProps({
   background-color: #f1f1f1;
   padding: 10px;
   border-radius: 20px;
-  max-width: 250px;
+  max-width: 450px;
 }
 
 .own .message-bubble {
   background-color: #4a90e2;
   color: white;
+}
+
+.chatbot .message-bubble {
+  background-color: #f1f1f1;
 }
 
 .timestamp {

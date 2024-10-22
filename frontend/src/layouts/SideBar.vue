@@ -1,17 +1,19 @@
 <script setup>
 import { computed, ref, watchEffect } from 'vue';
-import { useRoute } from "vue-router";
+import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user/useUserStore';
+import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import PersonalMenu from '@/layouts/component/menu/PersonalMenu.vue';
 import WorkSpaceMenu from '@/layouts/component/menu/WorkSpaceMenu.vue';
 import user1 from '@/assets/icon/persona/user1.svg';
 import router from '@/router';
-import { axiosInstance } from "@/utils/axiosInstance";
+import { Notyf } from 'notyf';
+import axios from 'axios';
 
 const route = useRoute();
-// const workspaceId = route.params.workspaceId;
+const workspaceStore = useWorkspaceStore();
 const isPersonalMenu = computed(() => route.path.startsWith('/my'));
-
+const notyf = new Notyf();
 const workspaceName = ref('');
 
 watchEffect(async () => {
@@ -19,30 +21,36 @@ watchEffect(async () => {
     workspaceName.value = 'My Space';
   } else {
     try {
-      const response = await axiosInstance.get(`/api/workspace/my/all`);
-      const currentWorkspace = response.data.result;
-      workspaceName.value = currentWorkspace[0].workspaceName;
-      console.log(currentWorkspace[0]);
+      workspaceName.value = workspaceStore.nowWorkspace.workspaceName;
     } catch (error) {
       workspaceName.value = 'Workspace';
     }
   }
 });
 
-const logout = () => {
-  useUserStore().logout();
-  router.push('/user/login');
+const logout = async () => {
+  try {
+    useUserStore().logout();
+    await axios.post(`/api/user/logout`, {}, { withCredentials: true });
+    notyf.success('로그아웃이 완료되었습니다');
+    router.push('/user/login');
+  } catch (error) {
+    console.error('Logout failed', error);
+    notyf.error('로그아웃에 실패했습니다. 다시 시도해 주세요. ');
+  }
 };
 </script>
 
 <template>
   <div class="sidebar_bg">
     <div class="logo_area">
-      <img src="@/assets/img/logo.svg" alt="logo">
+      <img src="@/assets/img/logo.svg" alt="logo" />
     </div>
     <div class="user-info">
-      <img :src="user1" alt="persona">
-      <p class="ubuntu-medium">{{ workspaceName }}</p>
+      <img :src="user1" alt="persona" />
+      <p class="ubuntu-medium">
+        {{ workspaceName }}
+      </p>
     </div>
     <div class="menu-wrap">
       <div>
@@ -54,7 +62,7 @@ const logout = () => {
         </div>
       </div>
       <div>
-        <hr>
+        <hr />
         <button class="logout-wrap" @click="logout">
           <i class="logout-ico"></i>
           Logout
@@ -66,7 +74,7 @@ const logout = () => {
 
 <style scoped>
 .sidebar_bg {
-  background-color: #F3F6FF;
+  background-color: #f3f6ff;
   width: 16.25rem;
   padding: 1.25rem;
   gap: 0.625rem;

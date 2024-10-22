@@ -90,7 +90,7 @@ const addWorkspace = async ({ workspaceName, participants }) => {
               class="input-field"
               @keyup.enter="searchUsers"
             />
-            <ul v-if="filteredUsers && filteredUsers.length">
+            <ul v-if="filteredUsers.length > 0">
               <li
                 v-for="user in filteredUsers"
                 :key="user.searchUserIdx"

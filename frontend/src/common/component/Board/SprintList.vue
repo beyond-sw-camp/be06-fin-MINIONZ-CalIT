@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { formatDate } from '@/utils/timeUtils';
 
 const router = useRouter();
 const route = useRoute();
@@ -49,12 +50,12 @@ const navigateToDetail = (index) => {
         </td>
         <td>
           <span>
-            {{ item.startDate }}
+            {{ formatDate(item.startDate) }}
           </span>
         </td>
         <td>
           <span>
-            {{ item.endDate }}
+            {{ formatDate(item.endDate) }}
           </span>
         </td>
       </tr>
@@ -72,6 +73,11 @@ a {
   width: 100%;
   border-collapse: collapse;
   margin: 0 30px;
+}
+
+tbody tr:hover {
+  cursor: pointer;
+  background-color: #f3f4f6;
 }
 
 .board-table th,

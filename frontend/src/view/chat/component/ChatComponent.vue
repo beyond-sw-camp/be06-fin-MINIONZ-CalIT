@@ -18,15 +18,14 @@ const closeModal = () => {
   <div class="chat-container">
     <div class="chat-messages">
       <div class="chat-msg-container">
-        <img :src="chatNoData" class="nodata-svg" alt="no Data">
+        <img :src="chatNoData" class="nodata-svg" alt="no Data" />
         <div class="nodata-info">
           <p>채팅을 시작해보세요</p>
           <button @click="openModal" class="open-btn">채팅방 추가</button>
         </div>
-
       </div>
     </div>
-    <FriendsModal v-show="showModal" @close="closeModal"/>
+    <FriendsModal v-show="showModal" @close="closeModal" />
   </div>
 </template>
 
@@ -43,31 +42,31 @@ const closeModal = () => {
   overflow-y: auto;
   padding: 10px;
   height: 100%;
-  //margin-top: 60px;
+  margin-top: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.chat-msg-container{
+.chat-msg-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  p{
+  p {
     font-weight: 500;
     font-size: 20px;
-    color: #28303F;
+    color: #28303f;
   }
 }
 
-.nodata-svg{
+.nodata-svg {
   width: 200px;
   height: 200px;
   margin: 0 auto;
 }
 
-.nodata-info{
+.nodata-info {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,13 +99,13 @@ const closeModal = () => {
 }
 
 .open-btn {
-  background-color: #C6D2FD;
-  //font-size: 24px;
+  background-color: #c6d2fd;
+  font-size: 24px;
   border: none;
   padding: 10px 20px;
   border-radius: 20px;
   cursor: pointer;
-  color: #28303F;
+  color: #28303f;
   margin-top: 10px;
   font-weight: 500;
 }

@@ -1,18 +1,35 @@
 <script setup>
-import { ref, computed, onMounted, defineProps, defineEmits } from 'vue';
+import {ref, computed, onMounted, defineProps, defineEmits, watch} from 'vue';
 import { useRoute } from "vue-router";
-import { formatUtil,getWeekRange, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
+import { formatUtil, getWeekRange, getWeekDaysUtil } from '@/utils/scheduleDateFnsUtils';
 import PerfectScrollbar from 'perfect-scrollbar';
 import ScheduleModal from "@/view/schedule/component/ScheduleModal.vue";
+import { useCalendar } from "@/utils/calendarUtils";
+
+const emit = defineEmits(['prevMonth', 'nextMonth', 'update:selectedWeek']);
 
 const props = defineProps({
+  startDate: {
+    type: String,
+    required: true,
+  },
+  endDate: {
+    type: String,
+    required: true,
+  },
   selectedWeek: {
     type: Array,
     required: true
   },
+  sprintData: {
+    type: Array,
+    required: true,
+  },
+  meetingData: {
+    type: Array,
+    required: true,
+  }
 });
-
-const emit = defineEmits(['update:selectedWeek']);
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
@@ -24,7 +41,7 @@ onMounted(() => {
   }
 });
 
-const today = ref(new Date());
+// const today = ref(new Date());
 const hours = ['7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM'];
 
 const isVisible = ref(false);
@@ -45,11 +62,11 @@ const show = (clickEvent, event) => {
     endDate: event.endDate,
     contents: event.contents,
     participants: event.participants,
-    top: event.clientY,
-    left: event.clientX
+    top: clickEvent.clientY,
+    left: clickEvent.clientX
   };
   isVisible.value = true;
-  console.log(event.clientY, event.clientX);
+  console.log(clickEvent.clientY, clickEvent.clientX);
   console.log(modalProps.value);
 };
 
@@ -57,39 +74,16 @@ const goToToday = () => {
   const todayDate = new Date();
   emit('update:selectedWeek', [todayDate]);
 };
-const daysInWeek = computed(() =>
-    getWeekDaysUtil(
-        props.selectedWeek.length ? props.selectedWeek[0] : today.value
-    ));
-const prevWeek = () => {
-  const prevDate = new Date(props.selectedWeek[0]);
-  prevDate.setDate(prevDate.getDate() - 7);
-  emit('update:selectedWeek', [prevDate]);
+
+const handlePrevWeek = () => {
+  emit('prevWeek')
 };
 
-const nextWeek = () => {
-  const nextDate = new Date(props.selectedWeek[0]);
-  nextDate.setDate(nextDate.getDate() + 7);
-  emit('update:selectedWeek', [nextDate]);
+const handleNextWeek = () => {
+  emit('nextWeek')
 };
 
 const events = ref([]);
-
-onMounted(async () => {
-  if (Array.isArray(props.data)) {
-    events.value = await Promise.all(props.data.map(async (meeting) => ({
-      id: meeting.id,
-      date: new Date(meeting.startDate),
-      title: meeting.title,
-      startDate: meeting.startDate,
-      endDate: meeting.endDate,
-      contents: meeting.contents,
-      participants: meeting.participants
-    })));
-  } else {``
-    events.value = [];
-  }
-});
 
 const eventsForDay = (day) => {
   return events.value.filter(event => formatUtil(event.date, 'yyyy-MM-dd') === formatUtil(day, 'yyyy-MM-dd'));
@@ -97,7 +91,7 @@ const eventsForDay = (day) => {
 
 function getEventTop(startDate) {
   const startHour = new Date(startDate).getHours();
-  return (startHour * 80)+10;
+  return (startHour * 80) + 10;
 }
 
 
@@ -108,6 +102,62 @@ function getEventWidth(startDate, endDate) {
 
   return Math.ceil(duration) + 1;
 }
+
+const sprintsForWeek = (weekStart) => {
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+  return props.sprintData?.filter(sprint => {
+    const sprintStart = new Date(sprint.startDate);
+    const sprintEnd = new Date(sprint.endDate);
+    return (sprintStart >= weekStart && sprintStart <= weekEnd) || (sprintEnd >= weekStart && sprintEnd <= weekEnd) || (sprintStart <= weekStart && sprintEnd >= weekEnd);
+  }).map(sprint => {
+    const startDay = parseInt(formatUtil(sprint.startDate, 'd'), 10);
+    const endDay = parseInt(formatUtil(sprint.endDate, 'd'), 10);
+    const duration = endDay - startDay + 1;
+    const sprintClass = {
+      ...sprint,
+      gridColumnStart: startDay,
+      gridColumnEnd: `span ${duration}`,
+    };
+    if (new Date(sprint.startDate) < weekStart) {
+      sprintClass.class = 'start';
+    }
+    if (new Date(sprint.endDate) > weekEnd) {
+      sprintClass.class = 'end';
+    }
+    return sprintClass;
+  }) || [];
+};
+
+const daysInWeek = computed(() => {
+  return getWeekDaysUtil( props.startDate );
+});
+
+const weekRange = computed(() => {
+  return props.startDate ? getWeekRange(new Date(props.startDate)) : '';
+});
+
+const {
+  currentYear,
+  currentMonth,
+  weekDays,
+  daysInMonth,
+  startBlankDays,
+} = useCalendar();
+
+const currentStartDate = ref(props.startDate);
+const currentEndDate = ref(props.endDate);
+
+watch(() => props.selectedWeek, () => {
+  const { startDate, endDate } = props;
+  currentStartDate.value = startDate;
+  currentEndDate.value = endDate;
+  currentYear.value = parseInt(formatUtil(startDate, 'yyyy'), 10);
+  currentMonth.value = parseInt(formatUtil(startDate, 'M'), 10);
+  daysInMonth.value = parseInt(formatUtil(startDate, 't'), 10);
+  startBlankDays.value = parseInt(formatUtil(startDate, 'i'), 10);
+  weekDays.value = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+}, { immediate: true });
 </script>
 
 <template>
@@ -117,11 +167,11 @@ function getEventWidth(startDate, endDate) {
         <button @click="goToToday" class="today-btn">Today</button>
       </div>
       <div class="calendar-nav">
-        <button @click="prevWeek" class="week-clicker">
+        <button @click="handlePrevWeek" class="week-clicker">
           <i class="arrowL-icon"></i>
         </button>
-        <span>{{ getWeekRange(props.selectedWeek.length ? props.selectedWeek[0] : today) }}</span>
-        <button @click="nextWeek" class="week-clicker">
+        <span>{{ weekRange }}</span>
+        <button @click="handleNextWeek" class="week-clicker">
           <i class="arrowR-icon"></i>
         </button>
       </div>
@@ -133,6 +183,9 @@ function getEventWidth(startDate, endDate) {
 
     <div class="calendar-grid">
       <div class="time-column">
+        <div class="time-slot sprint-column">
+          Sprint
+        </div>
         <div class="time-slot" v-for="hour in hours" :key="hour">
           {{ hour }}
         </div>
@@ -142,14 +195,22 @@ function getEventWidth(startDate, endDate) {
         <div class="day-header-wrap">
           <div class="day-header">{{ formatUtil(day, 'EEE, MMM d') }}</div>
         </div>
+
         <div class="events-column">
-          <div v-for="event in eventsForDay(day)" :key="event.id" class="event"
+          <div class="sprint-period">
+            <div class="sprints-column">
+              <div v-for="sprint in sprintsForWeek(day)" :key="sprint.id" :class="['event', 'sprint', sprint.class]" class="sprint-title">
+                <span class="sprint-title-text">{{ sprint.title }}</span>
+              </div>
+            </div>
+          </div>
+          <div v-for="event in eventsForDay(day)" :key="event.id" class="event meetings"
                :style="{
                   top: getEventTop(event.startDate) + 'px',
                   gridColumn: 'span ' + getEventWidth(event.startDate, event.endDate),
                   backgroundColor: event.color
                }"
-               @click="show($event, event)"
+               @click="show(clickEvent, event)"
           >
             <div class="event-title">
               {{ event.title }}
@@ -185,6 +246,7 @@ function getEventWidth(startDate, endDate) {
   justify-content: space-between;
   align-items: flex-end;
   padding-bottom: 10px;
+
   button {
     background: #e0e8ff;
     color: #28303f;
@@ -192,10 +254,12 @@ function getEventWidth(startDate, endDate) {
     cursor: pointer;
     font-size: 14px;
   }
+
   .today-btn {
     border-radius: 20px;
     padding: 5px 10px;
   }
+
   .week-clicker {
     border-radius: 50%;
     display: flex;
@@ -219,12 +283,14 @@ function getEventWidth(startDate, endDate) {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  i{
+
+  i {
     width: 24px;
     height: 24px;
     background-size: cover;
     display: inline-block;
   }
+
   span {
     font-size: 18px;
     font-weight: 500;
@@ -239,6 +305,7 @@ function getEventWidth(startDate, endDate) {
   padding: 5px 10px;
   border-radius: 25px;
   font-size: 14px;
+
   a {
     color: #666daf;
     text-decoration: none;
@@ -261,7 +328,7 @@ function getEventWidth(startDate, endDate) {
 .calendar-grid {
   display: grid;
   grid-template-columns: 50px repeat(7, 1fr);
-  gap: 10px;
+  gap: 5px;
   overflow: scroll;
   height: 100%;
   box-sizing: border-box;
@@ -271,7 +338,6 @@ function getEventWidth(startDate, endDate) {
   display: flex;
   flex-direction: column;
   margin-top: 35px;
-  background-color: rgba(224, 232, 255, 0.3);
   border-radius: 15px;
   padding-top: 10px;
 }
@@ -283,14 +349,32 @@ function getEventWidth(startDate, endDate) {
   justify-content: center;
   font-size: 14px;
   color: #555;
+
+  &:nth-child(2) {
+    border-radius: 15px 15px 0 0;
+  }
+
+  &:nth-child(n+2) {
+    background-color: rgba(224, 232, 255, 0.5);
+  }
+}
+
+.sprint-column {
+  background-color: rgba(219, 39, 119, 0.1);
+  border: 2px solid #db2777;
+  border-radius: 30px;
+  padding: 10px;
+  height: 50px;
+  margin-bottom: 10px;
 }
 
 .days-column {
   display: flex;
   flex-direction: column;
+  min-width: 200px;
 }
 
-.day-header-wrap{
+.day-header-wrap {
   background-color: #fff;
   position: sticky;
   top: 0;
@@ -311,11 +395,31 @@ function getEventWidth(startDate, endDate) {
   flex-wrap: wrap;
 }
 
+.sprints-column {
+  //height: 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  overflow: scroll;
+  border-bottom: 1px solid;
+  padding: 10px 0;
+  box-shadow: 2px -2px 2px rgba(0, 0, 0, 0.1) inset
+}
+
+.sprint-period{
+  overflow-x: hidden;
+  width: inherit;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: 70px;
+}
+
 .events-column {
   background-color: rgba(249, 249, 249, 0.5);
   flex-grow: 1;
   border-radius: 8px;
-  padding: 10px;
+  //padding: 10px;
   height: 80px;
   position: relative;
   grid-auto-rows: 80px;
@@ -327,8 +431,6 @@ function getEventWidth(startDate, endDate) {
   padding: 10px;
   border-radius: 8px;
   color: #28303F;
-  background-color: rgba(8,181,234,0.1);
-  border: 2px solid rgba(8,181,234);
   font-size: 14px;
   cursor: pointer;
   font-weight: 500;
@@ -338,6 +440,14 @@ function getEventWidth(startDate, endDate) {
   width: 90%;
   box-sizing: border-box;
   margin-left: 5%;
+}
+
+.event.meetings {
+  border: 2px solid #2196f3;
+  background-color: rgba(33, 150, 243, 0.1);
+  margin: 0 10px;
+  border-radius: 5px;
+  width: calc(100% - 20px);
 }
 
 .event-title {
@@ -354,5 +464,44 @@ function getEventWidth(startDate, endDate) {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.event.sprint {
+  background-color: rgba(219, 39, 119, 0.1);
+  grid-column: span 2;
+  height: 30px;
+  position: relative;
+  margin: 0;
+  line-height: 30px;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  border-radius: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sprint-title-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 30px;
+}
+
+.event.sprint.end {
+  border-left: 2px solid #db2777;
+  margin-left: 10px;
+  border-radius: 5px 0 0 5px;
+  width: calc(100% - 10px);
+}
+
+.event.sprint.start {
+  border-right: 2px solid #db2777;
+  margin-right: 10px;
+  border-radius: 0 5px 5px 0;
+  width: calc(100% - 10px);
 }
 </style>

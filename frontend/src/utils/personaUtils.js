@@ -50,5 +50,8 @@ export const personaList = [
 ]
 
 export function setPersona(id) {
+    if (id === null) {
+        id = Math.floor(Math.random() * 12) + 1;
+    }
     return personaList.find(persona => persona.id === id).src();
 }

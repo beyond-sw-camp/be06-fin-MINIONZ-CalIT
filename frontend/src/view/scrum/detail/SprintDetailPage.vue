@@ -1,10 +1,7 @@
 <script setup>
-import { inject, onMounted } from 'vue';
+import { computed, inject, onMounted } from 'vue';
 import { useSprintStore } from '@/stores/scrum/useSprintStore';
 import { setPersona } from '@/utils/personaUtils';
-
-// const route = useRoute();
-// const sprintId = route.params.sprintId;
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
@@ -14,9 +11,11 @@ contentsDescription.value = '스프린트 정보를 확인해보세요!';
 
 const sprintStore = useSprintStore();
 
-onMounted(async () => {
-  console.log('hi');
+const filteredLabels = computed(() => {
+  return (sprintStore.sprint.labels || []).filter((label) => label.labelName);
+});
 
+onMounted(async () => {
   await sprintStore.getSprint();
 });
 </script>
@@ -29,14 +28,14 @@ onMounted(async () => {
           <i class="sprint-title column-icon"></i>
           스프린트 제목
         </span>
-        <p class="title-editor">{{ sprintStore.sprint.title }}</p>
+        <p class="title-editor text">{{ sprintStore.sprint.title }}</p>
       </div>
-      <div class="issue-section">
+      <div class="sprint-section">
         <span class="column">
           <i class="sprint-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor">{{ sprintStore.sprint.contents }}</p>
+        <p class="description-editor text">{{ sprintStore.sprint.contents }}</p>
       </div>
       <div class="author-section">
         <div class="participants">
@@ -44,7 +43,7 @@ onMounted(async () => {
             <i class="user-multiple column-icon"></i>
             스프린트 참여자
           </span>
-          <div class="users-list">
+          <div class="users-list text">
             <div
               class="user-profile"
               v-for="participant in sprintStore.sprint.participants"
@@ -56,19 +55,20 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <div class="issue-section">
+      <div class="sprint-section">
         <span class="column">
           <i class="label-add column-icon"></i>
           라벨
         </span>
-        <div class="label-list">
+        <div class="label-list text">
           <button
             class="label-button"
-            v-for="label in sprintStore.sprint.labels"
+            v-for="label in filteredLabels"
             :key="label.id"
           >
-            {{ label.name }}
+            {{ label.labelName }}
           </button>
+          <span v-if="filteredLabels.length === 0">라벨이 없습니다.</span>
         </div>
       </div>
     </div>
@@ -96,6 +96,7 @@ a {
 
 .sprint-title-container {
   display: flex;
+  flex-direction: column;
 }
 
 .user-multiple {
@@ -114,14 +115,14 @@ a {
   flex-direction: column;
 }
 
-.issue-section {
+.sprint-section {
   display: flex;
+  flex-direction: column;
 }
 
-.author,
 .participants {
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
 
 .sprint-title {
@@ -161,9 +162,10 @@ a {
   padding: 5px 10px;
   border-radius: 15px;
   cursor: pointer;
+  margin-right: 5px;
 }
 
-.issue-button {
+.sprint-button {
   background-color: #f8d7da;
   color: #c82333;
   border: none;
@@ -173,24 +175,8 @@ a {
   margin-right: 10px;
 }
 
-.issue-id {
-  color: #28303f;
-  background-color: #f3f6ff;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 12px;
-}
-
-.issue-add {
-  background-image: url('@/assets/icon/boardIcon/issueAdd.svg');
-}
-
-.task-add {
-  background-image: url('@/assets/icon/boardIcon/taskAdd.svg');
-}
-
 .title-editor {
-  font-size: 1.5rem;
+  font-size: 1rem;
   border: 0;
 }
 
@@ -198,8 +184,8 @@ a {
   font-size: 1rem;
   border: 0;
   font-weight: 400;
-  width: 100%;
   margin-left: 15px;
+  flex-direction: column;
 }
 
 .content-editor {
@@ -228,11 +214,22 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .users-list {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.text {
+  margin: 10px 0 0 30px;
+  background-color: #f7f8f9;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 .fade-enter-active,

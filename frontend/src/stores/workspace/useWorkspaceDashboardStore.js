@@ -1,7 +1,11 @@
 import { ref } from 'vue';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { defineStore } from 'pinia';
-import { weeklySettingUtils } from '@/utils/scheduleDateSettingUtils';
+// import { weeklySettingUtils } from '@/utils/scheduleDateSettingUtils';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export const useWorkspaceDashboardStore = defineStore(
   'workspaceDashboardStore',
@@ -16,24 +20,38 @@ export const useWorkspaceDashboardStore = defineStore(
         `/api/sprint/all/${workspaceId}`,
         { withCredentials: true }
       );
-      workspaceSprintData.value = response.data.result;
+
+      if (response.data.success) {
+        workspaceSprintData.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     };
 
-    const getWorkspaceMonthly = async ({workspaceId, startDate, endDate}) => {
+    const getWorkspaceMonthly = async ({ workspaceId, startDate, endDate }) => {
       const response = await axiosInstance.get(
         `/api/schedule/${workspaceId}/monthly?startDate=${startDate}&endDate=${endDate}`,
         { withCredentials: true }
       );
-      workspaceMonthlyData.value = response.data.result;
+
+      if (response.data.success) {
+        workspaceMonthlyData.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     };
 
-    const getWorkspaceWeekly = async (workspaceId) => {
-      const { startDate, endDate } = weeklySettingUtils();
+    const getWorkspaceWeekly = async ({workspaceId, startDate, endDate}) => {
       const response = await axiosInstance.get(
         `/api/schedule/${workspaceId}/weekly?startDate=${startDate}&endDate=${endDate}`,
         { withCredentials: true }
       );
-      workspaceWeeklyData.value = response.data.result;
+
+      if (response.data.success) {
+        workspaceWeeklyData.value = response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     };
 
     const getWorkspaceDashboard = async (workspaceId) => {
@@ -41,8 +59,13 @@ export const useWorkspaceDashboardStore = defineStore(
         `/api/dashboard/${workspaceId}`,
         { withCredentials: true }
       );
-      workspaceDashboardData.value = response.data.result;
-      return response.data.result;
+
+      if (response.data.success) {
+        workspaceDashboardData.value = response.data.result;
+        return response.data.result;
+      } else {
+        notyf.error(response.data.message);
+      }
     };
 
     return {

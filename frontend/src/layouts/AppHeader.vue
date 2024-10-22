@@ -2,7 +2,6 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/stores/user/useUserStore';
 import { useAlarmStore } from '@/stores/alarm/useAlarmStore';
-import { useWorkspaceStore } from '@/stores/workspace/useWorkspaceStore';
 import ChatModal from '@/layouts/component/modal/ChatModal.vue';
 import AlarmModal from '@/layouts/component/modal/AlarmModal.vue';
 import WorkspaceModal from '@/layouts/component/modal/WorkspaceModal.vue';
@@ -41,13 +40,27 @@ const closeWorkspaceModal = () => {
 };
 
 const handleClickOutside = (event) => {
-  if (showChatModal.value && !event.target.closest('.chat') && !event.target.closest('.notification-item') && !event.target.closest('.chat-modal')) {
+  if (
+      showChatModal.value &&
+      !event.target.closest('.chat') &&
+      !event.target.closest('.notification-item') &&
+      !event.target.closest('.chat-modal')
+  ) {
     closeChatModal();
   }
-  if (showAlarmModal.value && !event.target.closest('.alarm') && !event.target.closest('.notification-item') && !event.target.closest('.alarm-modal')) {
+  if (
+      showAlarmModal.value &&
+      !event.target.closest('.alarm') &&
+      !event.target.closest('.notification-item') &&
+      !event.target.closest('.alarm-modal')
+  ) {
     closeAlarmModal();
   }
-  if (showWorkspaceModal.value && !event.target.closest('.workspace-bundle') && !event.target.closest('.workspace-list-container')) {
+  if (
+      showWorkspaceModal.value &&
+      !event.target.closest('.workspace-bundle') &&
+      !event.target.closest('.workspace-list-container')
+  ) {
     closeWorkspaceModal();
   }
 };
@@ -61,11 +74,8 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
-const workspaceId = useWorkspaceStore().workspaceId;
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
-
-const userId = userStore.user.value?.idx;
 
 const loginId = computed(() => {
   return userStore.user.value ? userStore.user.value.loginId : '';
@@ -80,29 +90,44 @@ const loginId = computed(() => {
     <div class="right-side">
       <div class="notice-bundle">
         <div>
-          <router-link :to="`/workspace/${workspaceId}/chatbot/${userId}`">
-            <img :src="chatbot" alt="chatbot" style="width: 27px; height: 27px">
+          <router-link :to="`/my/chatbot`">
+            <img
+                :src="chatbot"
+                alt="chatbot"
+                style="width: 27px; height: 27px"
+            />
           </router-link>
         </div>
         <div class="chat" @click="toggleChatModal">
-          <img :src="message" alt="chat">
+          <img :src="message" alt="chat"/>
         </div>
         <div class="alarm" @click="toggleAlarmModal">
-          <img :src="alarm" alt="alarm">
-          <span v-show="alarmStore.alarms.length > 0" class="alarm-indicator"></span>
+          <img :src="alarm" alt="alarm"/>
+          <span
+              v-show="alarmStore.alarms.length > 0"
+              class="alarm-indicator"
+          ></span>
         </div>
       </div>
       <div class="workspace-bundle" @click="toggleWorkspaceModal">
         <div>
-          <img :src="user1" alt="persona" class="workspace-persona">
+          <img :src="user1" alt="persona" class="workspace-persona"/>
         </div>
         <div>
-          <img :src="arrow" alt="arrow" :class="{ 'arrow-rotated': showWorkspaceModal }" class="arrow">
+          <img
+              :src="arrow"
+              alt="arrow"
+              :class="{ 'arrow-rotated': showWorkspaceModal }"
+              class="arrow"
+          />
         </div>
       </div>
       <ChatModal v-if="showChatModal" :close-modal="closeChatModal"/>
       <AlarmModal v-if="showAlarmModal" :close-modal="closeAlarmModal"/>
-      <WorkspaceModal v-if="showWorkspaceModal" :close-modal="closeWorkspaceModal"/>
+      <WorkspaceModal
+          v-if="showWorkspaceModal"
+          :close-modal="closeWorkspaceModal"
+      />
     </div>
   </div>
 </template>
@@ -173,7 +198,7 @@ img {
   top: 3px;
   width: 10px;
   height: 10px;
-  background-color: #FF6B6B;
+  background-color: #ff6b6b;
   border-radius: 50%;
   border: 2px solid white;
 }
@@ -184,7 +209,7 @@ img {
   right: 0;
   width: 10px;
   height: 10px;
-  background-color: #FF6B6B;
+  background-color: #ff6b6b;
   border-radius: 50%;
   border: 2px solid white;
 }

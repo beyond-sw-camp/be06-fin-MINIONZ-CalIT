@@ -1,8 +1,13 @@
 <script setup>
 import { useRoute } from 'vue-router';
+import { ref, watch } from "vue";
 
 const route = useRoute();
-const workspaceId = route.params.workspaceId;
+const workspaceId = ref(route.params.workspaceId);
+
+watch(() => route.params.workspaceId, (newId) => {
+  workspaceId.value = newId;
+});
 </script>
 
 <template>

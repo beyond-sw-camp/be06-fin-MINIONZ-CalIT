@@ -15,34 +15,39 @@ defineProps({
   <div class="priority-task">
     <h3>Priority Task</h3>
     <div class="task-card-container">
-      <div class="task-card" v-for="task in tasks" :key="task.id">
-        <div class="task-header">
-          <div class="titles">
-            <h4>{{ task.title }}</h4>
-            <p>{{ task.workspaceName }}</p>
-          </div>
-          <div class="priority">
-            <p :class="priorityClass(task.priority)">{{ task.priority }}</p>
-            <p class="task-id">{{ task.taskNumber }}</p>
-          </div>
-        </div>
-        <div class="task-info">
-          <div class="task-info-txt">
-            <p>{{ task.isStarted }}</p>
-            <div>
-<!--              <img :src="coworker1" alt="coworker1">-->
-<!--              <img :src="coworker2" alt="coworker2">-->
-<!--              <img :src="coworker3" alt="coworker3">-->
+      <div v-if="tasks.length > 0">
+        <div class="task-card" v-for="task in tasks" :key="task.id">
+          <div class="task-header">
+            <div class="titles">
+              <h4>{{ task.title }}</h4>
+              <p>{{ task.workspaceName }}</p>
+            </div>
+            <div class="priority">
+              <p :class="priorityClass(task.priority)">{{ task.priority }}</p>
+              <p class="task-id">{{ task.taskNumber }}</p>
             </div>
           </div>
-          <div class="task-percent">
-            <hr>
+          <div class="task-info">
+            <div class="task-info-txt">
+              <p>{{ task.isStarted }}</p>
+              <div>
+                <!--                <img :src="coworker1" alt="coworker1">-->
+                <!--                <img :src="coworker2" alt="coworker2">-->
+                <!--                <img :src="coworker3" alt="coworker3">-->
+              </div>
+            </div>
+            <div class="task-percent">
+              <hr>
+            </div>
+          </div>
+          <div class="task-footer">
+            <p>Due: {{ task.endDate }}</p>
+            <button>{{ task.actionText }}</button>
           </div>
         </div>
-        <div class="task-footer">
-          <p>Due: {{ task.endDate }}</p>
-          <button>{{ task.actionText }}</button>
-        </div>
+      </div>
+      <div v-else>
+        <p>임박한 태스크가 없습니다</p>
       </div>
     </div>
   </div>

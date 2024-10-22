@@ -9,12 +9,13 @@ import send from '@/assets/icon/chatIcon/sendIcon.svg';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { useUserStore } from '@/stores/user/useUserStore';
+import { useChatRoomStore } from '@/stores/chat/useChatRoomStore';
 import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 
 const userStore = useUserStore();
-const userId = userStore.user.value.idx;
-const userName = userStore.user.value.userName;
+const userId = userStore.user.value?.idx;
+const userName = userStore.user.value?.userName;
 
 const newMessage = ref('');
 const messages = ref([]);
@@ -26,10 +27,19 @@ const page = ref(0);
 const size = 20;
 
 const chatMessageStore = useChatMessageStore();
+const chatRoomStore = useChatRoomStore();
 const route = useRoute();
 const chatroomId = route.params.chatroomId;
 
+const chatRoom = ref(null);
+
 onMounted(async () => {
+  await chatRoomStore.fetchChatRooms(route.params.workspaceId);
+
+  chatRoom.value = chatRoomStore.chatRoom.find(
+    (room) => room.chatroomId == chatroomId
+  );
+
   const initialMessages = await chatMessageStore.fetchChatMessages(
     chatroomId,
     page.value,
@@ -114,28 +124,10 @@ const onFileSelected = async (event) => {
   if (file) {
     selectedFile.value = file;
 
-    const fileUrls = await chatMessageStore.sendFile({
+    await chatMessageStore.sendFile({
       files: selectedFile.value,
       chatRoomId: chatroomId,
     });
-
-    if (fileUrls) {
-      const messagePayload = {
-        chatRoomId: chatroomId,
-        userId: userId,
-        userName: userName,
-        messageContents: '',
-        files: fileUrls,
-      };
-      stompClient.value.send(
-        `/pub/room/${chatroomId}/send`,
-        {},
-        JSON.stringify(messagePayload)
-      );
-      selectedFile.value = null;
-    } else {
-      console.error('파일 업로드 실패');
-    }
   }
 };
 
@@ -190,7 +182,7 @@ const triggerFileInput = () => {
   <div class="chat-container">
     <div class="chat-header">
       <img :src="space3" alt="img" />
-      <p>{{ userName }}</p>
+      <p>{{ chatRoom?.chatRoomName || '채팅방' }}</p>
     </div>
 
     <div class="chat-messages">
@@ -205,6 +197,7 @@ const triggerFileInput = () => {
           "
           :created-at="getTimeDifference(message.createdAt)"
           :message-contents="message.messageContents"
+          :userName="message.userName"
           :file="message.file && message.file.length ? message.file : null"
         />
       </div>

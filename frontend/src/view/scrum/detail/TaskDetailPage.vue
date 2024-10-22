@@ -1,72 +1,58 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { inject, onMounted, ref } from 'vue';
-import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
-import QuillEditor from '@/common/component/Editor/QuillEditorMeeting.vue';
-import { setPersona } from '@/utils/personaUtils';
+import { useTaskStore } from '@/stores/scrum/useTaskStore';
 
 const route = useRoute();
+
+const taskId = route.params.tasktId;
 const workspaceId = route.params.workspaceId;
-const meetingId = route.params.meetingId;
 
 const contentsTitle = inject('contentsTitle');
 const contentsDescription = inject('contentsDescription');
+contentsTitle.value = 'Task Detail';
+contentsDescription.value = '스프린트 정보를 확인해보세요!';
 
-contentsTitle.value = 'Meeting Detail';
-contentsDescription.value = '회의 정보를 확인해보세요!';
-
-const meetingStore = useMeetingStore();
-const showEditor = ref(false);
-const meeting = ref({
-  id: 0,
-  title: '',
-  contents: '',
-  startDate: '',
-  endDate: '',
-  participants: [],
-  createdAt: '',
-  labels: [],
-});
+const taskStore = useTaskStore();
+const task = ref(null);
 
 onMounted(async () => {
-  meeting.value = await meetingStore.getMeeting({ workspaceId, meetingId });
+  await taskStore.getTask(workspaceId, taskId);
+  task.value = taskStore.tasks.values;
 });
 </script>
 
 <template>
-  <div class="meeting-wrap">
-    <div class="meeting-note-container">
-      <div class="meeting-title-container">
+  <div class="task-wrap">
+    <div class="task-note-container">
+      <div class="task-title-container">
         <span class="column">
-          <i class="meeting-title column-icon"></i>
-          회의록 제목
+          <i class="task-title column-icon"></i>
+          태스크 제목
         </span>
-        <p class="title-editor">{{ meeting.title }}</p>
+        <p class="title-editor">{{ task.value.taskTitle }}</p>
       </div>
       <div class="issue-section">
         <span class="column">
-          <i class="meeting-description column-icon"></i>
+          <i class="task-description column-icon"></i>
           설명 추가하기
         </span>
-        <p class="description-editor">{{ meeting.contents }}</p>
+        <p class="description-editor">{{ task.value.taskContents }}</p>
       </div>
       <div class="author-section">
         <div class="participants">
           <span class="column">
             <i class="user-multiple column-icon"></i>
-            회의 참여자
+            태스크 참여자
           </span>
           <div class="users-list">
             <div
-              v-for="(participant, index) in meeting.participants"
-              :key="index"
               class="user-profile"
+              v-for="participant in task.value.participants"
+              :key="participant.id"
             >
-              <img
-                :src="setPersona(participant.persona)"
-                :alt="`참여자 ${index + 1}`"
-              />
-              <span>{{ participant.userName }}</span>
+              <img :src="participant.avatar" alt="참여자" />
+              <span>{{ participant.name }}</span>
             </div>
           </div>
         </div>
@@ -76,16 +62,16 @@ onMounted(async () => {
           <i class="label-add column-icon"></i>
           라벨
         </span>
-        <div v-for="label in meeting.labels" :key="label.id">
-          <button class="label-button" style="margin-right: 5px">
-            {{ label.labelName }}
+        <div class="label-list">
+          <button
+            class="label-button"
+            v-for="label in task.value.labels"
+            :key="label.id"
+          >
+            {{ label.name }}
           </button>
         </div>
       </div>
-      <div class="save-button" @click="showEditor = !showEditor">
-        회의록 작성하기
-      </div>
-      <QuillEditor v-if="showEditor" class="content-editor" />
     </div>
   </div>
 </template>
@@ -95,12 +81,12 @@ a {
   text-decoration: none;
   text-align: center;
 }
-.meeting-wrap {
+.task-wrap {
   display: flex;
   gap: 1rem;
 }
 
-.meeting-note-container {
+.task-note-container {
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -108,7 +94,7 @@ a {
   width: 100%;
 }
 
-.meeting-title-container {
+.task-title-container {
   display: flex;
 }
 
@@ -138,11 +124,11 @@ a {
   align-items: center;
 }
 
-.meeting-title {
+.task-title {
   background-image: url('@/assets/icon/boardIcon/titleEdit.svg');
 }
 
-.meeting-description {
+.task-description {
   background-image: url('@/assets/icon/boardIcon/quillDescription.svg');
 }
 
