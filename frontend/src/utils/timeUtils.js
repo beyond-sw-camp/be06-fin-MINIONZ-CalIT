@@ -1,7 +1,12 @@
 // 채팅, 알람에서 쓰는 몇분전
+
+
+// 2024-10-23T14:11:22.748172 local
+// 2024-10-23T05:12:00.822252 kube
 export function getTimeDifference(time) {
     const now = new Date();
     const alarmDate = new Date(new Date(time).toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    alarmDate.setHours(alarmDate.getHours() + 9);
     const diffMs = now - alarmDate;
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
