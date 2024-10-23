@@ -164,7 +164,7 @@ public class SprintService {
                                             .startDate(task.getStartDate())
                                             .endDate(task.getEndDate())
                                             .doneDate(task.getStatus() == TaskStatus.DONE ? task.getDoneDate() : LocalDateTime.now())
-                                            .difficultly(task.getDifficultly())
+                                            .difficulty(task.getDifficulty())
                                             .priority(task.getPriority())
                                             .status(TaskStatus.DONE)
                                             .taskNumber(task.getTaskNumber())
