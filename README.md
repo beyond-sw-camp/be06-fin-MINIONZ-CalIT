@@ -123,7 +123,33 @@ https://calit.kro.kr
 
 ![CalIT_시스템 아키텍처_V2](https://github.com/user-attachments/assets/5edb89af-c3fa-4db7-bfd8-4690a3d0c065)
 
+## CalIT 시스템 아키텍처 설명
 
+### 1.	GitHub & Jenkins:
+**GitHub**: CalIT의 소스 코드가 관리되는 리포지토리로, 개발자가 코드를 push하면 Jenkins에서 자동으로 빌드 및 배포가 진행됩니다. <br>
+**Jenkins**: CI/CD 파이프라인을 담당하며, 개발자가 GitHub에 코드를 push할 때 Docker 이미지를 빌드하고, 이를 Docker Hub로 push한 후 배포하는 역할을 합니다.
+### 2.	Docker Hub:
+CalIT 애플리케이션의 Docker 이미지를 저장하는 중앙 저장소로, Jenkins에서 빌드된 이미지를 관리합니다.
+### 3.	AWS S3:
+프론트엔드 정적 파일과 같은 리소스를 저장하는 저장소로, 클라이언트 요청에 따라 이미지 및 정적 데이터를 제공합니다.
+### 4.	Ingress Controller (Canary):
+클라이언트의 요청을 Kubernetes 클러스터 내 서비스로 라우팅하며, Canary 배포 전략을 사용해 새로운 버전을 제한적으로 배포하여 안정성을 테스트합니다.
+### 5.	Frontend:
+**Vue.js & Nginx**: CalIT의 프론트엔드 애플리케이션입니다. 사용자 인터페이스를 담당하며, 클라이언트가 요청하는 데이터를 백엔드와 통신하여 처리합니다. Nginx는 웹 서버 역할을 수행하며, 정적 파일을 제공하고 백엔드 요청을 프록시 처리합니다. 
+### 6.	Backend:
+**Spring Boot**: CalIT의 백엔드 애플리케이션으로, 클라이언트의 요청을 처리하고 주요 비즈니스 로직을 수행합니다. <br>
+**Kafka**: CalIT의 **공동 편집, 채팅, 알람** 시스템을 위한 메시지 브로커로, 실시간 데이터를 안정적으로 전달합니다. 이는 팀원 간 협업과 알림 시스템을 지원하는 핵심 요소입니다. <br>
+**Apache Zookeeper**: Kafka 클러스터를 관리하고 조정하며, 안정적인 메시징 환경을 보장합니다. <br>
+**Redis**: 실시간 동기화 및 캐싱을 위해 사용합니다. 회의록 동시성 제어와 관련된 데이터를 빠르게 처리해 여러 사용자가 동시에 문서를 편집할 때 충돌을 방지하고 성능을 향상시킵니다.
+### 7.	Batch:
+**Spring Batch**: 각각의 서버가 SSE 알람, 번다운 차트, 리마인드 알람을 담당하는 3개의 파드를 생성합니다. 이 서버들은 Kubernetes 클러스터의 성능을 모니터링하고, 작업 일정 및 팀 작업 흐름을 관리합니다
+### 8.	n8n:
+**n8n**: CalIT에서 AI 챗봇 기능을 제공하며, 회의록 요약 및 표시 기능을 담당합니다. 팀원들이 실시간으로 작성하는 회의록을 요약하여 제공함으로써 효율적인 정보 공유를 지원합니다.
+### 9.	MariaDB:
+CalIT의 데이터베이스로, 사용자의 일정, 프로젝트 정보, 스크럼 보드 데이터 등 주요 데이터를 저장하고 관리합니다. 다중 클러스터 환경에서 안정적인 데이터 관리를 지원합니다.
+### 10.	Prometheus & Grafana:
+**Prometheus**: Kubernetes 클러스터의 성능 메트릭을 수집하여 CPU, 메모리, 네트워크 트래픽 등의 데이터를 저장합니다. 배치 작업 전후의 클러스터 성능을 비교하는 데 사용됩니다. <br>
+**Grafana**: 수집된 데이터를 시각화하여 클러스터 성능을 모니터링하고 분석할 수 있게 도와줍니다. 이를 통해 배치 작업 전후의 성능 변화를 쉽게 파악할 수 있습니다.
 
   </div>
 </details>
@@ -132,35 +158,14 @@ https://calit.kro.kr
 
 # 5️⃣ 추가 설명
 
-### 🔍 Backend
-
-#### 🛠 기능
-API 서버, 데이터베이스 연동, 사용자 인증 및 권한 관리, 실시간 데이터 처리(WebSockets, Kafka)와 더불어 n8n 기반의 AI 챗봇을 포함합니다. <br>
-#### 🎯 주요 역할
-* Backend는 Spring Boot를 기반으로 설계되어 있으며, 데이터 저장소로 MariaDB를 사용합니다. 이 저장소는 Kubernetes의 Persistent Volume을 통해 데이터를 관리합니다.
-* Kafka를 이용해 메시지 브로커 역할을 하며, 이를 통해 Spring Boot 애플리케이션이 실시간 데이터와 Pub/Sub 시스템을 관리합니다.
-* Ingress Controller를 사용하여 외부로부터 들어오는 요청을 처리하며, AI 챗봇과 스크럼 관리, 알람 시스템 등을 처리합니다.
+## 🔍 Backend
 
 🔗 [🕊️ Backend 더 자세한 설명](https://github.com/beyond-sw-camp/be06-fin-MINIONZ-CalIT/blob/develop/backend/README.md)
 
-### 🔍 Frontend
-
-#### 💻 기능
-사용자 인터페이스, 실시간 데이터 표시, 사용자 입력 처리, 캘린더 제공, 다양한 util 함수 사용, 뷰 관리 및 라우팅을 담당합니다.
-#### 🌐 주요 역할
-* Front는 Vue.js와 Nginx를 기반으로 구성되어 있으며, 클라이언트 요청을 Kubernetes의 Ingress Controller를 통해 수신합니다.
-* /로 시작하는 요청은 Frontend로 라우팅되고, /api가 포함된 요청은 Backend로 전달됩니다.
-* 다양한 util 함수를 활용하여 데이터 처리 및 변환이 간편하게 이루어지며, 캘린더 기능을 통해 실시간 일정 및 스크럼 관리의 핵심 기능을 제공합니다.
+## 🔍 Frontend
 
 🔗 [🕊️ Frontend 더 자세한 설명](https://github.com/beyond-sw-camp/be06-fin-MINIONZ-CalIT/blob/develop/frontend/README.md)
 
-### 🔍 CI/CD
-#### ⚙ 기능
-지속적인 통합과 배포 자동화를 위한 환경을 구축합니다.
-#### 🚀 주요 역할
-* CI/CD 파이프라인은 Jenkins를 사용하여 관리되며, 코드 변경 사항이 GitHub에 푸시되면 웹훅을 통해 Jenkins가 트리거됩니다.
-* Jenkins는 GitHub에서 코드를 클론한 후, 빌드하고 도커 이미지를 생성해 Docker Hub에 푸시합니다.
-* 푸시된 이미지는 Kubernetes 환경에서 배포되며, AWS S3를 통해 정적 파일을 관리합니다. 또한, 배포 상태 및 결과는 Discord를 통해 알림을 받습니다.
-* 서비스는 블루 그린 방식으로 무중단 배포가 이루어집니다.
+## 🔍 CI/CD
 
 🔗 [🕊️ CI/CD 더 자세한 설명](https://github.com/beyond-sw-camp/be06-fin-MINIONZ-CalIT/tree/develop/cicd)
