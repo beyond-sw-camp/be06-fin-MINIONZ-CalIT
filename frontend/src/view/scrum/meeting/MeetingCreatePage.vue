@@ -100,10 +100,10 @@ const onSubmit = handleSubmit(async () => {
   router.push(`/workspace/${workspaceId}/scrum/meeting/list`);
 });
 
-const addNote = () => {
-  onSubmit();
-  router.push(`/workspace/${workspaceId}/scrum/meeting/edit`);
-};
+// const addNote = () => {
+//   onSubmit();
+//   router.push(`/workspace/${workspaceId}/scrum/meeting/edit`);
+// };
 
 const rightSideOn = (id) => {
   const meetingNoteContainer = document.querySelector(
@@ -298,12 +298,12 @@ onMounted(() => {
         </div>
       </div>
 
-<!--      <div class="btn-sector">-->
-<!--        <button class="save-button" @click="onSubmit">회의 저장하기</button>-->
+      <div class="btn-sector">
+        <button class="save-button" @click="onSubmit">회의 저장하기</button>
 <!--        <button class="save-button btn-ver2" @click="addNote">-->
 <!--          회의록 추가하기-->
 <!--        </button>-->
-<!--      </div>-->
+      </div>
       <div v-show="isQuillVisible" class="quill-wrap">
         <QuillEditor ref="editor" class="content-editor" v-model="editor" />
       </div>

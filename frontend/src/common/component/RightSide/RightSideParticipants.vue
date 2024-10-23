@@ -2,14 +2,14 @@
 import { ref, defineEmits, onMounted, watch } from 'vue';
 import Multiselect from 'vue-multiselect';
 import { useFriendsStore } from '@/stores/user/useFriendsStore';
-import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
+// import { useMeetingStore } from '@/stores/scrum/useMeetingStore';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId;
 
 const friendStore = useFriendsStore();
-const meetingStore = useMeetingStore();
+// const meetingStore = useMeetingStore();
 
 const participants = ref([]);
 const filteredFriends = ref([]);
