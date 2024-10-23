@@ -130,11 +130,14 @@
 
 <details>
   <summary><b>회의록</b></summary>
-</details>
+
+<br>
 
 ![회의록](https://github.com/user-attachments/assets/b69c0ac8-b052-4c8a-9f7a-6868f12da951)
 
 스프린트 내에 추가된 회의에서 회의록을 추가할 수 있습니다. 다중 사용자들의 동시편집이 가능합니다.
+
+</details>
 
 <details>
   <summary><b>QA게시판</b></summary>
