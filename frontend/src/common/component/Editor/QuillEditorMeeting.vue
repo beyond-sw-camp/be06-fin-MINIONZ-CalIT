@@ -6,11 +6,11 @@ import { Stomp } from '@stomp/stompjs';
 import axios from 'axios';
 import SockJS from 'sockjs-client';
 import { useRoute } from 'vue-router';
-import QuillCursors from 'quill-cursors';
+
 
 const editor = ref(null);
 let quillEditor = null;
-let cursors = null;
+
 let stompClient = null;
 let timeoutId;
 let editorChangeFromRemote = false;
@@ -45,13 +45,7 @@ function connectWebSocket() {
         showNoteUpdate(JSON.parse(noteMessage.body));
       });
 
-      // 커서 위치 업데이트 구독
-      stompClient.subscribe(
-        `/topic/note/cursor/${meetingId}`,
-        (cursorMessage) => {
-          updateCursor(JSON.parse(cursorMessage.body));
-        }
-      );
+  
     }
   );
 }
@@ -102,40 +96,11 @@ function sendNoteUpdate() {
   );
 }
 
-// 커서 위치 전송
-function sendCursorUpdate(range) {
-  const user = getUserFromSession();
-  if (!user) {
-    console.warn('사용자 정보가 세션 스토리지에 없습니다.');
-    return;
-  }
-
-  const cursorMessage = {
-    senderId: user.userName,
-    index: range.index,
-    length: range.length,
-  };
-
-  stompClient.send(
-    `/app/cursor/${meetingId}`, // 백틱 추가
-    {},
-    JSON.stringify(cursorMessage)
-  );
-}
-
-// 커서 위치 업데이트 처리
-function updateCursor(cursorMessage) {
-  const cursors = quillEditor.getModule('cursors');
-  cursors.moveCursor(cursorMessage.senderId, {
-    index: cursorMessage.index,
-    length: cursorMessage.length,
-  });
-}
 
 // 노트 업데이트 처리
 function showNoteUpdate(noteMessage) {
   const user = getUserFromSession();
-  const currentRange = quillEditor.getSelection();
+ 
 
   if (
     user.userName !== noteMessage.sender &&
@@ -147,19 +112,8 @@ function showNoteUpdate(noteMessage) {
       const delta = JSON.parse(noteMessage.noteContents);
       quillEditor.updateContents(delta);
 
-      if (delta.ops.length > 1) {
-        const range = {
-          index: delta.ops[0].retain,
-          length: 0,
-        };
-        cursors.moveCursor(noteMessage.sender, range);
-      }
 
-      if (currentRange) {
-        const length = noteMessage.noteContents.length;
-        const newIndex = Math.min(currentRange.index, length);
-        quillEditor.setSelection(newIndex, currentRange.length);
-      }
+
     }
   } else {
     console.warn('No note contents to display.');
@@ -182,7 +136,7 @@ function loadNoteContent() {
 }
 
 onMounted(() => {
-  Quill.register('modules/cursors', QuillCursors);
+
 
   if (editor.value) {
     quillEditor = new Quill(editor.value, {
@@ -228,19 +182,12 @@ onMounted(() => {
             },
           },
         },
-        cursors: true, // Quill cursors 모듈 활성화
+   
       },
     });
 
-    cursors = quillEditor.getModule('cursors');
-    const user = getUserFromSession();
-    cursors.createCursor(user.userName, user.userName, 'red');
+   
 
-    quillEditor.on('selection-change', function (range) {
-      if (range) {
-        sendCursorUpdate(range);
-      }
-    });
 
     quillEditor.on('text-change', function (delta, oldDelta, source) {
       if (source === 'user' && !editorChangeFromRemote) {
