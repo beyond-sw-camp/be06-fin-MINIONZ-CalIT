@@ -45,14 +45,14 @@
 ### 🖥️ 모니터링 시스템
 ![캘릿 추후 변경 예정](https://github.com/user-attachments/assets/d9d66bf1-9b2c-44cc-aa77-5f88c886f89e)
 
-CalIT은 Kubernetes 클러스터의 성능을 배치 작업 전후로 비교하기 위해 Prometheus, Node Exporter, Grafana를 활용하여 시스템 메트릭을 수집하고 시각화한다. 각 구성 요소는 다음과 같은 역할을 수행한다:
+CalIT은 Kubernetes 클러스터의 성능을 배치 작업 전후로 비교하기 위해 **Prometheus**, **Istio**, **Grafana**를 활용하여 시스템 메트릭을 수집하고 시각화합니다. 각 구성 요소는 다음과 같은 역할을 수행합니다:
 
 - **Prometheus**:
-  - Node Exporter로부터 수집한 CPU, 메모리, 디스크 사용량 등 다양한 성능 메트릭을 저장한다.
+  - **Istio**로부터 수집한 CPU, 메모리, 네트워크 트래픽, 디스크 사용량 등 다양한 성능 메트릭을 저장합니다.
   - 수집된 데이터를 **Grafana**와 연동하여 시각화를 위한 데이터를 제공한다.
-  
-- **Node Exporter**:
-  - 각 노드의 성능 지표(예: CPU, 메모리, 디스크 사용량 등)를 **Prometheus**에 전송한다.
+
+- **Istio**:
+  - 서비스 간의 네트워크 트래픽을 모니터링하고, 각 서비스의 성능 지표(예: CPU, 메모리 사용량 등)를 Prometheus에 전송합니다.
   
 - **Grafana**:
   - **Prometheus**로부터 수집된 메트릭 데이터를 사용하여 대시보드를 구성하고, 사용자가 클러스터 상태를 직관적으로 이해할 수 있도록 시각화한다.
