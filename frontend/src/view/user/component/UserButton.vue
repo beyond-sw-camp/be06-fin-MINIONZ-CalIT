@@ -20,11 +20,11 @@ button {
   border: none;
   border-radius: 4px;
   width: 100%;
-  height: 40px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+  font-size: 14px;
   margin-bottom: 10px;
   cursor: pointer;
 }

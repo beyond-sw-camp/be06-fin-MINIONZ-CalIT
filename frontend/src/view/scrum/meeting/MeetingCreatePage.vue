@@ -92,7 +92,7 @@ const onSubmit = handleSubmit(async () => {
     contents: meetingDescription.value,
     startDate: validatedStartTime,
     endDate: validatedEndTime,
-    participants: participants.value.map((participant) => participant.id),
+    participants: participants.value.map((participant) => participant.searchUserIdx),
     labels: [selectedLabel.value.labelId],
     issues: [selectedIssue.value.issueId],
   };
@@ -120,7 +120,9 @@ const rightSideOn = (id) => {
 };
 
 const saveParticipantsToUserList = (newParticipants) => {
-  participants.value = newParticipants;
+  participants.value = newParticipants.value;
+  console.log('new', newParticipants);
+  console.log('participants:', participants);
 };
 
 // 라벨, 스프린트 데이터
@@ -225,7 +227,7 @@ onMounted(() => {
                 v-for="participant in participants"
                 :key="participant.searchUserIdx"
               >
-                <img :src="setPersona(participant.persona)" alt="참여자" />
+                <img :src="setPersona(2)" alt="참여자" />
                 <span>{{ participant.userName }}</span>
               </div>
             </div>
@@ -296,20 +298,20 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="btn-sector">
-        <button class="save-button" @click="onSubmit">회의 저장하기</button>
-        <button class="save-button btn-ver2" @click="addNote">
-          회의록 추가하기
-        </button>
-      </div>
+<!--      <div class="btn-sector">-->
+<!--        <button class="save-button" @click="onSubmit">회의 저장하기</button>-->
+<!--        <button class="save-button btn-ver2" @click="addNote">-->
+<!--          회의록 추가하기-->
+<!--        </button>-->
+<!--      </div>-->
       <div v-show="isQuillVisible" class="quill-wrap">
         <QuillEditor ref="editor" class="content-editor" v-model="editor" />
       </div>
     </div>
     <RightSideComponent
-      v-show="rightSideVisible"
-      :activeComponentId="activeComponentId"
-      @update-meeting-participants="saveParticipantsToUserList"
+        v-show="rightSideVisible"
+        :activeComponentId="activeComponentId"
+        @update-meeting-participants="saveParticipantsToUserList"
     />
   </div>
 </template>

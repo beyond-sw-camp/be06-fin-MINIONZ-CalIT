@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import {onMounted, ref, computed, watch} from 'vue';
 import { useRoute } from 'vue-router';
 import { getTimeDifference } from '@/utils/timeUtils';
 import FriendsModal from './FriendsModal.vue';
@@ -33,6 +33,10 @@ const openModal = async () => {
 const closeModal = async () => {
   showModal.value = false;
 };
+
+watch(
+
+)
 </script>
 
 <template>

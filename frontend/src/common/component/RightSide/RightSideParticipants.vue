@@ -33,11 +33,11 @@ const deleteParticipant = (searchUserIdx) => {
 };
 
 const saveParticipantsToUserList = () => {
-  emit('update-meeting-participants', selectedParticipant.value);
-
-  meetingStore.meetingParticipants = participants.value.map(
-    (participant) => participant.searchUserIdx
-  );
+  emit('update-meeting-participants', participants);
+  console.log('participants:', participants);
+  // meetingStore.meetingParticipants = participants.value.map(
+  //   (participant) => participant.searchUserIdx
+  // );
 };
 
 onMounted(() => {

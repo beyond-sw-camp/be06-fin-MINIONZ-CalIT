@@ -86,7 +86,7 @@ hr {
 }
 
 .social-login_title {
-  font-size: 15px;
+  font-size: 14px;
   margin-bottom: 10px;
 }
 
@@ -121,6 +121,6 @@ hr {
 }
 
 .social-login_content_item_text {
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>

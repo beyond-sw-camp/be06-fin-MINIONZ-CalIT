@@ -17,14 +17,20 @@ const showWorkspaceModal = ref(false);
 
 const toggleChatModal = () => {
   showChatModal.value = !showChatModal.value;
+  if (showChatModal.value) {
+    location.reload();
+  }
 };
 
 const toggleAlarmModal = () => {
   showAlarmModal.value = !showAlarmModal.value;
+  if (showAlarmModal.value) {
+    alarmStore.getAlarmData();
+  }
 };
 
 const toggleWorkspaceModal = () => {
-  showWorkspaceModal.value = !showWorkspaceModal.value;
+  showWorkspaceModal.value = !showWorkspaceModal.value
 };
 
 const closeChatModal = () => {
