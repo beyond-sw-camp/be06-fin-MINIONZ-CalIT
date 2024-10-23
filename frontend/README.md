@@ -11,7 +11,6 @@
 | [@yunseul-dev](https://github.com/yunseul-dev) | [@seongxun](https://github.com/seongxun) | [@xeunnie](https://github.com/xeunnie) | [ @hyejeung](https://github.com/hyejeung) | [@Aqulog](https://github.com/Aqulog) |
 
 
-
 # ⚒️ 기술 스택
 
 
@@ -19,11 +18,18 @@
 ### 프론트엔드
 <img src="https://img.shields.io/badge/Vue.js-181717?style=flat&logo=Vue.js&logoColor=4FC08D&color=white" alt=""> <img src="https://img.shields.io/badge/HTML5-181717?style=flat&logo=html5&logoColor=E34F26&color=white" alt=""> <img src="https://img.shields.io/badge/CSS3-181717?style=flat&logo=css3&logoColor=1572B6&color=white" alt=""> <img src="https://img.shields.io/badge/JavaScript-181717?style=flat&logo=javascript&logoColor=F7DF1E&color=white" alt=""> <img src="https://img.shields.io/badge/Nginx-181717?style=flat&logo=nginx&logoColor=009639&color=white" alt=""> <img src="https://img.shields.io/badge/Axios-181717?style=flat&logo=axios&logoColor=5A29E4&color=white" alt=""> <img src="https://img.shields.io/badge/Pinia-181717?style=flat&logo=pinia&logoColor=FEDD00&color=white" alt="">
 
+<br>
+
 ---
 
+<br>
 
 
 # 🎯 상세기능
+
+<details>
+ <summary> 기능 동작 </summary>
+
 <details>
   <summary><b>회원가입, 로그인</b></summary>
 
@@ -163,4 +169,4 @@ QA 글을 작성하고 담당자를 할당하는 것이 가능합니다. 답글 
   
 </details>
 
-  
+</details>
