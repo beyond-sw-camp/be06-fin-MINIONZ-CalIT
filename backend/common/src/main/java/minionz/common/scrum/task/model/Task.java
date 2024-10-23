@@ -35,7 +35,7 @@ public class Task extends BaseEntity {
     public LocalDateTime doneDate;
 
     @Enumerated(EnumType.STRING)
-    public TaskLevel difficultly;
+    public TaskLevel difficulty;
     @Enumerated(EnumType.STRING)
     public TaskLevel priority;
     @Enumerated(EnumType.STRING)
