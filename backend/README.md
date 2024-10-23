@@ -136,7 +136,6 @@
 <details>
   <summary><b>회의록 공동작성</b></summary>
   <div markdown="1">
-# 회의록 공동작성 기능 성능 개선: Redis와 Kafka 적용 사례
 
 ## 1. Redis
 
