@@ -13,8 +13,10 @@ const loginId = ref('');
 
 const signup = () => {
   if (checkId(loginId.value)) {
+    const email = localStorage.getItem('loginId');
     try {
       axios.post('/api/user/social-redirect', {
+        email: email,
         loginId: loginId.value
       });
       notyf.success('회원가입에 성공했습니다.');
