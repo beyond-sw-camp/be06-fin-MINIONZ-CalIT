@@ -65,13 +65,28 @@ CalIT은 Kubernetes 클러스터의 성능을 배치 작업 전후로 비교하�
 <br>
 
 ## ⛓️‍💥 젠킨스 파이프라인
-![CalIT 배포 환경](https://github.com/user-attachments/assets/72ae96ab-2860-4f5f-ad7a-f8ad757230e9)
+![백엔드 배포 시스템 (1)](https://github.com/user-attachments/assets/9e669be0-a091-4495-ace9-4e03512e4f5e)
 
 <details>
   <summary><b>백엔드 배포 시나리오</b></summary>
   <div markdown="1">
 
-내용
+🛠 백엔드 배포 시나리오
+
+	1.	개발자가 백엔드 코드의 변경 사항을 GitHub에 푸시
+	2.	GitHub에서 Webhook을 통해 Jenkins로 알림 전송
+	3.	Jenkins 파이프라인 실행
+ 
+	•	Git Clone: Jenkins가 GitHub에서 프로젝트 코드 클론
+	•	Project Clean: 프로젝트를 정리하고, 불필요한 파일 제거
+	•	Project Compile: 코드 컴파일
+	•	Project Test: 코드 테스트 진행
+	•	Project Build: 테스트가 성공하면 프로젝트 빌드 완료
+	•	Docker Build: 빌드된 프로젝트를 기반으로 Docker 이미지 생성
+	•	Docker Push: 생성된 Docker 이미지를 Docker Hub로 푸시
+ 
+	4.	K8S 마스터는 Docker Hub에서 업데이트된 이미지를 받아 백엔드 서버에 배포
+	5.	배포가 성공적으로 완료되면 Jenkins가 Discord를 통해 배포 성공 알림을 전송(만약 배포가 실패할 경우, Discord에 실패 알림이 전송)
 
 
   </div>
@@ -83,8 +98,22 @@ CalIT은 Kubernetes 클러스터의 성능을 배치 작업 전후로 비교하�
   <summary><b>프론트엔드 배포 시나리오</b></summary>
   <div markdown="1">
 
-내용
+  🛠 프론트엔드 배포 시나리오
 
+	1.	개발자가 프론트엔드 코드의 변경 사항을 GitHub에 푸시합니다.
+	2.	GitHub에서 Webhook을 통해 Jenkins로 알림 전송
+	3.	Jenkins 파이프라인 실행
+ 
+	•	Git Clone: Jenkins가 GitHub에서 프론트엔드 프로젝트 코드 클론
+	•	Project Clean: 프로젝트를 정리하고, 불필요한 파일 제거
+	•	Project Compile: 프론트엔드 코드 컴파일
+	•	Project Test: 컴파일된 코드에 대한 테스트 진행
+	•	Project Build: 테스트가 성공하면 프로젝트 빌드 완료
+	•	Docker Build: 빌드된 프로젝트를 기반으로 Docker 이미지 생성
+	•	Docker Push: 생성된 Docker 이미지를 Docker Hub로 푸시
+ 
+	4.	K8S 마스터는 Docker Hub에서 업데이트된 이미지를 받아 프론트엔드 서버에 배포합니다.
+	5.	배포가 성공적으로 완료되면 Jenkins가 Discord를 통해 배포 성공 알림을 전송(만약 배포가 실패할 경우, Discord에 실패 알림이 전송)
 
   </div>
 </details>
