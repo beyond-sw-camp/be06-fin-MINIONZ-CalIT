@@ -85,8 +85,6 @@
   스프린트 내에 유저들 검색 후, 스프린트에 등록하는 것이 가능합니다.
   
   ![태스크](https://github.com/user-attachments/assets/91edcf88-c8fb-456f-bbaa-9ccea40d5cf7)
-
-  
   
 </details>
 
@@ -122,12 +120,21 @@
 <details>
   <summary><b>회의</b></summary>
 
+<br>
+
+![회의](https://github.com/user-attachments/assets/a9d90f66-5493-4b52-9818-7f1ad4a13d65)
+
+스프린트 내의 인원들을 회의에 추가할 수 있습니다. 추가된 회의는 먼슬리에서 확인이 가능합니다.
   
 </details>
 
 <details>
   <summary><b>회의록</b></summary>
 </details>
+
+![회의록](https://github.com/user-attachments/assets/b69c0ac8-b052-4c8a-9f7a-6868f12da951)
+
+스프린트 내에 추가된 회의에서 회의록을 추가할 수 있습니다. 다중 사용자들의 동시편집이 가능합니다.
 
 <details>
   <summary><b>QA게시판</b></summary>
