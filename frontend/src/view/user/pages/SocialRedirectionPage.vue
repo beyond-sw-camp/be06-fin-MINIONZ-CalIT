@@ -3,17 +3,19 @@ import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import UserButton from "@/view/user/component/UserButton.vue";
 import UserInput from "@/view/user/component/UserInput.vue";
+import { useUserStore } from "@/stores/user/useUserStore";
 import axios from "axios";
 import {Notyf} from 'notyf';
 
 const router = useRouter();
 const notyf = new Notyf();
+const userStore = useUserStore();
 
 const loginId = ref('');
 
 const signup = () => {
   if (checkId(loginId.value)) {
-    const email = localStorage.getItem('loginId');
+    const email = userStore.user.value?.loginId;
     try {
       axios.post('/api/user/social-redirect', {
         email: email,
