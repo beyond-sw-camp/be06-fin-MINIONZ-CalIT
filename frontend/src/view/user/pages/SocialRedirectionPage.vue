@@ -15,7 +15,7 @@ const loginId = ref('');
 
 const signup = () => {
   if (checkId(loginId.value)) {
-    const email = userStore.user.value?.email;
+    const email = userStore.user.value?.loginId;
     try {
       axios.post('/api/user/social-redirect', {
         email: email,
