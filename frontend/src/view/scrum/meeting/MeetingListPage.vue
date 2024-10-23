@@ -58,15 +58,16 @@ onMounted(() => {
           "
                         :startDate="meeting.startDate"
                 />
-                <PaginationComponent
-                        :currentPage="currentPage"
-                        :itemsPerPage="itemsPerPage"
-                        :totalPages="totalPages"
-                        @prev-page="fetchMeetings"
-                        @go-to-page="fetchMeetings"
-                        @next-page="fetchMeetings"
-                />
+
             </div>
+          <PaginationComponent
+            :currentPage="currentPage"
+            :itemsPerPage="itemsPerPage"
+            :totalPages="totalPages"
+            @prev-page="fetchMeetings"
+            @go-to-page="fetchMeetings"
+            @next-page="fetchMeetings"
+        />
         </div>
         <div v-else class="initial-wrap">
             <p>회의를 추가하고 일정 관리를 시작해보세요!</p>

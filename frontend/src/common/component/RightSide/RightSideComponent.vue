@@ -1,9 +1,11 @@
 <script setup>
-import {computed, defineProps} from 'vue';
+import {computed, defineProps, defineEmits} from 'vue';
 import RightSideIssue from '@/common/component/RightSide/RightSideIssue.vue';
 import RightSideLabel from '@/common/component/RightSide/RightSideLabel.vue';
 import RightSideParticipants from '@/common/component/RightSide/RightSideParticipants.vue';
 import RightSideTask from '@/common/component/RightSide/RightSideTask.vue';
+
+const emit = defineEmits(['update-meeting-participants']);
 
 const props = defineProps({
   activeComponentId: {
@@ -30,7 +32,7 @@ const activeComponent = computed(() => {
 
 <template>
   <div class="right-side">
-    <component :is="activeComponent"/>
+    <component :is="activeComponent" @update-meeting-participants="emit('update-meeting-participants', $event)"/>
   </div>
 </template>
 

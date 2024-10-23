@@ -96,6 +96,7 @@ const login = async () => {
 
 h1 {
   margin: 10px;
+  font-size: 1.5rem;
 }
 
 .btn {
@@ -125,5 +126,6 @@ form {
 .link-wrap {
   display: flex;
   gap: 1rem;
+  font-size: 14px;
 }
 </style>
