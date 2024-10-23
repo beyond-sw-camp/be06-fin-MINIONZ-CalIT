@@ -14,7 +14,7 @@ const loginId = ref('');
 const signup = () => {
   if (checkId(loginId.value)) {
     try {
-      axios.post('/api/user/social-redirect', {
+      axios.post('/api/user/signup', {
         loginId: loginId.value
       });
       notyf.success('회원가입에 성공했습니다.');
@@ -24,12 +24,12 @@ const signup = () => {
       notyf.error('회원가입에 실패했습니다.');
     }
   } else {
-    notyf.error('알 수 없는 오류가 발생했습니다.');
+    notyf.error('빈 칸을 채워주세요!');
   }
 }
 
 const checkId = async (loginId) => {
-  const r = await axios.post('/api/user/check-id', {
+  const r = await axios.post('/api/user/social-redirect', {
     loginId: loginId,
   });
   if (r.data.success) {
