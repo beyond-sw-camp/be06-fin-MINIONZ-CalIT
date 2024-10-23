@@ -34,15 +34,21 @@
 </details>
 
 <details>
-  <summary><b>워크 스페이스, 스프린트</b></summary>
+<summary><b>워크 스페이스</b></summary>
 
 <br>
 
 ![워크스페이스 추가](https://github.com/user-attachments/assets/21b03260-5da8-4478-ac25-f848c144b9a7)
 
+* 회원가입한 유저들을 검색 후 선택해 워크스페이스 추가가 가능합니다.
+
+<summary><b>스프린트</b></summary>
+
 <br>
 
 ![스프린트](https://github.com/user-attachments/assets/03e42b8a-8337-4580-81eb-6ede9bc1cd3b)
+
+* 워크스페이스 내에 유저들 검색 후, 사용자들을 선택해 스프린트에 추가하는 것이 가능합니다.
   
 </details>
 
@@ -50,30 +56,39 @@
   <summary><b>태스크</b></summary>
 
   <br>
+  
+![태스크](https://github.com/user-attachments/assets/91edcf88-c8fb-456f-bbaa-9ccea40d5cf7)
 
-
+* 스프린트 내에 유저들 검색 후, 스프린트에 등록하는 것이 가능합니다.
   
 </details>
 
 <details>
   <summary><b>이슈</b></summary>
 
-<br>
+  <br>
+  
+![이슈 추가](https://github.com/user-attachments/assets/10021744-54dd-449d-abf6-ee4e79c4cf77)
 
-![이슈 추가](https://github.com/user-attachments/assets/90d3a114-d1a6-46e4-a095-9024afa7b4af)
-
+* 워크스페이스 내에 발생하는 이슈들을 등록하는 것이 가능합니다.
   
 </details>
 
 <details>
   <summary><b>캘린더</b></summary>
 
+ <br>
 
+ ![캘린더](https://github.com/user-attachments/assets/dc7dd6a0-cfbb-43ac-81ac-6b4a7b58ab2b)
+
+* 등록한 먼슬리와 위클리 조회가 가능합니다.
   
 </details>
 
 <details>
   <summary><b>채팅</b></summary>
+
+  
 </details>
 
 
@@ -87,17 +102,24 @@
 
 <details>
   <summary><b>QA게시판</b></summary>
+
+ <br>
+ 
+![qa게시판](https://github.com/user-attachments/assets/c17b10d9-7f9c-44b8-91c9-36ed9897e954)
+
+* QA 글을 작성하고 담당자를 할당하는 것이 가능합니다. 답글 달기가 가능합니다.
+  
 </details>
 
 <details>
   <summary><b>에러게시판</b></summary>
+
+   <br>
+
+![에러](https://github.com/user-attachments/assets/edb2622a-fa55-405f-b52a-698b7b44fb5f)
+
+* 태스크에 대한 에러 게시판 글을 작성하고 댓글 다는 것이 가능합니다.
+  
 </details>
 
   
-
-  
-
-
-
-
-
