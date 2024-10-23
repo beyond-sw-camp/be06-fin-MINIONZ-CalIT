@@ -15,7 +15,7 @@ defineProps({
   <div class="priority-task">
     <h3>Priority Task</h3>
     <div class="task-card-container">
-      <div v-if="tasks.length > 0">
+      <div v-if="tasks.length > 0" class="task-card-wrap">
         <div class="task-card" v-for="task in tasks" :key="task.id">
           <div class="task-header">
             <div class="titles">
@@ -75,7 +75,7 @@ p{
   margin: 0;
 }
 
-.task-card-container{
+.task-card-wrap{
   display: flex;
   gap: 1rem;
 }

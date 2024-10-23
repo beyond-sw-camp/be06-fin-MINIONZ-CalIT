@@ -56,6 +56,7 @@ const addWorkspace = async ({ workspaceName, participants }) => {
     });
     notyf.success('WorkSpace가 추가되었습니다.');
     await router.push('/my/dashboard');
+    location.reload();
     return response.data;
   } catch (error) {
     notyf.error('WorkSpace 추가에 실패했습니다.');
@@ -90,7 +91,8 @@ const addWorkspace = async ({ workspaceName, participants }) => {
               class="input-field"
               @keyup.enter="searchUsers"
             />
-            <ul v-if="filteredUsers.length > 0">
+            <div v-if="filteredUsers.length > 0" style="height: calc(100vh - 500px); overflow: scroll;">
+            <ul>
               <li
                 v-for="user in filteredUsers"
                 :key="user.searchUserIdx"
@@ -112,6 +114,7 @@ const addWorkspace = async ({ workspaceName, participants }) => {
                 }}</span>
               </li>
             </ul>
+            </div>
             <p v-else-if="filteredUsers === null">검색된 사용자가 없습니다.</p>
           </div>
         </div>

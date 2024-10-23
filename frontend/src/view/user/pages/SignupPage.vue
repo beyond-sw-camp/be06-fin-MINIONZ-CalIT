@@ -139,6 +139,7 @@ const passwordsMatch = computed(() => {
       </form>
       <div class="text-wrap">
         <router-link to="/user/login">로그인 하기</router-link>
+        |
         <router-link to="/user/password">비밀번호 찾기</router-link>
       </div>
 <!--      <div class="social-login">-->
@@ -161,12 +162,11 @@ button{
 }
 
 h1 {
-  margin: 0.625rem 0;
+  font-size: 1.5rem;
 }
 
 a {
   color: #1E5EFF;
-  margin-left: 0.625rem;
   display: block;
   text-decoration: none;
 }
@@ -208,12 +208,13 @@ form {
 }
 
 .btn-verify {
-  width: 6.25rem;
-  height: 2.5rem;
+  width: 20%;
+  height: 30px;
   background-color: #1E5EFF;
   color: white;
   border: none;
   border-radius: 4px;
+  font-size: 14px;
 
   &:focus {
     background-color: #1e52da;
@@ -231,10 +232,10 @@ form {
 
 .error-message {
   background-color: #fff1f1;
-  padding: 0.625rem;
+  padding: 8px;
   border-radius: 5px;
   color: red;
-  font-size: 0.9em;
+  font-size: 12px;
   margin: 0;
 }
 
@@ -243,6 +244,8 @@ form {
   justify-content: center;
   gap: 10px;
   width: 100%;
+  font-size: 12px;
+  color: #1E5EFF;
   span{
     text-align: end;
   }

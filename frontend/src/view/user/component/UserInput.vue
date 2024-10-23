@@ -30,16 +30,21 @@ const updateValue = (event) => {
   flex-direction: column;
 }
 label{
-  font-size: 14px;
+  font-size: 12px;
   color: #5a607f;
   margin-bottom: 5px;
 }
 input{
   width: 100%;
-  height: 40px;
+  height: 32px;
   border: 1px solid #d9e1ec;
   border-radius: 4px;
-  padding: 0 15px;
+  padding: 0 10px;
   box-sizing: border-box;
+  font-size: 12px;
+}
+
+input::placeholder {
+  font-size: 12px;
 }
 </style>

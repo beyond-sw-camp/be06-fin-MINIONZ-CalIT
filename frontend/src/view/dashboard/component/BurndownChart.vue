@@ -189,7 +189,10 @@ watch(selectedSprintId, fetchBurndownData);
 <template>
   <div class="burndown-chart">
     <div v-if="isLoading" class="loading-message">차트를 로딩 중입니다...</div>
-    <div v-else>
+    <div v-else class="burndown-chart-header">
+      <div>
+        <h3>Priority Task</h3>
+      </div>
       <select
         v-model="selectedSprintId"
         @change="fetchBurndownData"
@@ -203,15 +206,20 @@ watch(selectedSprintId, fetchBurndownData);
           {{ sprint.title }}
         </option>
       </select>
-      <div>
-        <h3>Sprint Burndown Chart</h3>
-        <div ref="chartRef" style="width: 100%; height: 400px"></div>
-      </div>
+    </div>
+    <div>
+      <h3>Sprint Burndown Chart</h3>
+      <div ref="chartRef" style="width: 100%; height: 25rem;"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.burndown-chart-header{
+  display: flex;
+  justify-content: space-between;
+}
+
 h3 {
   font-size: 24px;
   font-weight: 600;
@@ -226,7 +234,7 @@ h3 {
   background: #fff;
   border-radius: 8px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  //max-width: 800px;
 }
 
 .loading-message {
@@ -237,5 +245,16 @@ h3 {
   font-size: 18px;
   color: #34495e;
   text-align: center;
+}
+
+.input-field {
+  width: 20%;
+  box-sizing: border-box;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
 }
 </style>

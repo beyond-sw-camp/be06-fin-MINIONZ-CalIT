@@ -14,10 +14,10 @@ const isLoading = ref(false);
 const errorMessage = ref(null);
 
 onMounted(async () => {
-  isLoading.value = true;
   errorMessage.value = null;
   try {
     await getAllWorkspace();
+    isLoading.value = true;
     if (workspaceStore.workspace.length > 0) {
       setWorkspaceId(workspaceStore.workspace[0].workspaceId);
     }

@@ -21,9 +21,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="dashboard">
-    <div v-if="mySprintData && mySprintData.progress">
-      <div>
+    <div v-if="mySprintData && mySprintData.progress" class="dashboard">
         <TaskOverview
           :completion-rate="mySprintData.progress.successTaskCount === 0 ? 0 : (mySprintData.progress.successTaskCount / mySprintData.progress.allTaskCount) * 100"
           :tasks-completed="mySprintData.progress.successTaskCount" :total-tasks="mySprintData.progress.allTaskCount"
@@ -31,14 +29,12 @@ onMounted(async () => {
         <PriorityTask :tasks="mySprintData.priorityTasks" />
         <MeetingList :meetings="mySprintData.upcomingMeetings" />
       </div>
-    </div>
     <div v-else>
       <div class="initial-wrap">
         <p>워크스페이스와 스크럼을 추가하고 스크럼 관리를 시작해보세요!</p>
         <router-link to="/my/create">워크스페이스 추가하기</router-link>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
