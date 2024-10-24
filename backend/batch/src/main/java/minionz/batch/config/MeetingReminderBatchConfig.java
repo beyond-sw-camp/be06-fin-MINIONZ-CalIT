@@ -93,6 +93,7 @@ public class MeetingReminderBatchConfig {
     public Job meetingReminderJob(JobRepository jobRepository, Step meetingStep) {
         return new JobBuilder("meetingReminderJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
+                .listener(new JobDurationListener())
                 .start(meetingStep)
                 .build();
     }

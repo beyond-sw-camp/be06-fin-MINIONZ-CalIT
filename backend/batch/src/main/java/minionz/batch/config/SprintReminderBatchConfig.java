@@ -101,6 +101,7 @@ public class SprintReminderBatchConfig {
     public Job sprintReminderJob(JobRepository jobRepository, Step sprintStep) {
         return new JobBuilder("sprintReminderJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
+                .listener(new JobDurationListener())
                 .start(sprintStep)
                 .build();
     }
