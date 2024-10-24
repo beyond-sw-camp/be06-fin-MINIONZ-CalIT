@@ -1,6 +1,8 @@
 server:
   port: 8080
   forward-headers-strategy: framework
+  tomcat:
+    connection-timeout: 1800000
 address:
   domains: ${DOMAIN_ADDRESS}
 gemini:
