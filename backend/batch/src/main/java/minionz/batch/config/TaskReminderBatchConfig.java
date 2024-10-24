@@ -95,6 +95,7 @@ public class TaskReminderBatchConfig {
     public Job taskReminderJob(JobRepository jobRepository, Step taskStep) {
         return new JobBuilder("taskReminderJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
+                .listener(new JobDurationListener())
                 .start(taskStep)
                 .build();
     }
