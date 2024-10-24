@@ -169,9 +169,7 @@
 **수치 자료 넣기**
 
 
-
-![image](https://github.com/user-attachments/assets/960b02a8-bf5a-4765-88b3-e10a04cc727f)
-
+<img width="877" alt="스크린샷 2024-10-24 오후 9 34 26" src="https://github.com/user-attachments/assets/e4ad109f-fae3-47a1-8bdb-fa8ae98f4986">
 
   </div>
 </details>
