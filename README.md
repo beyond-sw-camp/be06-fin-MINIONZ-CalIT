@@ -60,7 +60,7 @@ https://calit.kro.kr
 
 #### 6. 🤖 AI 챗봇
 
-회의록 요약 및 표시 기능을 담당합니다. 팀원들이 실시간으로 작성하는 회의록을 요약하여 제공함으로써 효율적인 정보 공유를 지원합니다.
+회의록 요약 및 표시 기능을 담당합니다. 미리 공지 된 회의의 내용을 기반으로 자료를 추천하며, 회의 이후 작성된 회의록을 요약 해 주는 여러가지 기능을 가지고 있습니다.
 
 <br/>
 
@@ -71,10 +71,10 @@ https://calit.kro.kr
 <img src="https://img.shields.io/badge/Vue.js-181717?style=flat&logo=Vue.js&logoColor=4FC08D&color=white" alt=""> <img src="https://img.shields.io/badge/HTML5-181717?style=flat&logo=html5&logoColor=E34F26&color=white" alt=""> <img src="https://img.shields.io/badge/CSS3-181717?style=flat&logo=css3&logoColor=1572B6&color=white" alt=""> <img src="https://img.shields.io/badge/JavaScript-181717?style=flat&logo=javascript&logoColor=F7DF1E&color=white" alt=""> <img src="https://img.shields.io/badge/Nginx-181717?style=flat&logo=nginx&logoColor=009639&color=white" alt=""> <img src="https://img.shields.io/badge/Axios-181717?style=flat&logo=axios&logoColor=5A29E4&color=white" alt=""> <img src="https://img.shields.io/badge/Pinia-181717?style=flat&logo=pinia&logoColor=FEDD00&color=white" alt="">
 
 ### 백엔드
-<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Security-181717?style=flat&logo=SpringSecurity&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/JSON_Web_Tokens-181717?style=flat&logo=JSONWebTokens&logoColor=000000&color=white" alt=""> <img src="https://img.shields.io/badge/Spring-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Batch-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Apache_Kafka-181717?style=flat&logo=ApacheKafka&logoColor=231F20&color=white" alt=""> <img src="https://img.shields.io/badge/n8n-181717?style=flat&logo=n8n&logoColor=0F74E2&color=white" alt="">
+<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Security-181717?style=flat&logo=SpringSecurity&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/JSON_Web_Tokens-181717?style=flat&logo=JSONWebTokens&logoColor=000000&color=white" alt=""> <img src="https://img.shields.io/badge/Spring-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Batch-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Apache_Kafka-181717?style=flat&logo=ApacheKafka&logoColor=231F20&color=white" alt=""> <img src="https://img.shields.io/badge/n8n-181717?style=flat&logo=n8n&logoColor=0F74E2&color=white" alt=""> <img src="https://img.shields.io/badge/Redis-181717?style=flat&logo=Redis&logoColor=DC382D&color=white" alt="">
 
 ### 데이터베이스
-<img src="https://img.shields.io/badge/MariaDB-181717?style=flat&logo=MariaDB&logoColor=003545&color=white" alt=""> <img src="https://img.shields.io/badge/PostgreSQL-181717?style=flat&logo=PostgreSQL&logoColor=336791&color=white" alt=""> <img src="https://img.shields.io/badge/Redis-181717?style=flat&logo=Redis&logoColor=DC382D&color=white" alt="">
+<img src="https://img.shields.io/badge/MariaDB-181717?style=flat&logo=MariaDB&logoColor=003545&color=white" alt=""> <img src="https://img.shields.io/badge/PostgreSQL-181717?style=flat&logo=PostgreSQL&logoColor=336791&color=white" alt=""> 
 
 ### CI/CD
 <img src="https://img.shields.io/badge/Git-000?style=style&logo=Git&logoColor=F05032&color=white" alt=""> <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=black&color=white" alt=""> <img src="https://img.shields.io/badge/Jenkins-D24939?style=flat&logo=jenkins&logoColor=D24939&color=white" alt=""> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=2496ED&color=white" alt=""> <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=Kubernetes&logoColor=326CE5&color=white" alt="">
