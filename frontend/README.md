@@ -117,13 +117,6 @@
 </details>
 
 <details>
-  <summary><b>채팅</b></summary>
-
-  
-</details>
-
-
-<details>
   <summary><b>회의</b></summary>
 
 <br>
