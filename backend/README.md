@@ -17,9 +17,9 @@
 
 
 ### 백엔드
-<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Security-181717?style=flat&logo=SpringSecurity&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/JSON_Web_Tokens-181717?style=flat&logo=JSONWebTokens&logoColor=000000&color=white" alt=""> <img src="https://img.shields.io/badge/Spring-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Batch-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Apache_Kafka-181717?style=flat&logo=ApacheKafka&logoColor=231F20&color=white" alt=""> <img src="https://img.shields.io/badge/n8n-181717?style=flat&logo=n8n&logoColor=0F74E2&color=white" alt="">
+<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Security-181717?style=flat&logo=SpringSecurity&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/JSON_Web_Tokens-181717?style=flat&logo=JSONWebTokens&logoColor=000000&color=white" alt=""> <img src="https://img.shields.io/badge/Spring-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Spring_Batch-181717?style=flat&logo=Spring&logoColor=6DB33F&color=white" alt=""> <img src="https://img.shields.io/badge/Apache_Kafka-181717?style=flat&logo=ApacheKafka&logoColor=231F20&color=white" alt=""> <img src="https://img.shields.io/badge/n8n-181717?style=flat&logo=n8n&logoColor=0F74E2&color=white" alt=""> <img src="https://img.shields.io/badge/Redis-181717?style=flat&logo=Redis&logoColor=DC382D&color=white" alt="">
 ### 데이터베이스
-<img src="https://img.shields.io/badge/MariaDB-181717?style=flat&logo=MariaDB&logoColor=003545&color=white" alt=""> <img src="https://img.shields.io/badge/PostgreSQL-181717?style=flat&logo=PostgreSQL&logoColor=336791&color=white" alt=""> <img src="https://img.shields.io/badge/Redis-181717?style=flat&logo=Redis&logoColor=DC382D&color=white" alt="">
+<img src="https://img.shields.io/badge/MariaDB-181717?style=flat&logo=MariaDB&logoColor=003545&color=white" alt=""> <img src="https://img.shields.io/badge/PostgreSQL-181717?style=flat&logo=PostgreSQL&logoColor=336791&color=white" alt=""> 
 
 
 ---
@@ -221,7 +221,55 @@ STOMP만으로 운영 시 발생할 수 있는 확장성 문제와 메시지 손
   </div>
 </details>
 
-<br>
+<details>
+  <summary><b>AI</b></summary>
+  <div markdown="1">
+    
+## N8N? 🤔
+
+**n8n**은 자동화된 워크플로우를 구성할 수 있는 오픈소스 툴로, 다양한 서비스와의 통합을 통해 복잡한 작업들을 시각적으로 간편하게 자동화할 수 있게 해줍니다. 특히 워크플로우의 커스텀 설정이 가능해, 필요에 따라 유연하게 구성할 수 있는 것이 큰 장점입니다.
+
+**CalIT 프로젝트의 챗봇**은 이러한 **n8n**을 활용하여 구현되었습니다. <br>
+**n8n**을 사용한 이유는 사용자로부터 검색된 **지식 정보**를 활용하여 **사실에 기반**한 답변을 생성하고, 최신 기술을 통합하여 성능을 최적화하기 위함입니다.
+
+## 챗봇 구조
+
+챗봇의 **기본 구조**는 다음과 같습니다:
+
+![작성 워크플로우](https://github.com/user-attachments/assets/d26cfe96-38d0-4952-aed9-6b503e55ac9a)
+
+1. **사용자 요청 처리**
+   - 클라이언트가 서버에 메시지를 보내면, 서버는 n8n의 webhook을 호출하여 정의된 워크플로우를 실행합니다.
+
+2. **워크플로우 실행**
+   - 이 워크플로우 내에서 원하는 동작을 커스텀할 수 있기 때문에 CalIT 프로젝트의 구조에 맞도록 직접 설정하였습니다.
+   - n8n의 자동화된 워크플로우를 사용하여, 최신 기술을 도입하고 성능을 최적화하였습니다.
+
+## 구현된 워크플로우
+
+### 📨 회의 자료 추천 워크플로우
+
+![ai 회의 자료 추천](https://github.com/user-attachments/assets/2e37a546-6b28-42d3-8b5f-db38b1a0aeb4)
+
+- 사용자가 회의 자료를 요청하면, 웹훅이 동작하고 데이터베이스에 접근하여 관련 정보를 받아옵니다.
+- **Information Extractor**에서 중요한 키워드를 추출합니다.
+- 이 키워드는 AI 에이전트가 Self API, Output Parser, OpenAI 모델을 통해 처리되며, JSON 형태로 서버에 전달됩니다.
+
+### 📜 회의록 요약 워크플로우
+
+![ai 회의록 요약](https://github.com/user-attachments/assets/f38039dc-5078-4c15-bca7-ee214cfde63f)
+
+  - **Summarization Chain**은 긴 회의록이나 문서를 요약하고 핵심 내용을 추출하는 데 매우 유용합니다.
+  - 이를 통해 AI 모델과 연동해 더 효율적이고 간결한 요약 작업을 구현하였습니다.
+
+## 기대 효과
+
+**n8n**을 활용한 자동화된 워크플로우는 단순히 지식을 검색하여 제공하는 것에 그치지 않고, AI와의 연동을 통해 더욱 풍부하고 신뢰성 있는 답변을 사용자에게 제공합니다. <br>
+또한, **시각적인 워크플로우 빌더**를 통해 개발자와 비개발자 모두 쉽게 챗봇의 동작을 이해하고 수정할 수 있는 장점을 가지고 있습니다.
+
+
+  </div>
+</details>
 
 
 
