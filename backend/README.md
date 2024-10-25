@@ -59,32 +59,48 @@
 
 # ✨ 주요 기능
 <details>
-  <summary><b>캘린더</b></summary>
+  <summary><b>캘린더 & 대쉬보드</b></summary>
   <div markdown="1">
 설명
 
 ![calit](https://github.com/user-attachments/assets/082d561a-744e-4db4-99f6-8a764ceba503)
 
+## 조회 기능 개선: JPQL에서 QueryDSL로의 전환
+
+> 캘린더와 대시보드에서는 스프린트, 태스크, 회의 등 다양한 상황으로 조회가 필요했다. 조회 기능을 개선하기 위해 기존 JPQL 코드를 QueryDSL로 리팩토링하여 동적 쿼리를 적용함으로써, 코드의 가독성과 성능을 모두 향상시켰다.
+
+### QueryDSL 전환의 장점
+
+1. **동적 쿼리 작성 용이**
+    
+    QueryDSL은 코드 기반으로 쿼리를 작성하기 때문에, 조건에 따라 유연하게 동적 쿼리를 생성할 수 있다. 이를 통해 복잡한 조회 조건을 쉽게 처리할 수 있으며, 코드의 가독성도 높아진다.
+    
+2. **컴파일 타임 안전성**
+    
+    JPQL은 문자열 기반이므로 런타임 오류가 발생할 가능성이 높다. 반면, QueryDSL은 Java 코드로 작성되기 때문에, 쿼리 작성 시점에 컴파일 타임에서 오류를 감지할 수 있기 때문에 코드의 안정성을 강화할 수 있다.
+    
+3. **복잡한 조인 처리의 간결화**
+    
+    QueryDSL은 엔티티 간의 조인이나 서브쿼리를 쉽게 표현할 수 있어, 복잡한 조회 로직을 간결하게 작성할 수 있다.
+    
+4. **N+1 문제 해결**
+    
+    QueryDSL을 사용하면 **페치 조인(Fetch Join)**을 통해 연관된 엔티티를 한 번의 쿼리로 함께 조회할 수 있다. 이를 통해 JPQL에서 자주 발생하는 N+1 문제를 방지하고, 데이터베이스 접근 횟수를 줄여 성능을 더욱 최적화할 수 있다.
+    
+
+### 성능 개선 사항
+
+- **불필요한 데이터 조회 최소화**
+    
+    QueryDSL로 리팩토링하면서, 필요한 필드만 선택적으로 조회하도록 최적화했다. 이를 통해 데이터 전송량을 줄이고, 데이터베이스의 부하를 줄일 수 있었다.
+    
+- **쿼리 성능 향상 및 N+1 문제 해결**
+    
+    동적 쿼리를 작성할 때 조건을 유연하게 추가하고, 페치 조인을 사용해 연관된 엔티티를 한 번의 쿼리로 조회하여 N+1 문제를 해결했다. 그 결과, 조회 기능의 응답 속도가 크게 향상되었다.
+
   </div>
 </details>
-<details>
-  <summary><b>번다운 차트</b></summary>
-  <div markdown="1">
-설명
 
-![calit](https://github.com/user-attachments/assets/082d561a-744e-4db4-99f6-8a764ceba503)
-
-  </div>
-</details>
-<details>
-  <summary><b>대쉬보드</b></summary>
-  <div markdown="1">
-설명
-
-![calit](https://github.com/user-attachments/assets/082d561a-744e-4db4-99f6-8a764ceba503)
-
-  </div>
-</details>
 <details>
   <summary><b>채팅</b></summary>
   <div markdown="1">
