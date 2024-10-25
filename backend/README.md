@@ -134,11 +134,9 @@ STOMP만으로 운영 시 발생할 수 있는 확장성 문제와 메시지 손
 <details>
   <summary><b>알람</b></summary>
   <div markdown="1">
-설명
 
-![calit](https://github.com/user-attachments/assets/082d561a-744e-4db4-99f6-8a764ceba503)
 
-### Spring Batch를 통한 알람 기능 개선
+## Spring Batch를 통한 알람 기능 개선
 
 > 기존에는 **`@Scheduled`** 어노테이션을 사용한 스케줄링 방식으로 리마인드 알람을 구현했지만, 서버 부하와 메모리 사용량 증가로 인해 안정적인 서비스 제공에 어려움이 있었다. 이를 해결하기 위해 Spring Batch를 도입하여 알람 기능을 개선했다.
 
@@ -166,7 +164,19 @@ STOMP만으로 운영 시 발생할 수 있는 확장성 문제와 메시지 손
 
   
 ### 배치 적용 후 성능 비교
-[배치 도입 전 테스트 결과] [배치 도입 후 테스트 결과]
+
+프로메테우스와 그라파나로 모니터링한 결과, 도입 전에는 알람 발생 시 CPU 사용량이 급증했으나, 도입 후에는 API 서버의 CPU 사용량이 감소하고 배치 서버에 부하가 분산되는 것을 확인할 수 있었다. 
+
+**[배치 도입 전 테스트 결과]**
+
+![image](https://github.com/user-attachments/assets/5677f68a-c56b-4199-97b9-fb4fce7e5469)
+
+**[배치 도입 후 테스트 결과]**
+![image](https://github.com/user-attachments/assets/bb925ba8-b415-4a81-b41c-609c2210672b)
+
+- 분산 처리 환경을 구축한 결과, 배치 작업 중에도 다른 API 요청에 영향을 주지 않고 서버의 안정성을 유지할 수 있었다.
+- 멀티스레드를 활용해 병렬 처리한 결과 알람 처리 속도를 11% 향상시켜 전반적인 시스템 성능을 최적화했다.
+
 
   </div>
 </details>
