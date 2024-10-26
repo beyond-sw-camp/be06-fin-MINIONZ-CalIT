@@ -162,4 +162,16 @@ QA 글을 작성하고 담당자를 할당하는 것이 가능합니다. 답글 
   
 </details>
 
+<details>
+  <summary><b>AI 챗봇</b></summary>
+
+   <br>
+
+   챗봇에게 회의 관리(회의록 요약, 회의 자료 추천) 그 외에도 여러가지 질문이 가능합니다.
+
+![챗봇](https://github.com/user-attachments/assets/8235ffff-6cf4-4897-b5ad-5c9e0e393535)
+
+  
+</details>
+
 </details>
