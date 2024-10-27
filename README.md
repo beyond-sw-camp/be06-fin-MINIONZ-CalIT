@@ -88,7 +88,7 @@ https://calit.kro.kr
 ---
 
 # 1️⃣ 화면설계서
-🔗 [🎨 피그마 바로가기](https://www.figma.com/design/V59MNrd8govUfzrRPHeKZa/Wireframe?t=edCLfpAgm0v3cAhY-0)
+🔗 [🎨 피그마 바로가기](https://www.figma.com/design/V59MNrd8govUfzrRPHeKZa/Wireframe?node-id=24-58463&node-type=canvas&t=wSgc72pyUcR52dun-0)
 
 <br>
 
