@@ -1,0 +1,66 @@
+{
+  "name": "CailIT",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@stomp/stompjs": "^6.1.2",
+    "@vee-validate/rules": "^4.13.2",
+    "axios": "^1.7.7",
+    "core-js": "^3.8.3",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.5",
+    "echarts": "^5.5.1",
+    "jwt-decode": "^4.0.0",
+    "notyf": "^3.10.0",
+    "perfect-scrollbar": "^1.5.5",
+    "pinia": "^2.2.2",
+    "pinia-plugin-persistedstate": "^3.2.3",
+    "quill": "^2.0.2",
+    "quill-cursors": "^4.0.3",
+    "sockjs-client": "^1.6.1",
+    "vee-validate": "^4.13.2",
+    "vue": "^3.2.13",
+    "vue-draggable-next": "^2.2.1",
+    "vue-draggable-resizable": "^3.0.0",
+    "vue-multiselect": "^3.1.0",
+    "vue-router": "^4.4.3",
+    "vue3-styled-component": "^2.0.3",
+    "vuetify": "^3.7.2",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}

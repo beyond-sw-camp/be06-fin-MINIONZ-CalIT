@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  labels:
+    app: kafka
+spec:
+  replicas: 1  # Kafka 브로커의 수 (하나의 브로커로 설정)
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.4.6
+          ports:
+            - containerPort: 9092  # Kafka 브로커 포트
+          env:
+            - name: KAFKA_BROKER_ID
+              value: "1"  # Kafka 브로커의 ID
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: "zookeeper-service:2181"  # Zookeeper 서비스와 연결
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://kafka-service:9092"  # Kafka의 광고 주소
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://0.0.0.0:9092"  # 모든 인터페이스에서 수신 대기
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT"  # 보안 프로토콜 설정
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"  # 브로커 간 통신에 사용할 리스너 이름
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"  # 카프카 토픽 오프셋 복제 계수
+            - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
+              value: "0"  # 초기 리밸런스 지연 시간
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  labels:
+    app: kafka
+spec:
+  ports:
+    - port: 9092  # Kafka 브로커가 클라이언트에게 노출될 포트
+  selector:
+    app: kafka

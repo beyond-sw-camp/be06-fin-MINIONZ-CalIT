@@ -1,0 +1,90 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: calit-meeting
+spec:
+  schedule: "*/10 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: meeting-reminder-container
+              image: minionz/calit-batch:latest
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: calit-backend-configmap
+                - secretRef:
+                    name: calit-backend-secrets
+              env:
+                - name: SPRING_BATCH_JOB_NAME
+                  value: "meetingReminderJob"
+                - name: TZ
+                  value: "Asia/Seoul"
+          restartPolicy: OnFailure
+      ttlSecondsAfterFinished: 60
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: calit-task
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: task-reminder-container
+              image: minionz/calit-batch:latest
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: calit-backend-configmap
+                - secretRef:
+                    name: calit-backend-secrets
+              env:
+                - name: SPRING_BATCH_JOB_NAME
+                  value: "taskReminderJob"
+                - name: TZ
+                  value: "Asia/Seoul"
+          restartPolicy: OnFailure
+      ttlSecondsAfterFinished: 60
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: calit-sprint
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: sprint-reminder-container
+              image: minionz/calit-batch:latest
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: calit-backend-configmap
+                - secretRef:
+                    name: calit-backend-secrets
+              env:
+                - name: SPRING_BATCH_JOB_NAME
+                  value: "sprintReminderJob"
+                - name: TZ
+                  value: "Asia/Seoul"
+          restartPolicy: OnFailure
+      ttlSecondsAfterFinished: 60
